@@ -26,23 +26,18 @@
     "Define the batch and sampling frame, use random or stratified increments, preserve chain of custody and retained samples, and document calculations and release rules."
   ],
   "measureAndRecord": [
-    "Batch definition/mass",
-    "map and increments",
-    "sampler/time",
-    "product state",
-    "composite/homogenization",
-    "container/transport",
-    "laboratory/method",
-    "results/uncertainty",
-    "repeats and release."
+    "Before evaluating product sampling, batch uniformity, and coa limits, record the starting context and identifiers, including Batch definition/mass, map and increments, sampler/time. Use the same definitions and measurement locations for every comparison so changes can be attributed to the process rather than inconsistent observation.",
+    "During the process, track product state, composite/homogenization, container/transport along with time, location, material state, and any intervention or environmental change that could alter the response. Preserve raw observations instead of recording only a final pass/fail judgment.",
+    "At the decision point, document laboratory/method, results/uncertainty, repeats and release.. Compare endpoints against the stated objective, note spatial or replicate variation, and retain enough traceability to reconstruct how the conclusion was reached."
   ],
   "misconceptions": [
-    "One COA proves every package has the reported value.",
-    "A larger composite sample always detects every hotspot.",
-    "Two laboratories must produce identical results."
+    "One COA proves every package has the reported value. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+    "A larger composite sample always detects every hotspot. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.",
+    "Two laboratories must produce identical results. The claim cannot be generalized across cultivars, loads, rooms, packages, or laboratories without controlled comparison and documented uncertainty."
   ],
   "evidenceLimits": [
-    "Official sampling and compliance rules vary by jurisdiction and must be refreshed at release."
+    "Official sampling and compliance rules vary by jurisdiction and must be refreshed at release. Numerical targets and response magnitudes should therefore be treated as system-specific unless the cited evidence directly matches the cultivar or material form, process geometry, measurement method, environmental conditions, and product objective being evaluated.",
+    "Evidence from reviews, standards, food or pharmaceutical quality systems, or non-cannabis plant materials can support general mechanisms and measurement practice, but those sources do not by themselves establish a universal cannabis process target. Current jurisdictional release requirements and validated local methods remain separate controls."
   ],
   "crossLinks": "THC-ENC-083–100 for psychrometrics and sensors; THC-ENC-201–260 for flowering, trichomes, cannabinoids, and volatiles; THC-ENC-301–340 for microbes, sanitation, and release control; THC-ENC-401–420 for measurement, sampling, and quality systems.",
   "sourceNotes": [
