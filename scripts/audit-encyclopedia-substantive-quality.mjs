@@ -4,6 +4,7 @@ import path from 'node:path';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 
 const root=process.cwd();
+const strict=process.argv.includes('--strict');
 const encRoot=path.join(root,'content','encyclopedia');
 const registry=JSON.parse(fs.readFileSync(path.join(encRoot,'current-controlled-registry.json'),'utf8'));
 const outPath=path.join(root,'data','encyclopedia-substantive-quality-audit.json');
@@ -75,7 +76,12 @@ const cross=l=>{
   return [];
 };
 const generic=/\b(see (the )?lesson|as appropriate|where appropriate|proper|correct|best practice|monitor closely|follow guidance|use judgment)\b/i;
-const sourceAuthority=/\b(university|extension|usda|epa|nist|cornell|penn state|journal|doi|frontiers|plants|hortscience|pubmed|ncbi|ashrae|astm|iso|fao|who|government|department|institute|society)\b/i;
+const sourceAuthority=/\b(university|extension|usda|epa|nist|cornell|penn state|journal|doi|frontiers|plants|hortscience|pubmed|ncbi|ashrae|astm|iso|fao|who|government|department|institute|society|pmc|peer[- ]reviewed|systematic review|review)\b/i;
+const resolvedSourceText=source=>{
+  const raw=txt(typeof source==='string'?source:JSON.stringify(source));
+  const resolved=sourceRegistry.get(raw);
+  return resolved?txt([resolved.id,resolved.title,resolved.useAndLimitation,resolved.location].filter(Boolean).join(' ')):raw;
+};
 
 const rows=(registry.entries||[]).map(entry=>{
   const l=lessons.get(entry.id)||{};
@@ -120,3 +126,4 @@ console.log(`Substantive encyclopedia audit: ${rows.length} lessons; ${output.le
 console.log(JSON.stringify(issueCounts,null,2));
 console.log('Highest-priority lessons: '+ranked.slice(0,20).map(x=>x.id+'('+x.issueCount+')').join(', '));
 if(rows.length!==420) process.exit(1);
+if(strict&&output.lessonsWithIssues>0){console.error(`Strict substantive encyclopedia audit failed: ${output.lessonsWithIssues} lessons still have findings.`);process.exit(1);}
