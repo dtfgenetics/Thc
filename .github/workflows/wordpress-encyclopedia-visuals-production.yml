@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - scripts/attach-wordpress-encyclopedia-visuals.mjs
+      - scripts/build-encyclopedia-teaching-visuals.mjs
+      - scripts/build-encyclopedia-visual-production-queue.mjs
+      - package.json
       - site/wordpress/education/encyclopedia/volume03-visual-map.json
       - .github/workflows/wordpress-encyclopedia-visuals-production.yml
   workflow_dispatch:
@@ -21,8 +24,9 @@ permissions:
 
 jobs:
   publish:
-    name: Publish and verify Volume 03 lesson visuals
+    name: Publish and verify full encyclopedia lesson visuals
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     environment:
       name: production
       url: https://dtfseeds.com/learn/encyclopedia/
@@ -30,12 +34,32 @@ jobs:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      ENCYCLOPEDIA_VISUAL_MAP: site/wordpress/education/encyclopedia/volume03-visual-map.json
+      ENCYCLOPEDIA_VISUAL_MAP: site/wordpress/education/encyclopedia/all-visual-map-v1.json
       BACKUP_ROOT: /tmp/dtf-encyclopedia-visuals
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node and SVG rasterizer
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install SVG rasterizer
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin
+
+      - name: Generate full controlled visual set
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-teaching-visuals.mjs --render-png
+          npm run build:encyclopedia-visual-queue
+          node scripts/validate-encyclopedia-visual-production-queue.mjs
 
       - name: Validate credentials, publisher, map, and canonical assets
         id: validate
@@ -48,15 +72,15 @@ jobs:
           node - <<'NODE'
           const fs=require('fs');
           const map=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_VISUAL_MAP,'utf8'));
-          if(map.schemaVersion!==1 || map.batch!=='volume03-visuals-v1' || !Array.isArray(map.items) || map.items.length!==20) throw new Error('Unexpected Volume 03 visual map.');
-          const expected=Array.from({length:20},(_,i)=>`THC-ENC-${String(i+41).padStart(3,'0')}`);
+          if(map.schemaVersion!==1 || map.batch!=='encyclopedia-all-visuals-v1' || !Array.isArray(map.items) || map.items.length!==420) throw new Error('Unexpected full encyclopedia visual map.');
+          const expected=Array.from({length:420},(_,i)=>`THC-ENC-${String(i+1).padStart(3,'0')}`);
           const ids=map.items.map(x=>x.id);
-          if(new Set(ids).size!==20 || expected.some(id=>!ids.includes(id))) throw new Error('Expected exactly THC-ENC-041 through THC-ENC-060.');
+          if(new Set(ids).size!==420 || expected.some(id=>!ids.includes(id))) throw new Error('Expected exactly THC-ENC-001 through THC-ENC-420.');
           for(const item of map.items){
             const p=`site/wordpress/assets/infographics/${item.assetPath}`;
             if(!fs.existsSync(p)) throw new Error(`Missing canonical infographic asset: ${p}`);
           }
-          console.log('Validated 20 lesson-to-infographic mappings and canonical assets.');
+          console.log('Validated 420 lesson-to-visual mappings and canonical/generated assets.');
           NODE
 
       - name: Attach existing WordPress media to encyclopedia lessons
@@ -72,7 +96,7 @@ jobs:
           echo "reused=$(node -p "require(process.argv[1]).existingWordPressMediaReused" "$report")" >> "$GITHUB_OUTPUT"
           echo "uploads=$(node -p "require(process.argv[1]).newMediaUploads" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Verify all 20 visitor-facing lesson visuals
+      - name: Verify all 420 visitor-facing lesson visuals
         id: verify
         shell: bash
         run: |
@@ -83,7 +107,7 @@ jobs:
           const r=require(process.argv[2]);
           for(const x of r.updated) console.log([x.id,x.mediaSlug,x.mediaSourceUrl].join('\t'));
           NODE
-          test "$(wc -l < "$RUNNER_TEMP/visuals.tsv")" -eq 20
+          test "$(wc -l < "$RUNNER_TEMP/visuals.tsv")" -eq 420
 
           while IFS=$'\t' read -r id media_slug media_url; do
             slug="$(printf '%s' "$id" | tr '[:upper:]' '[:lower:]')"
@@ -143,11 +167,11 @@ jobs:
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## THC encyclopedia Volume 03 visual publication',
+                '## THC encyclopedia full visual publication',
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.JOB_STATUS}**`,
-                'Visual batch: **volume03-visuals-v1**',
+                'Visual batch: **encyclopedia-all-visuals-v1**',
                 `Validation: **${process.env.VALIDATE_OUTCOME || 'not-run'}**`,
                 `WordPress page update: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
                 `Visitor verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
@@ -156,7 +180,7 @@ jobs:
                 `New media uploads: **${process.env.UPLOADS || '0'}**`,
                 '',
                 success
-                  ? 'All 20 current-batch lesson pages passed fresh visitor-facing verification.'
+                  ? 'All 420 controlled lesson pages passed fresh visitor-facing visual verification.'
                   : 'This visual release is not accepted; inspect the workflow artifact and rollback evidence before retrying.',
                 '',
                 'Review control: **visual placement does not represent independent lesson approval**'
