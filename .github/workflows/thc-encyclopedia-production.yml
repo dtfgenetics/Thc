@@ -140,6 +140,9 @@ jobs:
       - name: Audit live encyclopedia copy
         if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
         continue-on-error: true
+        env:
+          ENC_LIVE_AUDIT_CONCURRENCY: 24
+          ENC_LIVE_AUDIT_TIMEOUT_MS: 12000
         run: |
           node scripts/audit-live-encyclopedia-copy.mjs || {
             echo "::warning::Live encyclopedia copy drift detected. The protected copy-repair workflow owns production reconciliation; source CI remains authoritative for repository quality."
