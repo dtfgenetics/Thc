@@ -25,7 +25,7 @@ if (!function_exists('dtf_learning_page_owns_designed_h1')) {
         }
 
         $page_uri = trim((string) get_page_uri($post), '/');
-        if ($page_uri !== 'learn' && strpos($page_uri, 'learn/') !== 0) {
+        if ($page_uri === '' && !is_front_page()) {
             return false;
         }
 
@@ -50,3 +50,25 @@ if (!function_exists('dtf_learning_remove_duplicate_theme_title')) {
 }
 
 add_filter('render_block_core/post-title', 'dtf_learning_remove_duplicate_theme_title', 100, 2);
+
+if (!function_exists('dtf_woocommerce_archive_owns_designed_h1')) {
+    function dtf_woocommerce_archive_owns_designed_h1(): bool
+    {
+        if (is_admin()) {
+            return false;
+        }
+        $is_shop = function_exists('is_shop') && is_shop();
+        $is_product_category = function_exists('is_product_category') && is_product_category();
+        $is_product_tag = function_exists('is_product_tag') && is_product_tag();
+        return $is_shop || $is_product_category || $is_product_tag;
+    }
+}
+
+if (!function_exists('dtf_remove_duplicate_woocommerce_query_title')) {
+    function dtf_remove_duplicate_woocommerce_query_title(string $block_content, array $block = []): string
+    {
+        return dtf_woocommerce_archive_owns_designed_h1() ? '' : $block_content;
+    }
+}
+
+add_filter('render_block_core/query-title', 'dtf_remove_duplicate_woocommerce_query_title', 100, 2);
