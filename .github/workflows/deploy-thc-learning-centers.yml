@@ -81,6 +81,10 @@ jobs:
           node scripts/validate-learning-route-writer-boundaries.mjs
           bash -n scripts/deploy/wordpress-learning-search-runtime.sh
           php -l site/wordpress/mu-plugins/dtf-learning-search.php
+          # Search runtime JS is generated from current encyclopedia/education data.
+          # Materialize it before verification so source-data changes cannot fail on
+          # stale committed build output that this release would replace anyway.
+          npm run build:wordpress-learning-search
           npm run verify:wordpress-learning-search
           node -e "const p=require('./site/wordpress/visual-quality-policy.json'); if(Number(p.schemaVersion)<3||p.replacementPolicy?.legacyInfographicReuseAllowed!==false) process.exit(1)"
           test -n "${WP_API_USERNAME:-}"
