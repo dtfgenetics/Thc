@@ -134,7 +134,7 @@ jobs:
           LESSONS: ${{ steps.publish.outputs.lessons }}
         with:
           script: |
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+            const body=[
               '## THC Encyclopedia public-copy polish V1','',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
@@ -144,4 +144,10 @@ jobs:
               `Published lessons scanned: **${process.env.LESSONS || 'unknown'}**`,
               `Pages changed this run: **${process.env.UPDATED || 'unknown'}**`,'',
               'Internal release-control language remains in source/CI while learner-facing Encyclopedia pages use educational reference language.'
-            ].join('\n')});
+            ].join('\n');
+            await core.summary.addRaw(body).write();
+            try {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
+            } catch (error) {
+              core.warning(`Issue #46 reporting skipped: ${error.message}`);
+            }
