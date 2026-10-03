@@ -123,18 +123,50 @@ jobs:
           test -s site/public-route-patch/learn/wave3-learning-routes.json
           echo "route_count=${#routes[@]}" >> "$GITHUB_OUTPUT"
 
-      - name: Deploy WordPress learning search runtime
+      - name: Deploy or verify WordPress learning search runtime
         id: search_runtime
         shell: bash
         run: |
           set -euo pipefail
-          : "${HOSTINGER_SSH_HOST:?HOSTINGER_SSH_HOST is required}"
-          : "${HOSTINGER_SSH_USER:?HOSTINGER_SSH_USER is required}"
-          : "${HOSTINGER_SSH_PRIVATE_KEY:?HOSTINGER_SSH_PRIVATE_KEY is required}"
-          : "${HOSTINGER_SSH_KNOWN_HOSTS:?HOSTINGER_SSH_KNOWN_HOSTS is required}"
-          : "${HOSTINGER_PUBLIC_ROOT:?HOSTINGER_PUBLIC_ROOT is required}"
-          [[ "$HOSTINGER_PUBLIC_ROOT" == /*/public_html ]]
 
+          verify_live_runtime() {
+            local health="$RUNNER_TEMP/learning-search-health-pre-index.json"
+            curl -4 --fail --silent --show-error --location --retry 6 --retry-all-errors --retry-delay 3 \
+              --connect-timeout 15 --max-time 60 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "$WP_SITE_URL/wp-json/dtf-learning/v1/health?dtf_runtime=${GITHUB_RUN_ID}" -o "$health"
+            HEALTH_PATH="$health" node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const h=JSON.parse(fs.readFileSync(process.env.HEALTH_PATH,'utf8'));
+          if(h.ok!==true || h.version!=='1.0.0') throw new Error('Learning search MU-plugin health endpoint is not active at the required runtime version.');
+          console.log('Learning search runtime active:', h);
+          NODE
+
+            for asset in search-v1.js encyclopedia-v1.js thc-search-explain-v1.js fuse-7.1.0.min.js; do
+              local live="$RUNNER_TEMP/live-$asset"
+              curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
+                --connect-timeout 15 --max-time 60 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                "$WP_SITE_URL/wp-content/mu-plugins/dtf-learning-search/$asset?dtf_runtime=${GITHUB_RUN_ID}" -o "$live"
+              test -s "$live"
+              cmp "site/wordpress/mu-plugins/dtf-learning-search/$asset" "$live"
+            done
+          }
+
+          ssh_ready=true
+          for required in HOSTINGER_SSH_HOST HOSTINGER_SSH_USER HOSTINGER_SSH_PRIVATE_KEY HOSTINGER_SSH_KNOWN_HOSTS HOSTINGER_PUBLIC_ROOT; do
+            if [[ -z "${!required:-}" ]]; then ssh_ready=false; fi
+          done
+
+          if [[ "$ssh_ready" != true ]]; then
+            echo 'Hostinger SSH deployment credentials are unavailable; requiring the existing live learning-search runtime to exactly match current repository assets.'
+            verify_live_runtime
+            echo "runtime_mode=verified-existing" >> "$GITHUB_OUTPUT"
+            echo "backup_id=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          [[ "$HOSTINGER_PUBLIC_ROOT" == /*/public_html ]]
           install -d -m 700 "$HOME/.ssh"
           printf '%s\n' "$HOSTINGER_SSH_PRIVATE_KEY" > "$HOME/.ssh/dtf_hostinger"
           chmod 600 "$HOME/.ssh/dtf_hostinger"
@@ -162,21 +194,8 @@ jobs:
           [[ -n "$backup_id" ]]
           echo "backup_id=$backup_id" >> "$GITHUB_OUTPUT"
 
-          health="$RUNNER_TEMP/learning-search-health-pre-index.json"
-          curl -4 --fail --silent --show-error --location --retry 6 --retry-all-errors --retry-delay 3 \
-            -H 'Cache-Control: no-cache, no-store, max-age=0' \
-            "$WP_SITE_URL/wp-json/dtf-learning/v1/health?dtf_runtime=${GITHUB_RUN_ID}" -o "$health"
-          HEALTH_PATH="$health" node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-          const h=JSON.parse(fs.readFileSync(process.env.HEALTH_PATH,'utf8'));
-          if(h.ok!==true || h.version!=='1.0.0') throw new Error('Learning search MU-plugin health endpoint is not active.');
-          console.log('Learning search runtime active:', h);
-          NODE
-          for asset in search-v1.js encyclopedia-v1.js thc-search-explain-v1.js fuse-7.1.0.min.js; do
-            curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 2 \
-              "$WP_SITE_URL/wp-content/mu-plugins/dtf-learning-search/$asset?dtf_runtime=${GITHUB_RUN_ID}" -o "$RUNNER_TEMP/$asset"
-            test -s "$RUNNER_TEMP/$asset"
-          done
+          verify_live_runtime
+          echo "runtime_mode=deployed" >> "$GITHUB_OUTPUT"
 
       - name: Create or update WordPress learning-center pages
         id: pages
