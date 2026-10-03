@@ -107,7 +107,7 @@
     "build:encyclopedia-assessment-rationales": "node scripts/build-encyclopedia-assessment-rationales.mjs",
     "verify:encyclopedia-assessment-rationales": "npm run build:encyclopedia-assessment-rationales && node scripts/validate-encyclopedia-assessment-rationales.mjs",
     "build:encyclopedia-visual-queue": "node scripts/build-encyclopedia-visual-production-queue.mjs",
-    "verify:encyclopedia-visual-queue": "npm run build:encyclopedia-visual-queue && node scripts/validate-encyclopedia-visual-production-queue.mjs",
+    "verify:encyclopedia-visual-queue": "npm run build:encyclopedia-teaching-visuals && npm run build:encyclopedia-visual-queue && node scripts/validate-encyclopedia-visual-production-queue.mjs",
     "build:encyclopedia-source-queue": "node scripts/build-encyclopedia-source-resolution-queue.mjs",
     "verify:encyclopedia-source-queue": "npm run build:encyclopedia-source-queue && node scripts/validate-encyclopedia-source-resolution-queue.mjs",
     "verify:encyclopedia-production-queues": "npm run verify:encyclopedia-assessment-rationales && npm run verify:encyclopedia-visual-queue && npm run verify:encyclopedia-source-queue",
@@ -186,6 +186,7 @@
     "verify:encyclopedia-catalog": "node scripts/build-encyclopedia-catalog.mjs --check",
     "verify:encyclopedia-copy-quality": "node scripts/validate-encyclopedia-copy-quality.mjs",
     "build:encyclopedia-independent-review": "node scripts/build-encyclopedia-independent-review-manifest.mjs",
-    "verify:encyclopedia-independent-review": "npm run build:encyclopedia-independent-review && node scripts/validate-encyclopedia-independent-review-manifest.mjs"
+    "verify:encyclopedia-independent-review": "npm run build:encyclopedia-independent-review && node scripts/validate-encyclopedia-independent-review-manifest.mjs",
+    "build:encyclopedia-teaching-visuals": "node scripts/build-encyclopedia-teaching-visuals.mjs"
   }
 }
