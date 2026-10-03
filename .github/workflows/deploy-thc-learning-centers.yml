@@ -165,8 +165,14 @@ jobs:
           done
 
           if [[ "$ssh_ready" != true ]]; then
+            if verify_live_runtime; then
+              echo 'Existing live Learning Search runtime already matches the current repository assets.'
+              echo "runtime_mode=verified-existing" >> "$GITHUB_OUTPUT"
+              echo "backup_id=" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
             echo 'Hostinger SSH deployment credentials are unavailable; deploying the source-controlled learning-search runtime through the authenticated WordPress REST bridge.'
-            node scripts/deploy-wordpress-learning-search-runtime-via-rest.mjs \
+            node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/deploy-wordpress-learning-search-runtime-via-rest.mjs \
               | tee "$RUNNER_TEMP/learning-search-rest-deploy.json"
             verify_live_runtime
             echo "runtime_mode=wordpress-rest-bridge" >> "$GITHUB_OUTPUT"
