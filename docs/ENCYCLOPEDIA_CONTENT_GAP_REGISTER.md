@@ -6,8 +6,8 @@ Updated: 2026-10-03
 
 - Controlled architecture: 21 parts × 20 lessons = 420 permanent THC-ENC IDs.
 - Repository representation: 420/420 lesson slots.
-- Volumes 01–17: 340 individual canonical lesson JSON files.
-- Volumes 18–21: 80 controlled draft lessons stored in 16 five-lesson collections.
+- Canonical lesson reader currently resolves all 420 controlled lessons to individual canonical lesson files for validation and publication tooling.
+- Historical five-lesson collection manuscripts remain source/control records where retained, but they are not the substantive-audit authority when an individual canonical lesson exists.
 - Current authority model: Master 420-Entry Content Map v1.1 is the base registry; later controlled Volume 18–21 manuscripts are version-controlled overrides for their ranges.
 - Machine-readable authority: `content/encyclopedia/current-controlled-registry.json`.
 
@@ -35,9 +35,9 @@ Every lesson must ultimately contain or resolve to:
 
 ## Current priority gaps
 
-1. Independently review the 420 materialized assessment-rationale drafts and preserve reviewer evidence.
-2. Produce and approve the 420 teaching visuals from the controlled visual queue; briefs are complete, artwork and asset-level QA are not.
-3. Expand exact source-locator / atomic-claim evidence ledgers beyond the initial controlled evidence batch, using the all-source resolution queue to prioritize unresolved references.
+1. Independently review the 420 materialized assessment-rationale drafts and preserve reviewer evidence. All 1260 rationale drafts remain review-pending; draft completeness is not approval.
+2. Complete teaching-visual production and independent asset review. Repository inventory currently contains lesson-prefixed canonical artwork for 48 controlled lesson IDs (67 lesson-specific files); these are produced candidates, not approved assets. The remaining 372 lesson IDs still need lesson-specific artwork unless a later controlled asset is mapped.
+3. Expand exact source-locator / atomic-claim evidence ledgers using the all-source resolution queue. Repository evidence inventory currently maps 88/420 lessons through 95 claim-evidence records and 68 controlled authorities across 11 batches; all mappings remain pending independent science review.
 4. Volume 20–21 source registers are restored from their controlled manuscripts on the education practical-resource branch. After source-queue regeneration, the 63 previously missing references are expected to resolve as 58 HTTPS-backed volume authorities and 5 internal/non-public placeholders; exact claim locators and independent authority review remain pending.
 5. Keep encyclopedia assessment complete on its own. Academy/course links are optional navigation only; course curriculum and certification assessments remain independently controlled.
 6. Practical record workbooks now cover THC-ENC-381–420 on the education practical-resource branch, with controlled registry, validation, renderer gating, and discovery-index support. Continue extending practical resources to earlier lessons where they materially improve learning.
@@ -46,9 +46,10 @@ Every lesson must ultimately contain or resolve to:
 ## Evidence/data pipeline
 
 - Controlled source registry: `content/encyclopedia/evidence/authoritative-sources.json`.
-- Claim evidence batches: `content/encyclopedia/evidence/evidence-batch-001.json`, `content/encyclopedia/evidence/evidence-batch-002.json`, `content/encyclopedia/evidence/evidence-batch-003.json`, and `content/encyclopedia/evidence/evidence-batch-004.json`.
+- Claim evidence batches: `content/encyclopedia/evidence/evidence-batch-001.json` through `content/encyclopedia/evidence/evidence-batch-011.json`.
 - Shared-source bridge: Batch 003 maps the canonical PubChem, USDA GRIN, USDA Hemp Phenotyping v4, MIAPPE v1.2, and Cornell hemp genetics/germplasm identities into scoped encyclopedia claims without changing publication state.
 - Disease/diagnostic evidence: Batch 004 adds scoped Cornell and Oregon State Extension support for heat-stress differentials, Botrytis, Fusarium, HLVd, site risk, scouting records, and cultivar/environment generalization limits; all mappings remain pending independent science review.
+- Part 10/11 evidence expansion: Batches 009–011 convert existing cannabis architecture, training, photoperiod, reproductive-development, pollen, fertilization, seed-maturity, sex-expression, and reproductive-record research into controlled claim mappings without changing review or publication state.
 - Generated risk-priority queue: `data/encyclopedia-evidence-priority.json`.
 - Generated 420-lesson tracking artifact: `data/encyclopedia-evidence-tracking.json`.
 - All-source resolution queue: `data/encyclopedia-source-resolution-queue.json`.
@@ -65,10 +66,11 @@ Every lesson must ultimately contain or resolve to:
 - `npm run audit:encyclopedia-substantive-quality`
   - measures whether lesson fields are substantive rather than merely present;
   - reports weak instructional depth, measurement guidance, misconceptions, evidence limits, source-authority signals, and cross-links.
+  - latest completed production CI reported 420/420 lessons with zero substantive findings; preserve this gate while evidence/review/visual work continues.
 
 - `npm run verify:encyclopedia-content-strict`
-  - additionally fails unresolved content-quality and assessment-rationale gaps;
-  - this remains the target gate for a future 420/420 production-complete release.
+  - additionally fails unresolved completion/review gaps after substantive lesson quality has passed;
+  - this remains the target gate for a future 420/420 production-complete release and must not be weakened to bypass independent review.
 
 - `npm run verify:encyclopedia-evidence`
   - rebuilds the all-lesson evidence tracking artifact;
