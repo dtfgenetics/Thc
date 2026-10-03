@@ -28,12 +28,34 @@ const arr=v=>Array.isArray(v)?v:[];
 const text=v=>String(v??'').trim();
 const termsOf=l=>arr(l.terms).length?arr(l.terms):arr(l.termsToKnow);
 const measureOf=l=>arr(l.measureAndRecord).length?arr(l.measureAndRecord):arr(l.measurements);
+const measurementGuidanceComplete=l=>{
+  const rows=measureOf(l);
+  if(rows.length>=2) return true;
+  if(rows.length!==1) return false;
+  const row=rows[0];
+  const value=typeof row==='string'?row:`${row?.field||''}: ${row?.requirement||''}`;
+  const clean=String(value||'').trim();
+  const wordCount=clean.split(/\s+/).filter(Boolean).length;
+  const recordSegments=clean.split(/[;|]/).map(x=>x.trim()).filter(Boolean).length;
+  return wordCount>=12 || recordSegments>=3;
+};
 const checksOf=l=>effectiveLessonAssessment(l).prompts;
 const sourcesOf=l=>arr(l.sourceNotes).length?arr(l.sourceNotes):arr(l.evidence);
 const visualsOf=l=>arr(l.visuals);
+const expandEncRefs=value=>{
+  const text=String(value??'');
+  const ids=new Set(text.match(/THC-ENC-\d{3}/g)||[]);
+  for(const match of text.matchAll(/THC-ENC-(\d{3})\s*[–—-]\s*(?:THC-ENC-)?(\d{3})/g)){
+    const start=Number(match[1]), end=Number(match[2]);
+    if(Number.isInteger(start)&&Number.isInteger(end)&&end>=start&&end-start<=419){
+      for(let n=start;n<=end;n++) ids.add(`THC-ENC-${String(n).padStart(3,'0')}`);
+    }
+  }
+  return [...ids];
+};
 const crossOf=l=>{
-  if(typeof l.crossLinks==='string')return l.crossLinks.match(/THC-ENC-\d{3}/g)||[];
-  if(Array.isArray(l.crossLinks))return l.crossLinks;
+  if(typeof l.crossLinks==='string')return expandEncRefs(l.crossLinks);
+  if(Array.isArray(l.crossLinks))return [...new Set(l.crossLinks.flatMap(expandEncRefs))];
   if(l.crossLinks&&typeof l.crossLinks==='object')return [
     ...arr(l.crossLinks.prerequisiteLessonIds),
     ...arr(l.crossLinks.relatedLessonIds),
@@ -52,7 +74,7 @@ function scoreLesson(entry){
     criterion(termsOf(l).length>=3,7,'terms'),
     criterion(arr(l.coreScience).length>=2||arr(l.sections?.mechanism).length>=2,12,'core science'),
     criterion(arr(l.cultivationRelevance).length>=1||arr(l.sections?.cultivationRelevance).length>=1,8,'cultivation relevance'),
-    criterion(measureOf(l).length>=2||arr(l.sections?.measurementAndRecords).length>=2,10,'measurement guidance'),
+    criterion(measurementGuidanceComplete(l)||arr(l.sections?.measurementAndRecords).length>=2,10,'measurement guidance'),
     criterion(arr(l.misconceptions).length>=2||arr(l.sections?.misconceptions).length>=2,7,'misconceptions'),
     criterion(arr(l.evidenceLimits).length>=1||text(l.evidenceLimits).length>=30||arr(l.sections?.evidenceLimits).length>=1,8,'evidence limits'),
     criterion(crossOf(l).length>=2,8,'cross-links'),
