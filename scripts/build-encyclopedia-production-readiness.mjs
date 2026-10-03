@@ -49,7 +49,7 @@ const lessons = ids.map(id => {
   const contentComplete = s.contentContractComplete === true;
   const claimEvidenceComplete = Number(e?.evidence?.claimEvidenceCount || 0) > 0 &&
     arr(e?.evidence?.needs).every(need => need !== 'claim_level_evidence_mapping' && need !== 'source_note_authority_resolution');
-  const sourcesResolved = arr(e?.sourceNotes?.unresolvedRefs).length === 0;
+  const sourcesResolved = q.resolutionState === 'authority_links_available_claim_review_pending' || q.resolutionState === 'source_traceable_authority_review_pending';
   const visualApproved = Boolean(v.approvedAssetId) && v.assetQaStatus === 'approved';
   const rationaleReviewed = r.reviewState === 'approved' || r.reviewState === 'independent_review_complete';
   const publicationAuthorized = bool(s.publicationAuthorized) || bool(e?.publicationState?.publicationAuthorized);
@@ -95,6 +95,7 @@ const lessons = ids.map(id => {
       claimEvidenceComplete,
       authoritativeSourceCount:arr(e?.evidence?.authoritativeSourceIds).length,
       unresolvedSourceRefs:arr(e?.sourceNotes?.unresolvedRefs),
+      sourceTraceabilityState:q.resolutionState || null,
       sourcesResolved
     },
     visual:{
