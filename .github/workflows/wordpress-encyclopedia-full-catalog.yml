@@ -45,7 +45,10 @@ jobs:
           node-version: 22
 
       - name: Build full controlled catalog manifest
-        run: node scripts/build-encyclopedia-full-release-manifest.mjs "$ENCYCLOPEDIA_BATCH_FILE"
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-full-release-manifest.mjs "$ENCYCLOPEDIA_BATCH_FILE"
+          cmp "$ENCYCLOPEDIA_BATCH_FILE" site/wordpress/education/encyclopedia/full-controlled-catalog.json
 
       - name: Validate canonical 420-lesson release
         run: |
