@@ -43,6 +43,25 @@ async function allChildren(parent){
   return out;
 }
 const rendered=value=>typeof value==='string'?value:(value?.raw||value?.rendered||'');
+const decodeHtml=value=>String(value||'')
+  .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ')
+  .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ')
+  .replace(/<[^>]+>/g,' ')
+  .replaceAll('&nbsp;',' ')
+  .replaceAll('&amp;','&')
+  .replaceAll('&quot;','"')
+  .replaceAll('&#39;',"'")
+  .replace(/\s+/g,' ')
+  .trim();
+async function fetchPublic(slug){
+  const response=await fetch(`${site}/learn/encyclopedia/${slug}/?dtf_copy_repair=${Date.now()}`,{
+    redirect:'follow',
+    signal:AbortSignal.timeout(30000),
+    headers:{'Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache','User-Agent':'DTF-Encyclopedia-Copy-Repair/1.1'}
+  });
+  const body=await response.text();
+  return {status:response.status,text:decodeHtml(body)};
+}
 const defectKinds=html=>{
   const kinds=[];
   if(malformedPublicCopy.test(html)) kinds.push('malformed-source-copy');
@@ -63,7 +82,10 @@ const candidates=[];
 for(const page of children){
   if(!/^thc-enc-\d{3}$/.test(page.slug||'')) continue;
   const id=String(page.slug).toUpperCase();
-  const kinds=defectKinds(rendered(page.content));
+  const storedKinds=defectKinds(rendered(page.content));
+  const publicView=await fetchPublic(page.slug);
+  const renderedKinds=publicView.status===200?defectKinds(publicView.text):[];
+  const kinds=[...new Set([...storedKinds,...renderedKinds])];
   if(!kinds.length) continue;
   const lesson=byId.get(id);
   if(!lesson) throw new Error(`${id}: live defective page has no canonical lesson source.`);
@@ -73,12 +95,20 @@ for(const page of children){
   if(lesson.reviewControl?.publicationAuthorized===false || lesson.publicationAuthorized===false){
     throw new Error(`${id}: live copy is defective but canonical publication authorization is false; refusing to republish automatically.`);
   }
-  candidates.push({id,pageId:page.id,slug:page.slug,kinds,sourceFile:lesson.__path});
+  candidates.push({
+    id,pageId:page.id,slug:page.slug,kinds,
+    storedKinds,renderedKinds,
+    publicStatus:publicView.status,
+    runtimeOnly:storedKinds.length===0&&renderedKinds.length>0,
+    sourceFile:lesson.__path
+  });
 }
 
 const report={
   scannedPublishedLessons:children.filter(p=>/^thc-enc-\d{3}$/.test(p.slug||'')).length,
   defectsFound:candidates.length,
+  runtimeOnlyDefects:candidates.filter(x=>x.runtimeOnly).length,
+  storedContentDefects:candidates.filter(x=>x.storedKinds.length>0).length,
   candidates
 };
 await writeFile('/tmp/encyclopedia-copy-repair-scan.json',JSON.stringify(report,null,2)+'\n','utf8');
