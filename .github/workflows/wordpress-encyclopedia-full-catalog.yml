@@ -92,6 +92,15 @@ jobs:
           export BACKUP_ROOT=/tmp/dtf-encyclopedia-full-catalog-topics
           node scripts/organize-wordpress-encyclopedia-topics.mjs
 
+      - name: Rebuild full-catalog discovery and global search
+        env:
+          ENCYCLOPEDIA_DISCOVERY_RELEASE_MANIFEST: site/wordpress/education/encyclopedia/full-controlled-catalog.json
+        run: |
+          set -euo pipefail
+          npm run build:encyclopedia-discovery
+          node scripts/build-thc-education-search-index.mjs
+          node scripts/validate-thc-education-search.mjs
+
       - name: Publish refreshed learning search indexes
         run: node scripts/publish-wordpress-learning-search-indexes.mjs
 
