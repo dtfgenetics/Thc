@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "volumes": [
     {
       "id": "THC-ENC-V01",
@@ -119,6 +119,36 @@
       "title": "Integrated Pest Management, Biosecurity, and Sanitation",
       "path": "content/encyclopedia/volume-17/manifest.json",
       "route": "/encyclopedia/volume-17-integrated-pest-management-biosecurity-and-sanitation"
+    },
+    {
+      "id": "THC-ENC-V18",
+      "number": 18,
+      "title": "Harvest and Postharvest Plant Material Science",
+      "path": "content/encyclopedia/volume-18/manifest.json",
+      "route": "/encyclopedia/volume-18-harvest-and-postharvest-plant-material-science"
+    },
+    {
+      "id": "THC-ENC-V19",
+      "number": 19,
+      "title": "Outdoor, Greenhouse, and Protected Cultivation Ecology",
+      "path": "content/encyclopedia/volume-19/manifest.json",
+      "route": "/encyclopedia/volume-19-outdoor-greenhouse-and-protected-cultivation-ecology"
+    },
+    {
+      "id": "THC-ENC-V20",
+      "number": 20,
+      "title": "Breeding, Selection, and Genetic Conservation",
+      "path": "content/encyclopedia/volume-20/manifest.json",
+      "route": "/encyclopedia/volume-20-breeding-selection-and-genetic-conservation"
+    },
+    {
+      "id": "THC-ENC-V21",
+      "number": 21,
+      "title": "Measurement, Data Systems, Quality, and Research Literacy",
+      "path": "content/encyclopedia/volume-21/manifest.json",
+      "route": "/encyclopedia/volume-21-measurement-data-systems-quality-and-research-literacy"
     }
-  ]
+  ],
+  "generatedFrom": "content/encyclopedia/volume-XX/manifest.json",
+  "generationRule": "Include every source volume whose catalogRegistration is not withheld_until_review_gate."
 }
