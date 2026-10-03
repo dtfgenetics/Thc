@@ -129,11 +129,30 @@ if ($useWp) {
     $useWp = function_exists('get_transient') && function_exists('set_transient');
 }
 
+function persistent_option_key(string $key): string
+{
+    return 'dtf_burn_buds_' . hash('sha256', $key);
+}
+
 function store_get(string $key)
 {
     global $useWp;
     if ($useWp) {
-        return get_transient($key);
+        $value = get_transient($key);
+        if (is_array($value)) {
+            return $value;
+        }
+
+        $optionKey = persistent_option_key($key);
+        $record = get_option($optionKey, false);
+        if (is_array($record) && is_array($record['value'] ?? null) && intval($record['expiresAt'] ?? 0) >= time()) {
+            set_transient($key, $record['value'], max(1, intval($record['expiresAt']) - time()));
+            return $record['value'];
+        }
+        if ($record !== false) {
+            delete_option($optionKey);
+        }
+        return false;
     }
     $path = sys_get_temp_dir() . '/' . $key . '.json';
     if (!is_file($path)) {
@@ -152,8 +171,15 @@ function store_set(string $key, array $value, int $ttl = PTP_TTL): bool
 {
     global $useWp;
     if ($useWp) {
+        $ttl = max(1, $ttl);
+        $expiresAt = time() + $ttl;
         set_transient($key, $value, $ttl);
-        return is_array(get_transient($key));
+        update_option(
+            persistent_option_key($key),
+            ['expiresAt' => $expiresAt, 'value' => $value],
+            false
+        );
+        return is_array(store_get($key));
     }
     $value['_expires'] = time() + $ttl;
     $encoded = json_encode($value);
