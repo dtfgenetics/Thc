@@ -1,4 +1,7 @@
 import fs from 'node:fs';
+import { setDefaultResultOrder } from 'node:dns';
+
+setDefaultResultOrder('ipv4first');
 
 const site=(process.env.SITE||'https://dtfseeds.com').replace(/\/$/,'');
 const gameBase=`${site}/games/crossword/`;
@@ -6,19 +9,49 @@ const pin=fs.readFileSync('site/public-route-patch/games/crossword/source-revisi
 const expectedRevision=pin.match(/^commit=([0-9a-f]{40})$/m)?.[1];
 if(!expectedRevision) throw new Error('Pinned Crossword revision is missing.');
 
+const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
+const attempts=Number.parseInt(process.env.CROSSWORD_LIVE_FETCH_ATTEMPTS||'5',10);
+const timeoutMs=Number.parseInt(process.env.CROSSWORD_LIVE_FETCH_TIMEOUT_MS||'20000',10);
+
+function detail(error){
+  if(!(error instanceof Error)) return String(error);
+  const cause=error.cause;
+  if(cause&&typeof cause==='object'){
+    const nested=Array.isArray(cause.errors)
+      ? cause.errors.map(entry=>entry&&typeof entry==='object'
+          ? [entry.code,entry.message].filter(Boolean).join(': ')
+          : String(entry)).filter(Boolean)
+      : [];
+    if(nested.length) return nested.join(' | ');
+    return [cause.code,cause.message].filter(Boolean).join(': ')||error.message;
+  }
+  return error.message||error.name;
+}
+
 async function getAbsolute(url,label){
-  const response=await fetch(url,{
-    redirect:'follow',
-    cache:'no-store',
-    signal:AbortSignal.timeout(15000),
-    headers:{
-      'user-agent':'DTFSeeds-Crossword-live-verifier/1.0',
-      'cache-control':'no-cache, no-store, max-age=0',
-      pragma:'no-cache'
+  let last;
+  for(let attempt=1;attempt<=attempts;attempt+=1){
+    try{
+      const response=await fetch(url,{
+        redirect:'follow',
+        cache:'no-store',
+        signal:AbortSignal.timeout(timeoutMs),
+        headers:{
+          'user-agent':'DTFSeeds-Crossword-live-verifier/1.1',
+          'cache-control':'no-cache, no-store, max-age=0',
+          pragma:'no-cache'
+        }
+      });
+      if(response.ok) return {text:await response.text(),type:response.headers.get('content-type')||'',url:response.url};
+      last=new Error(label+' returned HTTP '+response.status);
+      if(response.status<500&&response.status!==408&&response.status!==429) throw last;
+    }catch(error){
+      last=error;
+      if(attempt===attempts) break;
     }
-  });
-  if(!response.ok) throw new Error(`${label} returned HTTP ${response.status}`);
-  return {text:await response.text(),type:response.headers.get('content-type')||'',url:response.url};
+    await sleep(750*attempt);
+  }
+  throw new Error(label+' failed after '+attempts+' attempts: '+detail(last));
 }
 const getGame=(path,label)=>getAbsolute(new URL(path,gameBase),label);
 
