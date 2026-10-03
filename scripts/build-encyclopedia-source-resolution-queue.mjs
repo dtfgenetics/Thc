@@ -42,7 +42,7 @@ function citationLooksTraceable(reference) {
   if(/https:\/\/|doi\s*[:.]|10\.\d{4,9}\//i.test(value)) return true;
   if(/\b(?:19|20)\d{2}\b/.test(value) && /\b(et al\.?|journal|university|extension|usda|epa|fda|nih|nist|astm|iso|fao|ncbi|pubmed|frontiers|hortscience|plant physiology|scientific reports|royal botanic|department|institute|society|proceedings|review|bmc|plos|nature|genome biology|genome research|new phytologist|scientia horticulturae|genetics|plant direct|academic press|industrial crops|horticulturae|applications in plant sciences|antioxidants|applied sciences|canadian journal|phytochemical analysis|biosystems engineering|agrophysics|acs|wiley|springer|elsevier|agricultural|photosynthesis|technology|methods)\b/i.test(value)) return true;
   if(/\b\d+\s+U\.S\.C\.\s*§|\bUnited States Code\b|\bU\.S\. Geological Survey\b|\bUSGS\b/i.test(value)) return true;
-  const institutional=/\b(university|extension|cooperative extension|food inspection agency|apogee instruments|fluke corporation|royal botanic gardens|kew|geological survey|usgs|usda|epa|fda|nih|nist|osha|fao|government|department|institutes?|society|ncbi|international union)\b/i.test(value);
+  const institutional=/\b(university|extension|cooperative extension|food inspection agency|apogee instruments|fluke corporation|royal botanic gardens|kew|geological survey|usgs|usda|epa|fda|nih|nist|osha|fao|government|department|institutes?|society|ncbi|international union|texas a&m)\b/i.test(value);
   if(institutional && /[.:]/.test(value) && value.length>=32) return true;
   const hasYear=/\b(?:19|20)\d{2}\b/.test(value);
   const citationPunctuation=/\((?:19|20)\d{2}\)|\b(?:19|20)\d{2}\s*[;.:]/.test(value);
@@ -53,7 +53,7 @@ function citationLooksTraceable(reference) {
 function isControlOrContextNote(reference, volumeSource=null) {
   const value=String(reference||'').trim();
   if(!value) return false;
-  if(/^(?:The )?controlled\b|^Transfer note:|^No source is used\b|^Public wording\b|^Area-normalized\b|^Because the study\b|^The same study\b|^The study and cited\b|^Visible swelling\b|^The 12\/12 schedule\b|^No fixed\b|^Exact .* not presented\b|^Deposition .* not treated\b|^The practical .* framework\b|^Boundary-layer\b|^Cannabis .* literature\b|^Cannabis .* source registers\b|^Cannabis-specific .* studies\b|^Direct medical-cannabis\b|^General \b|^Peer-reviewed \b|^Recent \b|^Validated \b|^Public documentation\b|^No standardized \b|^THC-ENC-\d{3}\b/i.test(value)) return true;
+  if(/^(?:The )?controlled\b|^Transfer note:|^No source is used\b|^Public wording\b|^Area-normalized\b|^Because the study\b|^The same study\b|^The study and cited\b|^Visible swelling\b|^The 12\/12 schedule\b|^No fixed\b|^Exact .* not presented\b|^Deposition .* not treated\b|^The practical .* framework\b|^Boundary-layer\b|^Cannabis .* literature\b|^Cannabis .* source registers\b|^Cannabis .* research\b|^Cannabis .* studies\b|^Cannabis-specific .* studies\b|^Direct medical-cannabis\b|^General \b|^Peer-reviewed \b|^Recent \b|^Validated \b|^Public documentation\b|^No standardized \b|^THC-ENC-\d{3}\b/i.test(value)) return true;
   if(/^THC(?:\s*-\s*Teaching Healthy Cultivation|\s+Cultivation)?\b.*(?:Source Packet|Source Materials Packet)/i.test(value)) return true;
   if(/^V\d{2}-SRC-\d{3}\b/i.test(value) && /project (?:control|pathology|sanitation)|THC Cannabis .* Source Packet/i.test(value)) return true;
   if(volumeSource) {
