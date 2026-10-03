@@ -174,6 +174,13 @@ jobs:
           test -s "$TOPIC_LITERATURE_PATH"
           node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/reconcile-wordpress-learning-v3-ownership.mjs | tee /tmp/dtf-learning-v3-ownership-verify.json
 
+      - name: Purge visitor cache after complete Learn transaction
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/flush-hostinger-litespeed-mcp.mjs
+          sleep 5
+
       - name: Verify live shared shell and learning routes
         id: verify
         shell: bash
@@ -220,7 +227,10 @@ jobs:
               grep -Fq 'data-dtf-learning-map="v4"' "$learn_body" && \
               grep -Fq 'Start with the question you are trying to answer.' "$learn_body" && \
               grep -Fq 'See how the systems connect before you go deep.' "$learn_body" && \
-              grep -Fq 'Three systems explain most downstream decisions.' "$learn_body"; then
+              grep -Fq 'Three systems explain most downstream decisions.' "$learn_body" && \
+              grep -Fq 'Professional Courses' "$learn_body" && \
+              grep -Fq 'href="/courses/"' "$learn_body" && \
+              ! grep -Fq 'Structured learning sequences and course-based progression.' "$learn_body"; then
               ok=1
               break
             fi
