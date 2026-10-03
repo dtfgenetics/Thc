@@ -66,7 +66,7 @@ if(!errors.length){
  const course1=courseCatalog.courses?.find(x=>x.id==='COURSE-LH-TECH1-001');
  if(course1?.publicLessonReleaseAvailable===true&&!index.documents?.some(x=>x.id===course1.id&&x.route===course1.href))errors.push('search index missing public Technician I Course 1');
  const globalEncyclopediaSample=index.documents?.find(x=>x.type==='Encyclopedia');
- for(const field of ['aliases','terms','objective','measurements','misconceptions','coreScience','cultivation','tools']) if(!globalEncyclopediaSample||!(field in globalEncyclopediaSample)) errors.push('global education search encyclopedia document missing rich field '+field);
+ for(const field of ['aliases','terms','objective','measurements','misconceptions','coreScience','cultivation','tools','evidence']) if(!globalEncyclopediaSample||!(field in globalEncyclopediaSample)) errors.push('global education search encyclopedia document missing rich field '+field);
  for(const required of ['/learn/','/learn/encyclopedia/','/atlas/','/terpene-atlas/','/growlens/','/thc-grow-doc/','/vpd-chart/','/ppfd-chart/']){
    if(!index.documents.some(x=>x.route===required)) errors.push(`search index missing ${required}`);
  }
@@ -81,10 +81,10 @@ if(!errors.length){
  if(!encyclopediaRuntime.includes("name:'aliases'")||!encyclopediaRuntime.includes('history.replaceState')) errors.push('encyclopedia runtime missing alias/deep-link contract');
  if(!Array.isArray(encyclopediaIndex.lessons)||encyclopediaIndex.lessons.length<420) errors.push('encyclopedia discovery index must contain at least the 420 controlled entries');
  if(!Array.isArray(encyclopediaIndex.topics)||encyclopediaIndex.topics.length<21) errors.push('encyclopedia discovery index must contain at least the 21 controlled base topics');
- if(Number(encyclopediaIndex.schemaVersion)<2) errors.push('encyclopedia discovery index must use rich search schema v2+');
+ if(Number(encyclopediaIndex.schemaVersion)<3) errors.push('encyclopedia discovery index must use evidence-aware search schema v3+');
  if(!encyclopediaIndex.facets?.topic||!encyclopediaIndex.facets?.format||!encyclopediaIndex.facets?.status) errors.push('encyclopedia discovery index missing topic/format/status facets');
  const sample=encyclopediaIndex.lessons?.find(x=>x.status==='published');
- for(const field of ['objective','terms','coreScience','measurements','misconceptions','tools','aliases']) if(!sample||!(field in sample)) errors.push('encyclopedia discovery document missing rich field '+field);
+ for(const field of ['objective','terms','coreScience','measurements','misconceptions','tools','aliases','evidence']) if(!sample||!(field in sample)) errors.push('encyclopedia discovery document missing rich field '+field);
  if(Number(encyclopediaIndex.searchLanguageVersion)<1) errors.push('encyclopedia discovery index missing search-language version');
  if(!Array.isArray(searchLanguage.rules)||searchLanguage.rules.length<20) errors.push('controlled encyclopedia search language must contain at least 20 useful alias rules');
  for(const rule of searchLanguage.rules||[]){if(!rule.id||!Array.isArray(rule.aliases)||rule.aliases.length<1)errors.push('invalid encyclopedia search-language rule '+(rule.id||'<missing-id>'));}
