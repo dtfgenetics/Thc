@@ -58,10 +58,10 @@
           "statusLabel": "In development",
           "issuanceAvailable": false,
           "plannedCourses": 7,
-          "summary": "Entry professional pathway covering safe cultivation work, plant observation, environment, irrigation, crop care, harvest, records, and integrated shift practice.",
+          "summary": "Seven-course Technician I academic pathway is publicly available. The separate professional certification remains in development and credential issuance is blocked pending occupational validation, secure assessment, practical/capstone validation, standard setting, governance, accessibility, and production authorization.",
           "availableCourse": {
             "id": "COURSE-LH-TECH1-001",
-            "label": "Course 1 open now · all 7 course titles visible below",
+            "label": "All 7 Technician I academic courses available",
             "href": "/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/"
           }
         },
@@ -73,7 +73,12 @@
           "statusLabel": "In development",
           "issuanceAvailable": false,
           "plannedCourses": 8,
-          "summary": "Advanced technician pathway covering diagnostic reasoning, environmental systems, fertigation, plant-health troubleshooting, propagation and canopy performance, postharvest quality response, traceability, metrics, shift coordination, and integrated simulation. All 8 course titles are visible below; credential issuance remains blocked pending validation."
+          "summary": "Eight-course Technician II academic pathway is publicly available. The separate professional certification remains in development and credential issuance is blocked pending occupational validation, secure assessment, practical/capstone validation, standard setting, governance, accessibility, and production authorization.",
+          "availableCourse": {
+            "id": "COURSE-LH-TECH2-001",
+            "label": "All 8 Technician II academic courses available",
+            "href": "/learn/learning-hub/cultivation-technician-ii/advanced-crop-observation-diagnostic-reasoning/"
+          }
         }
       ]
     },
@@ -186,18 +191,19 @@
         "Integrated practical",
         "Lesson progress tracking",
         "Module and final course assessments"
-      ]
+      ],
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization."
     },
     {
       "id": "COURSE-LH-TECH1-002",
       "number": 2,
-      "status": "in-development",
-      "statusLabel": "Curriculum built · public lesson release pending review",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Plant Observation, Growth Stages & Crop Records",
       "pathLabel": "THC Cultivation Technician I",
       "summary": "Structured crop walks, representative observation, growth-stage and reproductive morphology records, diagnostic boundaries, photographs, crop records, and shift handoff.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Course instruction and assessments are built in the curriculum repository. Public lesson release remains pending review.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
@@ -220,13 +226,13 @@
     {
       "id": "COURSE-LH-TECH1-003",
       "number": 3,
-      "status": "in-development",
-      "statusLabel": "Curriculum built · public lesson release pending review",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Environmental, Light & Sensor Fundamentals",
       "pathLabel": "THC Cultivation Technician I",
       "summary": "Temperature, RH and VPD context, PPFD and photoperiod checks, sensor placement and verification, alarm and trend interpretation, environmental records, and shift handoff.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Course instruction and assessments are built. Public lesson release remains pending review.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
@@ -249,13 +255,13 @@
     {
       "id": "COURSE-LH-TECH1-004",
       "number": 4,
-      "status": "in-development",
-      "statusLabel": "Curriculum built · public lesson release pending review",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Water, Root Zone, Nutrition & Irrigation Fundamentals",
       "pathLabel": "THC Cultivation Technician I",
       "summary": "Water sample identity, pH and EC measurement, root-zone moisture and dryback trends, nutrition evidence, authorized irrigation/fertigation work orders, equipment care, and reconstructable records.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Course instruction, assessments, and Practical B mapping are built. Public lesson release remains pending review.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
@@ -278,13 +284,13 @@
     {
       "id": "COURSE-LH-TECH1-005",
       "number": 5,
-      "status": "in-development",
-      "statusLabel": "Curriculum built · public lesson release pending review",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Propagation, Canopy, IPM Scouting & Crop Care",
       "pathLabel": "THC Cultivation Technician I",
       "summary": "Propagation and transplant identity, routine canopy work, IPM scouting evidence, biosecurity and quarantine, SOP authority boundaries, QA records, and shift handoff.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Course instruction, assessments, and Practicals C–E mapping are built. Public lesson release remains pending review.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
@@ -307,13 +313,13 @@
     {
       "id": "COURSE-LH-TECH1-006",
       "number": 6,
-      "status": "in-development",
-      "statusLabel": "Curriculum built · public lesson release pending review",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Harvest, Postharvest, Traceability & Shift Handoff",
       "pathLabel": "THC Cultivation Technician I",
       "summary": "Harvest authorization, clean-work readiness, controlled handling, material protection, dry-room receiving, harvest genealogy, quantity reconciliation, holds, deviations, and reconstructable handoff.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Course instruction, assessments, and Practical F mapping are built. Public lesson release remains pending review.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
@@ -336,13 +342,13 @@
     {
       "id": "COURSE-LH-TECH1-007",
       "number": 7,
-      "status": "in-development",
-      "statusLabel": "Integrated lab built · validation pending",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Integrated Cultivation Technician Practice Lab",
       "pathLabel": "THC Cultivation Technician I",
       "summary": "Integrated supervised practice linking Technician I crop-work evidence, Practicals A–F, critical-failure controls, evaluator evidence, remediation/retest rules, and the shift capstone.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Integrated lab structure is built. Public lab release remains pending human review, accessibility review, practical validation, and pilot evidence.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
@@ -365,13 +371,13 @@
     {
       "id": "COURSE-LH-TECH2-001",
       "number": 1,
-      "status": "in-development",
-      "statusLabel": "Curriculum built · public lesson release pending review",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Advanced Crop Observation & Diagnostic Reasoning",
       "pathLabel": "THC Cultivation Technician II",
       "summary": "Multi-factor crop diagnosis using plant, environmental, root-zone, nutrition, spatial, temporal, and QA evidence while separating observation from unsupported causal claims.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Advanced instruction, assessments, and Practical A mapping are built. Public lesson release remains pending review.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
@@ -394,13 +400,13 @@
     {
       "id": "COURSE-LH-TECH2-002",
       "number": 2,
-      "status": "in-development",
-      "statusLabel": "Curriculum built · public lesson release pending review",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Environmental Data, Sensors & Equipment Response",
       "pathLabel": "THC Cultivation Technician II",
       "summary": "Sensor validity, representative placement, command-versus-response checks, light mapping, measured irrigation distribution, safe troubleshooting boundaries, fault classification, maintenance handoff, and post-action verification.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Advanced instruction, assessments, and Practical B mapping are built. Public lesson release remains pending review.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
@@ -423,13 +429,13 @@
     {
       "id": "COURSE-LH-TECH2-003",
       "number": 3,
-      "status": "in-development",
-      "statusLabel": "Curriculum built · public lesson release pending review",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Fertigation Execution, Verification & Root-Zone Interpretation",
       "pathLabel": "THC Cultivation Technician II",
       "summary": "Approved batch readiness, material identity, controlled fertigation execution, measurement verification, root-zone and irrigation troubleshooting, chemical-safety boundaries, and evidence-based escalation without independent recipe design.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Advanced instruction, assessments, and Practical C mapping are built. Public lesson release remains pending review.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
@@ -452,13 +458,13 @@
     {
       "id": "COURSE-LH-TECH2-004",
       "number": 4,
-      "status": "in-development",
-      "statusLabel": "Curriculum built · public lesson release pending review",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Plant Health, IPM & Biosecurity Troubleshooting",
       "pathLabel": "THC Cultivation Technician II",
       "summary": "Comparable scouting, incidence and severity trends, spatial evidence, intervention follow-up, quarantine and biosecurity, QA records, and treatment-authority boundaries.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Advanced instruction, assessments, and Practical D mapping are built. Public lesson release remains pending review.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
@@ -481,13 +487,13 @@
     {
       "id": "COURSE-LH-TECH2-005",
       "number": 5,
-      "status": "in-development",
-      "statusLabel": "Curriculum built · public lesson release pending review",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Propagation & Canopy Performance Troubleshooting",
       "pathLabel": "THC Cultivation Technician II",
       "summary": "Propagation performance, donor and batch comparisons, advanced canopy and flowering response review, sanitation/IPM context, evidence-based troubleshooting, and QA handoff.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Advanced instruction, assessments, and Practical E mapping are built. Public lesson release remains pending review.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
@@ -510,13 +516,13 @@
     {
       "id": "COURSE-LH-TECH2-006",
       "number": 6,
-      "status": "in-development",
-      "statusLabel": "Curriculum built · public lesson release pending review",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Harvest/Postharvest Deviations & Quality Response",
       "pathLabel": "THC Cultivation Technician II",
       "summary": "Postharvest containment, process-trend interpretation, product measurements, lot genealogy and affected-scope reasoning, QA role boundaries, deviation evidence, and reconstructable handoff without independent product disposition authority.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Advanced instruction, assessments, and Practical F mapping are built. Public lesson release remains pending review.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
@@ -539,13 +545,13 @@
     {
       "id": "COURSE-LH-TECH2-007",
       "number": 7,
-      "status": "in-development",
-      "statusLabel": "Curriculum built · public lesson release pending review",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Traceability, Production Metrics, Shift Coordination & Peer Support",
       "pathLabel": "THC Cultivation Technician II",
       "summary": "Genealogy and reconciliation, KPI denominator and trend discipline, controlled-record integrity, SOP-based peer coaching, unresolved-work prioritization, and supervisor-ready shift handoff without formal supervisory authority.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Advanced instruction, assessments, and Practical G mapping are built. Public lesson release remains pending review.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
@@ -568,13 +574,13 @@
     {
       "id": "COURSE-LH-TECH2-008",
       "number": 8,
-      "status": "in-development",
-      "statusLabel": "Integrated lab built · validation pending",
+      "status": "available-academic",
+      "statusLabel": "Available academic course",
       "title": "Integrated Technician II Simulation Lab",
       "pathLabel": "THC Cultivation Technician II",
       "summary": "Integrated diagnostic-shift practice linking all seven Technician II practicals, non-compensatory critical-error controls, evaluator calibration, accessibility and equivalent-form controls, remediation/retest rules, and the Senior Technician capstone.",
-      "publicLessonReleaseAvailable": false,
-      "availabilityNote": "Integrated lab and capstone structure are built. Public lab release remains pending human review, practical/capstone validation, pilot evidence, evaluator calibration, and formal release approval.",
+      "publicLessonReleaseAvailable": true,
+      "availabilityNote": "Public academic course release is published. Professional credential issuance remains blocked pending occupational validation, secure credential assessment, practical/capstone validation, standard setting, accessibility/governance approval, and production authorization.",
       "metrics": [
         {
           "value": "4",
