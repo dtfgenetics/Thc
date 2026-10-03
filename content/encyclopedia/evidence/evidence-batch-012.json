@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-012",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level trichome development, gland-class, secretory-cell ultrastructure, sampling, and cannabinoid precursor evidence for THC-ENC-221 through THC-ENC-227.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Morphology, gland class, secretion, tissue chemistry, and whole-flower chemistry remain distinct measurements.",
+    "Microscopy and isolated-trichome chemistry support localization and class-specific observations but do not directly quantify whole-crop cannabinoid yield.",
+    "Pathway localization and biochemical precursor evidence do not establish universal cultivation interventions or rate-limiting steps.",
+    "All mappings remain pending independent science review."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0096",
+      "lessonId": "THC-ENC-221",
+      "sourceIds": [
+        "ENC-AUTH-003"
+      ],
+      "claimType": "trichome-development",
+      "supportedClaim": "Cannabis capitate trichomes develop asynchronously and show genotype- and plant-age-dependent differences in abundance, stalk formation, head morphology, senescence, dehiscence, and drying-related morphology.",
+      "sourceLocator": "Punja, Sutton, and Kim 2023 abstract, methods, results, and conclusion.",
+      "applicability": "Supports developmental staging of glandular trichomes and caution against one visual maturity rule.",
+      "limitations": "The study examined a limited genotype set and organ context; observed stage boundaries are method- and tissue-dependent.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0097",
+      "lessonId": "THC-ENC-222",
+      "sourceIds": [
+        "ENC-AUTH-003"
+      ],
+      "claimType": "bulbous-trichome-morphology",
+      "supportedClaim": "Bulbous glandular trichomes are an anatomically recognized cannabis trichome class, but their small size and relative contribution to whole-flower cannabinoid production should not be inferred from class identity alone.",
+      "sourceLocator": "Punja, Sutton, and Kim 2023 morphology/classification observations.",
+      "applicability": "Supports anatomical recognition of bulbous trichomes and method-aware classification.",
+      "limitations": "The source does not establish a universal quantitative contribution of bulbous glands to whole-flower cannabinoid yield.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0098",
+      "lessonId": "THC-ENC-223",
+      "sourceIds": [
+        "ENC-AUTH-003",
+        "ENC-AUTH-069"
+      ],
+      "claimType": "capitate-sessile-trichomes",
+      "supportedClaim": "Capitate-sessile trichomes are directly observed on cannabis reproductive tissues, can predominate earlier in flower development, and contain measurable cannabinoids in isolated-trichome analyses.",
+      "sourceLocator": "Punja, Sutton, and Kim 2023 developmental morphology; Happyana et al. 2013 SEM/LMD-LCMS analysis.",
+      "applicability": "Supports class identification, developmental context, and the distinction between morphology and direct chemical measurement.",
+      "limitations": "Not every sessile-appearing gland necessarily follows the same developmental trajectory, and isolated-gland chemistry does not quantify whole-flower contribution.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0099",
+      "lessonId": "THC-ENC-224",
+      "sourceIds": [
+        "ENC-AUTH-003",
+        "ENC-AUTH-069",
+        "ENC-AUTH-070"
+      ],
+      "claimType": "capitate-stalked-trichomes",
+      "supportedClaim": "Capitate-stalked cannabis trichomes show measurable developmental changes and contain cannabinoid-rich secretory tissue, while ultrastructural work localizes major pathway machinery to specialized secretory-cell compartments.",
+      "sourceLocator": "Punja, Sutton, and Kim 2023 stalk/head development; Happyana et al. 2013 isolated capitate-stalked chemistry; Livingston et al. 2022 ultrastructure/pathway localization.",
+      "applicability": "Supports capitate-stalked morphology and their central role in specialized-metabolite production.",
+      "limitations": "Trichome morphology alone does not establish whole-tissue chemistry or per-gland production rate.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0100",
+      "lessonId": "THC-ENC-225",
+      "sourceIds": [
+        "ENC-AUTH-070"
+      ],
+      "claimType": "secretory-cell-ultrastructure",
+      "supportedClaim": "Cannabis glandular trichome secretory cells form a polarized multicellular system with specialized organelle organization and extracellular-facing THCAS localization adjacent to the storage cavity.",
+      "sourceLocator": "Livingston et al. 2022 highlights, summary, and electron-microscopy/immunolocalization results.",
+      "applicability": "Supports secretory-disk cell organization, extracellular cavity context, and compartment-aware pathway diagrams.",
+      "limitations": "Some intracellular trafficking steps remain proposed rather than directly observed; diagrams should separate localization evidence from pathway-transport hypotheses.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0101",
+      "lessonId": "THC-ENC-226",
+      "sourceIds": [
+        "ENC-AUTH-003",
+        "ENC-AUTH-069"
+      ],
+      "claimType": "trichome-sampling",
+      "supportedClaim": "Cannabis trichome abundance and morphology vary with genotype, plant age, surface, and developmental position, so trichome-density comparisons require an explicit tissue, surface, developmental stage, imaging method, and denominator.",
+      "sourceLocator": "Punja, Sutton, and Kim 2023 surface/genotype/age counts; Happyana et al. 2013 SEM distribution/density observations.",
+      "applicability": "Supports repeatable sampling frames and explicit denominators for trichome-density claims.",
+      "limitations": "Density is only one component of chemical production and cannot substitute for matched tissue chemistry.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0102",
+      "lessonId": "THC-ENC-227",
+      "sourceIds": [
+        "ENC-AUTH-071",
+        "ENC-AUTH-070"
+      ],
+      "claimType": "cannabinoid-precursor-biology",
+      "supportedClaim": "Hexanoyl-CoA is directly detected in cannabis tissues associated with cannabinoid biosynthesis, and trichome-localized evidence supports specialized compartmentation of cannabinoid/terpene precursor metabolism.",
+      "sourceLocator": "Stout et al. 2012 LC-MS/MS, CsAAE1 expression/activity, and localization results; Livingston et al. 2022 pathway-localization results.",
+      "applicability": "Supports hexanoyl-CoA and isoprenoid precursor context in trichome cannabinoid biosynthesis.",
+      "limitations": "The upstream origin of hexanoate and quantitative control of intact-plant pathway flux remain incompletely resolved; precursor presence does not imply a cultivation prescription.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
