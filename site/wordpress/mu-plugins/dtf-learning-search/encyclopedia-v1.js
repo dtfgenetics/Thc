@@ -76,7 +76,12 @@ function render(){
   const summary=item.objective||item.topic;
   const match=q.value.trim()?explainSearchMatch(item,q.value.trim()):null;
   const why=match?'<p class="match-reason"><strong>Why this matched:</strong> '+esc(match.label)+' · '+esc(match.snippet)+'</p>':'';
-  return '<article class="lesson"><div class="lesson-top"><span class="id">'+esc(item.id)+'</span><span class="badge '+(published?'':'review')+'">'+(published?'Published':'In review')+'</span></div><h3>'+esc(item.title)+'</h3><p>'+esc(summary)+'</p>'+why+'<div class="meta"><span>'+esc(item.topic)+'</span><span>'+esc(item.primaryFormat)+'</span>'+(item.teachingVisual?'<span>'+esc(item.teachingVisual)+'</span>':'')+'</div>'+(published?'<a href="'+esc(item.route)+'">Open lesson →</a>':'<span class="disabled">Catalogued · full lesson not yet released</span>')+'</article>'
+  const ev=item.evidence||{};
+  const sourceTitles=Array.isArray(ev.sourceTitles)?ev.sourceTitles:[];
+  const evidence=published&&Number(ev.claimCount||0)>0
+   ?'<p class="evidence-note"><strong>Evidence mapped:</strong> '+Number(ev.claimCount)+' claim'+(Number(ev.claimCount)===1?'':'s')+(sourceTitles.length?' · '+sourceTitles.slice(0,2).map(esc).join(' · '):'')+'</p>'
+   :'';
+  return '<article class="lesson"><div class="lesson-top"><span class="id">'+esc(item.id)+'</span><span class="badge '+(published?'':'review')+'">'+(published?'Published':'In review')+'</span></div><h3>'+esc(item.title)+'</h3><p>'+esc(summary)+'</p>'+why+evidence+'<div class="meta"><span>'+esc(item.topic)+'</span><span>'+esc(item.primaryFormat)+'</span>'+(item.teachingVisual?'<span>'+esc(item.teachingVisual)+'</span>':'')+'</div>'+(published?'<a href="'+esc(item.route)+'">Open lesson →</a>':'<span class="disabled">Catalogued · full lesson not yet released</span>')+'</article>'
  }).join(''):'<div class="empty"><strong>No matching encyclopedia entry.</strong><p>Try a broader scientific term, clear a filter, or browse one of the 21 subject areas.</p></div>';
 }
 document.querySelector('[data-status-filters]').addEventListener('click',e=>{
@@ -110,6 +115,8 @@ loadIndex.then(data=>{
   {name:'coreScience',weight:.05},
   {name:'cultivation',weight:.04},
   {name:'tools',weight:.025},
+  {name:'evidence.sourceTitles',weight:.035},
+  {name:'evidence.claimTypes',weight:.02},
   {name:'keywords',weight:.025}
  ]
 });
