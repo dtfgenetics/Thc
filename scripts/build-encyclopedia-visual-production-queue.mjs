@@ -14,6 +14,18 @@ const visualMapPath = path.join(root, 'site', 'wordpress', 'education', 'encyclo
 const visualMap = fs.existsSync(visualMapPath) ? readJson(visualMapPath) : { items: [] };
 const producedVisualById = new Map(arr(visualMap.items).map(item => [item.id, item]));
 const canonicalVisualRoot = path.join(root, 'site', 'wordpress', 'assets', 'infographics');
+const canonicalVisualFiles = fs.existsSync(canonicalVisualRoot)
+  ? fs.readdirSync(canonicalVisualRoot).filter(name => /\.(?:png|jpe?g|webp)$/i.test(name)).sort()
+  : [];
+const discoveredAssetsById = new Map();
+for (const name of canonicalVisualFiles) {
+  const match = name.match(/^(THC-ENC-\d{3})(?:_|\b)/i);
+  if (!match) continue;
+  const id = match[1].toUpperCase();
+  const rows = discoveredAssetsById.get(id) || [];
+  rows.push(path.join(canonicalVisualRoot, name));
+  discoveredAssetsById.set(id, rows);
+}
 
 const items = lessons.map(lesson => {
   const entry = entryById.get(lesson.id) || {};
@@ -23,8 +35,13 @@ const items = lessons.map(lesson => {
   const labels = (arr(lesson.terms).length ? arr(lesson.terms) : arr(lesson.termsToKnow)).map(term).filter(Boolean).slice(0, 8);
   const visualType = entry.teachingVisual || lesson.requiredTeachingVisual || 'Concept diagram';
   const produced = producedVisualById.get(lesson.id) || null;
-  const canonicalAssetPath = produced?.assetPath ? path.join(canonicalVisualRoot, produced.assetPath) : null;
-  const canonicalAssetExists = Boolean(canonicalAssetPath && fs.existsSync(canonicalAssetPath));
+  const mappedAssetPath = produced?.assetPath ? path.join(canonicalVisualRoot, produced.assetPath) : null;
+  const discoveredAssetPaths = arr(discoveredAssetsById.get(lesson.id));
+  const canonicalAssetPaths = [...new Set([
+    ...(mappedAssetPath && fs.existsSync(mappedAssetPath) ? [mappedAssetPath] : []),
+    ...discoveredAssetPaths.filter(assetPath => fs.existsSync(assetPath))
+  ])].sort();
+  const canonicalAssetExists = canonicalAssetPaths.length > 0;
 
   return {
     queueId: `ENC-VIS-${String(lesson.number).padStart(3, '0')}`,
@@ -42,8 +59,12 @@ const items = lessons.map(lesson => {
     altTextDraft: `${visualType} for ${lesson.title}, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.`,
     captionDraft: `${lesson.title}. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.`,
     productionStatus: canonicalAssetExists ? 'artwork_produced_review_pending' : 'brief_ready_artwork_needed',
-    canonicalAssetPath: canonicalAssetExists ? relativePath(root, canonicalAssetPath) : null,
-    assetProductionBatch: canonicalAssetExists ? (visualMap.batch || null) : null,
+    canonicalAssetPath: canonicalAssetExists ? relativePath(root, canonicalAssetPaths[0]) : null,
+    canonicalAssetPaths: canonicalAssetPaths.map(assetPath => relativePath(root, assetPath)),
+    assetCandidateCount: canonicalAssetPaths.length,
+    assetProductionBatch: canonicalAssetExists
+      ? (produced ? (visualMap.batch || null) : 'repository-prefix-scan-v1')
+      : null,
     accuracyReview: 'pending_independent_science_review',
     accessibilityReview: canonicalAssetExists ? 'pending_review' : 'pending',
     assetQaStatus: canonicalAssetExists ? 'produced_pending_asset_qa' : 'not_started',
