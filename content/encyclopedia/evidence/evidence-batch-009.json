@@ -1,0 +1,165 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-009",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level cannabis architecture, pruning, density, branching, training, and canopy evidence for THC-ENC-181 through THC-ENC-190.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Cannabis-specific production effects are limited to the genotypes, treatments, densities, and environments studied.",
+    "General shoot-branching mechanisms may explain plausible biology but do not establish cannabis-specific hormone thresholds or training schedules.",
+    "Review literature describing cultivation methods is not treated as direct experimental proof when standardized trials are absent.",
+    "Claim mapping does not approve a lesson, assessment rationale, visual, or publication state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0064",
+      "lessonId": "THC-ENC-181",
+      "sourceIds": [
+        "ENC-AUTH-054",
+        "ENC-AUTH-055",
+        "ENC-AUTH-059"
+      ],
+      "claimType": "architecture-mechanism",
+      "supportedClaim": "Cannabis branch architecture emerges from phytomer and axillary-bud development, while general plant evidence shows bud outgrowth is regulated by interacting hormonal, nutritional, and environmental signals rather than by a single auxin-only switch.",
+      "sourceLocator": "Spitzer-Rimon et al. 2019 abstract/results on phytomer and branching architecture; Dun et al. 2023 abstract/introduction and branching-network sections; Danziger and Bernstein 2021 abstract/conclusions for cannabis architecture-treatment responses.",
+      "applicability": "Supports apical-dominance and branch-control mechanism language while separating general mechanism from cannabis treatment evidence.",
+      "limitations": "Detailed hormone-network evidence is primarily from model/crop species; cannabis treatment responses were genotype-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0065",
+      "lessonId": "THC-ENC-182",
+      "sourceIds": [
+        "ENC-AUTH-054",
+        "ENC-AUTH-055",
+        "ENC-AUTH-056"
+      ],
+      "claimType": "architecture-phenotype",
+      "supportedClaim": "Cannabis architecture and chemical uniformity are influenced by genotype, plant density, canopy position, and architecture-management treatments, so architecture should be measured directly rather than inferred from broad ancestry labels.",
+      "sourceLocator": "Spitzer-Rimon et al. 2019 architecture/florogenesis observations; Danziger and Bernstein 2021 abstract/highlights; Danziger and Bernstein 2022 abstract and conclusions.",
+      "applicability": "Supports direct architecture measurement and genotype-by-management interpretation.",
+      "limitations": "The studies used limited genotypes and controlled production systems; numerical responses are not universal cultivar targets.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0066",
+      "lessonId": "THC-ENC-183",
+      "sourceIds": [
+        "ENC-AUTH-054",
+        "ENC-AUTH-055",
+        "ENC-AUTH-057"
+      ],
+      "claimType": "training-timing-limit",
+      "supportedClaim": "Cannabis architecture responds to pruning and developmental context, but the available peer-reviewed literature does not establish one universal plant age or node count at which every training intervention should occur.",
+      "sourceLocator": "Spitzer-Rimon et al. 2019 developmental architecture observations; Danziger and Bernstein 2021 architecture-treatment study; Crispim Massuela et al. 2022 pruning and harvest-time study.",
+      "applicability": "Supports stage- and condition-based records instead of a fixed calendar rule.",
+      "limitations": "Absence of a universal timing threshold is an evidence-limit conclusion; it does not prove every timing choice is equally effective.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0067",
+      "lessonId": "THC-ENC-184",
+      "sourceIds": [
+        "ENC-AUTH-058",
+        "ENC-AUTH-059"
+      ],
+      "claimType": "mechanical-training-evidence-limit",
+      "supportedClaim": "Mechanical and structural training can alter shoot orientation and branching context, but low-stress bending is not represented by one standardized cannabis treatment with a validated universal bend angle, tie-down schedule, or yield response.",
+      "sourceLocator": "Ijoma et al. 2026 review sections describing low- and high-stress training components and research gaps; Dun et al. 2023 review of regulated bud outgrowth and branch plasticity.",
+      "applicability": "Supports distinguishing plausible mechanobiology and branch-control mechanisms from unverified low-stress-training prescriptions.",
+      "limitations": "The mainlining review is a synthesis and explicitly identifies evidence gaps; it is not a controlled low-stress-bending trial.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0068",
+      "lessonId": "THC-ENC-185",
+      "sourceIds": [
+        "ENC-AUTH-055",
+        "ENC-AUTH-057",
+        "ENC-AUTH-059"
+      ],
+      "claimType": "topping-pruning-response",
+      "supportedClaim": "Removing an active shoot apex can release competing branch growth and can change cannabis architecture and production metrics, but treatment effects on biomass, cannabinoid concentration, and compound yield must be evaluated separately.",
+      "sourceLocator": "Dun et al. 2023 apical-dominance and bud-outgrowth review; Danziger and Bernstein 2021 architecture-treatment study; Crispim Massuela et al. 2022 pruning-treatment results.",
+      "applicability": "Supports topping mechanism, recovery measurement, and separation of biomass, concentration, and compound-yield endpoints.",
+      "limitations": "Cannabis studies cover limited pruning definitions, genetics, and environments; general branching physiology is not a cannabis-specific topping protocol.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0069",
+      "lessonId": "THC-ENC-186",
+      "sourceIds": [
+        "ENC-AUTH-054",
+        "ENC-AUTH-058"
+      ],
+      "claimType": "partial-meristem-evidence-limit",
+      "supportedClaim": "Partial or irregular injury to the shoot apex may produce variable architecture, while peer-reviewed cannabis literature does not establish a standardized FIM cut that reliably produces a fixed number of new leaders.",
+      "sourceLocator": "Spitzer-Rimon et al. 2019 cannabis shoot/phytomer architecture; Ijoma et al. 2026 review discussion of cultivation training terminology and limited standardized evidence.",
+      "applicability": "Supports treating FIM as variable partial-meristem injury rather than a deterministic protocol.",
+      "limitations": "Direct replicated FIM trials with anatomical standardization remain sparse; this claim is primarily an evidence-limit statement.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0070",
+      "lessonId": "THC-ENC-187",
+      "sourceIds": [
+        "ENC-AUTH-055",
+        "ENC-AUTH-056",
+        "ENC-AUTH-058"
+      ],
+      "claimType": "mainlining-review",
+      "supportedClaim": "Mainlining combines multiple architecture interventions, and the dedicated review literature identifies limited scientific validation and nonstandardized protocols despite plausible links to apical dominance, canopy structure, and resource allocation.",
+      "sourceLocator": "Ijoma et al. 2026 abstract, research-gaps section, and conclusion; Danziger and Bernstein 2021 and 2022 architecture/density studies for directly measured cannabis architecture effects.",
+      "applicability": "Supports describing mainlining as a compound management sequence and requiring controlled comparisons for outcome claims.",
+      "limitations": "The review does not establish a universal mainlining recipe or guaranteed yield benefit.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0071",
+      "lessonId": "THC-ENC-188",
+      "sourceIds": [
+        "ENC-AUTH-055",
+        "ENC-AUTH-056"
+      ],
+      "claimType": "canopy-support-context",
+      "supportedClaim": "Cannabis density and architecture can create strong vertical differences in light exposure and cannabinoid concentration; a screen or trellis may help organize shoots but does not by itself guarantee uniform irradiance or chemistry.",
+      "sourceLocator": "Danziger and Bernstein 2022 abstract/results/conclusions on density, lower-canopy light deprivation, and cannabinoid uniformity; Danziger and Bernstein 2021 architecture-standardization results.",
+      "applicability": "Supports measuring light distribution and canopy condition rather than judging a trellis by visual flatness alone.",
+      "limitations": "The cited trials tested architecture and density, not standardized SCROG grid designs.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0072",
+      "lessonId": "THC-ENC-189",
+      "sourceIds": [
+        "ENC-AUTH-055",
+        "ENC-AUTH-056",
+        "ENC-AUTH-057"
+      ],
+      "claimType": "lower-shoot-pruning",
+      "supportedClaim": "Lower-canopy cannabis tissues can experience reduced light and different cannabinoid concentrations, and branch-removal or pruning treatments can alter spatial uniformity and biomass distribution without implying one-for-one resource transfer into retained flowers.",
+      "sourceLocator": "Danziger and Bernstein 2021 abstract/conclusions; Danziger and Bernstein 2022 abstract/results on lower-canopy effects; Crispim Massuela et al. 2022 pruning-treatment study.",
+      "applicability": "Supports lower-shoot pruning as a measurable architecture intervention rather than a fixed resource-redistribution rule.",
+      "limitations": "No cited study establishes a universal amount of lower growth to remove or a fixed redistribution coefficient.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0073",
+      "lessonId": "THC-ENC-190",
+      "sourceIds": [
+        "ENC-AUTH-055",
+        "ENC-AUTH-056",
+        "ENC-AUTH-057"
+      ],
+      "claimType": "defoliation-canopy-response",
+      "supportedClaim": "Defoliation changes leaf area and canopy light distribution simultaneously, and cannabis architecture studies show treatment responses depend on genotype, density, treatment, and production context rather than supporting a universal defoliation schedule.",
+      "sourceLocator": "Danziger and Bernstein 2021 architecture-modulation treatments including defoliation; Danziger and Bernstein 2022 density-by-architecture results; Crispim Massuela et al. 2022 pruning-treatment outcomes.",
+      "applicability": "Supports defoliation as a measured intervention with separate light, recovery, yield, and quality endpoints.",
+      "limitations": "The evidence base remains limited relative to broader horticultural literature and does not validate a universal removal percentage or flowering-week schedule.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
