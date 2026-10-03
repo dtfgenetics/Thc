@@ -1,4 +1,5 @@
 import process from 'node:process';
+import {buildWordPressPageQuery,requireSingleWordPressPage} from './wordpress-learning-page-query.mjs';
 
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const user=process.env.WP_API_USERNAME||'';
@@ -29,11 +30,8 @@ async function request(path){
 }
 
 async function page(slug,parentId=null){
-  const parent=parentId===null?'':`&parent=${encodeURIComponent(String(parentId))}`;
-  const rows=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}${parent}&context=edit&per_page=20`);
-  const scope=parentId===null?'site-wide':`under parent ${parentId}`;
-  if(!Array.isArray(rows)||rows.length!==1) throw new Error(`Expected exactly one WordPress page for ${slug} (${scope}); found ${Array.isArray(rows)?rows.length:'invalid response'}`);
-  return rows[0];
+  const rows=await request(buildWordPressPageQuery(slug,{parentId}));
+  return requireSingleWordPressPage(rows,{slug,parentId});
 }
 
 const specs=[
