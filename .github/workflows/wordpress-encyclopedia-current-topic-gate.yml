@@ -111,4 +111,9 @@ jobs:
               `- Visitor topic verification: **${success?'passed':'not passed'}**`,
               `- Source: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
             ].join('\n');
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
+            await core.summary.addRaw(body).write();
+            try {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
+            } catch (error) {
+              core.warning(`Issue #46 reporting skipped: ${error.message}`);
+            }
