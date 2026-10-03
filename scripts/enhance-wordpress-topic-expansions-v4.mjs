@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
+import {buildWordPressPageQuery,requireSingleWordPressPage} from './wordpress-learning-page-query.mjs';
 
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const user=process.env.WP_API_USERNAME||'';
@@ -71,12 +72,13 @@ function insertBeforeVisuals(content,newBlock){
   }
   return `${css}${content.slice(0,at)}${newBlock}\n${content.slice(at)}`;
 }
-async function getPage(slug){const rows=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=10`);if(!Array.isArray(rows)||rows.length!==1)throw new Error(`Expected one page for ${slug}`);return rows[0]}
+async function getPage(slug,parentId=null){const rows=await request(buildWordPressPageQuery(slug,{parentId,perPage:10}));return requireSingleWordPressPage(rows,{slug,parentId})}
 const stamp=new Date().toISOString().replace(/[-:.]/g,'');const backupDir=join(backupRoot,`topic-expansions-v4-${stamp}`);await mkdir(backupDir,{recursive:true});
+const learnPage=await getPage('learn');
 const results=[];
 for(const [id,item] of Object.entries(expansions.topics)){
   const topic=topicIndex.get(id);const slug=String(topic.route||'').split('/').filter(Boolean).at(-1);if(!slug)throw new Error(`${id}: invalid route`);
-  const page=await getPage(slug);let content=strip(rendered(page.content));
+  const page=await getPage(slug,learnPage.id);let content=strip(rendered(page.content));
   if(!content.includes(`data-dtf-topic="${id}"`))throw new Error(`${id}: current page is not the expected V3 topic owner`);
   const next=insertBeforeVisuals(content,block(id,item));
   await writeFile(join(backupDir,`${id}-before.json`),`${JSON.stringify(page,null,2)}\n`);
