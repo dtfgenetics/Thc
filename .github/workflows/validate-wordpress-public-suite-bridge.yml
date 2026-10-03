@@ -21,11 +21,14 @@ permissions:
   actions: write
 
 concurrency:
-  group: validate-wordpress-public-suite-bridge
+  group: validate-wordpress-public-suite-bridge-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   validate:
+    # The fixture builder dispatches Actions with a write token. Admit only
+    # repository-owner PRs; other PRs retain the read-only contract CI checks.
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login == github.repository_owner
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -33,6 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
 
       - uses: actions/setup-node@v4
