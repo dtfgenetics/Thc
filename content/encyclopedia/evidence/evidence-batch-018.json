@@ -1,0 +1,239 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-018",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level disease-system, fungal/oomycete, viroid/virus, diagnostic sampling, transmission/reservoir, postharvest-microbe, resistance, and incident-review evidence for the remaining unmapped Part 16 lessons.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Symptoms, signs, environmental favorability, organism detection, pathogenicity, and causal diagnosis are separate evidence levels.",
+    "A positive molecular or culture result establishes detection under the test conditions; it does not by itself prove that the detected organism caused every observed symptom.",
+    "One negative specimen does not establish whole-crop freedom from infection because tissue choice, timing, pathogen distribution, assay performance, and sampling design affect detection.",
+    "Potentially toxigenic fungal detection does not prove that a mycotoxin is present or exceeds a safety limit.",
+    "All mappings remain pending independent science review and do not authorize regulated product use."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0166",
+      "lessonId": "THC-ENC-301",
+      "sourceIds": [
+        "ENC-AUTH-120",
+        "ENC-AUTH-025",
+        "ENC-AUTH-027"
+      ],
+      "claimType": "disease-triangle-cycle",
+      "supportedClaim": "Plant disease develops through interaction among a susceptible host, a capable pathogen, and a conducive environment over time; changing one component can alter disease probability without proving pathogen identity.",
+      "sourceLocator": "APS disease-triangle framework plus Cornell hemp weather/differential guidance.",
+      "applicability": "Supports the lesson's causal model, disease-cycle reasoning, and separation of risk factors from diagnosis.",
+      "limitations": "The disease triangle is a conceptual framework; it does not identify the causal organism, quantify infection probability, or replace crop-specific epidemiology.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0167",
+      "lessonId": "THC-ENC-302",
+      "sourceIds": [
+        "ENC-AUTH-114",
+        "ENC-AUTH-119"
+      ],
+      "claimType": "cannabis-powdery-mildew",
+      "supportedClaim": "Powdery mildew caused by Golovinomyces species is a documented Cannabis disease with surface mycelium and conidia, and cannabis genotypes can differ materially in measured susceptibility.",
+      "sourceLocator": "Punja et al. cannabis pathogen review and cannabis powdery-mildew resistance mapping study.",
+      "applicability": "Supports organism, sign, symptom, and host-susceptibility teaching while preserving species and genotype uncertainty.",
+      "limitations": "Visible white growth should be confirmed when identity matters; resistance measured in specific populations is not a universal cultivar rating or immunity guarantee.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0168",
+      "lessonId": "THC-ENC-305",
+      "sourceIds": [
+        "ENC-AUTH-053",
+        "ENC-AUTH-052",
+        "ENC-AUTH-114"
+      ],
+      "claimType": "pythium-root-rot",
+      "supportedClaim": "Pythium and related oomycete root diseases are documented in hemp/cannabis and greenhouse systems, with wet root zones, water movement, and hydroponic or irrigation pathways relevant to disease risk and spread.",
+      "sourceLocator": "NC State hemp root-disease guidance, Penn State Pythium guidance, and cannabis pathogen review.",
+      "applicability": "Supports root-disease differential reasoning, water-pathway records, and the distinction between environmental risk and confirmed infection.",
+      "limitations": "Root browning, stunting, and wilt overlap with oxygen stress, salinity, Fusarium, and other disorders; diagnosis requires appropriate organism-level evidence.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0169",
+      "lessonId": "THC-ENC-306",
+      "sourceIds": [
+        "ENC-AUTH-117",
+        "ENC-AUTH-022"
+      ],
+      "claimType": "rhizoctonia-damping-off",
+      "supportedClaim": "Rhizoctonia solani has been identified from hemp root and crown disease with wilt and necrotic basal lesions, supporting Rhizoctonia as a real hemp damping-off/root-rot differential rather than a diagnosis based on collapse alone.",
+      "sourceLocator": "Industrial-hemp disease survey plus Cornell hemp disease context.",
+      "applicability": "Supports disease signs, tissue location, and confirmatory-diagnosis reasoning for seedling and crown decline.",
+      "limitations": "Damping-off and crown lesions are syndromes with multiple possible causes; survey occurrence does not establish regional prevalence or prove Rhizoctonia in an untested crop.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0170",
+      "lessonId": "THC-ENC-307",
+      "sourceIds": [
+        "ENC-AUTH-118",
+        "ENC-AUTH-022"
+      ],
+      "claimType": "sclerotinia-hemp",
+      "supportedClaim": "Sclerotinia species can cause confirmed crown or stem disease on hemp, with white mycelial growth and sclerotia providing useful signs when interpreted with tissue symptoms and laboratory identification.",
+      "sourceLocator": "Peer-reviewed hemp Sclerotinia report plus Cornell hemp disease overview.",
+      "applicability": "Supports Sclerotinia as a verified hemp disease differential and teaches separation of signs from final causal confirmation.",
+      "limitations": "Host reports establish capability, not universal prevalence; similar wilting or stem rot can have other causes and requires appropriate diagnosis.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0171",
+      "lessonId": "THC-ENC-308",
+      "sourceIds": [
+        "ENC-AUTH-041",
+        "ENC-AUTH-022",
+        "ENC-AUTH-117"
+      ],
+      "claimType": "foliar-pathogen-differentiation",
+      "supportedClaim": "Hemp leaf spots can arise from distinct fungal or bacterial pathosystems, so lesion shape and color alone are insufficient; signs, distribution, microscopy/culture, molecular evidence, and pathogenicity evidence can materially change the differential.",
+      "sourceLocator": "Confirmed Serratia hemp leaf-spot report, Cornell hemp disease overview, and industrial-hemp disease survey.",
+      "applicability": "Supports structured leaf-spot differentials and organism-level confirmation rather than visual overdiagnosis.",
+      "limitations": "A diagnostic feature useful for one pathosystem may not transfer to another; lesion appearance alone cannot establish bacterial versus fungal causation.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0172",
+      "lessonId": "THC-ENC-311",
+      "sourceIds": [
+        "ENC-AUTH-043",
+        "ENC-AUTH-110"
+      ],
+      "claimType": "bctv-hemp",
+      "supportedClaim": "Beet curly top virus infects hemp and interacts with beet leafhopper vector biology, but disease risk and symptom expression depend on virus strain, vector infection status, plant genotype, and production context.",
+      "sourceLocator": "2026 hemp BCTV diversity/transmission study and 2024 beet-leafhopper/hemp interaction study.",
+      "applicability": "Supports vector-pathogen-host separation, BCTV differential reasoning, and limits on generalizing one regional outbreak.",
+      "limitations": "Leafhopper presence does not prove virus infection; symptom expression is not uniquely diagnostic, and transmission observations remain study- and system-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0173",
+      "lessonId": "THC-ENC-313",
+      "sourceIds": [
+        "ENC-AUTH-026",
+        "ENC-AUTH-042",
+        "ENC-AUTH-116"
+      ],
+      "claimType": "latent-asymptomatic-infection",
+      "supportedClaim": "Cannabis/hemp plants can carry detectable HLVd while appearing asymptomatic, and molecular-diagnostic reviews document that pathogen detection and symptom causation must be treated as separate questions.",
+      "sourceLocator": "Oregon State HLVd guidance, cannabis pathogen-diagnostics review, and 2025 HLVd transmission study.",
+      "applicability": "Supports the lesson's distinction between visual health, infection status, and causal interpretation.",
+      "limitations": "Asymptomatic infection evidence is strongest for specific pathogens such as HLVd; it must not be generalized to every disease or assay without organism-specific evidence.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0174",
+      "lessonId": "THC-ENC-314",
+      "sourceIds": [
+        "ENC-AUTH-103",
+        "ENC-AUTH-024",
+        "ENC-AUTH-042"
+      ],
+      "claimType": "diagnostic-sampling",
+      "supportedClaim": "Representative plant-diagnostic sampling should preserve symptom stage, affected and comparison tissues where appropriate, roots when relevant, location, photographs, crop context, and handling information because sample selection directly affects diagnostic usefulness.",
+      "sourceLocator": "Texas A&M plant sampling guidance, Cornell hemp scouting guidance, and cannabis molecular-diagnostics review.",
+      "applicability": "Supports sample-selection, metadata, and chain-of-reasoning requirements before laboratory testing.",
+      "limitations": "Good sampling improves evidence quality but cannot guarantee detection; laboratory method, tissue distribution, transport, and pathogen biology remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0175",
+      "lessonId": "THC-ENC-315",
+      "sourceIds": [
+        "ENC-AUTH-103",
+        "ENC-AUTH-042",
+        "ENC-AUTH-116"
+      ],
+      "claimType": "false-negative-sampling-timing",
+      "supportedClaim": "Negative diagnostic results must be interpreted in light of sampled tissue, timing, pathogen distribution, assay sensitivity, and infection stage; HLVd studies demonstrate that detectability can change across tissues and time after infection.",
+      "sourceLocator": "Plant sampling guidance, cannabis diagnostics review, and time-resolved HLVd transmission/detection study.",
+      "applicability": "Supports retesting and sampling-design reasoning without treating one negative specimen as whole-crop clearance.",
+      "limitations": "The probability of a false negative is assay- and pathogen-specific; this mapping does not define a universal retest interval or composite-sample size.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0176",
+      "lessonId": "THC-ENC-316",
+      "sourceIds": [
+        "ENC-AUTH-026",
+        "ENC-AUTH-116",
+        "ENC-AUTH-114"
+      ],
+      "claimType": "mechanical-clonal-transmission",
+      "supportedClaim": "HLVd can move through infected vegetative stock and infectious plant material, while cannabis pathogen literature also identifies vegetative propagation and wound-mediated spread as important disease pathways for multiple pathogens.",
+      "sourceLocator": "OSU HLVd guidance, 2025 HLVd transmission study, and cannabis pathogen review.",
+      "applicability": "Supports clean-stock, tool-contact, wound, and clone-source reasoning in disease prevention and trace-back records.",
+      "limitations": "Transmission efficiency differs by organism, tissue, tool condition, sanitation method, and production system; presence of a pathway does not quantify risk for every contact event.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0177",
+      "lessonId": "THC-ENC-317",
+      "sourceIds": [
+        "ENC-AUTH-052",
+        "ENC-AUTH-053",
+        "ENC-AUTH-116",
+        "ENC-AUTH-114"
+      ],
+      "claimType": "water-media-facility-reservoirs",
+      "supportedClaim": "Water, recirculating nutrient solution, growing media, roots, plant debris, and facility-associated propagules can act as reservoirs or movement pathways for different cannabis/hemp pathogens, so reservoir evidence should be organism-specific.",
+      "sourceLocator": "Greenhouse Pythium guidance, hemp root-disease guidance, HLVd transmission study, and cannabis pathogen/mold review.",
+      "applicability": "Supports reservoir mapping, sanitation records, and targeted sampling of water/media/facility pathways.",
+      "limitations": "Detection in a reservoir does not prove it caused a plant symptom or quantify transmission probability; reservoir importance differs sharply among fungi, oomycetes, viroids, and other agents.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0178",
+      "lessonId": "THC-ENC-318",
+      "sourceIds": [
+        "ENC-AUTH-115",
+        "ENC-AUTH-114"
+      ],
+      "claimType": "postharvest-fungi-mycotoxin-context",
+      "supportedClaim": "Cannabis/hemp flowers can host diverse fungi before and after harvest, including potentially toxigenic genera, but fungal presence, viable growth, and demonstrated mycotoxin contamination are separate evidence states.",
+      "sourceLocator": "2023 cannabis/hemp fungal-and-mycotoxin review and cannabis pathogen/mold review.",
+      "applicability": "Supports postharvest microbial risk, water-activity/storage context, and interpretation of mold versus toxin evidence.",
+      "limitations": "Detection of Aspergillus, Penicillium, Fusarium, or another potentially toxigenic fungus does not prove that a mycotoxin is present or exceeds a jurisdictional limit.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0179",
+      "lessonId": "THC-ENC-319",
+      "sourceIds": [
+        "ENC-AUTH-119",
+        "ENC-AUTH-042"
+      ],
+      "claimType": "disease-resistance-susceptibility",
+      "supportedClaim": "Cannabis genotypes can differ in disease susceptibility, including experimentally mapped variation in powdery-mildew response, but resistance is trait-, pathogen-, population-, and environment-specific rather than a universal cultivar property.",
+      "sourceLocator": "Cannabis powdery-mildew resistance mapping plus cannabis pathogen-diagnostics review.",
+      "applicability": "Supports genetic susceptibility/resistance concepts and the need to validate resistance claims against defined pathogens and environments.",
+      "limitations": "A resistance locus or resistant parent in one study does not establish immunity, durability, or resistance to unrelated diseases or pathogen populations.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0180",
+      "lessonId": "THC-ENC-320",
+      "sourceIds": [
+        "ENC-AUTH-024",
+        "ENC-AUTH-042",
+        "ENC-AUTH-103"
+      ],
+      "claimType": "disease-incident-record-review",
+      "supportedClaim": "Disease incident review is strongest when observations, locations, crop stage, symptoms/signs, sampling, laboratory results, actions, and outcomes remain linked over time so eradication or closure decisions can be audited rather than inferred from appearance alone.",
+      "sourceLocator": "Cornell scouting records, cannabis diagnostics review, and diagnostic sampling guidance.",
+      "applicability": "Supports incident records, trace-back, corrective-action review, and evidence-based closure criteria.",
+      "limitations": "Records improve traceability but do not create proof of eradication; closure depends on the organism, sampling design, assay performance, crop disposition, and defined verification criteria.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
