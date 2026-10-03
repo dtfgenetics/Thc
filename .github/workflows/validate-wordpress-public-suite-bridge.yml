@@ -2,6 +2,11 @@ name: Validate WordPress Public Suite Bridge
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/assemble-wordpress-suite-v2.py
+      - scripts/wordpress-suite-v2/**
+      - .github/workflows/validate-wordpress-public-suite-bridge.yml
   push:
     branches: [main]
     paths:
@@ -28,7 +33,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
           persist-credentials: false
 
       - uses: actions/setup-node@v4
@@ -138,7 +142,7 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import os, pathlib
+          import ast, os, pathlib, re
           path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'deploy-public-suite-via-wordpress-v2.mjs'
           text = path.read_text()
           checks = {
@@ -161,9 +165,9 @@ jobs:
               'finalize endpoint': "register_rest_route('dtf-suite/v2-${deploymentId}', '/finalize'" in text,
               'ambiguous commit polling': 'Polling persisted server state before any recovery action.' in text,
               'app-only WordPress ownership boundary': 'Home and Learn are WordPress-owned and are verified independently after this app-only transaction.' in text,
-              'current Games verification': 'Pick what is playable. See what is coming next.' in text,
-              'current Tools verification': 'Grow with records. Diagnose with evidence.' in text,
-              'current Projects verification': 'What is live, what is growing, and where it belongs.' in text,
+              # Validate the executable route contract against the packaged fixture.
+              # This fails on missing routes, duplicate routes, and copy drift without
+              # maintaining a second hardcoded list of customer-facing slogans.
               'unified shell allowlist': 'games/dtf-shell.css' in text,
               'Protect the Plants deployment scope': 'games/protect-the-plants' in text,
               'Bud or Bluff deployment scope': 'games/bud-or-bluff' in text,
@@ -177,6 +181,16 @@ jobs:
               'stale touched lock refuses takeover': 'dtf_stale_touched_lock' in text,
               'client recovery inspects persisted state': 'const state = await getState();' in text and 'recoverFailure' in text,
           }
+          match = re.search(r"const liveChecks = (\\[[\\s\\S]*?\\]);", text)
+          assert match, 'generated liveChecks contract not found'
+          routes = ast.literal_eval(match.group(1))
+          for route in ('/games/', '/tools/', '/projects/'):
+              markers = [marker for candidate, marker in routes if candidate == route]
+              fixture = pathlib.Path(os.environ['SUITE_ROOT']) / route.strip('/') / 'index.html'
+              checks[f'current {route} verification matches packaged page'] = (
+                  len(markers) == 1 and bool(markers[0]) and fixture.is_file()
+                  and markers[0].casefold() in fixture.read_text().casefold()
+              )
           missing = [name for name, ok in checks.items() if not ok]
           for name, ok in checks.items(): print(f'{name}: {"PASS" if ok else "FAIL"}')
           if missing: raise SystemExit('missing hardened controls: ' + ', '.join(missing))
