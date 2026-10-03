@@ -91,6 +91,18 @@ async function getAll(endpoint){
   return out;
 }
 
+const pagePreflightById=new Map();
+for(const item of map.items){
+  const pages=await wp(`/pages?slug=${encodeURIComponent(stablePageSlug(item.id))}&context=edit&per_page=100`);
+  const pageMatches=(pages||[]).filter(p=>String(p.content?.raw||'').includes(`data-thc-encyclopedia-id=\\"${item.id}\\"`)||String(p.content?.raw||'').includes(`data-thc-encyclopedia-id="${item.id}"`));
+  if(pageMatches.length!==1) throw new Error(`${item.id}: expected exactly one canonical encyclopedia page, found ${pageMatches.length}.`);
+  const page=pageMatches[0];
+  const raw=String(page.content?.raw||'');
+  if(!raw.includes('<h2>Terms to know</h2>')) throw new Error(`${item.id}: canonical insertion marker is missing.`);
+  pagePreflightById.set(item.id,{page,raw});
+}
+if(pagePreflightById.size!==map.items.length) throw new Error('Page preflight did not resolve every visual-map lesson.');
+
 const media=await getAll('/media?context=edit&orderby=id&order=asc');
 const preflight=[];
 for(const item of map.items){
@@ -109,14 +121,9 @@ for(const item of map.items){
     mediaCreated=true;
   }
   if(!String(mediaItem.source_url||'').includes('/wp-content/uploads/')) throw new Error(`${item.id}: media source URL is not a WordPress upload URL.`);
-
-  const pages=await wp(`/pages?slug=${encodeURIComponent(stablePageSlug(item.id))}&context=edit&per_page=100`);
-  const pageMatches=(pages||[]).filter(p=>String(p.content?.raw||'').includes(`data-thc-encyclopedia-id=\"${item.id}\"`)||String(p.content?.raw||'').includes(`data-thc-encyclopedia-id="${item.id}"`));
-  if(pageMatches.length!==1) throw new Error(`${item.id}: expected exactly one canonical encyclopedia page, found ${pageMatches.length}.`);
-  const page=pageMatches[0];
-  const raw=String(page.content?.raw||'');
-  if(!raw.includes('<h2>Terms to know</h2>')) throw new Error(`${item.id}: canonical insertion marker is missing.`);
-
+  const pagePreflight=pagePreflightById.get(item.id);
+  if(!pagePreflight) throw new Error(`${item.id}: page preflight record is missing.`);
+  const {page,raw}=pagePreflight;
   preflight.push({item,media:mediaItem,page,raw,mediaSlug:mediaItem.slug,assetHash:identity.hash,mediaCreated});
 }
 
