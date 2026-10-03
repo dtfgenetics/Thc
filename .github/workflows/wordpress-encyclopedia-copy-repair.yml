@@ -2,6 +2,16 @@ name: Repair THC Encyclopedia Live Copy Drift
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'content/encyclopedia/**'
+      - 'scripts/repair-wordpress-encyclopedia-copy-defects.mjs'
+      - 'scripts/publish-wordpress-encyclopedia-canonical-batch.mjs'
+      - 'scripts/audit-live-encyclopedia-copy.mjs'
+      - '.github/workflows/wordpress-encyclopedia-copy-repair.yml'
+      - '.github/workflows/wordpress-encyclopedia-production.yml'
+      - '.github/workflows/thc-encyclopedia-production.yml'
   workflow_run:
     workflows:
       - Publish THC Encyclopedia Production

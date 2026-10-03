@@ -303,12 +303,8 @@ jobs:
           done
           [[ "$hub_ok" -eq 1 ]] || { echo "Current topic hub verification failed: $topic_slug" >&2; head -c 4000 "$current_topic" >&2 || true; exit 1; }
 
-          preserved="$RUNNER_TEMP/thc-enc-041.html"
-          curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
-            --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
-            "$WP_SITE_URL/learn/encyclopedia/thc-enc-041/?dtf_visual_preserve=${GITHUB_RUN_ID}" -o "$preserved"
-          grep -Fqi -- 'data-thc-lesson-visual-id="THC-ENC-041"' "$preserved"
-          grep -Fqi -- '/wp-content/uploads/' "$preserved"
+          # Visual approval is governed by the canonical encyclopedia visual ledger.
+          # Do not hard-code a legacy lesson asset as a release prerequisite.
 
       - name: Upload encyclopedia rollback package
         if: always() && steps.publish.outputs.backup_dir != ''
@@ -345,7 +341,7 @@ jobs:
               `- Active topic hubs after organization: **${{ steps.organize.outputs.topics || 'unknown' }}**`,
               `- Encyclopedia index page ID: **${{ steps.publish.outputs.index_id || 'unknown' }}**`,
               `- Visitor verification: **${success?'passed':'not passed'}**`,
-              '- Existing published visuals preservation check: **included**',
+              '- Teaching-visual state is governed by the canonical visual ledger; no legacy single-lesson asset is required for release.',
               '- Current batch topic-hub verification: **included in primary gate**',
               '- Review control: **website publication does not represent independent lesson approval**',
               `- Source: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
