@@ -106,6 +106,28 @@ for (const source of arr(sourceRegistry.sources)) {
   if (!/^https:\/\//.test(String(source.url || ''))) fail(`${source.id}: authoritative source URL must be https`);
 }
 
+
+for (let volumeNumber = 1; volumeNumber <= 21; volumeNumber += 1) {
+  const volume = String(volumeNumber).padStart(2, '0');
+  const registerPath = path.join(encRoot, `volume-${volume}`, 'source-register.json');
+  if (!fs.existsSync(registerPath)) continue;
+  const register = readJson(registerPath);
+  for (const source of arr(register.sources)) {
+    const location = String(source.location || '').trim();
+    if (!/^https:\/\//.test(location)) continue;
+    if (!/^V\d{2}-SRC-\d{3}$/.test(String(source.id || ''))) {
+      fail(`${rel(registerPath)}: invalid external volume source id ${source.id || '(missing)'}`);
+      continue;
+    }
+    if (sourceIds.has(source.id)) {
+      fail(`Duplicate source id ${source.id}`);
+      continue;
+    }
+    if (!source.title) fail(`${source.id}: title missing`);
+    sourceIds.add(source.id);
+  }
+}
+
 const evidenceIds = new Set();
 const evidenceByLesson = new Map();
 for (const batch of batches) {
