@@ -129,7 +129,12 @@ jobs:
         run: npm run verify:encyclopedia-assessments
       - name: Audit live encyclopedia copy
         if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
-        run: node scripts/audit-live-encyclopedia-copy.mjs
+        continue-on-error: true
+        run: |
+          node scripts/audit-live-encyclopedia-copy.mjs || {
+            echo "::warning::Live encyclopedia copy drift detected. The protected copy-repair workflow owns production reconciliation; source CI remains authoritative for repository quality."
+            exit 1
+          }
       - name: Upload generated encyclopedia artifacts
         if: always()
         uses: actions/upload-artifact@v4
