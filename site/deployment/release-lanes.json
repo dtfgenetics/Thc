@@ -72,19 +72,24 @@
     "education": {
       "description": "Source-controlled learning-center expansion and approved education publication roots.",
       "prefixes": [
-        "content/",
-        "configuration/",
+        ".github/workflows/thc-encyclopedia-production.yml",
+        ".github/workflows/wordpress-encyclopedia-full-catalog.yml",
         "assets/education/",
+        "configuration/",
+        "content/",
+        "scripts/build-encyclopedia-",
+        "scripts/build-public-learning-center-expansion-v1.mjs",
+        "scripts/install-wordpress-learning-semantic-heading.mjs",
+        "scripts/publish-wordpress-encyclopedia-",
+        "scripts/publish-wordpress-learning-center-expansion-v1.mjs",
+        "scripts/run-learning-v3-connected-production.sh",
+        "scripts/scrub-retired-public-visuals.mjs",
+        "scripts/update-wordpress-learn-expansion-v1.mjs",
+        "scripts/verify-wordpress-encyclopedia-",
         "site/public-route-patch/learn/",
         "site/wordpress/education/",
-        "site/wordpress/visual-quality/",
         "site/wordpress/snippets/dtf-learning-semantic-heading.php",
-        "scripts/build-public-learning-center-expansion-v1.mjs",
-        "scripts/publish-wordpress-learning-center-expansion-v1.mjs",
-        "scripts/update-wordpress-learn-expansion-v1.mjs",
-        "scripts/install-wordpress-learning-semantic-heading.mjs",
-        "scripts/scrub-retired-public-visuals.mjs",
-        "scripts/run-learning-v3-connected-production.sh"
+        "site/wordpress/visual-quality/"
       ]
     },
     "harvestOutdoor": {
