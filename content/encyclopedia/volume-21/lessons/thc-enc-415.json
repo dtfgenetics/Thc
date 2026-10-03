@@ -27,15 +27,18 @@
     "Create a structured evidence-extraction record instead of saving only a citation. Separate what the study observed, what the authors inferred, what the project may publish, and what remains unresolved."
   ],
   "measureAndRecord": [
-    "Citation/DOI/version/status; claim; exact evidence location; material and identity; design and experimental unit; treatment/control; sample size; method; endpoint/units; effect/uncertainty; limitations; conflicts; data availability; applicability; project decision; reviewer/date."
+    "Record full citation, DOI or other persistent identifier, version or publication status, correction or retraction state, and the exact claim being evaluated before extracting evidence.",
+    "For each claim, record the study population or material, experimental unit, treatments and controls, sample size, methods, endpoints, units, effect estimate, uncertainty, limitations, conflicts of interest, and exact page, figure, table, or section supporting the interpretation.",
+    "Document applicability to the cultivation question, competing evidence, data availability, reviewer, review date, and the project decision. Separate what the paper directly found from what you infer or recommend."
   ],
   "misconceptions": [
-    "Peer reviewed means the paper is correct and universally applicable.",
-    "A significant p-value proves a large useful effect.",
-    "A review article is always stronger evidence than the primary studies it summarizes."
+    "Peer reviewed means the paper is correct and universally applicable. Peer review filters work before publication but does not guarantee validity, reproducibility, or transfer to every cultivar or production system.",
+    "A significant p-value proves a large useful effect. Statistical significance depends on effect size, variability, sample size, and model assumptions and does not establish practical importance.",
+    "A review article is always stronger evidence than the primary studies it summarizes. Reviews vary in search method, inclusion criteria, bias assessment, and currency; important decisions may still require checking the underlying studies."
   ],
   "evidenceLimits": [
-    "Paper appraisal reduces misuse but cannot reveal all errors, unpublished data, undisclosed deviations, or future corrections."
+    "Structured appraisal reduces citation misuse but cannot reveal every undocumented deviation, data error, unpublished negative result, or future correction.",
+    "Applicability is always conditional on the studied genetics, environment, methods, outcomes, and scale; evidence should be transferred only as far as those similarities justify."
   ],
   "crossLinks": "THC-ENC-416–420; every lesson claim ledger and source register.",
   "sourceNotes": [

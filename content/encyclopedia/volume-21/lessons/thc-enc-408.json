@@ -25,15 +25,18 @@
     "Create separate records for field meter checks and laboratory water analysis, then link both to the source, date, treatment, irrigation event, and decision."
   ],
   "measureAndRecord": [
-    "Sample ID/source/location/time; sample type and preservation; temperature; instrument/method; standard IDs/expected/observed; pH/EC and compensation; alkalinity/hardness/ions/metals/microbes where relevant; units; detection limits; lab/method/scope; interpretation and action."
+    "Record sample ID, source, location, date and time, sample type, preservation, temperature, instrument or laboratory method, and the standards or buffers used for instrument checks.",
+    "Record pH, EC, temperature compensation, alkalinity, hardness, major ions, metals, or microbiological results only when actually measured, together with units, detection limits, laboratory, method version, and scope.",
+    "Interpret results against the intended use. Document whether the issue is acidity, alkalinity reserve, salinity, individual ions, contamination, or treatment need rather than using one meter value as a complete water-quality diagnosis."
   ],
   "misconceptions": [
-    "Equal EC means equal nutrient composition.",
-    "Low pH water always requires more base than high-alkalinity water.",
-    "A ppm display is a direct measurement of all dissolved solids."
+    "Equal EC means equal nutrient composition. Conductivity reflects the combined ionic content and can be similar for solutions with very different nutrient ratios.",
+    "Low pH water always requires more base than high-alkalinity water. Alkalinity measures acid-neutralizing capacity and often predicts amendment demand better than pH alone.",
+    "A ppm display is a direct measurement of all dissolved solids. Many handheld meters estimate TDS from EC using a conversion factor rather than measuring every dissolved constituent."
   ],
   "evidenceLimits": [
-    "Field meters provide narrow quantities; complete water fitness depends on intended use, chemistry, treatment, sampling, seasonal variation, and current requirements."
+    "Field pH and EC meters measure narrow properties. Overall water fitness depends on intended use, alkalinity, ion composition, contaminants, treatment, sampling, and seasonal variation.",
+    "Laboratory chemistry describes the submitted sample at a point in time; source-water variability and distribution-system changes can require repeated sampling."
   ],
   "crossLinks": "THC-GROW-042; THC-ENC-121–140; THC-ENC-366; THC-ENC-403–404; THC-ENC-407.",
   "sourceNotes": [

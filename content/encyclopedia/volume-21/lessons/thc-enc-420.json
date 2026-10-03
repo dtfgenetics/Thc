@@ -26,15 +26,18 @@
     "Use the 420 permanent lesson IDs as the spine of the system. Complete one end-to-end reference release, audit it, then scale the proven package rather than producing disconnected drafts."
   ],
   "measureAndRecord": [
-    "Permanent IDs and relationships; canonical files and repository paths; versions/revisions/checksums; claim/source/visual/assessment records; review owners and evidence; approval and effective date; build/deployment commit; live verification; downloads; accessibility; backup/rollback; correction and supersession history."
+    "Assign permanent IDs and canonical repository paths to lessons, claims, sources, visuals, assessments, downloads, and release artifacts. Preserve relationships, versions, checksums, and revision history so every public statement can be traced backward.",
+    "Record review owner, scientific evidence, editorial status, visual and accessibility review, approval state, effective date, build or deployment commit, public route, and live-verification result separately. A merged source change is not the same state as scientific approval or public deployment.",
+    "Maintain backup, rollback, correction, supersession, and deprecation records. Periodically verify that the live system still matches the approved canonical source and that search, navigation, downloads, and citations expose the intended version."
   ],
   "misconceptions": [
-    "A finished manuscript is a finished educational product.",
-    "A merged pull request proves scientific approval and public release.",
-    "More files and images automatically create a more complete knowledge system."
+    "A finished manuscript is a finished educational product. Publication also requires review, structured data, navigation, visuals where needed, accessibility, assessments, citations, deployment, and live verification.",
+    "A merged pull request proves scientific approval and public release. Source control records code or content integration; scientific review and deployment are separate controlled states.",
+    "More files and images automatically create a more complete knowledge system. Completeness depends on coverage, accuracy, relationships, discoverability, review state, and maintenance—not raw asset count."
   ],
   "evidenceLimits": [
-    "Governance can make evidence auditable and correctable, but quality still depends on qualified reviewers, accurate source interpretation, maintained systems, and explicit accountability."
+    "Governance can make evidence auditable, reproducible, and correctable, but quality still depends on qualified review, accurate source interpretation, reliable software, and explicit accountability.",
+    "No knowledge system is permanently complete. New evidence, corrected studies, changing terminology, software changes, and user-discovered gaps require controlled revision without erasing prior states."
   ],
   "crossLinks": "THC-ENC-001–419; THC Academy; THC-GROW SOP Library; Beginner Guides; Visual Asset Library; website and release-control systems.",
   "sourceNotes": [

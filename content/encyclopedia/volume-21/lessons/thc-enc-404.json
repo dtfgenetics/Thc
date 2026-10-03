@@ -26,15 +26,18 @@
     "Write the sampling plan before inspection or testing. Include a map, selection rule, number of units, sample mass or volume, handling, retained samples, and inference limits."
   ],
   "measureAndRecord": [
-    "Target population and decision; sampling frame; unit/increment/composite definition; strata; randomization or route; sample count and rationale; locations/times; sample mass/volume; tools/containers; preservation; chain of custody; missing/deviation rule; retained sample; inference statement."
+    "Define the target population, decision, sampling frame, sampling unit, increment or composite rules, strata, and any inaccessible portions before collecting material.",
+    "Record the randomization or route, number of samples and rationale, exact locations and times, sample mass or volume, tools, containers, preservation, chain of custody, and rules for missing or unusable samples.",
+    "At interpretation, state what population the sample is intended to represent, how compositing may hide spatial variation, whether retained samples exist, and which rare or localized conditions the design could reasonably miss."
   ],
   "misconceptions": [
-    "A larger composite always detects localized contamination.",
-    "Several measurements from one plant represent several independent plants.",
-    "The laboratory is responsible for whether the submitted sample represents the batch."
+    "A larger composite always detects localized contamination. Compositing can dilute a hotspot below detection even while improving estimation of an average condition.",
+    "Several measurements from one plant represent several independent plants. Repeated or subsampled observations remain nested within the same biological unit unless the design defines otherwise.",
+    "The laboratory is responsible for whether the submitted sample represents the batch. The laboratory can analyze the material received, but representativeness is primarily determined by the sampling design and execution."
   ],
   "evidenceLimits": [
-    "Representative sampling reduces but does not eliminate uncertainty; rare hotspots, changing populations, inaccessible units, and destructive testing can remain unresolved."
+    "Representative sampling reduces sampling error but cannot eliminate uncertainty from rare hotspots, inaccessible units, temporal change, destructive testing, or incomplete frames.",
+    "Analytical sensitivity cannot compensate for poor population coverage; a highly accurate result from a biased sample remains a biased estimate of the batch or crop."
   ],
   "crossLinks": "THC-ENC-359; THC-ENC-393–397; THC-ENC-409–412; THC-ENC-416.",
   "sourceNotes": [

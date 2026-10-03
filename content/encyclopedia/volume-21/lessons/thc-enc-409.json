@@ -25,15 +25,18 @@
     "Publish a controlled phenotype dictionary before collecting trial data. Train observers using examples and counterexamples, then retain raw measurements and images."
   ],
   "measureAndRecord": [
-    "Plant/genetic/treatment IDs; stage/date/time; trait name and definition; anatomy and reference points; position; instrument; units; observer; repeated measurement; image ID/scale/lighting; fresh/dry/trim basis; missing/damaged rule."
+    "Define each trait anatomically before measurement, including reference points, plant position, developmental stage, date and time, units, instrument, and observer.",
+    "Record plant, genotype, treatment, and environment IDs with repeated measurements, images that include scale and standardized viewpoint, and rules for damaged, missing, or unmeasurable organs.",
+    "For mass or yield traits, record fresh or dry basis, trimmed or untrimmed fraction, moisture method, rejected material, and the denominator used. Keep repeated observations on one plant distinct from independent plant replication."
   ],
   "misconceptions": [
-    "Tall, bushy, frosty, and dense are complete phenotype measurements.",
-    "A photograph is objective without a scale and standardized viewpoint.",
-    "Repeated measurements on one plant increase the biological sample size."
+    "Tall, bushy, frosty, and dense are complete phenotype measurements. These descriptions need operational definitions and quantitative or reproducible scoring methods before they can support comparison.",
+    "A photograph is objective without a scale and standardized viewpoint. Perspective, lighting, distance, stage, and camera settings can change apparent morphology.",
+    "Repeated measurements on one plant increase the biological sample size. They improve temporal or technical resolution for that plant but do not create new independent plants."
   ],
   "evidenceLimits": [
-    "Phenotypes depend on genetics, environment, management, stage, observer, and method; measurements describe traits but do not by themselves identify causes."
+    "Phenotypes reflect genetics, environment, management, developmental stage, observer, and measurement method; trait measurements alone do not identify the cause of a difference.",
+    "Image-derived and manual measurements require validation for repeatability and agreement before they can substitute for direct reference methods."
   ],
   "crossLinks": "THC-ENC-009–020; THC-ENC-394; THC-ENC-404–406; THC-ENC-416–418.",
   "sourceNotes": [

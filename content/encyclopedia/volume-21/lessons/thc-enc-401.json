@@ -27,15 +27,18 @@
     "Create one approved unit dictionary for the project. Label every field, graph axis, form, sensor channel, and calculation. Reject ambiguous abbreviations and never infer a missing basis from context."
   ],
   "measureAndRecord": [
-    "Quantity name; value; unit and symbol; prefix; sample or system basis; wet/dry state; numerator/denominator; conversion equation and source; original value; reported value; rounding rule; reviewer."
+    "Record the quantity name, original value, unit symbol, prefix, sample or system basis, wet or dry state, and numerator/denominator definition before any conversion. Preserve the unconverted source value so later reviewers can reconstruct the calculation.",
+    "For every conversion, record the equation, conversion factor and source, intermediate precision, rounding rule, and final reported value. When converting conductivity-derived TDS or other instrument-dependent values, record the instrument factor instead of treating the display as a universal unit.",
+    "At review, verify dimensional consistency, basis consistency, and whether percentage, ppm, mg/L, mg/kg, µmol/m²/s, or other expressions are being compared on equivalent terms. Flag values that cannot be normalized without additional context."
   ],
   "misconceptions": [
-    "ppm is one universal concentration unit in every context.",
-    "EC can be converted to ppm without naming the instrument factor.",
-    "A percentage is self-explanatory without numerator, denominator, or basis."
+    "ppm is one universal concentration unit in every context. Parts per million is a ratio and its practical meaning depends on whether the basis is mass/mass, mass/volume, or an instrument-specific estimate.",
+    "EC can be converted to ppm without naming the instrument factor. EC is a conductivity measurement, while displayed ppm is an estimated TDS value based on a selected conversion factor.",
+    "A percentage is self-explanatory without numerator, denominator, or basis. Percentages can refer to mass, volume, area, recovery, concentration, or relative change and are ambiguous without the stated basis."
   ],
   "evidenceLimits": [
-    "Correct units prevent one class of error but do not establish instrument accuracy, sample representativeness, or biological causation."
+    "Correct units prevent dimensional and conversion errors but do not establish sample representativeness, instrument accuracy, method suitability, or biological causation.",
+    "Conversions can preserve numerical consistency while still misrepresenting the underlying measurand if the original basis, moisture state, denominator, or instrument assumption is wrong."
   ],
   "crossLinks": "THC-ENC-402–408; THC-ENC-411–414; all controlled forms and calculators.",
   "sourceNotes": [

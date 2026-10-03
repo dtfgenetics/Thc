@@ -26,15 +26,18 @@
     "Use a controlled event ID linking recipe, equipment, delivered water, representative root-zone measurements, deviations, and plant response."
   ],
   "measureAndRecord": [
-    "Event ID/date/time; water-source and analysis; tank and batch; stock/product IDs and lots; amounts and units; target/measured pH/EC/temperature; zone/pressure/flow/runtime/volume; distribution checks; pre/post moisture; drainage/runoff; plant observations; deviation/correction/approver."
+    "Record event ID, date and time, water source and analysis, tank or batch, stock or product IDs and lots, preparation amounts, units, target and measured pH, EC, temperature, and any relevant source-water corrections.",
+    "For each zone, record pressure, flow, runtime, delivered volume or emitter output, distribution checks, pre- and post-irrigation substrate moisture where measured, drainage or runoff volume, and representative plant observations.",
+    "Document deviations such as clogged emitters, skipped zones, recipe changes, runoff anomalies, or failed measurements, along with correction, approver, and whether affected plants or batches require follow-up."
   ],
   "misconceptions": [
-    "A programmed runtime proves every plant received the intended volume.",
-    "Input EC is a complete nutrient-composition record.",
-    "Runoff from one container describes the whole zone."
+    "A programmed runtime proves every plant received the intended volume. Actual delivery depends on pressure, emitter performance, clogging, plumbing, and distribution uniformity.",
+    "Input EC is a complete nutrient-composition record. Equal conductivity can result from very different ion compositions and does not identify which nutrients are present.",
+    "Runoff from one container describes the whole zone. Drainage chemistry and volume can vary with plant size, substrate condition, emitter output, position, and sampling timing."
   ],
   "evidenceLimits": [
-    "Irrigation metrics and targets depend on root-zone system, geometry, stage, climate, cultivar, sampling, and measurement method."
+    "Irrigation targets and interpretations depend on root-zone system, container geometry, developmental stage, climate, cultivar, irrigation strategy, and measurement method.",
+    "Runoff, leachate, or substrate readings are samples of a dynamic root-zone process and should not be generalized beyond the sampled locations and timing without adequate replication."
   ],
   "crossLinks": "THC-GROW-042; THC-GROW-070; THC-ENC-369; THC-ENC-403–404; THC-ENC-408.",
   "sourceNotes": [

@@ -26,15 +26,18 @@
     "Use charts for stable, repeated processes such as meter checks, irrigation delivery, room conditions, drying mass, laboratory controls, and recurring quality metrics. Define who reviews signals and what action follows."
   ],
   "measureAndRecord": [
-    "Process and measurand; data source; sampling/subgroup rule; time base; chart type; center and limit method; reference period; specification/alert/action limits; missing/outlier rule; annotations; signal; investigation; action; effectiveness."
+    "Define the process, measurand, data source, sampling or subgroup rule, time base, chart type, reference period, center-line method, and control-limit calculation before interpreting signals.",
+    "Keep specification, alert, and action limits separate from statistical control limits. Record missing-data rules, outlier handling, maintenance or process annotations, and any known changes in measurement systems.",
+    "For each signal, document the rule triggered, investigation, suspected and confirmed causes, action taken, and whether subsequent data demonstrate recovery or a new stable process."
   ],
   "misconceptions": [
-    "A point inside control limits is automatically acceptable.",
-    "Specification limits should be used as control limits.",
-    "Every visible trend proves a causal process change."
+    "A point inside control limits is automatically acceptable. Statistical control describes process behavior, while acceptability depends on specifications or biological requirements.",
+    "Specification limits should be used as control limits. Specifications define allowed outcomes; control limits are estimated from process variation and serve a different purpose.",
+    "Every visible trend proves a causal process change. Apparent trends can arise from chance, autocorrelation, seasonality, sampling changes, or measurement drift."
   ],
   "evidenceLimits": [
-    "Control-chart validity depends on a suitable process model, independent or appropriately modeled data, stable measurement, and controlled subgrouping."
+    "Control-chart validity depends on an appropriate process model, stable measurement, meaningful subgrouping, and treatment of autocorrelation or nonstationarity.",
+    "A statistically stable process can still be biologically poor or outside specification, and an improving process can temporarily be statistically unstable."
   ],
   "crossLinks": "THC-ENC-402–406; THC-ENC-413; THC-ENC-416–417.",
   "sourceNotes": [
