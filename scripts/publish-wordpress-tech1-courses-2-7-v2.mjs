@@ -1,6 +1,7 @@
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
+import { assetIdFromBlock, lessonPrimaryVisuals, lessonAssetBlocks } from './lib/academy-public-assets.mjs';
 
 const validateOnly = process.argv.includes('--validate-only');
 const apply = String(process.env.APPLY_TECH1_PUBLIC_COURSES || '').toLowerCase() === 'true';
@@ -46,26 +47,6 @@ function sourceAssetUrl(value) {
   if (/^https:\/\//i.test(value)) return value;
   if (isControlledRasterAssetPath(value)) return `${rawBase}/apps/web/public${value}`;
   return value;
-}
-function assetIdFromBlock(block) {
-  return block?.assetId || block?.extensions?.assetId || null;
-}
-function lessonPrimaryVisuals(lesson) {
-  const blocks = lesson?.content?.blocks || [];
-  const blockAssetIds = new Set(blocks.map(assetIdFromBlock).filter(Boolean));
-  return (lesson?.content?.extensions?.primaryVisuals || []).filter(visual =>
-    visual?.type === 'image' &&
-    assetIdFromBlock(visual) &&
-    (visual.src || visual.url) &&
-    !blockAssetIds.has(assetIdFromBlock(visual))
-  );
-}
-function lessonAssetBlocks(lesson) {
-  const blocks = (lesson?.content?.blocks || []).filter(block =>
-    (block?.type === 'image' && assetIdFromBlock(block) && (block.src || block.url)) ||
-    (block?.type === 'resource' && assetIdFromBlock(block) && block.href)
-  );
-  return [...blocks, ...lessonPrimaryVisuals(lesson)];
 }
 
 async function loadCourse(entry) {
