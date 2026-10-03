@@ -38,25 +38,56 @@ let activatedByRun = false;
 let applied = false;
 let rollbackFailed = false;
 
-async function wpRequest(path, { method = 'GET', json, headers = {}, allow = [] } = {}) {
-  const response = await fetch(`${siteUrl}${path}`, {
-    method,
-    headers: {
-      Authorization: auth,
-      Accept: 'application/json',
-      ...(json !== undefined ? { 'Content-Type': 'application/json' } : {}),
-      ...headers,
-    },
-    body: json !== undefined ? JSON.stringify(json) : undefined,
-    signal: AbortSignal.timeout(45_000),
-  });
-  const text = await response.text();
-  let body = text;
-  try { body = text ? JSON.parse(text) : null; } catch {}
-  if (!response.ok && !allow.includes(response.status)) {
-    throw new Error(`WordPress ${method} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 900) : JSON.stringify(body).slice(0, 900)}`);
+function retryableWpStatus(status) {
+  return status === 408 || status === 425 || status === 429 || status === 502 || status === 503 || status === 504;
+}
+
+function wpNetworkDetail(error) {
+  if (!(error instanceof Error)) return String(error);
+  const cause = error.cause;
+  if (cause && typeof cause === 'object') {
+    const nested = Array.isArray(cause.errors)
+      ? cause.errors.map((entry) => entry && typeof entry === 'object'
+          ? [entry.code, entry.message].filter(Boolean).join(': ')
+          : String(entry)).filter(Boolean)
+      : [];
+    if (nested.length) return nested.join(' | ');
+    return [cause.code, cause.message].filter(Boolean).join(': ') || error.message;
   }
-  return { ok: response.ok, status: response.status, body };
+  return error.message || error.name;
+}
+
+async function wpRequest(path, { method = 'GET', json, headers = {}, allow = [], attempts = 4 } = {}) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetch(`${siteUrl}${path}`, {
+        method,
+        headers: {
+          Authorization: auth,
+          Accept: 'application/json',
+          ...(json !== undefined ? { 'Content-Type': 'application/json' } : {}),
+          ...headers,
+        },
+        body: json !== undefined ? JSON.stringify(json) : undefined,
+        signal: AbortSignal.timeout(45_000),
+      });
+      const text = await response.text();
+      let body = text;
+      try { body = text ? JSON.parse(text) : null; } catch {}
+      if (response.ok || allow.includes(response.status)) return { ok: response.ok, status: response.status, body };
+
+      lastError = new Error(`WordPress ${method} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 900) : JSON.stringify(body).slice(0, 900)}`);
+      if (!retryableWpStatus(response.status) || attempt === attempts) throw lastError;
+    } catch (error) {
+      lastError = error;
+      const detail = wpNetworkDetail(error);
+      const retryable = /ETIMEDOUT|ENETUNREACH|ECONNRESET|ECONNREFUSED|EAI_AGAIN|UND_ERR_|fetch failed|network|timed out/i.test(detail);
+      if (!retryable || attempt === attempts) throw error;
+    }
+    await sleep(1000 + attempt * 1200);
+  }
+  throw lastError || new Error(`WordPress ${method} ${path} failed after retries.`);
 }
 
 async function wpGetRetry(path, options = {}) {
