@@ -97,8 +97,8 @@
     "games:registry:guidance-check": "node scripts/test-game-registry-guidance.mjs",
     "games:consistency": "npm run games:registry:check && npm run games:locations:check && npm run games:external-check && npm run games:release-pins:check && npm run games:profiles:check && npm run games:resolve-check && npm run verify:dtf420-overlay-game-eligibility",
     "verify:repository-architecture": "node scripts/validate-repository-registry.mjs",
-    "verify:education-structure": "node scripts/validate-encyclopedia-structure.mjs",
-    "verify:education-420": "node scripts/validate-encyclopedia-structure.mjs --strict-420",
+    "verify:education-structure": "npm run verify:encyclopedia-catalog && node scripts/validate-encyclopedia-structure.mjs",
+    "verify:education-420": "npm run verify:encyclopedia-catalog && node scripts/validate-encyclopedia-structure.mjs --strict-420",
     "verify:learning-v3-decision-renderer": "node scripts/validate-learning-v3-decision-renderer.mjs",
     "verify:encyclopedia-content-control": "node scripts/validate-encyclopedia-content-control.mjs",
     "verify:encyclopedia-content-strict": "node scripts/validate-encyclopedia-content-control.mjs --strict-quality --strict-assessment",
@@ -181,6 +181,8 @@
     "verify:public-research-evidence": "npm run build:public-research-evidence && node scripts/validate-public-research-evidence.mjs",
     "build:encyclopedia-claim-evidence-candidates": "node scripts/build-encyclopedia-claim-evidence-candidates.mjs",
     "verify:encyclopedia-claim-evidence-candidates": "npm run build:encyclopedia-source-queue && npm run build:encyclopedia-claim-evidence-candidates && node scripts/validate-encyclopedia-claim-evidence-candidates.mjs",
-    "audit:encyclopedia-substantive-quality:strict": "node scripts/audit-encyclopedia-substantive-quality.mjs --strict"
+    "audit:encyclopedia-substantive-quality:strict": "node scripts/audit-encyclopedia-substantive-quality.mjs --strict",
+    "build:encyclopedia-catalog": "node scripts/build-encyclopedia-catalog.mjs",
+    "verify:encyclopedia-catalog": "node scripts/build-encyclopedia-catalog.mjs --check"
   }
 }

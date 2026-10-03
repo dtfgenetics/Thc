@@ -91,9 +91,20 @@ for (const n of sourceVolumes) {
   }
 
   const shouldCatalog = manifest.catalogRegistration !== 'withheld_until_review_gate';
-  if (shouldCatalog && n <= 17 && !catalogNumbers.has(n)) {
+  if (shouldCatalog && !catalogNumbers.has(n)) {
     errors.push(`Publication-oriented volume ${n} is missing from catalog.json`);
   }
+}
+
+let expectedCatalogCount = 0;
+for (const n of sourceVolumes) {
+  const manifestPath = path.join(ENC, `volume-${String(n).padStart(2,'0')}`, 'manifest.json');
+  if (!(await exists(manifestPath))) continue;
+  const manifest = await readJson(manifestPath);
+  if (manifest.catalogRegistration !== 'withheld_until_review_gate') expectedCatalogCount++;
+}
+if (catalogNumbers.size !== expectedCatalogCount) {
+  errors.push(`catalog.json has ${catalogNumbers.size} entries but ${expectedCatalogCount} source volumes are publishable`);
 }
 
 const missingSourceVolumes = [];
