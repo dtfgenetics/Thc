@@ -1,0 +1,251 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-015",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level terpene biosynthesis, volatile chemistry, flavonoid/pigment, postharvest, analytical, chemovar, and entourage evidence for the remaining unmapped Part 13 lessons.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Cannabis-specific chemistry and analytical evidence is preferred over generalized aromatherapy or effect claims.",
+    "Chemical presence, sensory contribution, receptor activity, and human clinical effect remain separate evidence levels.",
+    "Postharvest and analytical findings remain limited to tested chemovars, conditions, and methods.",
+    "Claim mapping does not approve a lesson, visual, assessment rationale, or publication state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0116",
+      "lessonId": "THC-ENC-241",
+      "sourceIds": [
+        "ENC-AUTH-083"
+      ],
+      "claimType": "specialized-metabolism",
+      "supportedClaim": "Cannabis terpene production is part of specialized metabolism that draws on core isoprenoid precursor pathways expressed in resin-producing tissues.",
+      "sourceLocator": "Booth et al. 2017 trichome transcriptome and terpene-synthase characterization.",
+      "applicability": "Supports the distinction between primary metabolism and specialized terpene production.",
+      "limitations": "The study does not quantify a universal carbon-allocation tradeoff between growth and terpene production.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0117",
+      "lessonId": "THC-ENC-242",
+      "sourceIds": [
+        "ENC-AUTH-083"
+      ],
+      "claimType": "isoprenoid-precursors",
+      "supportedClaim": "Cannabis trichome tissues express genes for isoprenoid precursor pathways and terpene synthases using GPP and FPP to generate mono- and sesquiterpene products.",
+      "sourceLocator": "Booth et al. 2017 pathway transcriptomics and functional CsTPS assays.",
+      "applicability": "Supports the MEP/GPP and mevalonate/FPP biosynthetic framework.",
+      "limitations": "Cross-compartment precursor exchange and pathway flux in intact plants remain context-dependent.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0118",
+      "lessonId": "THC-ENC-243",
+      "sourceIds": [
+        "ENC-AUTH-083",
+        "ENC-AUTH-084"
+      ],
+      "claimType": "monoterpene-biosynthesis",
+      "supportedClaim": "Cannabis monoterpene synthases can generate myrcene, ocimene, limonene, pinene, and related products from the monoterpene precursor pool.",
+      "sourceLocator": "Booth et al. 2017 functional enzyme assays; Allen et al. 2019 TPS gene-family context.",
+      "applicability": "Supports monoterpene biosynthesis and genetic diversity without treating one profile as universal.",
+      "limitations": "Gene presence and enzyme capability do not predict absolute abundance in every genotype or environment.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0119",
+      "lessonId": "THC-ENC-244",
+      "sourceIds": [
+        "ENC-AUTH-083",
+        "ENC-AUTH-084"
+      ],
+      "claimType": "sesquiterpene-biosynthesis",
+      "supportedClaim": "Cannabis sesquiterpene synthases can generate beta-caryophyllene, alpha-humulene, and other products from FPP, with multiproduct enzymes contributing to profile complexity.",
+      "sourceLocator": "Booth et al. 2017 functional assays; Allen et al. 2019 genomic TPS diversity.",
+      "applicability": "Supports the sesquiterpene biosynthesis framework.",
+      "limitations": "Enzyme product spectra do not establish universal flower ratios or sensory intensity.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0120",
+      "lessonId": "THC-ENC-245",
+      "sourceIds": [
+        "ENC-AUTH-083",
+        "ENC-AUTH-084"
+      ],
+      "claimType": "terpene-synthase-genetics",
+      "supportedClaim": "Cannabis contains a diverse terpene-synthase gene family, and functional assays show that individual enzymes can be single- or multiproduct while expression varies by tissue.",
+      "sourceLocator": "Booth et al. 2017 functional CsTPS work; Allen et al. 2019 genomic characterization.",
+      "applicability": "Supports separating gene annotation, expression, enzyme function, and metabolite phenotype.",
+      "limitations": "Bioinformatic annotation alone does not prove enzyme product or sensory phenotype.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0121",
+      "lessonId": "THC-ENC-246",
+      "sourceIds": [
+        "ENC-AUTH-083",
+        "ENC-AUTH-084"
+      ],
+      "claimType": "myrcene",
+      "supportedClaim": "Beta-myrcene is a direct product of characterized cannabis monoterpene synthases and varies substantially across cannabis samples and genotypes.",
+      "sourceLocator": "Booth et al. 2017 myrcene-producing CsTPS assays; Allen et al. 2019 commercial-profile variation.",
+      "applicability": "Supports myrcene occurrence and biosynthesis without attaching unverified human-effect claims.",
+      "limitations": "Abundance varies among samples, and chemical presence does not establish a specific subjective effect.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0122",
+      "lessonId": "THC-ENC-248",
+      "sourceIds": [
+        "ENC-AUTH-083",
+        "ENC-AUTH-080"
+      ],
+      "claimType": "pinene",
+      "supportedClaim": "Alpha-pinene and beta-pinene are distinct cannabis monoterpenes produced by characterized terpene synthases, and postharvest abundance can change during storage.",
+      "sourceLocator": "Booth et al. 2017 functional pinene-producing CsTPS assays; Milay et al. 2020 storage chemistry.",
+      "applicability": "Supports chemical identity and postharvest-change boundaries.",
+      "limitations": "Routine terpene panels may not resolve stereochemistry, and storage responses are condition-specific.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0123",
+      "lessonId": "THC-ENC-249",
+      "sourceIds": [
+        "ENC-AUTH-089",
+        "ENC-AUTH-083"
+      ],
+      "claimType": "linalool",
+      "supportedClaim": "Linalool is among terpenoids quantified in validated cannabis analytical workflows, while direct cannabis terpene-synthase research provides the broader biosynthetic framework for interpreting such compounds.",
+      "sourceLocator": "Shapira et al. 2019 validated 93-terpenoid cannabis method; Booth et al. 2017 TPS framework.",
+      "applicability": "Supports method-aware linalool reporting.",
+      "limitations": "Analytical detection does not establish sensory dominance or human effects.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0124",
+      "lessonId": "THC-ENC-251",
+      "sourceIds": [
+        "ENC-AUTH-083",
+        "ENC-AUTH-086"
+      ],
+      "claimType": "minor-terpenes-and-volatiles",
+      "supportedClaim": "Cannabis aroma chemistry includes humulene, ocimene, terpinolene, and many lower-abundance compounds, while some important aroma differences can arise from nonterpenoid volatiles.",
+      "sourceLocator": "Booth et al. 2017 terpene profiles and functional enzymes; Oswald et al. 2023 minor nonterpenoid volatile analysis.",
+      "applicability": "Supports broad volatile-profile interpretation beyond the largest terpene peaks.",
+      "limitations": "Low abundance does not automatically imply low sensory importance, and abundance alone does not prove aroma contribution.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0125",
+      "lessonId": "THC-ENC-252",
+      "sourceIds": [
+        "ENC-AUTH-085",
+        "ENC-AUTH-086"
+      ],
+      "claimType": "volatile-sulfur-compounds",
+      "supportedClaim": "Prenylated volatile sulfur compounds occur in cannabis and can contribute strongly to skunk-like aroma in studied samples.",
+      "sourceLocator": "Oswald et al. 2021 sulfur-selective comprehensive GC study; Oswald et al. 2023 expanded volatile analysis.",
+      "applicability": "Supports sulfur-compound contribution to cannabis aroma.",
+      "limitations": "Association with aroma does not establish product quality, safety, or health effects.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0126",
+      "lessonId": "THC-ENC-253",
+      "sourceIds": [
+        "ENC-AUTH-093",
+        "ENC-AUTH-094"
+      ],
+      "claimType": "flavonoids-pigments",
+      "supportedClaim": "Cannabis produces cannflavins and anthocyanin-related pigments, and pigment accumulation can be associated with flavonoid-pathway gene expression in studied varieties.",
+      "sourceLocator": "Choi et al. 2004 NMR identification; Gagalova et al. 2024 pigmentation and anthocyanin study.",
+      "applicability": "Supports flavonoid and pigment identity in cannabis.",
+      "limitations": "Pigment presence does not establish potency, stress tolerance, or human health effects.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0127",
+      "lessonId": "THC-ENC-255",
+      "sourceIds": [
+        "ENC-AUTH-083",
+        "ENC-AUTH-085"
+      ],
+      "claimType": "aroma-development",
+      "supportedClaim": "Cannabis volatile profiles change over development, and different volatile classes do not necessarily follow one shared maturation curve.",
+      "sourceLocator": "Booth et al. 2017 developmental flower profiling; Oswald et al. 2021 volatile sulfur compounds across flowering and postharvest stages.",
+      "applicability": "Supports stage-aware aroma records and rejects one universal aroma maturity marker.",
+      "limitations": "The cited studies do not define a universal harvest week or sensory optimum.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0128",
+      "lessonId": "THC-ENC-256",
+      "sourceIds": [
+        "ENC-AUTH-087"
+      ],
+      "claimType": "volatile-loss",
+      "supportedClaim": "Drying method and storage conditions can materially alter the cannabis volatilome, demonstrating that volatile preservation depends on more than temperature alone.",
+      "sourceLocator": "Spadafora et al. 2024 drying/storage comparison.",
+      "applicability": "Supports condition-dependent volatile loss and preservation.",
+      "limitations": "Results are cultivar- and method-specific and do not define one universal drying protocol.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0129",
+      "lessonId": "THC-ENC-257",
+      "sourceIds": [
+        "ENC-AUTH-087",
+        "ENC-AUTH-088"
+      ],
+      "claimType": "packaging-storage",
+      "supportedClaim": "Cannabis terpene and cannabinoid profiles can change during storage, and modified-atmosphere packaging does not provide a universal compound-retention advantage across tested chemovars.",
+      "sourceLocator": "Spadafora et al. 2024 storage study; MacLaughlin and MacDonald 2024 MAP comparison.",
+      "applicability": "Supports compound-specific packaging and storage interpretation.",
+      "limitations": "Package performance depends on chemovar, time, atmosphere, material, and storage conditions.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0130",
+      "lessonId": "THC-ENC-258",
+      "sourceIds": [
+        "ENC-AUTH-089"
+      ],
+      "claimType": "terpene-analytical-variation",
+      "supportedClaim": "Cannabis terpene measurements depend on sample preparation and analytical method, and validated headspace GC-MS workflows show that preparation can materially alter measured chemical fingerprints.",
+      "sourceLocator": "Shapira et al. 2019 validated SHS-GC-MS/MS study.",
+      "applicability": "Supports explicit reporting of sample preparation and method for terpene results.",
+      "limitations": "Analytical validation does not eliminate biological sampling variation within plants or batches.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0131",
+      "lessonId": "THC-ENC-259",
+      "sourceIds": [
+        "ENC-AUTH-090"
+      ],
+      "claimType": "chemovar-classification",
+      "supportedClaim": "Large-scale commercial cannabis data show reproducible chemical clusters but inconsistent alignment between measured chemistry and common Indica/Hybrid/Sativa labels.",
+      "sourceLocator": "Smith et al. 2022 analysis of commercial samples across six U.S. states.",
+      "applicability": "Supports chemistry-based reporting rather than treating vernacular labels as laboratory categories.",
+      "limitations": "The dataset reflects participating markets and laboratories and does not define all global cannabis diversity.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0132",
+      "lessonId": "THC-ENC-260",
+      "sourceIds": [
+        "ENC-AUTH-091",
+        "ENC-AUTH-092"
+      ],
+      "claimType": "entourage-evidence",
+      "supportedClaim": "Broad entourage claims are not established by one mechanism: selected terpenes did not directly modulate CB1/CB2 signaling in one receptor study, while a specific THC-plus-D-limonene interaction was observed in a controlled human study.",
+      "sourceLocator": "Finlay et al. 2020 receptor pharmacology; Spindle et al. 2024 randomized human study.",
+      "applicability": "Supports narrow, mechanism-specific language for terpene-cannabinoid interaction claims.",
+      "limitations": "A specific negative receptor result or one positive human interaction cannot establish or refute all possible entourage mechanisms.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
