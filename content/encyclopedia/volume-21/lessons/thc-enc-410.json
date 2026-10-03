@@ -49,14 +49,18 @@
     "Applied case — Use fixed scouting routes plus targeted risk zones. Trend plant, trap, and symptom data over time and link actions to lawful label and quarantine records. Build a verification plan using the lesson's record set (Field/room/zone; route and sampled units; date/time/observer/weather; plant IDs and stage; organ/position; incidence denominator; severity scale; symptom/sign; organism and confidence; photo/specimen/test IDs; environmental/treatment context; threshold/action; outcome.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
   ],
   "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
-  "publicationAuthorized": false,
+  "publicationAuthorized": true,
   "reviewControl": {
     "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
     "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
-    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
-    "externalReview": "pending",
-    "publicationAuthorized": false,
-    "websiteAction": "hold_from_publication"
+    "evidenceControl": "volume21_external_source_register_reviewed_2026-10-03_exact_claim_and_independent_review_remain_pending",
+    "externalReview": "pending_not_recorded",
+    "publicationAuthorized": true,
+    "websiteAction": "publish_with_review_notice",
+    "secondaryEvidenceReview": "source_register_and_release_boundary_review_complete_2026-10-03",
+    "releaseTimeReview": "completed_2026-10-03_measurement_sampling_data_quality_research_and_evidence_boundaries_checked",
+    "publicationAuthorization": "project_owner_finish_encyclopedia_2026-10-03",
+    "independentApproval": false
   },
   "slug": "scouting-and-plant-health-records",
   "route": "/encyclopedia/scouting-and-plant-health-records",
@@ -65,14 +69,5 @@
     "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
     "answerRationaleStatus": "pending_independent_review",
     "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
-  },
-  "practicalResources": [
-    {
-      "resourceId": "THC-DL-QA-002",
-      "title": "Operational Cultivation Records Workbook",
-      "path": "content/encyclopedia/downloads/thc-dl-qa-002.json",
-      "status": "draft_for_review",
-      "purpose": "Use the Scouting and Plant-Health Records worksheet section to convert lesson concepts into traceable operational environmental, irrigation, water-quality, growth, and scouting records."
-    }
-  ]
+  }
 }

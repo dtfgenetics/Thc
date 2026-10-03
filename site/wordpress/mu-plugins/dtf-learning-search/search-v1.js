@@ -1,5 +1,5 @@
 import Fuse from './fuse-7.1.0.min.js';
-import {explainSearchMatch} from './thc-search-explain-v1.mjs';
+import {explainSearchMatch} from './thc-search-explain-v1.js';
 
 const input=document.querySelector('[data-search-input]');
 const results=document.querySelector('[data-search-results]');

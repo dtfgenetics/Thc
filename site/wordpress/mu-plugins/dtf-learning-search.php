@@ -146,12 +146,14 @@ add_action('wp_footer', static function (): void {
 
     $asset_base = content_url('/mu-plugins/dtf-learning-search/');
     $runtime = $surface === 'search' ? 'search-v1.js' : 'encyclopedia-v1.js';
+    $runtime_path = __DIR__ . '/dtf-learning-search/' . $runtime;
+    $runtime_revision = is_file($runtime_path) ? hash_file('sha256', $runtime_path) : false;
     $config = [
         'surface' => $surface,
         'version' => DTF_LEARNING_SEARCH_VERSION,
         'searchIndexUrl' => rest_url(DTF_LEARNING_SEARCH_NAMESPACE . '/index/search'),
         'encyclopediaIndexUrl' => rest_url(DTF_LEARNING_SEARCH_NAMESPACE . '/index/encyclopedia'),
-        'runtimeUrl' => $asset_base . $runtime . '?v=' . rawurlencode(DTF_LEARNING_SEARCH_VERSION),
+        'runtimeUrl' => $asset_base . $runtime . '?v=' . rawurlencode($runtime_revision ?: DTF_LEARNING_SEARCH_VERSION),
     ];
     ?>
     <div data-dtf-learning-search-runtime="mu-v1" data-dtf-learning-search-surface="<?php echo esc_attr($surface); ?>" hidden></div>

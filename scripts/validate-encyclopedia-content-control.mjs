@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { effectiveLessonAssessment } from './lib/encyclopedia-assessment-v2.mjs';
+import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 
 const root=process.cwd();
 const strictQuality=process.argv.includes('--strict-quality');
@@ -17,28 +18,9 @@ const qualityIssues=[];
 const assert=(ok,msg)=>{if(!ok)errors.push(msg)};
 const warn=(msg)=>warnings.push(msg);
 
-for(let v=1;v<=17;v++){
-  const volume=String(v).padStart(2,'0');
-  const dir=path.join(root,`content/encyclopedia/volume-${volume}/lessons`);
-  assert(fs.existsSync(dir),`Volume ${volume}: lessons directory missing`);
-  if(!fs.existsSync(dir)) continue;
-  for(const name of fs.readdirSync(dir).filter(n=>/^thc-enc-\d{3}\.json$/.test(n)).sort()){
-    const file=path.join(dir,name);
-    const lesson=JSON.parse(fs.readFileSync(file,'utf8'));
-    lessons.push({...lesson,__path:path.relative(root,file),__volume:v});
-  }
-}
-
-for(let v=18;v<=21;v++){
-  const volume=String(v).padStart(2,'0');
-  const dir=path.join(root,`content/encyclopedia/volume-${volume}`);
-  assert(fs.existsSync(dir),`Volume ${volume}: directory missing`);
-  if(!fs.existsSync(dir)) continue;
-  for(const name of fs.readdirSync(dir).filter(n=>/^draft-lessons-\d+-\d+\.json$/.test(n)).sort()){
-    const file=path.join(dir,name);
-    const pack=JSON.parse(fs.readFileSync(file,'utf8'));
-    for(const lesson of pack.lessons||[]) lessons.push({...lesson,__path:path.relative(root,file),__volume:v});
-  }
+const canonicalLessons=readCanonicalEncyclopediaLessons(root);
+for(const lesson of canonicalLessons){
+  lessons.push({...lesson,__path:lesson.__path,__volume:Number(lesson.__part)});
 }
 
 assert((registry.entries||[]).length===420,`Controlled registry must contain 420 entries; found ${registry.entries?.length||0}`);

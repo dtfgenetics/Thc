@@ -16,6 +16,7 @@ function transform(name,text){
   let out=text;
   if(name==='search-v1.js'){
     out=out.replace("import Fuse from '/assets/vendor/fuse-7.1.0.min.mjs';","import Fuse from './fuse-7.1.0.min.js';");
+    out=out.replace("from './thc-search-explain-v1.mjs'", "from './thc-search-explain-v1.js'");
   }
   if(name==='encyclopedia-v1.js'){
     out=out
@@ -26,6 +27,17 @@ function transform(name,text){
 }
 
 fs.mkdirSync(outDir,{recursive:true});
+// Validate the transformed module graph, not merely byte agreement with source.
+// A synchronized build can still reference a file that is never deployed.
+for(const [name,rel] of Object.entries(sources)){
+  const expected=transform(name,fs.readFileSync(path.join(root,rel),'utf8'));
+  for(const match of expected.matchAll(/\bfrom\s*['"](\.[^'"]+)['"]/g)){
+    const target=path.posix.normalize(path.posix.join(path.posix.dirname(name),match[1]));
+    if(!Object.hasOwn(sources,target)){
+      throw new Error(`WordPress learning-search unresolved import: ${name} -> ${match[1]}`);
+    }
+  }
+}
 let changed=0;
 for(const [name,rel] of Object.entries(sources)){
   const expected=transform(name,fs.readFileSync(path.join(root,rel),'utf8'));

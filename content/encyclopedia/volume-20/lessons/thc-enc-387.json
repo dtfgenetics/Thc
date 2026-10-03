@@ -48,14 +48,18 @@
     "Applied case — Use backcrossing for a defined introgression goal, not as a generic path to “make it like the parent.” Preserve donor, recurrent parent, intermediates, and flanking-marker data. Build a verification plan using the lesson's record set (Donor/recurrent IDs; target trait and causal/linked evidence; backcross generation; markers and recombination; recurrent genome estimate; phenotype and penetrance; donor segment size; fertility; off-target traits; selected and rejected progeny.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
   ],
   "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
-  "publicationAuthorized": false,
+  "publicationAuthorized": true,
   "reviewControl": {
     "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
     "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
-    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
-    "externalReview": "pending",
-    "publicationAuthorized": false,
-    "websiteAction": "hold_from_publication"
+    "evidenceControl": "volume20_external_source_register_reviewed_2026-10-03_exact_claim_and_independent_review_remain_pending",
+    "externalReview": "pending_not_recorded",
+    "publicationAuthorized": true,
+    "websiteAction": "publish_with_review_notice",
+    "secondaryEvidenceReview": "source_register_and_release_boundary_review_complete_2026-10-03",
+    "releaseTimeReview": "completed_2026-10-03_breeding_population_genetics_phenotyping_germplasm_and_claim_boundaries_checked",
+    "publicationAuthorization": "project_owner_finish_encyclopedia_2026-10-03",
+    "independentApproval": false
   },
   "slug": "backcrossing-and-recurrent-parent-recovery",
   "route": "/encyclopedia/backcrossing-and-recurrent-parent-recovery",
@@ -64,14 +68,5 @@
     "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
     "answerRationaleStatus": "pending_independent_review",
     "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
-  },
-  "practicalResources": [
-    {
-      "resourceId": "THC-DL-BREED-002",
-      "title": "Line Advancement and Breeding-System Evaluation Workbook",
-      "path": "content/encyclopedia/downloads/thc-dl-breed-002.json",
-      "status": "draft_for_review",
-      "purpose": "Use the Backcrossing and Recurrent-Parent Recovery worksheet section to convert lesson concepts into traceable family, line, and breeding-system records."
-    }
-  ]
+  }
 }
