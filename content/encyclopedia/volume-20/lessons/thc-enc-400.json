@@ -50,14 +50,18 @@
     "Applied case — Assign permanent IDs before names. Link every public description to a versioned release record and retained reference material. Build a verification plan using the lesson's record set (Permanent line/cross/clone/lot IDs; parent IDs and roles; every mating and generation; population and selected counts; seed and clone sources; identity tests; trial and laboratory evidence; name/version; claim wording and scope; corrections, approver and release date.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
   ],
   "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.\n\n\nVOLUME 20 COMPLETION RECORD\nLesson count: 20 of 20\nControlled IDs: THC-ENC-381–400\nRequired instructional sections: Present in every lesson\nSource notes: Present in every lesson\nAtomic claim ledger: Not started\nIndependent review: Not started\nPrimary visuals: Not produced\nDownloads/page packages: Not produced\nApproval/publication: Not authorized",
-  "publicationAuthorized": false,
+  "publicationAuthorized": true,
   "reviewControl": {
     "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
     "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
-    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
-    "externalReview": "pending",
-    "publicationAuthorized": false,
-    "websiteAction": "hold_from_publication"
+    "evidenceControl": "volume20_external_source_register_reviewed_2026-10-03_exact_claim_and_independent_review_remain_pending",
+    "externalReview": "pending_not_recorded",
+    "publicationAuthorized": true,
+    "websiteAction": "publish_with_review_notice",
+    "secondaryEvidenceReview": "source_register_and_release_boundary_review_complete_2026-10-03",
+    "releaseTimeReview": "completed_2026-10-03_breeding_population_genetics_phenotyping_germplasm_and_claim_boundaries_checked",
+    "publicationAuthorization": "project_owner_finish_encyclopedia_2026-10-03",
+    "independentApproval": false
   },
   "slug": "pedigrees-generations-naming-and-release-claims",
   "route": "/encyclopedia/pedigrees-generations-naming-and-release-claims",
@@ -66,14 +70,5 @@
     "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
     "answerRationaleStatus": "pending_independent_review",
     "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
-  },
-  "practicalResources": [
-    {
-      "resourceId": "THC-DL-BREED-004",
-      "title": "Resistance, Progeny, Population, Germplasm, and Release Workbook",
-      "path": "content/encyclopedia/downloads/thc-dl-breed-004.json",
-      "status": "draft_for_review",
-      "purpose": "Use the Pedigrees, Generations, Naming, and Release Claims worksheet section to convert lesson concepts into traceable resistance, progeny, population, preservation, and release-control records."
-    }
-  ]
+  }
 }

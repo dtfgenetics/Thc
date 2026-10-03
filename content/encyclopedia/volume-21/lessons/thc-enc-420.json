@@ -51,14 +51,18 @@
     "Applied case — Use the 420 permanent lesson IDs as the spine of the system. Complete one end-to-end reference release, audit it, then scale the proven package rather than producing disconnected drafts. Build a verification plan using the lesson's record set (Permanent IDs and relationships; canonical files and repository paths; versions/revisions/checksums; claim/source/visual/assessment records; review owners and evidence; approval and effective date; build/deployment commit; live verification; downloads; accessibility; backup/rollback; correction and supersession history.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
   ],
   "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.\n\n\n\n\nVOLUME 21 COMPLETION RECORD\nLesson count: 20 of 20\nControlled IDs: THC-ENC-401–420\nRequired instructional sections: Present in every lesson\nSource notes: Present in every lesson\nAtomic claim ledger: Not started\nIndependent review: Not started\nPrimary visuals: Not produced\nDownloads/page packages: Not produced\nApproval/publication: Not authorized",
-  "publicationAuthorized": false,
+  "publicationAuthorized": true,
   "reviewControl": {
     "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
     "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
-    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
-    "externalReview": "pending",
-    "publicationAuthorized": false,
-    "websiteAction": "hold_from_publication"
+    "evidenceControl": "volume21_external_source_register_reviewed_2026-10-03_exact_claim_and_independent_review_remain_pending",
+    "externalReview": "pending_not_recorded",
+    "publicationAuthorized": true,
+    "websiteAction": "publish_with_review_notice",
+    "secondaryEvidenceReview": "source_register_and_release_boundary_review_complete_2026-10-03",
+    "releaseTimeReview": "completed_2026-10-03_measurement_sampling_data_quality_research_and_evidence_boundaries_checked",
+    "publicationAuthorization": "project_owner_finish_encyclopedia_2026-10-03",
+    "independentApproval": false
   },
   "slug": "building-an-evidence-based-cultivation-knowledge-system",
   "route": "/encyclopedia/building-an-evidence-based-cultivation-knowledge-system",
@@ -67,14 +71,5 @@
     "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
     "answerRationaleStatus": "pending_independent_review",
     "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
-  },
-  "practicalResources": [
-    {
-      "resourceId": "THC-DL-QA-004",
-      "title": "Experimental Design and Evidence-System Workbook",
-      "path": "content/encyclopedia/downloads/thc-dl-qa-004.json",
-      "status": "draft_for_review",
-      "purpose": "Use the Building an Evidence-Based Cultivation Knowledge System worksheet section to convert lesson concepts into traceable experimental, causal, generalization, citation, and knowledge-system records."
-    }
-  ]
+  }
 }

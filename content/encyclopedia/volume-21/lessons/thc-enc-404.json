@@ -50,14 +50,18 @@
     "Applied case — Write the sampling plan before inspection or testing. Include a map, selection rule, number of units, sample mass or volume, handling, retained samples, and inference limits. Build a verification plan using the lesson's record set (Target population and decision; sampling frame; unit/increment/composite definition; strata; randomization or route; sample count and rationale; locations/times; sample mass/volume; tools/containers; preservation; chain of custody; missing/deviation rule; retained sample; inference statement.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
   ],
   "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
-  "publicationAuthorized": false,
+  "publicationAuthorized": true,
   "reviewControl": {
     "controlledManuscript": "THC Cannabis Encyclopedia — Volume 21: Measurement, Data Systems, Quality, and Research Literacy — DRAFT COMPLETE v0.1",
     "driveFileId": "1tzMYd1P_9cb17qoH5SS-XvlCxrCQh5qm_j-8P5vy7jA",
-    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
-    "externalReview": "pending",
-    "publicationAuthorized": false,
-    "websiteAction": "hold_from_publication"
+    "evidenceControl": "volume21_external_source_register_reviewed_2026-10-03_exact_claim_and_independent_review_remain_pending",
+    "externalReview": "pending_not_recorded",
+    "publicationAuthorized": true,
+    "websiteAction": "publish_with_review_notice",
+    "secondaryEvidenceReview": "source_register_and_release_boundary_review_complete_2026-10-03",
+    "releaseTimeReview": "completed_2026-10-03_measurement_sampling_data_quality_research_and_evidence_boundaries_checked",
+    "publicationAuthorization": "project_owner_finish_encyclopedia_2026-10-03",
+    "independentApproval": false
   },
   "slug": "sampling-plans-and-representative-measurements",
   "route": "/encyclopedia/sampling-plans-and-representative-measurements",
@@ -66,14 +70,5 @@
     "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
     "answerRationaleStatus": "pending_independent_review",
     "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
-  },
-  "practicalResources": [
-    {
-      "resourceId": "THC-DL-QA-001",
-      "title": "Measurement and Traceability Quality Workbook",
-      "path": "content/encyclopedia/downloads/thc-dl-qa-001.json",
-      "status": "draft_for_review",
-      "purpose": "Use the Sampling Plans and Representative Measurements worksheet section to convert lesson concepts into traceable measurement, sampling, calibration, and identity records."
-    }
-  ]
+  }
 }

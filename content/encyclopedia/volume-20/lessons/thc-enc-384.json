@@ -49,14 +49,18 @@
     "Applied case — Do not market a variable F1 family as uniform without data. Measure within-family variance and preserve individual IDs for selected F1 plants. Build a verification plan using the lesson's record set (Cross and reciprocal direction; parent heterozygosity and relatedness; F1 population size; germination and vigor; trait mean and within-family variance; parental and check performance; heterosis calculation and reference; fertility, sex and off-types.). What would you compare before and after the action, and what result would make you revise the original interpretation?"
   ],
   "assessmentStatus": "Draft questions only. Answer rationale and independent assessment review are pending.",
-  "publicationAuthorized": false,
+  "publicationAuthorized": true,
   "reviewControl": {
     "controlledManuscript": "THC Cannabis Encyclopedia — Volume 20: Breeding, Selection, and Genetic Conservation — DRAFT COMPLETE v0.1",
     "driveFileId": "1ru6DHiVQ7O-tsY3j7R_rJs_ORwMDfGW9sfZxoiXCq5k",
-    "evidenceControl": "atomic_claim_ledger_and_exact_source_locator_review_incomplete",
-    "externalReview": "pending",
-    "publicationAuthorized": false,
-    "websiteAction": "hold_from_publication"
+    "evidenceControl": "volume20_external_source_register_reviewed_2026-10-03_exact_claim_and_independent_review_remain_pending",
+    "externalReview": "pending_not_recorded",
+    "publicationAuthorized": true,
+    "websiteAction": "publish_with_review_notice",
+    "secondaryEvidenceReview": "source_register_and_release_boundary_review_complete_2026-10-03",
+    "releaseTimeReview": "completed_2026-10-03_breeding_population_genetics_phenotyping_germplasm_and_claim_boundaries_checked",
+    "publicationAuthorization": "project_owner_finish_encyclopedia_2026-10-03",
+    "independentApproval": false
   },
   "slug": "f1-populations-and-heterozygosity",
   "route": "/encyclopedia/f1-populations-and-heterozygosity",
@@ -65,14 +69,5 @@
     "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification",
     "answerRationaleStatus": "pending_independent_review",
     "scoringIntent": "Require lesson-specific evidence, not memorized universal targets."
-  },
-  "practicalResources": [
-    {
-      "resourceId": "THC-DL-BREED-001",
-      "title": "Breeding Program Planning Workbook",
-      "path": "content/encyclopedia/downloads/thc-dl-breed-001.json",
-      "status": "draft_for_review",
-      "purpose": "Use the F1 Populations and Heterozygosity worksheet section to convert lesson concepts into traceable breeding records and decisions."
-    }
-  ]
+  }
 }
