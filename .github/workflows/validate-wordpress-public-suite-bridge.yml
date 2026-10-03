@@ -2,6 +2,11 @@ name: Validate WordPress Public Suite Bridge
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/assemble-wordpress-suite-v2.py
+      - scripts/wordpress-suite-v2/**
+      - .github/workflows/validate-wordpress-public-suite-bridge.yml
   push:
     branches: [main]
     paths:
@@ -16,11 +21,14 @@ permissions:
   actions: write
 
 concurrency:
-  group: validate-wordpress-public-suite-bridge
+  group: validate-wordpress-public-suite-bridge-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   validate:
+    # The fixture builder dispatches Actions with a write token. Admit only
+    # repository-owner PRs; other PRs retain the read-only contract CI checks.
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login == github.repository_owner
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -28,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
 
       - uses: actions/setup-node@v4
@@ -58,14 +66,19 @@ jobs:
           PY
           php -l "$RUNNER_TEMP/dtf-suite-v2-snippet.php"
 
-      - name: Build current public suite fixture
+      - name: Build exact candidate public suite fixture
         id: current_build
+        env:
+          FIXTURE_REF: ${{ github.head_ref || github.ref_name }}
+          FIXTURE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         shell: bash
         run: |
           set -euo pipefail
-          run_url="$(gh workflow run build-dtfseeds-public-suite.yml --ref main)"
+          run_url="$(gh workflow run build-dtfseeds-public-suite.yml --ref "$FIXTURE_REF")"
           run_id="${run_url##*/}"
           [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse public-suite build run from: $run_url" >&2; exit 1; }
+          actual_sha="$(gh run view "$run_id" --json headSha --jq .headSha)"
+          [[ "$actual_sha" == "$FIXTURE_SHA" ]] || { echo "Fixture revision mismatch: expected $FIXTURE_SHA, got $actual_sha" >&2; exit 1; }
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           gh run watch "$run_id" --exit-status
 
@@ -138,7 +151,7 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import os, pathlib
+          import ast, os, pathlib, re
           path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'deploy-public-suite-via-wordpress-v2.mjs'
           text = path.read_text()
           checks = {
@@ -161,9 +174,9 @@ jobs:
               'finalize endpoint': "register_rest_route('dtf-suite/v2-${deploymentId}', '/finalize'" in text,
               'ambiguous commit polling': 'Polling persisted server state before any recovery action.' in text,
               'app-only WordPress ownership boundary': 'Home and Learn are WordPress-owned and are verified independently after this app-only transaction.' in text,
-              'current Games verification': 'Pick what is playable. See what is coming next.' in text,
-              'current Tools verification': 'Grow with records. Diagnose with evidence.' in text,
-              'current Projects verification': 'What is live, what is growing, and where it belongs.' in text,
+              # Validate the executable route contract against the packaged fixture.
+              # This fails on missing routes, duplicate routes, and copy drift without
+              # maintaining a second hardcoded list of customer-facing slogans.
               'unified shell allowlist': 'games/dtf-shell.css' in text,
               'Protect the Plants deployment scope': 'games/protect-the-plants' in text,
               'Bud or Bluff deployment scope': 'games/bud-or-bluff' in text,
@@ -177,6 +190,16 @@ jobs:
               'stale touched lock refuses takeover': 'dtf_stale_touched_lock' in text,
               'client recovery inspects persisted state': 'const state = await getState();' in text and 'recoverFailure' in text,
           }
+          match = re.search(r"const liveChecks = (\[[\s\S]*?\]);", text)
+          assert match, 'generated liveChecks contract not found'
+          routes = ast.literal_eval(match.group(1))
+          for route in ('/games/', '/tools/', '/projects/'):
+              markers = [marker for candidate, marker in routes if candidate == route]
+              fixture = pathlib.Path(os.environ['SUITE_ROOT']) / route.strip('/') / 'index.html'
+              checks[f'current {route} verification matches packaged page'] = (
+                  len(markers) == 1 and bool(markers[0]) and fixture.is_file()
+                  and markers[0].casefold() in fixture.read_text().casefold()
+              )
           missing = [name for name, ok in checks.items() if not ok]
           for name, ok in checks.items(): print(f'{name}: {"PASS" if ok else "FAIL"}')
           if missing: raise SystemExit('missing hardened controls: ' + ', '.join(missing))
@@ -203,6 +226,6 @@ jobs:
             echo "- Commit: $GITHUB_SHA"
             echo "- Result: ${{ job.status }}"
             echo "- Current-suite build run: ${{ steps.current_build.outputs.run_id }}"
-            echo '- Fixture is generated from current main; no pinned stale artifact is used.'
+            echo '- Fixture is generated from the exact candidate revision; stale or mismatched build revisions fail closed.'
             echo '- Validation covers the unique per-deployment REST namespace, one-time bearer token, transactional rollback controls, current game routes, archive integrity, and WordPress-owned route exclusions.'
           } >> "$GITHUB_STEP_SUMMARY"
