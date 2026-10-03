@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedAt": "2026-09-29",
-  "publicationCutoff": 395,
+  "publicationCutoff": 410,
   "note": "All 420 controlled encyclopedia entries are discoverable. Entries above the current publication cutoff are catalogued for navigation but their lesson content remains under review.",
   "topics": [
     {
@@ -242,7 +242,7 @@
       ],
       "description": "Selection, crossing, generations, population structure, inbreeding, preservation, evaluation, and genetic conservation.",
       "count": 20,
-      "publishedCount": 15
+      "publishedCount": 20
     },
     {
       "part": 21,
@@ -254,7 +254,7 @@
       ],
       "description": "Measurement quality, sensors, sampling, experimental design, records, uncertainty, statistics, and research literacy.",
       "count": 20,
-      "publishedCount": 0
+      "publishedCount": 10
     }
   ],
   "lessons": [
@@ -10195,14 +10195,62 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Diagnostic",
       "teachingVisual": "Resistance-screen design and escape-control decision tree",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-396",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-396/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Diagnostic",
         "Resistance-screen design and escape-control decision tree",
-        "THC-ENC-396"
-      ]
+        "THC-ENC-396",
+        "resistance",
+        "susceptibility",
+        "tolerance",
+        "disease escape",
+        "inoculum",
+        "isolate",
+        "disease severity",
+        "area under disease progress curve",
+        "resistance locus"
+      ],
+      "objective": "Distinguish genetic resistance, tolerance, susceptibility, and disease escape through controlled challenge, replication, pathogen identity, and multi-stage evidence.",
+      "terms": [
+        "resistance",
+        "susceptibility",
+        "tolerance",
+        "disease escape",
+        "inoculum",
+        "isolate",
+        "disease severity",
+        "area under disease progress curve",
+        "resistance locus"
+      ],
+      "coreScience": [
+        "Resistance reduces infection, colonization, reproduction, or damage by a defined organism under defined conditions. Tolerance allows acceptable performance despite infection or injury. Escape occurs when a plant avoids exposure or favorable conditions. A plant with no visible disease in one room may be resistant, unexposed, younger, spatially protected, or incorrectly scored.",
+        "A resistance screen requires verified pest or pathogen identity, a reproducible challenge, susceptible and resistant checks, adequate inoculum or infestation, randomization, replication, and environmental control. Rate incidence, severity, pathogen reproduction, plant growth, and time. Different isolates can overcome different resistance genes, and development stage can change response. Greenhouse screens and field trials answer complementary questions.",
+        "Cannabis powdery mildew research illustrates multiple architectures: a disrupted susceptibility gene near CsMLO1, a dominant PM2 locus on chromosome 9, additional smaller QTL, and diverse germplasm with low disease across years. A marker is useful only after validation in the breeding population and with the relevant pathogen. Strong single-gene resistance can be introgressed, but durability may require combining mechanisms and monitoring pathogen change."
+      ],
+      "cultivation": [
+        "Treat promising resistance as a hypothesis until repeated with verified challenge and progeny. Preserve isolates, check reactions, images, raw scores, and marker data."
+      ],
+      "measurements": [
+        "Record host genotype and stage, pest or pathogen identity to the most reliable taxonomic or isolate level available, challenge method, inoculum or infestation intensity, susceptible and resistant checks, and environmental conditions that influence disease or pest development.",
+        "Measure incidence, severity, reproduction or population growth, symptom development over time, host damage, and yield or fitness effects. Record escapes, failed inoculations, missing plants, and any treatment or environmental deviation.",
+        "Repeat promising resistance in additional experiments, isolates, life stages, or environments appropriate to the target risk. Preserve samples or diagnostic evidence when possible so resistance is not inferred from an unverified challenge."
+      ],
+      "misconceptions": [
+        "No visible disease proves resistance. A plant can escape exposure, receive insufficient inoculum, or encounter an environment unfavorable to disease development.",
+        "A resistance marker works in every genetic background. Marker-trait associations can break because of recombination, allele differences, or background interactions.",
+        "One resistance gene makes scouting unnecessary. Resistance can be partial, isolate-specific, overcome by evolution, or compromised by stress; monitoring remains necessary."
+      ],
+      "evidenceLimits": [
+        "Resistance is specific to the host genotype, pest or pathogen population, isolate, developmental stage, environment, scoring method, and challenge intensity.",
+        "Absence of symptoms is only interpretable when exposure was confirmed and susceptible checks demonstrate that the challenge could produce disease or damage."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-397",
@@ -10213,14 +10261,60 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Parent-by-progeny combining-ability record",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-397",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-397/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Data / QA",
         "Parent-by-progeny combining-ability record",
-        "THC-ENC-397"
-      ]
+        "THC-ENC-397",
+        "progeny test",
+        "general combining ability",
+        "specific combining ability",
+        "testcross",
+        "half-sib",
+        "full-sib",
+        "breeding value",
+        "family effect"
+      ],
+      "objective": "Estimate parental breeding value from offspring performance across mates, families, environments, and target traits.",
+      "terms": [
+        "progeny test",
+        "general combining ability",
+        "specific combining ability",
+        "testcross",
+        "half-sib",
+        "full-sib",
+        "breeding value",
+        "family effect"
+      ],
+      "coreScience": [
+        "A progeny test evaluates a parent by measuring its descendants. This is essential when the parent’s own phenotype is misleading, when traits are expressed only in one sex or late stage, or when selection aims at transmission rather than clone performance. Families can be half-sibs, full-sibs, selfs, testcrosses, or structured diallel and factorial sets.",
+        "General combining ability describes average performance across several mates and is often associated with additive effects. Specific combining ability describes an unusually favorable or unfavorable combination relative to parental averages and can include dominance and epistasis. Estimates depend on the mating design, tester choice, environments, family size, and statistical model. A parent tested with one mate does not have a reliable general combining-ability estimate.",
+        "Use common testers and checks, balanced family sizes where possible, and replicated trials. Preserve both mean and within-family variation. A cross with one exceptional offspring may be attractive for clone selection but poor for seed-family uniformity. Conversely, a parent producing consistently acceptable families can be valuable even if it never produces the single most extreme individual."
+      ],
+      "cultivation": [
+        "Decide whether the program wants elite individual clones, predictable seed families, or parental lines. Design progeny tests to match that objective."
+      ],
+      "measurements": [
+        "Record parent, tester, and cross IDs, mating design, family size, balance among crosses, environments, trait definitions, and checks. Keep the tester set explicit because combining ability is defined relative to that mating population.",
+        "Measure family means, within-family variance, parental performance, fertility, off-types, and trait covariance across environments. Retain the raw progeny distribution rather than only top-family summaries.",
+        "Document the statistical model used for general and specific combining ability, uncertainty of estimates, tester representation, selected crosses, and whether conclusions were confirmed in an independent generation or environment."
+      ],
+      "misconceptions": [
+        "The best parent phenotype always gives the best progeny. Individual phenotype and breeding value are related imperfectly, especially for low-heritability or strongly environment-dependent traits.",
+        "One exceptional child proves a superior cross. A single outlier may not represent the family mean or repeat in another progeny sample.",
+        "Combining ability is a permanent value independent of testers and environments. Estimates depend on the parent set, mating design, traits, and environments used."
+      ],
+      "evidenceLimits": [
+        "General and specific combining-ability estimates are conditional on the tested parent and tester population and should not be treated as universal properties.",
+        "Unbalanced family sizes, selective missingness, and weak environmental replication can bias combining-ability estimates and inflate confidence."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-398",
@@ -10231,14 +10325,60 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Effective population size and family-contribution diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-398",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-398/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Science lesson",
         "Effective population size and family-contribution diagram",
-        "THC-ENC-398"
-      ]
+        "THC-ENC-398",
+        "census population",
+        "effective population size",
+        "genetic drift",
+        "bottleneck",
+        "founder effect",
+        "allele loss",
+        "family contribution",
+        "coancestry"
+      ],
+      "objective": "Maintain useful allelic diversity by controlling parent number, sex ratio, family contribution, drift, selection, and contamination.",
+      "terms": [
+        "census population",
+        "effective population size",
+        "genetic drift",
+        "bottleneck",
+        "founder effect",
+        "allele loss",
+        "family contribution",
+        "coancestry"
+      ],
+      "coreScience": [
+        "The number of plants in a population is not the same as its effective population size. Unequal sex ratios, few successful pollen parents, unequal seed contribution, related matings, reproductive failure, and strong selection can make a large grow genetically equivalent to a much smaller breeding population. Small effective size increases drift, inbreeding, and loss of rare alleles.",
+        "Population maintenance requires a defined objective. A conservation population aims to retain diversity and representative allele frequencies; a breeding population deliberately changes them. To conserve, use many unrelated parents, balanced male and female or family contributions, controlled sampling, and sufficient seed from each family. Avoid allowing the earliest, tallest, or most pollen-productive plants to dominate unintentionally.",
+        "Genotyping can estimate relatedness and structure, but sampling and marker density matter. Phenotypic diversity is not a reliable substitute for genomic diversity, and cultivar names may not reflect identity. Maintain base-population seed, selected cycles, and safety duplicates separately. Contamination by stray pollen, volunteers, mixed seed, or mislabeled clones can alter a population as strongly as deliberate selection."
+      ],
+      "cultivation": [
+        "Calculate and monitor parent and family contributions every cycle. Preserve an unselected base sample and document all bottlenecks."
+      ],
+      "measurements": [
+        "Record population and cycle ID, census size, number and identity of breeding parents, sex ratio, known relationships, mating design, and planned contribution per family before reproduction.",
+        "Track actual pollen and seed contribution by family when possible, mortality, fertility, selection proportion, unequal parental success, contamination events, and the number of descendants carried into the next cycle.",
+        "Estimate effective population size or a practical proxy, monitor pedigree or marker diversity over time, and document backups. When one parent contributes disproportionately, record the expected bottleneck and corrective plan."
+      ],
+      "misconceptions": [
+        "A field with hundreds of plants cannot have a bottleneck. Effective population size can be much smaller than census size when only a few parents contribute offspring.",
+        "Visible diversity proves genetic diversity is preserved. Morphological variation can miss losses at unobserved loci, and uniform appearance does not necessarily mean low diversity.",
+        "Using one outstanding male has little effect on population structure. A single heavily represented pollen parent can rapidly increase relatedness and reduce effective population size."
+      ],
+      "evidenceLimits": [
+        "Effective population size depends on mating system, sex ratio, variance in family contribution, overlap among generations, selection, and pedigree structure; simple census counts can be misleading.",
+        "Marker diversity describes the loci and samples measured and may not fully represent functional diversity, rare alleles, or adaptive variation."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-399",
@@ -10249,14 +10389,64 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Procedure",
       "teachingVisual": "Germplasm conservation and regeneration workflow",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-399",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-399/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Procedure",
         "Germplasm conservation and regeneration workflow",
-        "THC-ENC-399"
-      ]
+        "THC-ENC-399",
+        "germplasm",
+        "accession",
+        "orthodox seed",
+        "viability",
+        "vigor",
+        "regeneration",
+        "safety duplicate",
+        "base collection",
+        "active collection",
+        "genetic integrity"
+      ],
+      "objective": "Preserve seed and living genetic resources through identity control, drying, storage, viability monitoring, safety duplication, and genetically responsible regeneration.",
+      "terms": [
+        "germplasm",
+        "accession",
+        "orthodox seed",
+        "viability",
+        "vigor",
+        "regeneration",
+        "safety duplicate",
+        "base collection",
+        "active collection",
+        "genetic integrity"
+      ],
+      "coreScience": [
+        "Germplasm conservation protects future breeding options. Seed lots need accession identity, parentage or collection origin, harvest and processing records, initial quality, and legal status. Cannabis seed is generally managed as an orthodox seed under dry, cold genebank practices, but each lot’s moisture response, viability, vigor, and storage behavior should be verified rather than assumed.",
+        "Long-term storage requires controlled drying, moisture-proof packaging, stable low temperature, monitoring, and backup at a separate secure location. Germination percentage alone can hide declining vigor or abnormal seedlings. Establish retest intervals and thresholds based on initial viability, storage conditions, seed quantity, value, and expected longevity. Preserve enough seed that monitoring does not consume the accession.",
+        "Regeneration creates new seed when quantity or viability falls. It can change the accession through small parent number, unequal flowering, pollen contamination, selection, environmental mortality, and accidental mixing. Use adequate effective population size, controlled isolation, representative family contribution, identity checks, and documentation. Clonal, tissue-culture, field, and cryogenic backups have different pathogen, mutation, space, and recovery risks and should complement rather than silently replace seed conservation."
+      ],
+      "cultivation": [
+        "Create an accession-level conservation plan with active material, long-term base storage, and geographically separate safety duplication."
+      ],
+      "measurements": [
+        "Record accession ID, origin, legal or ownership documentation, parentage or population sampling design, harvest date, cleaning method, seed count or mass, and initial seed health and viability.",
+        "Record seed moisture method, package type, storage temperature and humidity where relevant, backup location, germination or vigor test method, test date, sample size, and result at each monitoring interval.",
+        "Before regeneration, define the minimum population, isolation method, mating design, and family-contribution plan needed to limit drift. After regeneration, record parent contribution, selection or mortality, new seed-lot identity, and evidence that identity and diversity were preserved."
+      ],
+      "misconceptions": [
+        "A freezer automatically preserves seed indefinitely. Longevity depends on initial seed quality, moisture, packaging, temperature stability, species or genotype, and storage duration.",
+        "High germination means genetic integrity was preserved. Viability says seeds can germinate; it does not show that allele frequencies, identity, or family representation were maintained.",
+        "Regeneration simply replaces old seed with identical new seed. Regeneration is another generation of reproduction and can introduce selection, contamination, drift, or unequal family contribution."
+      ],
+      "evidenceLimits": [
+        "Seed longevity varies with seed condition, genotype, moisture, temperature, packaging, and test method; monitoring data are more reliable than a universal storage-life assumption.",
+        "Regeneration can alter the accession even when labels are correct. Population size, mating, isolation, and contribution balance determine how faithfully diversity is retained."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-400",
@@ -10267,14 +10457,64 @@
       "topicSlug": "breeding-conservation",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Controlled pedigree, generation, and naming record",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-400",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-400/",
       "keywords": [
         "Breeding & Genetic Conservation",
         "Data / QA",
         "Controlled pedigree, generation, and naming record",
-        "THC-ENC-400"
-      ]
+        "THC-ENC-400",
+        "pedigree",
+        "filial generation",
+        "selfed generation",
+        "backcross",
+        "line",
+        "cultivar",
+        "accession",
+        "clone",
+        "seed lot",
+        "release claim"
+      ],
+      "objective": "Use unambiguous pedigree and generation records while preventing names and marketing claims from exceeding the evidence.",
+      "terms": [
+        "pedigree",
+        "filial generation",
+        "selfed generation",
+        "backcross",
+        "line",
+        "cultivar",
+        "accession",
+        "clone",
+        "seed lot",
+        "release claim"
+      ],
+      "coreScience": [
+        "A pedigree records biological ancestry and mating events. A product name is not a pedigree. Generation labels must state the mating that created them: F1 and F2 describe filial generations from a defined cross; S1 describes selfed offspring from one parent; BC1 describes the first backcross to a named recurrent parent. Industry usage is inconsistent, so every project should publish its controlled definitions and never infer stability from the label alone.",
+        "Individual, family, line, clone, accession, cultivar, and seed lot are different entities. A selected F2 individual can be preserved as a clone while its F3 seed family segregates. Two seed lots with the same cross can differ because of parents, pollen contamination, harvest, storage, and sampling. Reusing a name for changed parents or unverified generations destroys traceability.",
+        "Release claims should be supported by a frozen target product profile, parent and generation records, population sizes, trial environments, laboratory methods, disease or stress tests, uniformity and stability evidence, seed quality, legal status, and known limitations. “Stable,” “IBL,” “true breeding,” “resistant,” “feminized,” “autoflower,” and lineage percentages require definitions and evidence. Corrected pedigrees and failed claims should remain in revision history rather than being silently replaced."
+      ],
+      "cultivation": [
+        "Assign permanent IDs before names. Link every public description to a versioned release record and retained reference material."
+      ],
+      "measurements": [
+        "Assign permanent IDs to lines, crosses, clones, plants, and seed lots. Record each parent and role, every mating event, generation transition, population size, selected count, seed or clone source, and any identity test used.",
+        "Link every public or internal name to the underlying permanent ID and version. Preserve trial, laboratory, pedigree, phenotype, and release evidence separately from marketing names so renaming cannot rewrite ancestry.",
+        "At release, document the exact claim wording, its evidence scope, generation and mating history, environments tested, known limitations, approver, date, and correction history. Update claims when evidence changes without altering the original pedigree record."
+      ],
+      "misconceptions": [
+        "A name proves a cultivar is genetically distinct. Names are administrative or commercial identifiers unless supported by genetic, pedigree, or phenotypic evidence.",
+        "F5 or IBL automatically means uniform and stable. Generation notation records mating history; stability and uniformity must be demonstrated for the traits being claimed.",
+        "A pedigree percentage can be calculated reliably from names alone. Named ancestors can be misidentified, genetically heterogeneous, repeatedly related, or undocumented, making simplistic percentage claims unreliable."
+      ],
+      "evidenceLimits": [
+        "Pedigrees document declared ancestry and mating history; they do not by themselves prove genetic identity, ownership, trait transmission, uniformity, stability, or legal status.",
+        "Release claims should be limited to the populations, environments, methods, and evidence actually evaluated. Marketing language should never silently exceed the controlled evidence record."
+      ],
+      "crossLinks": [
+        "THC-ENC-141–180 for genetics, chemotype, sex, and propagation; THC-ENC-201–260 for reproduction and secondary metabolites; THC-ENC-281–340 for pests, disease, and biosecurity; THC-ENC-401–420 for measurement and quality systems."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-401",
@@ -10285,14 +10525,66 @@
       "topicSlug": "measurement-research",
       "primaryFormat": "Data / QA",
       "teachingVisual": "SI quantity, unit, conversion, and basis record",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-401",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-401/",
       "keywords": [
         "Measurement & Research Skills",
         "Data / QA",
         "SI quantity, unit, conversion, and basis record",
-        "THC-ENC-401"
-      ]
+        "THC-ENC-401",
+        "quantity",
+        "unit",
+        "SI",
+        "unit symbol",
+        "prefix",
+        "dimension",
+        "conversion factor",
+        "mass fraction",
+        "volume fraction",
+        "wet basis",
+        "dry basis"
+      ],
+      "objective": "Use quantities, units, symbols, prefixes, bases, and dimensional checks consistently so cultivation records can be interpreted and reproduced.",
+      "terms": [
+        "quantity",
+        "unit",
+        "SI",
+        "unit symbol",
+        "prefix",
+        "dimension",
+        "conversion factor",
+        "mass fraction",
+        "volume fraction",
+        "wet basis",
+        "dry basis"
+      ],
+      "coreScience": [
+        "A number without a defined quantity and unit is not a complete measurement. “500” could mean microlitres, millilitres, litres, milligrams per litre, microsiemens per centimetre, watts, micromoles per square metre per second, or an instrument count. Controlled records name the quantity first, then the value, unit, method, basis, position, and time. SI rules distinguish unit symbols from abbreviations: symbols are not pluralized, are case sensitive, and do not take periods except at the end of a sentence.",
+        "Conversions must preserve dimensions and basis. A conversion factor can change litres to millilitres, but it cannot convert electrical conductivity to dissolved-solids concentration without a model and stated factor. Percent can represent mass fraction, volume fraction, mass per volume, relative change, or percentage points; these are not interchangeable. Moisture content on a wet basis differs from moisture on a dry basis. Cannabinoid concentration in fresh material differs from a dry-mass-corrected result. Records must state numerator, denominator, sample state, and calculation.",
+        "Dimensional analysis is a practical error control. Units should cancel through a calculation, leaving the expected result. Equations should preserve unrounded input values, while reported digits should reflect measurement resolution and uncertainty. Spreadsheets need locked unit columns, validation rules, and explicit conversions rather than mixed units hidden inside formulas. A unit conversion can be mathematically correct while the conclusion remains biologically wrong if sample identity, time, or basis changed."
+      ],
+      "cultivation": [
+        "Create one approved unit dictionary for the project. Label every field, graph axis, form, sensor channel, and calculation. Reject ambiguous abbreviations and never infer a missing basis from context."
+      ],
+      "measurements": [
+        "Record the quantity name, original value, unit symbol, prefix, sample or system basis, wet or dry state, and numerator/denominator definition before any conversion. Preserve the unconverted source value so later reviewers can reconstruct the calculation.",
+        "For every conversion, record the equation, conversion factor and source, intermediate precision, rounding rule, and final reported value. When converting conductivity-derived TDS or other instrument-dependent values, record the instrument factor instead of treating the display as a universal unit.",
+        "At review, verify dimensional consistency, basis consistency, and whether percentage, ppm, mg/L, mg/kg, µmol/m²/s, or other expressions are being compared on equivalent terms. Flag values that cannot be normalized without additional context."
+      ],
+      "misconceptions": [
+        "ppm is one universal concentration unit in every context. Parts per million is a ratio and its practical meaning depends on whether the basis is mass/mass, mass/volume, or an instrument-specific estimate.",
+        "EC can be converted to ppm without naming the instrument factor. EC is a conductivity measurement, while displayed ppm is an estimated TDS value based on a selected conversion factor.",
+        "A percentage is self-explanatory without numerator, denominator, or basis. Percentages can refer to mass, volume, area, recovery, concentration, or relative change and are ambiguous without the stated basis."
+      ],
+      "evidenceLimits": [
+        "Correct units prevent dimensional and conversion errors but do not establish sample representativeness, instrument accuracy, method suitability, or biological causation.",
+        "Conversions can preserve numerical consistency while still misrepresenting the underlying measurand if the original basis, moisture state, denominator, or instrument assumption is wrong."
+      ],
+      "crossLinks": [
+        "THC-ENC-402–408; THC-ENC-411–414; all controlled forms and calculators."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-402",
@@ -10303,14 +10595,64 @@
       "topicSlug": "measurement-research",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Accuracy–precision–resolution–uncertainty comparison diagram",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-402",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-402/",
       "keywords": [
         "Measurement & Research Skills",
         "Science lesson",
         "Accuracy–precision–resolution–uncertainty comparison diagram",
-        "THC-ENC-402"
-      ]
+        "THC-ENC-402",
+        "accuracy",
+        "trueness",
+        "precision",
+        "repeatability",
+        "reproducibility",
+        "resolution",
+        "bias",
+        "random effect",
+        "uncertainty",
+        "measurand"
+      ],
+      "objective": "Distinguish measurement trueness, precision, repeatability, resolution, bias, variability, and uncertainty.",
+      "terms": [
+        "accuracy",
+        "trueness",
+        "precision",
+        "repeatability",
+        "reproducibility",
+        "resolution",
+        "bias",
+        "random effect",
+        "uncertainty",
+        "measurand"
+      ],
+      "coreScience": [
+        "Accuracy is a qualitative concept describing closeness between a measured value and the quantity value being measured. It is not a numerical synonym for precision. Trueness concerns systematic difference from a reference, while precision concerns agreement among repeated measurements under stated conditions. A meter can produce tightly clustered values that are consistently biased, or scattered values whose average is near a reference. Neither pattern should be described only as “accurate” without evidence.",
+        "Resolution is the smallest display or scale increment, not proof that the final digit is meaningful. A controller displaying 0.01 °C may have much larger sensor, placement, calibration, response-time, and environmental uncertainty. Repeatability describes variation under closely matched conditions; reproducibility includes changed laboratories, operators, equipment, or conditions. Biological variation, sampling variation, and measurement variation must be separated when possible because adding more instrument repeats does not increase the number of independent plants or samples.",
+        "Measurement uncertainty describes a range of values reasonably attributable to the measurand, based on defined components and a model. Components can include reference standards, calibration, resolution, repeatability, drift, temperature, sampling, preparation, and model assumptions. Uncertainty is not a confession that the result is useless; it defines how strongly the result supports a decision. Comparisons near a specification or action limit need an explicit decision rule rather than treating every displayed difference as real."
+      ],
+      "cultivation": [
+        "Characterize critical meters and methods using references, repeats, range checks, and documented uncertainty or practical tolerance. Report meaningful digits and avoid ranking plants or treatments by differences smaller than the process can resolve."
+      ],
+      "measurements": [
+        "Define the measurand, sample, method, reference or comparison value, instrument resolution, environmental conditions, and intended decision before interpreting repeat measurements.",
+        "Record repeated results, mean, spread, apparent bias, resolution, known calibration information, and identified uncertainty contributors. Keep technical repeats distinct from independent biological replicates.",
+        "When uncertainty is reported, record how it was estimated, whether it is standard or expanded uncertainty, the coverage factor or confidence interpretation where applicable, and the decision rule used near a specification or threshold."
+      ],
+      "misconceptions": [
+        "More decimal places mean greater accuracy. Display resolution can exceed the actual accuracy supported by calibration, sampling, and method performance.",
+        "Three readings from one sample are three independent biological replicates. Repeat readings estimate measurement repeatability on that sample; they do not increase the number of independent biological units.",
+        "Uncertainty means the true value is guaranteed to lie inside one reported interval. Uncertainty statements describe quantified doubt under a stated model and coverage convention, not an absolute guarantee."
+      ],
+      "evidenceLimits": [
+        "Uncertainty estimates depend on the measurement model, available calibration and repeatability evidence, environmental controls, and chosen coverage method.",
+        "A precise instrument reading cannot repair biased sampling, an ill-defined measurand, or a method that is unsuitable for the matrix or decision."
+      ],
+      "crossLinks": [
+        "THC-ENC-401; THC-ENC-403–404; THC-ENC-412; THC-ENC-414."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-403",
@@ -10321,14 +10663,64 @@
       "topicSlug": "measurement-research",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Calibration, verification, traceability, and action record",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-403",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-403/",
       "keywords": [
         "Measurement & Research Skills",
         "Data / QA",
         "Calibration, verification, traceability, and action record",
-        "THC-ENC-403"
-      ]
+        "THC-ENC-403",
+        "calibration",
+        "verification",
+        "adjustment",
+        "reference standard",
+        "traceability",
+        "as-found",
+        "as-left",
+        "tolerance",
+        "check standard",
+        "drift"
+      ],
+      "objective": "Control instruments through calibration, verification, reference standards, as-found condition, adjustments, and traceable records.",
+      "terms": [
+        "calibration",
+        "verification",
+        "adjustment",
+        "reference standard",
+        "traceability",
+        "as-found",
+        "as-left",
+        "tolerance",
+        "check standard",
+        "drift"
+      ],
+      "coreScience": [
+        "Calibration establishes a relationship between indications and reference quantity values under stated conditions. It does not automatically adjust an instrument, prove fitness for every use, or create permanent accuracy. Verification checks whether specified requirements are met. Adjustment changes instrument response. These activities must be named correctly because a routine check against a buffer or standard may be verification rather than a full calibration.",
+        "Metrological traceability belongs to a measurement result, not merely to a sticker on an instrument. It requires a documented unbroken chain of calibrations to a reference, with each link contributing uncertainty. Traceability alone does not establish that the uncertainty, range, method, or sample handling is adequate for the decision. A traceable scale can still be inappropriate for a tiny sample, and a calibrated pH meter can still be wrong in a dirty, damaged, poorly stored, or temperature-mismatched electrode.",
+        "Records should preserve as-found and as-left results. When an instrument fails verification, evaluate the affected data window rather than simply recalibrating and continuing. Consider drift direction, magnitude, prior checks, use frequency, environmental exposure, maintenance, and whether a second method or retained sample can bound impact. Reference materials need identity, lot, expiry, storage, preparation, assigned value, uncertainty, and suitability for the instrument range."
+      ],
+      "cultivation": [
+        "Create instrument-specific schedules based on risk and use, not one universal calendar. Place independent checks around critical measurements and define hold, correction, data review, and return-to-service criteria."
+      ],
+      "measurements": [
+        "Record instrument ID, model, serial number, firmware where relevant, measurand, range, calibration or verification procedure, reference standard ID, lot, assigned value, uncertainty, expiry, and environmental conditions.",
+        "Preserve as-found results before adjustment, any adjustment made, as-left results, tolerance, pass/fail decision, operator, date, and next due date. Do not overwrite the pre-adjustment state.",
+        "When a check fails, document the affected date range and data, assess whether prior measurements may be invalid, record corrective action, and obtain review approval before closing the event."
+      ],
+      "misconceptions": [
+        "A calibration sticker proves every result is traceable and fit for purpose. Traceability also requires a documented chain to appropriate references, a suitable method, and evidence that the instrument was performing within the needed range.",
+        "Calibration and verification are the same activity. Calibration establishes the relationship between indication and reference values; verification checks whether performance meets a defined requirement.",
+        "A failed check affects only the measurement taken immediately before it. The period of questionable data can extend back to the last known acceptable verification unless additional evidence narrows the interval."
+      ],
+      "evidenceLimits": [
+        "Calibration evidence does not compensate for nonrepresentative samples, unsuitable methods, uncontrolled environmental effects, or incorrect data handling.",
+        "Traceability supports comparability of measurements but does not prove that the measurement is biologically meaningful or sufficient for a cultivation decision."
+      ],
+      "crossLinks": [
+        "THC-ENC-402; THC-ENC-406–408; THC-ENC-412–414."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-404",
@@ -10339,14 +10731,64 @@
       "topicSlug": "measurement-research",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Population-to-increment-to-sample decision record",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-404",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-404/",
       "keywords": [
         "Measurement & Research Skills",
         "Data / QA",
         "Population-to-increment-to-sample decision record",
-        "THC-ENC-404"
-      ]
+        "THC-ENC-404",
+        "population",
+        "sampling frame",
+        "sampling unit",
+        "increment",
+        "composite",
+        "random sample",
+        "stratified sample",
+        "systematic sample",
+        "retained sample",
+        "heterogeneity"
+      ],
+      "objective": "Design sampling that connects the stated population and decision to representative spatial, temporal, and biological observations.",
+      "terms": [
+        "population",
+        "sampling frame",
+        "sampling unit",
+        "increment",
+        "composite",
+        "random sample",
+        "stratified sample",
+        "systematic sample",
+        "retained sample",
+        "heterogeneity"
+      ],
+      "coreScience": [
+        "A measurement describes the material actually observed or submitted. Extending it to a plant, room, irrigation zone, field, batch, or cultivar requires a sampling design. Begin by defining the target population and decision. A “room average” can refer to sensors, plants, canopy positions, or time points. A “batch sample” can refer to a few selected flowers, randomized increments, a composite, or material chosen for appearance. These designs support different inferences.",
+        "Heterogeneity should guide stratification. Useful strata include cultivar, propagation lot, room zone, canopy height, irrigation line position, soil unit, flowering stage, drying rack, container depth, and time. Random selection reduces conscious preference, while systematic routes improve repeatability but can align with hidden patterns. Composite samples estimate an average but can conceal hotspots; individual increments preserve spatial information but cost more to analyze.",
+        "Sample integrity continues after collection. Tools, containers, labeling, temperature, moisture loss, transport time, grinding, homogenization, subsampling, and chain of custody can alter results. Replicate laboratory analyses do not repair a biased field sample. A sampling plan should state how missing units, damaged samples, outliers, and deviations will be handled before results are known."
+      ],
+      "cultivation": [
+        "Write the sampling plan before inspection or testing. Include a map, selection rule, number of units, sample mass or volume, handling, retained samples, and inference limits."
+      ],
+      "measurements": [
+        "Define the target population, decision, sampling frame, sampling unit, increment or composite rules, strata, and any inaccessible portions before collecting material.",
+        "Record the randomization or route, number of samples and rationale, exact locations and times, sample mass or volume, tools, containers, preservation, chain of custody, and rules for missing or unusable samples.",
+        "At interpretation, state what population the sample is intended to represent, how compositing may hide spatial variation, whether retained samples exist, and which rare or localized conditions the design could reasonably miss."
+      ],
+      "misconceptions": [
+        "A larger composite always detects localized contamination. Compositing can dilute a hotspot below detection even while improving estimation of an average condition.",
+        "Several measurements from one plant represent several independent plants. Repeated or subsampled observations remain nested within the same biological unit unless the design defines otherwise.",
+        "The laboratory is responsible for whether the submitted sample represents the batch. The laboratory can analyze the material received, but representativeness is primarily determined by the sampling design and execution."
+      ],
+      "evidenceLimits": [
+        "Representative sampling reduces sampling error but cannot eliminate uncertainty from rare hotspots, inaccessible units, temporal change, destructive testing, or incomplete frames.",
+        "Analytical sensitivity cannot compensate for poor population coverage; a highly accurate result from a biased sample remains a biased estimate of the batch or crop."
+      ],
+      "crossLinks": [
+        "THC-ENC-359; THC-ENC-393–397; THC-ENC-409–412; THC-ENC-416."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-405",
@@ -10357,14 +10799,66 @@
       "topicSlug": "measurement-research",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Hierarchical identity and relationship map",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-405",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-405/",
       "keywords": [
         "Measurement & Research Skills",
         "Science lesson",
         "Hierarchical identity and relationship map",
-        "THC-ENC-405"
-      ]
+        "THC-ENC-405",
+        "identifier",
+        "identity",
+        "location",
+        "parent-child relationship",
+        "lot",
+        "batch",
+        "accession",
+        "clone",
+        "source",
+        "alias",
+        "immutable record"
+      ],
+      "objective": "Build permanent identifiers that preserve biological identity, location, lineage, treatment, and batch relationships without overwriting history.",
+      "terms": [
+        "identifier",
+        "identity",
+        "location",
+        "parent-child relationship",
+        "lot",
+        "batch",
+        "accession",
+        "clone",
+        "source",
+        "alias",
+        "immutable record"
+      ],
+      "coreScience": [
+        "Identity and location are different. A plant can move rooms while remaining the same plant, and a room can hold many changing plants. Permanent identifiers should not encode mutable facts that will later become false. Use separate fields for plant ID, genetic-source ID, seed lot, clone batch, mother plant, room, bench, position, treatment, harvest batch, sample, and storage container.",
+        "Relationships create traceability. A clone should link to its mother, cutting batch, propagation event, and later plant ID. A seedling should link to seed lot and germination event. A harvest sub-batch should link to plants or field block, harvest event, drying location, samples, laboratory reports, packaging lot, holds, and disposition. Aliases and commercial names can be retained as labels but should not replace controlled genetic or accession IDs.",
+        "Identifiers must remain unique across time and systems. Reusing a plant tag after harvest can silently connect new observations to the wrong history. Barcodes and QR codes reduce transcription but do not guarantee correct attachment or database logic. Corrections should preserve the original value, reason, author, date, and superseding relationship rather than deleting the evidence."
+      ],
+      "cultivation": [
+        "Define an ID grammar, issuing authority, uniqueness check, label durability, replacement rule, and parent-child model before scaling data collection."
+      ],
+      "measurements": [
+        "Assign a permanent machine-readable ID to each plant, batch, room, genetic line, clone, seed lot, or other tracked entity. Record entity type, creation date, source system, parent relationships, source or lot IDs, and responsible person.",
+        "Maintain a separate human-readable label and alias history so labels can change without changing identity. Record location, status, transfers, relabeling events, and relationships among plant, batch, genetic, and room records.",
+        "When an identifier is wrong, preserve the original record, mark it superseded or corrected, link it to the replacement, record who made the change and why, and avoid deleting the audit trail."
+      ],
+      "misconceptions": [
+        "A cultivar name uniquely identifies genetics. The same name can be used for unrelated or genetically variable material, while the same genotype can be sold under different names.",
+        "A room number can serve as the plant identifier. Rooms identify locations or environments; plants need independent IDs so movement does not destroy traceability.",
+        "Deleting an incorrect ID is cleaner than retaining the correction history. Deletion hides the error path and makes it harder to reconstruct which records, samples, or decisions were affected."
+      ],
+      "evidenceLimits": [
+        "Identifiers support traceability only when labels, relationships, access controls, backups, and human practices remain reliable.",
+        "A perfect ID system cannot prove biological identity by itself; genetic, source, or chain-of-custody evidence may still be required for disputed or high-risk records."
+      ],
+      "crossLinks": [
+        "THC-ENC-383; THC-ENC-394–400; THC-ENC-404; THC-ENC-411–413."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-406",
@@ -10375,14 +10869,64 @@
       "topicSlug": "measurement-research",
       "primaryFormat": "Science lesson",
       "teachingVisual": "Sensor–location–time–aggregation data pipeline",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-406",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-406/",
       "keywords": [
         "Measurement & Research Skills",
         "Science lesson",
         "Sensor–location–time–aggregation data pipeline",
-        "THC-ENC-406"
-      ]
+        "THC-ENC-406",
+        "time series",
+        "timestamp",
+        "time zone",
+        "sampling interval",
+        "logging interval",
+        "sensor placement",
+        "aggregation",
+        "missing data",
+        "drift",
+        "synchronization"
+      ],
+      "objective": "Collect environmental time-series data with controlled sensor identity, placement, timing, missing-data, and aggregation rules.",
+      "terms": [
+        "time series",
+        "timestamp",
+        "time zone",
+        "sampling interval",
+        "logging interval",
+        "sensor placement",
+        "aggregation",
+        "missing data",
+        "drift",
+        "synchronization"
+      ],
+      "coreScience": [
+        "Environmental data are inseparable from place and time. Temperature, humidity, carbon dioxide, light, soil moisture, pressure, airflow, and leaf wetness can vary across centimetres and seconds. A data channel therefore needs sensor ID, measured quantity, unit, location, height, orientation, shielding, surrounding crop condition, logging interval, controller relationship, and clock basis.",
+        "Timestamps should use a documented time zone and daylight-saving rule or coordinated universal time. Clock drift, power loss, duplicate timestamps, firmware changes, and controller resets can break alignment among sensors, irrigation, lighting, weather, and crop events. Preserve raw data and flag missing, substituted, clipped, or invalid values. Do not silently interpolate a long outage or replace an extreme value because it appears inconvenient.",
+        "Aggregation changes meaning. A daily average can hide a damaging thirty-minute heat spike, condensation event, dark-period light leak, or repeated oscillation. Minimum, maximum, percentile, duration above or below limits, rate of change, and spatial spread may be more relevant than mean. Autocorrelation means thousands of minute readings are not thousands of independent environmental replicates."
+      ],
+      "cultivation": [
+        "Build a sensor map and data dictionary. Test the complete path from sensor to database to graph to alarm, including time synchronization, missing-data flags, export, and backup."
+      ],
+      "measurements": [
+        "Record channel and sensor ID, quantity, unit, location, height, orientation, calibration or verification state, logger or controller ID, firmware, logging interval, timestamp convention, and time zone.",
+        "Preserve raw values with validity flags, missing-data reasons, maintenance events, power or network interruptions, and changes in sensor placement. Do not keep only dashboard summaries.",
+        "For every aggregation such as hourly mean, daily maximum, DLI, or VPD summary, record the source interval, calculation method, missing-data rule, and alarm or action threshold so the summary can be reproduced."
+      ],
+      "misconceptions": [
+        "More frequent logging automatically creates more independent information. High-frequency observations from the same sensor are often strongly autocorrelated and may add detail without increasing independent replication.",
+        "A daily mean proves the crop never exceeded a limit. A mean can hide short excursions, spatial extremes, or sensor failures that matter biologically.",
+        "A wireless dashboard preserves raw data permanently. Dashboards may resample, overwrite, smooth, or lose data unless raw retention and backup are explicitly configured."
+      ],
+      "evidenceLimits": [
+        "Logged values represent the sensor's exposure and method, not every leaf, flower, root zone, worker, or location in the room.",
+        "Sensor density, placement, response time, shielding, calibration, and aggregation choices determine what environmental variation can actually be inferred."
+      ],
+      "crossLinks": [
+        "THC-ENC-083–120; THC-ENC-363–365; THC-ENC-378; THC-ENC-403–404; THC-ENC-414."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-407",
@@ -10393,14 +10937,64 @@
       "topicSlug": "measurement-research",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Source-to-zone irrigation and fertigation batch record",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-407",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-407/",
       "keywords": [
         "Measurement & Research Skills",
         "Data / QA",
         "Source-to-zone irrigation and fertigation batch record",
-        "THC-ENC-407"
-      ]
+        "THC-ENC-407",
+        "irrigation event",
+        "fertigation batch",
+        "source water",
+        "stock solution",
+        "dilution",
+        "applied volume",
+        "distribution uniformity",
+        "runoff",
+        "leachate",
+        "dryback"
+      ],
+      "objective": "Create records that connect water source, mixture, equipment, applied volume, distribution, root-zone response, and corrective action.",
+      "terms": [
+        "irrigation event",
+        "fertigation batch",
+        "source water",
+        "stock solution",
+        "dilution",
+        "applied volume",
+        "distribution uniformity",
+        "runoff",
+        "leachate",
+        "dryback"
+      ],
+      "coreScience": [
+        "An irrigation record should describe what entered the system, what the system delivered, and what the root zone experienced. A recipe alone is incomplete. Record water source, batch, treatment, temperature, starting chemistry, stock identities, lot numbers, mixing order, target and measured concentrations, tank volume, agitation, pH and EC method, and release decision.",
+        "Delivery records need zone, valve, pressure, emitter or nozzle specification, start and stop time, runtime, flow, applied volume, maintenance condition, and distribution checks. Controller commands are not proof of delivery. A clogged emitter, leaking line, empty stock tank, pressure change, pump fault, or blocked drain can make the logged command biologically false for individual plants.",
+        "Root-zone response should be measured using system-appropriate variables: mass change, substrate water content, soil moisture by depth, drainage volume, runoff or leachate EC and pH, oxygen status, plant response, and time to next event. These measurements answer different questions and require defined sample positions. Corrective additions should be linked to the original event, reason, authorization, and outcome."
+      ],
+      "cultivation": [
+        "Use a controlled event ID linking recipe, equipment, delivered water, representative root-zone measurements, deviations, and plant response."
+      ],
+      "measurements": [
+        "Record event ID, date and time, water source and analysis, tank or batch, stock or product IDs and lots, preparation amounts, units, target and measured pH, EC, temperature, and any relevant source-water corrections.",
+        "For each zone, record pressure, flow, runtime, delivered volume or emitter output, distribution checks, pre- and post-irrigation substrate moisture where measured, drainage or runoff volume, and representative plant observations.",
+        "Document deviations such as clogged emitters, skipped zones, recipe changes, runoff anomalies, or failed measurements, along with correction, approver, and whether affected plants or batches require follow-up."
+      ],
+      "misconceptions": [
+        "A programmed runtime proves every plant received the intended volume. Actual delivery depends on pressure, emitter performance, clogging, plumbing, and distribution uniformity.",
+        "Input EC is a complete nutrient-composition record. Equal conductivity can result from very different ion compositions and does not identify which nutrients are present.",
+        "Runoff from one container describes the whole zone. Drainage chemistry and volume can vary with plant size, substrate condition, emitter output, position, and sampling timing."
+      ],
+      "evidenceLimits": [
+        "Irrigation targets and interpretations depend on root-zone system, container geometry, developmental stage, climate, cultivar, irrigation strategy, and measurement method.",
+        "Runoff, leachate, or substrate readings are samples of a dynamic root-zone process and should not be generalized beyond the sampled locations and timing without adequate replication."
+      ],
+      "crossLinks": [
+        "THC-GROW-042; THC-GROW-070; THC-ENC-369; THC-ENC-403–404; THC-ENC-408."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-408",
@@ -10411,14 +11005,62 @@
       "topicSlug": "measurement-research",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Water-sample, meter-control, and interpretation record",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-408",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-408/",
       "keywords": [
         "Measurement & Research Skills",
         "Data / QA",
         "Water-sample, meter-control, and interpretation record",
-        "THC-ENC-408"
-      ]
+        "THC-ENC-408",
+        "pH",
+        "electrical conductivity",
+        "alkalinity",
+        "hardness",
+        "ion",
+        "total dissolved solids",
+        "temperature compensation",
+        "sample preservation",
+        "charge balance"
+      ],
+      "objective": "Record water and solution measurements with controlled sampling, temperature, instrument checks, chemistry context, and interpretation limits.",
+      "terms": [
+        "pH",
+        "electrical conductivity",
+        "alkalinity",
+        "hardness",
+        "ion",
+        "total dissolved solids",
+        "temperature compensation",
+        "sample preservation",
+        "charge balance"
+      ],
+      "coreScience": [
+        "pH and electrical conductivity are method-dependent measurements, not complete descriptions of water. pH describes hydrogen-ion activity under the method conditions. EC describes the solution’s ability to conduct current and is influenced by ion concentration, mobility, temperature, and instrument compensation. Two waters can share EC but contain very different ions, alkalinity, sodium, chloride, nutrients, or contaminants.",
+        "Records should distinguish source water, treated water, stock, final solution, input, root-zone extract, runoff, leachate, and laboratory sample. Sample temperature, equilibration, container, storage, aeration, and time can change results. A meter needs electrode or cell identity, cleaning, storage condition, standard lots, verification results, temperature mode, and maintenance. TDS or ppm estimates derived from EC require the instrument factor and should not replace direct chemical analysis.",
+        "Water-quality interpretation often requires alkalinity, hardness, major ions, nutrients, metals, microbiology, treatment history, and seasonal variability. Laboratory reports need method, units, detection limits, sample receipt condition, and accreditation scope. Changes in pH after acid addition depend strongly on alkalinity; pH alone does not predict acid demand."
+      ],
+      "cultivation": [
+        "Create separate records for field meter checks and laboratory water analysis, then link both to the source, date, treatment, irrigation event, and decision."
+      ],
+      "measurements": [
+        "Record sample ID, source, location, date and time, sample type, preservation, temperature, instrument or laboratory method, and the standards or buffers used for instrument checks.",
+        "Record pH, EC, temperature compensation, alkalinity, hardness, major ions, metals, or microbiological results only when actually measured, together with units, detection limits, laboratory, method version, and scope.",
+        "Interpret results against the intended use. Document whether the issue is acidity, alkalinity reserve, salinity, individual ions, contamination, or treatment need rather than using one meter value as a complete water-quality diagnosis."
+      ],
+      "misconceptions": [
+        "Equal EC means equal nutrient composition. Conductivity reflects the combined ionic content and can be similar for solutions with very different nutrient ratios.",
+        "Low pH water always requires more base than high-alkalinity water. Alkalinity measures acid-neutralizing capacity and often predicts amendment demand better than pH alone.",
+        "A ppm display is a direct measurement of all dissolved solids. Many handheld meters estimate TDS from EC using a conversion factor rather than measuring every dissolved constituent."
+      ],
+      "evidenceLimits": [
+        "Field pH and EC meters measure narrow properties. Overall water fitness depends on intended use, alkalinity, ion composition, contaminants, treatment, sampling, and seasonal variation.",
+        "Laboratory chemistry describes the submitted sample at a point in time; source-water variability and distribution-system changes can require repeated sampling."
+      ],
+      "crossLinks": [
+        "THC-GROW-042; THC-ENC-121–140; THC-ENC-366; THC-ENC-403–404; THC-ENC-407."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-409",
@@ -10429,14 +11071,62 @@
       "topicSlug": "measurement-research",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Standardized Cannabis morphology measurement plate",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-409",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-409/",
       "keywords": [
         "Measurement & Research Skills",
         "Data / QA",
         "Standardized Cannabis morphology measurement plate",
-        "THC-ENC-409"
-      ]
+        "THC-ENC-409",
+        "operational definition",
+        "phenotyping",
+        "landmark",
+        "sampling position",
+        "canopy width",
+        "internode",
+        "biomass",
+        "image scale",
+        "observer agreement"
+      ],
+      "objective": "Convert descriptive plant appearance into repeatable measurements using defined anatomy, position, stage, reference points, and image methods.",
+      "terms": [
+        "operational definition",
+        "phenotyping",
+        "landmark",
+        "sampling position",
+        "canopy width",
+        "internode",
+        "biomass",
+        "image scale",
+        "observer agreement"
+      ],
+      "coreScience": [
+        "Morphology becomes comparable data only after the trait is operationally defined. Plant height can mean substrate line to highest natural point, apical tip after straightening, or support height. Canopy width can mean one axis, two perpendicular axes, or projected area. Node count depends on which nodes are included. Stem diameter depends on measurement height and tool. Each definition changes the result.",
+        "Plant measurements must include identity, developmental stage, treatment history, posture, time relative to irrigation and light, and organ position. Leaf dimensions require a defined leaf age and node. Internode measurements require named node pairs. Flower and trichome observations require sample sites and optical method. Fresh mass, dry mass, trimmed mass, and saleable mass answer different questions and must not be mixed.",
+        "Images can improve auditing but introduce perspective, lens distortion, lighting, color, focus, and scale errors. Use a fixed camera position, reference scale, color target where needed, background, orientation, and file naming. Automated image analysis should preserve software, model version, thresholds, training data limits, and manual correction history. Observer training and blinded repeat scoring can reveal ambiguity."
+      ],
+      "cultivation": [
+        "Publish a controlled phenotype dictionary before collecting trial data. Train observers using examples and counterexamples, then retain raw measurements and images."
+      ],
+      "measurements": [
+        "Define each trait anatomically before measurement, including reference points, plant position, developmental stage, date and time, units, instrument, and observer.",
+        "Record plant, genotype, treatment, and environment IDs with repeated measurements, images that include scale and standardized viewpoint, and rules for damaged, missing, or unmeasurable organs.",
+        "For mass or yield traits, record fresh or dry basis, trimmed or untrimmed fraction, moisture method, rejected material, and the denominator used. Keep repeated observations on one plant distinct from independent plant replication."
+      ],
+      "misconceptions": [
+        "Tall, bushy, frosty, and dense are complete phenotype measurements. These descriptions need operational definitions and quantitative or reproducible scoring methods before they can support comparison.",
+        "A photograph is objective without a scale and standardized viewpoint. Perspective, lighting, distance, stage, and camera settings can change apparent morphology.",
+        "Repeated measurements on one plant increase the biological sample size. They improve temporal or technical resolution for that plant but do not create new independent plants."
+      ],
+      "evidenceLimits": [
+        "Phenotypes reflect genetics, environment, management, developmental stage, observer, and measurement method; trait measurements alone do not identify the cause of a difference.",
+        "Image-derived and manual measurements require validation for repeatability and agreement before they can substitute for direct reference methods."
+      ],
+      "crossLinks": [
+        "THC-ENC-009–020; THC-ENC-394; THC-ENC-404–406; THC-ENC-416–418."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-410",
@@ -10447,14 +11137,64 @@
       "topicSlug": "measurement-research",
       "primaryFormat": "Data / QA",
       "teachingVisual": "Scouting route, incidence, severity, and evidence record",
-      "status": "catalogued-review",
-      "route": "/learn/encyclopedia/?lesson=THC-ENC-410",
+      "status": "published",
+      "route": "/learn/encyclopedia/thc-enc-410/",
       "keywords": [
         "Measurement & Research Skills",
         "Data / QA",
         "Scouting route, incidence, severity, and evidence record",
-        "THC-ENC-410"
-      ]
+        "THC-ENC-410",
+        "scouting unit",
+        "incidence",
+        "severity",
+        "prevalence",
+        "symptom",
+        "sign",
+        "distribution",
+        "specimen",
+        "diagnostic confidence",
+        "differential diagnosis"
+      ],
+      "objective": "Record plant-health observations using repeatable routes, units, severity scales, organism confidence, and diagnostic boundaries.",
+      "terms": [
+        "scouting unit",
+        "incidence",
+        "severity",
+        "prevalence",
+        "symptom",
+        "sign",
+        "distribution",
+        "specimen",
+        "diagnostic confidence",
+        "differential diagnosis"
+      ],
+      "coreScience": [
+        "Scouting is structured observation, not a casual walk. Define the crop population, route, number and type of units, plant parts, canopy layers, substrate or soil zones, traps, and observation interval. Incidence is the proportion of units affected; severity is the amount of tissue or impact within an affected unit. Counts, ratings, and percentages require an explicit denominator and scale.",
+        "Symptoms are plant responses; signs are physical evidence of an organism. Yellowing, necrosis, wilt, spots, distortion, root discoloration, odor, webbing, frass, spores, and insects can each have several causes. Record distribution, progression, environmental and treatment history, and co-occurring evidence. Identify organisms to the justified level and preserve photographs or specimens when confidence is limited.",
+        "Scouting records should distinguish observation, preliminary interpretation, confirmatory test, action threshold, intervention, and outcome. A positive molecular test may detect an organism without proving that it caused every symptom. A favorable environment does not prove infection. Absence from a limited sample does not prove absence from the crop."
+      ],
+      "cultivation": [
+        "Use fixed scouting routes plus targeted risk zones. Trend plant, trap, and symptom data over time and link actions to lawful label and quarantine records."
+      ],
+      "measurements": [
+        "Define the scouting area, route, number of sampled units, date, time, observer, weather or room conditions, plant stage, and the organs or positions inspected.",
+        "Record incidence with a denominator, severity using a defined scale, symptoms, signs, suspected organism, confidence level, trap counts where relevant, and photo, specimen, or laboratory-test IDs.",
+        "Link each observation to environmental and treatment history, threshold or action taken, and follow-up outcome. Preserve negative findings and sample size so 'zero detected' has an interpretable meaning."
+      ],
+      "misconceptions": [
+        "One symptomatic leaf establishes the diagnosis. Many disorders share visual symptoms, so diagnosis requires pattern, context, differential reasoning, and sometimes confirmatory testing.",
+        "A pest present on a trap proves crop damage. Traps indicate presence or activity but do not automatically establish infestation level, injury, or economic impact on plants.",
+        "Zero detections in a small sample proves the room is clean. Nondetection only constrains prevalence according to sampling sensitivity, distribution, timing, and sample size."
+      ],
+      "evidenceLimits": [
+        "Scouting sensitivity varies with organism distribution, life stage, symptom expression, sampling route, observer skill, and diagnostic method.",
+        "Visual scouting can prioritize hypotheses but cannot reliably distinguish all nutrient, environmental, infectious, and pest causes without supporting evidence."
+      ],
+      "crossLinks": [
+        "THC-ENC-261–340; THC-ENC-373; THC-ENC-376; THC-ENC-404–406; THC-ENC-413."
+      ],
+      "practicalResources": [],
+      "synonyms": []
     },
     {
       "id": "THC-ENC-411",
