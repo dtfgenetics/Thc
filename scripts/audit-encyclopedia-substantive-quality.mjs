@@ -18,8 +18,18 @@ function walk(dir){
     if(e.isDirectory()) walk(file);
     else if(e.isFile()&&e.name.endsWith('.json')){
       let j; try{j=JSON.parse(fs.readFileSync(file,'utf8'));}catch{continue}
-      if(/^THC-ENC-\d{3}$/.test(j.id||'')) lessons.set(j.id,{...j,__file:path.relative(root,file)});
-      for(const l of arr(j.lessons)) if(/^THC-ENC-\d{3}$/.test(l?.id||'')) lessons.set(l.id,{...l,__file:path.relative(root,file)});
+      if(/^THC-ENC-\d{3}$/.test(j.id||'')) {
+        const candidate={...j,__file:path.relative(root,file)};
+        const prior=lessons.get(j.id);
+        const candidateCanonical=/\/lessons\/thc-enc-\d{3}\.json$/i.test(file);
+        const priorCanonical=prior?.__file ? /\/lessons\/thc-enc-\d{3}\.json$/i.test(prior.__file.replaceAll('\\','/')) : false;
+        if(!prior || candidateCanonical || !priorCanonical) lessons.set(j.id,candidate);
+      }
+      for(const l of arr(j.lessons)) if(/^THC-ENC-\d{3}$/.test(l?.id||'')) {
+        const prior=lessons.get(l.id);
+        const priorCanonical=prior?.__file ? /\/lessons\/thc-enc-\d{3}\.json$/i.test(prior.__file.replaceAll('\\','/')) : false;
+        if(!priorCanonical) lessons.set(l.id,{...l,__file:path.relative(root,file)});
+      }
     }
   }
 }
