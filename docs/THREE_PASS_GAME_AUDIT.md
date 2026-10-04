@@ -1,5 +1,8 @@
 # Three-Pass Game Audit
 
+> **Historical planning document — not current release state.** For current High Land acceptance evidence, use `docs/high-land-acceptance-checklist.md`, the canonical game tests, and current CI. Do not treat old placeholder/missing-asset statements below as current production facts.
+
+
 This audit identifies where the current build can fail, what structure fixes each issue, and how Codex should verify the fixes.
 
 ## Pass 1 — Does the code match the locked game plan?
