@@ -45,7 +45,7 @@
     "games:platform:test": "node games/shared-platform/test/runtime.test.mjs",
     "games:platform:sync": "node scripts/sync-game-shared-platform.mjs",
     "games:platform:sync-check": "node scripts/sync-game-shared-platform.mjs --check",
-    "games:preflight": "npm run games:scaffold-check && npm run games:status-check && npm run games:verify && npm run games:external-check && npm run games:release-pins:check && npm run games:profiles:check && npm run games:profiles:report-check && npm run games:profiles:queue-check && npm run games:affected:check && npm run games:resolve-check && npm run games:qa:catalog-check && npm run games:locations:check && npm run games:registry:check && npm run games:registry:docs:check && npm run games:skill:check && npm run games:platform:test && npm run games:platform:sync-check && npm run verify:seed-man && npm run verify:navigation && npm run verify:game-scope && npm run verify:release-integrity && node games/test/cross-game-polish.test.mjs",
+    "games:preflight": "npm run games:scaffold-check && npm run games:status-check && npm run games:verify && npm run games:external-check && npm run games:release-pins:check && npm run games:profiles:check && npm run games:profiles:report-check && npm run games:profiles:queue-check && npm run games:agents:queue-check && npm run games:affected:check && npm run games:resolve-check && npm run games:qa:catalog-check && npm run games:locations:check && npm run games:registry:check && npm run games:registry:docs:check && npm run games:skill:check && npm run games:platform:test && npm run games:platform:sync-check && npm run verify:seed-man && npm run verify:navigation && npm run verify:game-scope && npm run verify:release-integrity && node games/test/cross-game-polish.test.mjs",
     "games:reconcile-release": "node scripts/reconcile-local-game-release-registry.mjs",
     "games:release-check": "node scripts/reconcile-local-game-release-registry.mjs --check && npm run games:preflight",
     "hiq:questions": "node games/high-iq/scripts/question-bank.mjs",
@@ -203,6 +203,8 @@
     "verify:encyclopedia-copy-quality": "node scripts/validate-encyclopedia-copy-quality.mjs",
     "build:encyclopedia-independent-review": "node scripts/build-encyclopedia-independent-review-manifest.mjs",
     "verify:encyclopedia-independent-review": "npm run build:encyclopedia-independent-review && node scripts/validate-encyclopedia-independent-review-manifest.mjs",
-    "build:encyclopedia-teaching-visuals": "node scripts/build-encyclopedia-teaching-visuals.mjs"
+    "build:encyclopedia-teaching-visuals": "node scripts/build-encyclopedia-teaching-visuals.mjs",
+    "games:agents:queue": "node scripts/generate-autonomous-playtest-work-queue.mjs",
+    "games:agents:queue-check": "node scripts/generate-autonomous-playtest-work-queue.mjs --check"
   }
 }
