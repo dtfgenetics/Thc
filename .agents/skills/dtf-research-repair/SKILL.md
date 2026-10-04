@@ -4,7 +4,7 @@ description: High-throughput DTF research, repair, integration and production-re
 compatibility: Designed for DTF Genetics repositories with GitHub access. Uses current repository registries and subsystem skills instead of embedding mutable ownership maps.
 metadata:
   author: dtfgenetics
-  version: "2.1.1"
+  version: "2.2.1"
 ---
 
 # DTF Research Repair Controller
@@ -90,7 +90,19 @@ A campaign contains:
 
 Examples: Encyclopedia Completion, Grow Doc Production Readiness, Tools Suite Quality, Game Portfolio Completion.
 
-“Continue” resumes the campaign DAG from durable state. Use `assets/campaign.schema.json` as the portable campaign contract when the existing orchestrator ledger does not already provide a stricter representation.
+“Continue” resumes the campaign DAG from durable state.
+
+### Durable campaign authority
+
+In `dtfgenetics/Thc`, the existing system-orchestrator epic/job lifecycle is authoritative. Use:
+- `scripts/orchestrator-epic.mjs` and `scripts/orchestrator/epics.mjs` for campaign/epic DAG materialization;
+- `scripts/orchestrator.mjs` for V2 ready-job planning, dispatch, leases, start/heartbeat and status;
+- issue-embedded V2 `worker-orchestrator` markers as durable job state;
+- `configuration/orchestrator/*` for worker, verification and retry policy.
+
+The portable `assets/campaign.schema.json` is an interchange/fallback contract only. Never create a parallel campaign database or scheduler when the authoritative epic/job control plane is available.
+
+Before creating campaign jobs, inspect existing epic/job issues and PRs for the same outcome. Materialize only missing bounded work.
 
 ## Execution
 
@@ -147,6 +159,6 @@ Report deltas:
 - blockers and denied operations;
 - next executable work.
 
-At run handoff, persist structured events when the ledger supports them and use `scripts/summarize-run.mjs` to calculate throughput/repeat-audit metrics.
+At run handoff, persist durable job transitions/evidence in the authoritative orchestrator issue markers. Use `scripts/summarize-run.mjs` for derived throughput/repeat-audit metrics; metrics are observability, not a second state store.
 
 Never declare the portfolio complete because one repair shipped.

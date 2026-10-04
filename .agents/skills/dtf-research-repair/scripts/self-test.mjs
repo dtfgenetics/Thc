@@ -48,4 +48,16 @@ assert.equal(metrics.substantiveRepairsCompleted,1);
 assert.equal(metrics.contentDataUnitsCompleted,4);
 assert.equal(metrics.repeatAuditRate,0.5);
 
+
+const repoRoot=path.resolve(root,'../../../..');
+const skill=fs.readFileSync(path.join(root,'../SKILL.md'),'utf8');
+const agents=fs.readFileSync(path.join(repoRoot,'AGENTS.md'),'utf8');
+const aiContext=fs.readFileSync(path.join(repoRoot,'AI_CONTEXT.md'),'utf8');
+assert.match(skill,/scripts\/orchestrator-epic\.mjs/);
+assert.match(skill,/scripts\/orchestrator\.mjs/);
+assert.match(skill,/Never create a parallel campaign database or scheduler/);
+assert.match(agents,/dtf-research-repair\/SKILL\.md/);
+assert.match(aiContext,/dtf-research-repair\/SKILL\.md/);
+assert.match(aiContext,/existing orchestrator epic\/job machinery/);
+
 console.log('dtf-research-repair self-test passed');
