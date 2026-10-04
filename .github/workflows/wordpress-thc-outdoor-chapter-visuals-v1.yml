@@ -18,9 +18,11 @@ permissions:
   contents: read
   issues: write
 
+# Serialize every writer that reads and replaces the shared Learn topic pages.
+# A per-workflow lock allows stale WordPress HTML to overwrite newer layers.
 concurrency:
-  group: thc-outdoor-chapter-visuals-v1
-  cancel-in-progress: true
+  group: dtfseeds-learning-experience-v3
+  cancel-in-progress: false
 
 env:
   WP_SITE_URL: https://dtfseeds.com
