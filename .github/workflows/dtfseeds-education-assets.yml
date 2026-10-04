@@ -6,6 +6,11 @@ on:
     branches: [main]
     paths:
       - scripts/build-education-image-derivatives.py
+      - scripts/validate-education-visual-system.mjs
+      - scripts/build-encyclopedia-teaching-visuals.mjs
+      - scripts/build-encyclopedia-visual-production-queue.mjs
+      - scripts/validate-encyclopedia-visual-production-queue.mjs
+      - scripts/filter-encyclopedia-visual-map-for-publication.mjs
       - scripts/build-public-learning-center.mjs
       - scripts/publish-wordpress-education-wave2.mjs
       - site/public-route-patch/learn/infographics/**
@@ -16,6 +21,11 @@ on:
     branches: [main]
     paths:
       - scripts/build-education-image-derivatives.py
+      - scripts/validate-education-visual-system.mjs
+      - scripts/build-encyclopedia-teaching-visuals.mjs
+      - scripts/build-encyclopedia-visual-production-queue.mjs
+      - scripts/validate-encyclopedia-visual-production-queue.mjs
+      - scripts/filter-encyclopedia-visual-map-for-publication.mjs
       - scripts/build-public-learning-center.mjs
       - scripts/publish-wordpress-education-wave2.mjs
       - site/public-route-patch/learn/infographics/**
@@ -74,6 +84,15 @@ jobs:
           done
           required=(THC-C004_Infographic_From_Cell_to_Canopy.png THC-C005_Infographic_Root_Anatomy_and_Forensics.png THC-C006_Infographic_Stem_Transport_and_Training_Risk.png THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.png Cannabis_Plant_Anatomy_Infographic.png Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png Nutrient_Uptake_and_Root_Zone_Chemistry.png Beneficial_Insects_and_Biological_Controls.png)
           for file in "${required[@]}"; do test -s "$base/$file"; done
+      - name: Validate education visual governance and encyclopedia coverage queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run verify:education-visual-system
+          node scripts/build-encyclopedia-teaching-visuals.mjs
+          npm run build:encyclopedia-visual-queue
+          node scripts/validate-encyclopedia-visual-production-queue.mjs
+
       - name: Build responsive WebP derivatives
         shell: bash
         run: |
