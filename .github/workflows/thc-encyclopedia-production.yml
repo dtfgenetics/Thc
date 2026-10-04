@@ -36,6 +36,8 @@ on:
       - 'scripts/validate-thc-education-search.mjs'
       - '.agents/skills/thc-encyclopedia-production/**'
       - '.github/workflows/thc-encyclopedia-production.yml'
+      - '.github/workflows/wordpress-encyclopedia-production.yml'
+      - '.github/workflows/wordpress-encyclopedia-visuals-production.yml'
       - 'docs/ENCYCLOPEDIA_CONTENT_GAP_REGISTER.md'
       - 'package.json'
   push:
@@ -64,6 +66,8 @@ on:
       - 'scripts/*evidence*.mjs'
       - '.agents/skills/thc-encyclopedia-production/**'
       - '.github/workflows/thc-encyclopedia-production.yml'
+      - '.github/workflows/wordpress-encyclopedia-production.yml'
+      - '.github/workflows/wordpress-encyclopedia-visuals-production.yml'
   workflow_dispatch:
 
 permissions:
