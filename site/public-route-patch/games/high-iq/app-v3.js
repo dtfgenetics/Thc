@@ -1043,9 +1043,9 @@ function configureHighIqAgent({ category, difficulty, mode, count } = {}) {
 }
 
 function selectHighIqAgentAnswer(letter) {
-  if (highIqStage() !== 'question') return false;
   const normalized = String(letter || '').toUpperCase();
   if (!LETTERS.includes(normalized)) throw new Error(`Unsupported High IQ answer: ${letter}`);
+  if (highIqStage() !== 'question') return false;
   const button = ui.answers.querySelector(`[data-letter="${normalized}"]`);
   if (!button || button.disabled) return false;
   recordHighIqAgentAction('select', normalized);
