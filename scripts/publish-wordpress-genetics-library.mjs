@@ -199,7 +199,7 @@ function linePageHtml(line,mediaList){
   return `<div data-dtf-genetics-line="${esc(line.slug)}" style="background:#f4f8f4;color:#173522">
 <section style="max-width:1180px;margin:auto;padding:54px 22px 34px">
   <p style="margin:0 0 10px;color:#2d7d48;font-size:.82rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase">DTF Genetics · line profile</p>
-  <h1 style="font-size:clamp(2.5rem,6vw,4.8rem);line-height:.98;letter-spacing:-.04em;margin:0 0 16px">${esc(line.name)}</h1>
+  <h2 style="font-size:clamp(2.5rem,6vw,4.8rem);line-height:.98;letter-spacing:-.04em;margin:0 0 16px">${esc(line.name)}</h2>
   <p style="font-size:1.12rem;line-height:1.8;color:#46604e;max-width:800px">${esc(line.summary)}</p>
   <p>${badge(line.status.replaceAll('-',' '))}</p>
 </section>
@@ -271,7 +271,7 @@ const currentStoreRoutes=[
 const blueMango=prepared.find(x=>x.line.id==='blue-mango');
 const seedsHtml=`<div data-dtf-genetics-library="2026" style="background:#f4f8f4;color:#173522">
 <section style="max-width:1240px;margin:auto;padding:58px 22px 38px;display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:38px;align-items:center">
-  <div><p style="margin:0 0 10px;color:#2d7d48;font-size:.82rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase">DTF Genetics · documented breeding library</p><h1 style="font-size:clamp(2.6rem,6vw,5rem);line-height:.98;letter-spacing:-.045em;margin:0 0 20px">From breeding notes to current releases.</h1><p style="font-size:1.13rem;line-height:1.8;color:#46604e;max-width:760px">Browse DTF Genetics by line. Every profile has a title, reviewed strain-card artwork, generation and seed-type context, description, verified lineage where available, and direct store routes only when a WooCommerce listing actually exists.</p><p>${button('#genetics-library','Browse the genetics library',true)}${button('/shop/','Shop current releases',false)}${button('/learn/genetics-breeding/','Learn genetics & breeding',false)}</p></div>
+  <div><p style="margin:0 0 10px;color:#2d7d48;font-size:.82rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase">DTF Genetics · documented breeding library</p><h2 style="font-size:clamp(2.6rem,6vw,5rem);line-height:.98;letter-spacing:-.045em;margin:0 0 20px">From breeding notes to current releases.</h2><p style="font-size:1.13rem;line-height:1.8;color:#46604e;max-width:760px">Browse DTF Genetics by line. Every profile has a title, reviewed strain-card artwork, generation and seed-type context, description, verified lineage where available, and direct store routes only when a WooCommerce listing actually exists.</p><p>${button('#genetics-library','Browse the genetics library',true)}${button('/shop/','Shop current releases',false)}${button('/learn/genetics-breeding/','Learn genetics & breeding',false)}</p></div>
   <div>${image(blueMango?.media?.[0],blueMango?.line?.releaseCards?.[0]?.altText||'Blue Mango DTF Genetics strain card',{eager:true})}</div>
 </section>
 <section id="genetics-library" style="max-width:1240px;margin:auto;padding:12px 22px 62px">
