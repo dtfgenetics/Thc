@@ -49,8 +49,9 @@ let roundStarted=false;
 let roundToken=1;
 let restartArmedUntil=0;
 function elapsedSeconds(){return 0;}
+const completePanel={hidden:true};
 const restartButton={click(){roundToken+=1;openCards=[];}};
-const playAgainButton={click(){roundToken+=1;matches=0;}};
+const playAgainButton={click(){roundToken+=1;matches=0;completePanel.hidden=true;}};
 const listeners={};
 const document={documentElement:{dataset:{}}};
 const window={addEventListener(type,handler){(listeners[type] ||= []).push(handler);}};
