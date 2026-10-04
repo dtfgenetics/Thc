@@ -61,6 +61,10 @@ A game task is ready for implementation only after these are known:
 
 Use Game Studio after this DTF-specific resolution, not instead of it.
 
+## Autonomous playtest work queue
+
+Before choosing the next game for autonomous QA migration, read `data/autonomous-playtest-work-queue.json` and run `npm run games:agents:queue-check`. Prefer the highest-ranked feasible game unless the user names a different title. Regenerate with `npm run games:agents:queue` after any autonomous profile promotion.
+
 ## Autonomous playtest contract
 
 For browser-playable games, treat code inspection alone as insufficient. When the runtime can support it, expose a versioned, read-only observation surface plus controlled actions that travel through normal gameplay paths.
