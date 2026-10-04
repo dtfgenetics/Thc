@@ -117,6 +117,8 @@
     "verify:encyclopedia-worked-examples": "node scripts/validate-encyclopedia-worked-examples.mjs",
     "build:encyclopedia-scorecard": "node scripts/build-encyclopedia-completion-scorecard.mjs",
     "verify:encyclopedia-scorecard": "npm run build:encyclopedia-scorecard && node scripts/validate-encyclopedia-completion-scorecard.mjs",
+    "build:encyclopedia-quality-scorecard": "node scripts/build-encyclopedia-quality-scorecard.mjs",
+    "verify:encyclopedia-quality-scorecard": "npm run build:encyclopedia-scorecard && npm run build:encyclopedia-evidence && npm run build:encyclopedia-evidence-priority && npm run verify:encyclopedia-production-queues && npm run build:encyclopedia-quality-scorecard && node scripts/validate-encyclopedia-quality-scorecard.mjs",
     "verify:encyclopedia-renderer": "node scripts/validate-encyclopedia-renderer-contract.mjs",
     "build:encyclopedia-discovery": "node scripts/build-encyclopedia-discovery-index.mjs",
     "verify:encyclopedia-discovery": "npm run build:encyclopedia-discovery && node scripts/validate-thc-education-search.mjs",
