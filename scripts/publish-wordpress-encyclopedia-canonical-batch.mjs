@@ -73,7 +73,9 @@ const workedExampleHtml=a=>{
 
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const requestAttempts=Math.max(1,Number(process.env.WP_API_RETRY_ATTEMPTS||6));
+const writeDelayMs=Math.max(0,Number(process.env.WP_WRITE_DELAY_MS||150));
 const retryableStatus=status=>status===408||status===425||status===429||status>=500;
+const canRetryRequest=(endpoint,method)=>method==='GET'||(method==='POST'&&/^\/(?:pages|media)\/\d+(?:\?|$)/.test(endpoint));
 const retryDelayMs=(attempt,retryAfter)=>{
   const retryAfterSeconds=Number(retryAfter||0);
   if(Number.isFinite(retryAfterSeconds)&&retryAfterSeconds>0) return Math.min(60000,retryAfterSeconds*1000);
@@ -81,14 +83,15 @@ const retryDelayMs=(attempt,retryAfter)=>{
 };
 async function request(endpoint,{method='GET',body}={}){
   const url=`${site}/wp-json/wp/v2${endpoint}`;
-  for(let attempt=1;attempt<=requestAttempts;attempt++){
+  const maxAttempts=canRetryRequest(endpoint,method)?requestAttempts:1;
+  for(let attempt=1;attempt<=maxAttempts;attempt++){
     let res;
     try{
-      res=await fetch(url,{method,headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache'},body:body?JSON.stringify(body):undefined});
+      res=await fetch(url,{method,headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(60_000)});
     }catch(error){
-      if(attempt===requestAttempts) throw new Error(`${method} ${endpoint} network failure after ${attempt} attempt(s): ${error?.message||error}`);
+      if(attempt===maxAttempts) throw new Error(`${method} ${endpoint} network failure after ${attempt} attempt(s): ${error?.message||error}`);
       const delay=retryDelayMs(attempt);
-      console.warn(`${method} ${endpoint} network failure on attempt ${attempt}/${requestAttempts}; retrying in ${delay}ms: ${error?.message||error}`);
+      console.warn(`${method} ${endpoint} network failure on attempt ${attempt}/${maxAttempts}; retrying in ${delay}ms: ${error?.message||error}`);
       await sleep(delay);
       continue;
     }
@@ -96,11 +99,11 @@ async function request(endpoint,{method='GET',body}={}){
     try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
     if(res.ok) return {data:parsed,headers:res.headers};
     const detail=typeof parsed==='string'?parsed.slice(0,800):JSON.stringify(parsed).slice(0,800);
-    if(!retryableStatus(res.status)||attempt===requestAttempts){
+    if(!retryableStatus(res.status)||attempt===maxAttempts){
       throw new Error(`${method} ${endpoint} failed ${res.status} after ${attempt} attempt(s): ${detail}`);
     }
     const delay=retryDelayMs(attempt,res.headers.get('retry-after'));
-    console.warn(`${method} ${endpoint} returned retryable ${res.status} on attempt ${attempt}/${requestAttempts}; retrying in ${delay}ms`);
+    console.warn(`${method} ${endpoint} returned retryable ${res.status} on attempt ${attempt}/${maxAttempts}; retrying in ${delay}ms`);
     await sleep(delay);
   }
   throw new Error(`${method} ${endpoint} exhausted retry loop unexpectedly`);
@@ -137,7 +140,9 @@ async function upsertPage({slug,title,parent,content,excerpt=''}){
   if(existing) backups.push(existing);
   content=preserveExistingLessonVisual(slug,existing,content);
   const payload={slug,title,status:'publish',parent,content,excerpt,comment_status:'closed'};
-  return existing?wp(`/pages/${existing.id}`,{method:'POST',body:payload}):wp('/pages',{method:'POST',body:payload});
+  const result=existing?await wp(`/pages/${existing.id}`,{method:'POST',body:payload}):await wp('/pages',{method:'POST',body:payload});
+  if(writeDelayMs>0) await sleep(writeDelayMs);
+  return result;
 }
 
 const toolLinksFor=(a)=>{
