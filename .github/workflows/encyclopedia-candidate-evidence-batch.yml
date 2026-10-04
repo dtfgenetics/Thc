@@ -1,0 +1,71 @@
+name: Build Candidate Encyclopedia Evidence Batch
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build-encyclopedia-candidate-evidence-batch.mjs'
+      - '.github/workflows/encyclopedia-candidate-evidence-batch.yml'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: encyclopedia-candidate-evidence-batch
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build prerequisite evidence artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build:encyclopedia-source-queue
+          npm run build:encyclopedia-claim-evidence-candidates
+          npm run build:encyclopedia-evidence
+
+      - name: Build conservative candidate evidence batch
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-candidate-evidence-batch.mjs
+          cat data/encyclopedia-candidate-evidence-batch-report.json
+
+      - name: Rebuild and validate evidence tracking with candidate batch
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build:encyclopedia-evidence
+          node scripts/validate-encyclopedia-evidence-tracking.mjs
+
+      - name: Create review branch
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          branch="automation/encyclopedia-candidate-evidence-${GITHUB_RUN_ID}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git checkout -b "$branch"
+          git add content/encyclopedia/evidence/evidence-batch-*.json data/encyclopedia-candidate-evidence-batch-report.json
+          if git diff --cached --quiet; then
+            echo 'No candidate evidence changes generated.'
+            exit 0
+          fi
+          git commit -m 'Add review-pending encyclopedia candidate evidence batch'
+          git push origin "HEAD:$branch"
+          gh pr create --base main --head "$branch" --title 'Add review-pending encyclopedia candidate evidence batch' --body 'Generated from controlled claim/source candidates. All records remain pending independent science review and have no publication effect.'
