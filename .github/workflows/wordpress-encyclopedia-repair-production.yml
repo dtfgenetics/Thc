@@ -86,10 +86,14 @@ jobs:
           console.log(`Topic organization verified: ${r.activeTopics.length} hubs, ${r.articleCount} articles`);
           NODE
 
-      - name: Publish refreshed search indexes
+      - name: Rebuild and publish refreshed search indexes
         shell: bash
         run: |
           set -euo pipefail
+          npm run build:encyclopedia-discovery
+          node scripts/build-thc-education-search-index.mjs
+          node scripts/validate-thc-education-search.mjs
+          node scripts/validate-encyclopedia-search-benchmark.mjs
           node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-learning-search-indexes.mjs
 
       - name: Visitor-verify all repaired lessons and full catalog
