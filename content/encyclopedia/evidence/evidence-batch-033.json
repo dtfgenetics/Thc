@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-033",
+  "createdAt": "2026-10-04",
+  "scope": "High-priority Cannabis evidence for intersex expression and induced polyploidy.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Observed intersex expression must not be assigned to one stressor without causal evidence.",
+    "Polyploid status requires verified ploidy rather than phenotype inference.",
+    "Polyploid phenotype, chemistry, fertility and vigor responses remain cultivar- and protocol-dependent.",
+    "All mappings remain pending independent science review."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0327",
+      "lessonId": "THC-ENC-155",
+      "sourceIds": [
+        "ENC-AUTH-173"
+      ],
+      "claimType": "intersex-expression-genetic-and-causal-limits",
+      "supportedClaim": "Intersex floral expression has been documented with variation in floral morphology, seed formation, progeny sex ratios and genotype context, supporting careful phenotyping and genetic records rather than assigning a mixed-sex event to one presumed stress cause.",
+      "sourceLocator": "Punja and Holmes (2020), PMID 32595660, PMCID PMC7298379, DOI 10.3389/fpls.2020.00718.",
+      "applicability": "Supports structured documentation of sex expression, developmental timing, genotype and concurrent environmental events.",
+      "limitations": "The study does not prove that a particular stressor universally causes intersex expression or that observations in studied genotypes transfer to all Cannabis germplasm.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0328",
+      "lessonId": "THC-ENC-156",
+      "sourceIds": [
+        "ENC-AUTH-174",
+        "ENC-AUTH-175"
+      ],
+      "claimType": "polyploid-verification-and-cultivar-dependence",
+      "supportedClaim": "Induced Cannabis polyploidy can produce measurable phenotype and chemistry changes, but responses vary with cultivar and protocol, making direct ploidy verification and matched controls necessary before attributing size, chemistry, fertility or vigor differences to chromosome doubling.",
+      "sourceLocator": "Parsons et al. (2019), PMID 31105695, PMCID PMC6498274, DOI 10.3389/fpls.2019.00476; Fernandes et al. (2023), DOI 10.3389/fpls.2023.1233191.",
+      "applicability": "Supports verified ploidy, matched-control phenotyping and cultivar-specific interpretation of induced polyploid plants.",
+      "limitations": "Available studies cover limited germplasm and induction systems; they do not establish universal increases in potency, yield, size, fertility or stability.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
