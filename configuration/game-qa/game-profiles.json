@@ -150,6 +150,12 @@
       "gameplay-ui",
       "action-game",
       "3d-game"
+    ],
+    "autonomousPlaytestProfile": [
+      "planned",
+      "observable",
+      "controllable",
+      "agent-ready"
     ]
   },
   "performanceBudgets": {
@@ -270,7 +276,8 @@
       "contentProfile": "database-driven",
       "performanceProfile": "network-app",
       "securityProfile": "community-online",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "crossword": {
       "gameplayProfile": "daily-puzzle",
@@ -281,7 +288,8 @@
       "contentProfile": "generated-daily",
       "performanceProfile": "tiny-ui",
       "securityProfile": "local",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "ganjumanji": {
       "gameplayProfile": "campaign-rpg",
@@ -292,7 +300,8 @@
       "contentProfile": "branching-narrative",
       "performanceProfile": "2d-game",
       "securityProfile": "persistent-solo",
-      "accessibilityProfile": "action-game"
+      "accessibilityProfile": "action-game",
+      "autonomousPlaytestProfile": "planned"
     },
     "grow-room-bingo": {
       "gameplayProfile": "casual-puzzle",
@@ -303,7 +312,8 @@
       "contentProfile": "static",
       "performanceProfile": "tiny-ui",
       "securityProfile": "local",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "grow-room-defense": {
       "gameplayProfile": "arcade-action",
@@ -314,7 +324,8 @@
       "contentProfile": "static",
       "performanceProfile": "dom-game",
       "securityProfile": "local",
-      "accessibilityProfile": "gameplay-ui"
+      "accessibilityProfile": "gameplay-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "grower-conversations": {
       "gameplayProfile": "party-social",
@@ -325,7 +336,8 @@
       "contentProfile": "database-driven",
       "performanceProfile": "tiny-ui",
       "securityProfile": "local",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "harvest-hustle": {
       "gameplayProfile": "arcade-action",
@@ -336,7 +348,8 @@
       "contentProfile": "static",
       "performanceProfile": "dom-game",
       "securityProfile": "local",
-      "accessibilityProfile": "gameplay-ui"
+      "accessibilityProfile": "gameplay-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "high-iq": {
       "gameplayProfile": "trivia-knowledge",
@@ -347,7 +360,8 @@
       "contentProfile": "knowledge-bank",
       "performanceProfile": "tiny-ui",
       "securityProfile": "local",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "high-land": {
       "gameplayProfile": "board-simulation",
@@ -358,7 +372,8 @@
       "contentProfile": "database-driven",
       "performanceProfile": "network-app",
       "securityProfile": "casual-online",
-      "accessibilityProfile": "gameplay-ui"
+      "accessibilityProfile": "gameplay-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "high-life": {
       "gameplayProfile": "board-simulation",
@@ -369,7 +384,8 @@
       "contentProfile": "branching-narrative",
       "performanceProfile": "dom-game",
       "securityProfile": "persistent-solo",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "high-lines": {
       "gameplayProfile": "casual-puzzle",
@@ -380,7 +396,8 @@
       "contentProfile": "static",
       "performanceProfile": "tiny-ui",
       "securityProfile": "local",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "kush-kings": {
       "gameplayProfile": "turn-multiplayer",
@@ -391,7 +408,8 @@
       "contentProfile": "database-driven",
       "performanceProfile": "network-app",
       "securityProfile": "competitive-online",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "lost-in-the-terps": {
       "gameplayProfile": "casual-puzzle",
@@ -402,7 +420,8 @@
       "contentProfile": "static",
       "performanceProfile": "tiny-ui",
       "securityProfile": "local",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "mystery-strain": {
       "gameplayProfile": "casual-puzzle",
@@ -413,7 +432,8 @@
       "contentProfile": "database-driven",
       "performanceProfile": "tiny-ui",
       "securityProfile": "local",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "pheno-draft": {
       "gameplayProfile": "card-strategy",
@@ -424,7 +444,8 @@
       "contentProfile": "versioned-balance",
       "performanceProfile": "dom-game",
       "securityProfile": "local",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "phenoquest": {
       "gameplayProfile": "campaign-rpg",
@@ -435,7 +456,8 @@
       "contentProfile": "branching-narrative",
       "performanceProfile": "3d-game",
       "securityProfile": "persistent-solo",
-      "accessibilityProfile": "3d-game"
+      "accessibilityProfile": "3d-game",
+      "autonomousPlaytestProfile": "planned"
     },
     "protect-the-plants": {
       "gameplayProfile": "turn-multiplayer",
@@ -446,7 +468,8 @@
       "contentProfile": "database-driven",
       "performanceProfile": "network-app",
       "securityProfile": "casual-online",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "root-cause": {
       "gameplayProfile": "casual-puzzle",
@@ -457,7 +480,8 @@
       "contentProfile": "knowledge-bank",
       "performanceProfile": "tiny-ui",
       "securityProfile": "local",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "seed-ascent": {
       "gameplayProfile": "arcade-action",
@@ -468,7 +492,8 @@
       "contentProfile": "static",
       "performanceProfile": "2d-game",
       "securityProfile": "persistent-solo",
-      "accessibilityProfile": "action-game"
+      "accessibilityProfile": "action-game",
+      "autonomousPlaytestProfile": "planned"
     },
     "seed-man-platformer": {
       "gameplayProfile": "arcade-action",
@@ -479,7 +504,8 @@
       "contentProfile": "static",
       "performanceProfile": "3d-game",
       "securityProfile": "persistent-solo",
-      "accessibilityProfile": "action-game"
+      "accessibilityProfile": "action-game",
+      "autonomousPlaytestProfile": "agent-ready"
     },
     "spin-the-strain": {
       "gameplayProfile": "party-social",
@@ -490,7 +516,8 @@
       "contentProfile": "database-driven",
       "performanceProfile": "tiny-ui",
       "securityProfile": "local",
-      "accessibilityProfile": "gameplay-ui"
+      "accessibilityProfile": "gameplay-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "stoner-duck-race": {
       "gameplayProfile": "realtime-multiplayer",
@@ -501,7 +528,8 @@
       "contentProfile": "static",
       "performanceProfile": "network-app",
       "securityProfile": "casual-online",
-      "accessibilityProfile": "action-game"
+      "accessibilityProfile": "action-game",
+      "autonomousPlaytestProfile": "planned"
     },
     "strain-match": {
       "gameplayProfile": "casual-puzzle",
@@ -512,7 +540,8 @@
       "contentProfile": "static",
       "performanceProfile": "tiny-ui",
       "securityProfile": "local",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "strain-showdown": {
       "gameplayProfile": "card-strategy",
@@ -523,7 +552,8 @@
       "contentProfile": "versioned-balance",
       "performanceProfile": "dom-game",
       "securityProfile": "local",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "terpocalypse": {
       "gameplayProfile": "arcade-action",
@@ -534,7 +564,8 @@
       "contentProfile": "procedural",
       "performanceProfile": "2d-game",
       "securityProfile": "persistent-solo",
-      "accessibilityProfile": "action-game"
+      "accessibilityProfile": "action-game",
+      "autonomousPlaytestProfile": "planned"
     },
     "thc-rpg": {
       "gameplayProfile": "campaign-rpg",
@@ -545,7 +576,8 @@
       "contentProfile": "branching-narrative",
       "performanceProfile": "dom-game",
       "securityProfile": "persistent-solo",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "thc-u-know": {
       "gameplayProfile": "turn-multiplayer",
@@ -556,7 +588,8 @@
       "contentProfile": "database-driven",
       "performanceProfile": "network-app",
       "securityProfile": "community-online",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "trichome-trials": {
       "gameplayProfile": "party-social",
@@ -567,7 +600,8 @@
       "contentProfile": "database-driven",
       "performanceProfile": "tiny-ui",
       "securityProfile": "local",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "weedopolis": {
       "gameplayProfile": "board-simulation",
@@ -578,7 +612,8 @@
       "contentProfile": "database-driven",
       "performanceProfile": "dom-game",
       "securityProfile": "persistent-solo",
-      "accessibilityProfile": "gameplay-ui"
+      "accessibilityProfile": "gameplay-ui",
+      "autonomousPlaytestProfile": "planned"
     },
     "who-took-it": {
       "gameplayProfile": "party-social",
@@ -589,7 +624,8 @@
       "contentProfile": "database-driven",
       "performanceProfile": "tiny-ui",
       "securityProfile": "local",
-      "accessibilityProfile": "text-ui"
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "planned"
     }
   },
   "dimensionChecks": {
@@ -859,6 +895,26 @@
         "reduced-motion",
         "camera-motion-safety",
         "quality-controls"
+      ]
+    },
+    "autonomousPlaytestProfile": {
+      "planned": [
+        "agent-contract-roadmap"
+      ],
+      "observable": [
+        "structured-game-state"
+      ],
+      "controllable": [
+        "structured-game-state",
+        "legal-action-surface"
+      ],
+      "agent-ready": [
+        "structured-game-state",
+        "legal-action-surface",
+        "agent-contract-test",
+        "browser-critical-path",
+        "soft-lock-detection",
+        "telemetry-capture"
       ]
     }
   }
