@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import { readFile, writeFile } from 'node:fs/promises';
+import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { canonicalEncyclopediaFingerprint } from './lib/encyclopedia-live-fingerprint.mjs';
 
 const BASE_URL=(process.env.DTF_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const REGISTRY='content/encyclopedia/current-controlled-registry.json';
@@ -12,6 +14,9 @@ const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const registry=JSON.parse(await readFile(REGISTRY,'utf8'));
 const entries=Array.isArray(registry.entries)?registry.entries:[];
 if(entries.length!==420) throw new Error(`Expected 420 controlled encyclopedia entries; found ${entries.length}`);
+const canonicalLessons=readCanonicalEncyclopediaLessons(process.cwd());
+const canonicalById=new Map(canonicalLessons.map(lesson=>[lesson.id,lesson]));
+if(canonicalLessons.length!==420) throw new Error(`Expected 420 canonical encyclopedia lessons; found ${canonicalLessons.length}`);
 
 const defects=[
   {id:'malformed-source-label',re:/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i},
@@ -33,6 +38,8 @@ function decodeHtml(value=''){
 
 async function fetchRoute(id){
   const slug=id.toLowerCase();
+  const canonical=canonicalById.get(id);
+  const expectedFingerprint=canonical?canonicalEncyclopediaFingerprint(canonical):null;
   let lastError='';
   for(let attempt=1;attempt<=ATTEMPTS;attempt++){
     const url=`${BASE_URL}/learn/encyclopedia/${slug}/?dtf_live_copy_audit=${Date.now()}-${attempt}`;
@@ -48,6 +55,16 @@ async function fetchRoute(id){
       });
       const body=await response.text();
       const text=decodeHtml(body);
+      const fingerprintMatch=body.match(/data-thc-canonical-fingerprint=["']([0-9a-f]{64})["']/i);
+      const liveFingerprint=fingerprintMatch?.[1]?.toLowerCase()||null;
+      const fingerprintPassed=response.status!==200 || Boolean(expectedFingerprint&&liveFingerprint===expectedFingerprint);
+      const structuredDataPassed=response.status!==200 || (
+        body.includes('application/ld+json') &&
+        body.includes('"LearningResource"') &&
+        body.includes('"Article"') &&
+        body.includes('"BreadcrumbList"') &&
+        body.includes('"identifier":"'+id+'"')
+      );
       const matched=defects.filter(d=>d.re.test(text));
       const found=matched.map(d=>d.id);
       const defectSnippets=matched.map(d=>{
@@ -58,7 +75,7 @@ async function fetchRoute(id){
         return {id:d.id,snippet:index>=0?text.slice(snippetStart,snippetEnd):null};
       });
       if(response.status===200||response.status===404){
-        return {id,url,status:response.status,live:response.status===200,defects:found,defectSnippets,attempts:attempt,passed:response.status===404||response.status===200&&found.length===0};
+        return {id,url,status:response.status,live:response.status===200,defects:found,defectSnippets,expectedFingerprint,liveFingerprint,fingerprintPassed,structuredDataPassed,attempts:attempt,passed:response.status===404||response.status===200&&found.length===0&&fingerprintPassed&&structuredDataPassed};
       }
       lastError=`HTTP ${response.status}`;
     }catch(error){
@@ -90,6 +107,10 @@ const report={
   livePages:live.length,
   unpublished404:results.filter(r=>r.status===404).length,
   failures:failures.length,
+  fingerprintVerified:results.filter(r=>r.live&&r.fingerprintPassed).length,
+  fingerprintMissingOrMismatched:results.filter(r=>r.live&&!r.fingerprintPassed).length,
+  structuredDataVerified:results.filter(r=>r.live&&r.structuredDataPassed).length,
+  structuredDataMissingOrInvalid:results.filter(r=>r.live&&!r.structuredDataPassed).length,
   defectCounts:Object.fromEntries(defects.map(d=>[d.id,failures.filter(r=>r.defects.includes(d.id)).length])),
   failedRoutes:failures,
   passed:failures.length===0
