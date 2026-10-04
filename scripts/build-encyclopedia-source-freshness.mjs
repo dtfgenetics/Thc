@@ -12,23 +12,48 @@ const arr=v=>Array.isArray(v)?v:[];
 const outPath=path.join(root,'data','encyclopedia-source-freshness.json');
 const now=new Date();
 
+const externalVolumeSources=[];
+for(let part=1;part<=21;part+=1){
+  const registerPath=path.join(root,'content','encyclopedia',`volume-${String(part).padStart(2,'0')}`,'source-register.json');
+  if(!fs.existsSync(registerPath)) continue;
+  const register=JSON.parse(fs.readFileSync(registerPath,'utf8'));
+  for(const source of arr(register.sources)){
+    const location=String(source.location||'').trim();
+    if(!/^https:\/\//.test(location)) continue;
+    externalVolumeSources.push({
+      id:source.id,
+      sourceType:'volume_register_external',
+      authorityClass:'controlled_external_source',
+      title:source.title,
+      url:location,
+      useAndLimitations:source.useAndLimitation||null,
+      volumePart:part
+    });
+  }
+}
+const allSources=[...arr(registry.sources),...externalVolumeSources];
+
 function policyFor(source){
   const type=String(source.sourceType||'').toLowerCase();
   const authority=String(source.authorityClass||'').toLowerCase();
-  if(/legal|regulat|official_standard|official_guidance|official_dataset|official_database|extension/.test(type+' '+authority)){
+  const url=String(source.url||'').toLowerCase();
+  if(/legal|regulat|official_standard|official_guidance|official_dataset|official_database|extension/.test(type+' '+authority) || /\.gov\//.test(url)){
     return {reviewIntervalDays:365,volatility:'high'};
   }
-  if(/standard|measurement|method/.test(type+' '+authority)){
+  if(/standard|measurement|method/.test(type+' '+authority) || /(?:iso\.org|astm\.org|bipm\.org|seedtest\.org)/.test(url)){
     return {reviewIntervalDays:730,volatility:'medium'};
   }
-  if(/peer_reviewed|primary|review|journal/.test(type+' '+authority)){
+  if(/peer_reviewed|primary|review|journal/.test(type+' '+authority) || /(?:doi\.org|pubmed\.ncbi\.nlm\.nih\.gov|pmc\.ncbi\.nlm\.nih\.gov)/.test(url)){
     return {reviewIntervalDays:1095,volatility:'medium'};
   }
   return {reviewIntervalDays:730,volatility:'medium'};
 }
 
 function peerReviewed(source){
-  return /peer_reviewed|primary|review|journal|doctoral_dissertation/.test(String(source.sourceType||'').toLowerCase());
+  const type=String(source.sourceType||'').toLowerCase();
+  const url=String(source.url||'').toLowerCase();
+  return /peer_reviewed|primary|review|journal|doctoral_dissertation/.test(type) ||
+    /(?:doi\.org|pubmed\.ncbi\.nlm\.nih\.gov|pmc\.ncbi\.nlm\.nih\.gov)/.test(url);
 }
 
 const lessonsBySource=new Map();
@@ -37,9 +62,14 @@ for(const ref of arr(sourceQueue.references)){
     if(!lessonsBySource.has(sourceId)) lessonsBySource.set(sourceId,new Set());
     for(const lessonId of arr(ref.lessonIds)) lessonsBySource.get(sourceId).add(lessonId);
   }
+  const volumeSourceId=ref.volumeRegistryRecord?.id;
+  if(volumeSourceId){
+    if(!lessonsBySource.has(volumeSourceId)) lessonsBySource.set(volumeSourceId,new Set());
+    for(const lessonId of arr(ref.lessonIds)) lessonsBySource.get(volumeSourceId).add(lessonId);
+  }
 }
 
-const sources=arr(registry.sources).map(source=>{
+const sources=allSources.map(source=>{
   const policy=policyFor(source);
   const lastVerifiedAt=source.lastVerifiedAt||source.lastVerified||null;
   let nextReviewAt=null;
@@ -91,6 +121,8 @@ const sources=arr(registry.sources).map(source=>{
 
 const summary={
   sourceCount:sources.length,
+  centralRegistrySources:arr(registry.sources).length,
+  externalVolumeSources:externalVolumeSources.length,
   withExplicitVerificationDate:sources.filter(x=>x.lastVerifiedAt).length,
   verificationDateMissing:sources.filter(x=>x.freshnessStatus==='verification_date_missing').length,
   overdue:sources.filter(x=>x.freshnessStatus==='overdue').length,
@@ -105,7 +137,7 @@ const output={
   artifactId:'thc-encyclopedia-source-freshness',
   generatedBy:'scripts/build-encyclopedia-source-freshness.mjs',
   generatedAt:now.toISOString(),
-  scope:'Authoritative encyclopedia source freshness, volatility, explicit verification, and retraction-review queue.',
+  scope:'Central authoritative registry plus HTTPS-backed controlled volume sources: freshness, volatility, explicit verification, and retraction-review queue.',
   rule:'Registry edit dates are not treated as source verification dates. Missing explicit verification or retraction checks remain pending and never change publication state automatically.',
   summary,
   revalidationQueue:sources.filter(x=>x.requiresRevalidation).map((x,index)=>({
