@@ -9,6 +9,7 @@ on:
       - scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
       - scripts/build-encyclopedia-full-publication-manifest.mjs
       - scripts/verify-wordpress-encyclopedia-full-live.mjs
+      - scripts/filter-encyclopedia-visual-map-for-publication.mjs
       - scripts/build-encyclopedia-teaching-visuals.mjs
       - scripts/build-encyclopedia-visual-production-queue.mjs
       - package.json
@@ -17,7 +18,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: wordpress-encyclopedia-visuals-production
+  group: dtfseeds-encyclopedia-production
   cancel-in-progress: false
 
 permissions:
@@ -37,7 +38,8 @@ jobs:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      ENCYCLOPEDIA_VISUAL_MAP: site/wordpress/education/encyclopedia/all-visual-map-v1.json
+      ENCYCLOPEDIA_FULL_VISUAL_MAP: site/wordpress/education/encyclopedia/all-visual-map-v1.json
+      ENCYCLOPEDIA_VISUAL_MAP: site/wordpress/education/encyclopedia/publishable-visual-map.generated.json
       ENCYCLOPEDIA_FULL_BATCH_FILE: site/wordpress/education/encyclopedia/full-420-production-batch.generated.json
       BACKUP_ROOT: /tmp/dtf-encyclopedia-visuals
 
@@ -67,7 +69,7 @@ jobs:
           node scripts/build-encyclopedia-full-publication-manifest.mjs
           node scripts/validate-encyclopedia-release-control.mjs "$ENCYCLOPEDIA_FULL_BATCH_FILE"
 
-      - name: Synchronize all 420 canonical encyclopedia pages
+      - name: Synchronize all publication-authorized encyclopedia pages
         id: canonical_sync
         shell: bash
         env:
@@ -78,11 +80,14 @@ jobs:
           node scripts/publish-wordpress-encyclopedia-canonical-batch.mjs | tee "$RUNNER_TEMP/encyclopedia-full-sync.json"
           report="$(find "$BACKUP_ROOT" -name encyclopedia-publication-report.json -type f | sort | tail -n 1)"
           test -s "$report"
-          test "$(node -p "require(process.argv[1]).published.length" "$report")" -eq 420
-          test "$(node -p "require(process.argv[1]).index.listedLessons" "$report")" -eq 420
+          expected="$(node -p "require('./' + process.env.ENCYCLOPEDIA_FULL_BATCH_FILE).lessonFiles.length")"
+          test "$expected" -gt 0
+          test "$(node -p "require(process.argv[1]).published.length" "$report")" -eq "$expected"
+          test "$(node -p "require(process.argv[1]).index.listedLessons" "$report")" -ge "$expected"
+          echo "expected=$expected" >> "$GITHUB_OUTPUT"
           echo "report=$report" >> "$GITHUB_OUTPUT"
 
-      - name: Verify all 420 canonical lesson routes before visual writes
+      - name: Verify all publication-authorized lesson routes before visual writes
         shell: bash
         run: |
           set -euo pipefail
@@ -93,6 +98,7 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/build-encyclopedia-teaching-visuals.mjs --render-png
+          node scripts/filter-encyclopedia-visual-map-for-publication.mjs
           npm run build:encyclopedia-visual-queue
           node scripts/validate-encyclopedia-visual-production-queue.mjs
 
@@ -107,15 +113,16 @@ jobs:
           node - <<'NODE'
           const fs=require('fs');
           const map=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_VISUAL_MAP,'utf8'));
-          if(map.schemaVersion!==1 || map.batch!=='encyclopedia-all-visuals-v1' || !Array.isArray(map.items) || map.items.length!==420) throw new Error('Unexpected full encyclopedia visual map.');
-          const expected=Array.from({length:420},(_,i)=>`THC-ENC-${String(i+1).padStart(3,'0')}`);
+          if(map.schemaVersion!==1 || map.batch!=='encyclopedia-authorized-visuals-v1' || !Array.isArray(map.items) || !map.items.length) throw new Error('Unexpected authorized encyclopedia visual map.');
+          const manifest=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_FULL_BATCH_FILE,'utf8'));
+          const expected=manifest.lessonFiles.map(file=>'THC-ENC-'+String(file.match(/thc-enc-(\\d{3})\\.json$/i)?.[1]||''));
           const ids=map.items.map(x=>x.id);
-          if(new Set(ids).size!==420 || expected.some(id=>!ids.includes(id))) throw new Error('Expected exactly THC-ENC-001 through THC-ENC-420.');
+          if(new Set(ids).size!==ids.length || ids.length!==expected.length || expected.some(id=>!ids.includes(id))) throw new Error('Authorized visual map does not match the publication manifest.');
           for(const item of map.items){
             const p=`site/wordpress/assets/infographics/${item.assetPath}`;
             if(!fs.existsSync(p)) throw new Error(`Missing canonical infographic asset: ${p}`);
           }
-          console.log('Validated 420 lesson-to-visual mappings and canonical/generated assets.');
+          console.log(`Validated ${map.items.length} publication-authorized lesson-to-visual mappings and assets.`);
           NODE
 
       - name: Attach existing WordPress media to encyclopedia lessons
@@ -131,7 +138,7 @@ jobs:
           echo "reused=$(node -p "require(process.argv[1]).existingWordPressMediaReused" "$report")" >> "$GITHUB_OUTPUT"
           echo "uploads=$(node -p "require(process.argv[1]).newMediaUploads" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Verify all 420 visitor-facing lesson visuals
+      - name: Verify all publication-authorized visitor-facing lesson visuals
         id: verify
         shell: bash
         run: |
@@ -142,7 +149,9 @@ jobs:
           const r=require(process.argv[2]);
           for(const x of r.updated) console.log([x.id,x.mediaSlug,x.mediaSourceUrl].join('\t'));
           NODE
-          test "$(wc -l < "$RUNNER_TEMP/visuals.tsv")" -eq 420
+          expected="${{ steps.canonical_sync.outputs.expected }}"
+          test -n "$expected"
+          test "$(wc -l < "$RUNNER_TEMP/visuals.tsv")" -eq "$expected"
 
           while IFS=$'\t' read -r id media_slug media_url; do
             slug="$(printf '%s' "$id" | tr '[:upper:]' '[:lower:]')"
@@ -199,10 +208,10 @@ jobs:
             echo '## THC encyclopedia full canonical + visual production'
             echo
             echo "- Result: **${JOB_STATUS:-unknown}**"
-            echo "- Canonical 420-page sync: **${CANONICAL_SYNC:-not-run}**"
+            echo "- Canonical authorized-page sync: **${CANONICAL_SYNC:-not-run}**"
             echo "- Visual-map validation: **${VALIDATE_OUTCOME:-not-run}**"
             echo "- WordPress visual update: **${PUBLISH_OUTCOME:-not-run}**"
-            echo "- 420-page visitor visual verification: **${VERIFY_OUTCOME:-not-run}**"
+            echo "- Authorized-page visitor visual verification: **${VERIFY_OUTCOME:-not-run}**"
             echo "- Lesson visuals attached: **${COUNT:-0}**"
             echo "- Existing WordPress media reused: **${REUSED:-0}**"
             echo "- New media uploads: **${UPLOADS:-0}**"
