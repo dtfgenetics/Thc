@@ -25,16 +25,18 @@ for(const lesson of candidates.lessons||[]){
   const claim=(lesson.claims||[])[0];
   if(!claim){ skipped.push({lessonId:lesson.lessonId,reason:'no_candidate_claim'}); continue; }
   const sourceIds=new Set();
+  const sourceReferenceIds=new Set();
   const locators=[];
   for(const refId of claim.sourceReferenceIds||[]){
     const ref=refById.get(refId); if(!ref) continue;
+    if(ref.traceabilityRequired!==false && ref.traceable===true) sourceReferenceIds.add(refId);
     for(const id of ref.resolvedAuthoritativeSourceIds||[]) sourceIds.add(id);
     const volume=ref.volumeRegistryRecord;
     if(volume?.id && /^https:\/\//.test(String(volume.location||''))) sourceIds.add(volume.id);
     for(const url of ref.directLocators||[]) locators.push(url);
   }
-  if(!sourceIds.size){
-    skipped.push({lessonId:lesson.lessonId,reason:'no_recognized_source_id',sourceReferenceIds:claim.sourceReferenceIds||[]});
+  if(!sourceIds.size && !sourceReferenceIds.size){
+    skipped.push({lessonId:lesson.lessonId,reason:'no_traceable_source_reference',sourceReferenceIds:claim.sourceReferenceIds||[]});
     continue;
   }
   maxEvidence+=1;
@@ -42,11 +44,14 @@ for(const lesson of candidates.lessons||[]){
     evidenceId:`ENC-EVID-${String(maxEvidence).padStart(4,'0')}`,
     lessonId:lesson.lessonId,
     sourceIds:[...sourceIds].sort(),
+    sourceReferenceIds:[...sourceReferenceIds].sort(),
     claimType:`candidate-${String(claim.claimKind||'claim').replace(/[^a-z0-9]+/gi,'-').toLowerCase()}`,
     supportedClaim:`Candidate review mapping: ${String(claim.candidateClaim||'').trim()}`,
     sourceLocator:locators.length
       ? [...new Set(locators)].join('; ')
-      : `Resolved source registry IDs: ${[...sourceIds].sort().join(', ')}`,
+      : sourceIds.size
+        ? `Resolved source registry IDs: ${[...sourceIds].sort().join(', ')}`
+        : `Controlled traceable source references: ${[...sourceReferenceIds].sort().join(', ')}`,
     applicability:'Candidate claim-to-source mapping prepared from the controlled source-resolution queue. Independent science review must confirm whether the cited source actually supports the scoped claim.',
     limitations:'This generated mapping is not scientific approval, does not assert that the source fully supports the claim, and does not authorize publication. Scope, methods, population/genotype, treatment conditions, and transferability must be checked by an independent reviewer.',
     reviewState:'source_collected_needs_science_review'
