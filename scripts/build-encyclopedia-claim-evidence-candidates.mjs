@@ -51,6 +51,9 @@ for(const lesson of lessons){
         traceabilityRequired:source.traceabilityRequired!==false,
         traceable:source.traceable===true,
         resolvedAuthoritativeSourceIds:arr(source.resolvedAuthoritativeSourceIds),
+        directLocators:arr(source.directLocators),
+        sourceIdentityKeys:arr(source.sourceIdentityKeys),
+        duplicateGroupIds:arr(source.duplicateGroupIds),
         volumeRegistryRecord:source.volumeRegistryRecord||null
       })),
       mappingState:'candidate_unverified_requires_claim_source_review',
@@ -83,7 +86,8 @@ const summary={
   lessonsWithCandidateClaims:rows.filter(row=>row.claimCount>0).length,
   lessonsWithTraceableSources:rows.filter(row=>row.sourceTraceabilityState!=='source_resolution_incomplete').length,
   independentlyReviewedClaims:0,
-  publicationApprovedClaims:0
+  publicationApprovedClaims:0,
+  candidateSourceReferencesInDuplicateGroups:allClaims.reduce((n,claim)=>n+claim.candidateSourceTraceability.filter(source=>source.duplicateGroupIds.length>0).length,0)
 };
 
 const output={
