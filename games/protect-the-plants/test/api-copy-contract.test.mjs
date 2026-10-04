@@ -9,6 +9,12 @@ assert.match(api,/function find_wp_bootstrap\(\): \?string/,'API must locate Wor
 assert.match(api,/function store_set\(string \$key, array \$value, int \$ttl = PTP_TTL\): bool/,'Storage writes must report whether persistence succeeded.');
 assert.match(api,/!store_set\(\$roomKey, \$room\) \|\| !is_array\(store_get\(\$roomKey\)\)/,'Room creation must verify an immediate storage read-back.');
 assert.ok(api.includes('Game storage is temporarily unavailable. Please try again.'),'Storage failures must return an actionable player-facing error.');
+assert.ok(api.includes('DTF_BURN_BUDS_MAINTENANCE_MODE'),'Burn Buds API must expose maintenance control.');
+assert.ok(api.includes('DTF_BURN_BUDS_MULTIPLAYER_ENABLED'),'Burn Buds API must expose multiplayer kill switch.');
+assert.ok(api.includes("'service' => 'burn-buds'"),'Burn Buds health response must identify the service.');
+assert.ok(api.includes("'metrics' => ops_snapshot()"),'Burn Buds health response must expose operational metrics.');
+assert.ok(api.includes('Burn Buds is temporarily under maintenance.'),'Burn Buds API must expose maintenance failure state.');
+assert.ok(api.includes('Burn Buds multiplayer is temporarily disabled.'),'Burn Buds API must expose multiplayer-disabled state.');
 assert.match(api,/const PTP_PROTOCOL_VERSION = 1;/,'Burn Buds must expose explicit protocol v1.');
 assert.match(api,/HTTP_X_DTF_GAME_PROTOCOL/,'Burn Buds API must read the protocol header.');
 assert.ok(api.includes('Client protocol is incompatible with this Burn Buds server.'),'Explicit incompatible clients must receive a clear protocol error.');
