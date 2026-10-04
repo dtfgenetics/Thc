@@ -12,6 +12,7 @@ on:
       - 'scripts/validate-encyclopedia-visual-review-packets.mjs'
       - 'scripts/import-encyclopedia-visual-review-decisions.mjs'
       - 'scripts/build-encyclopedia-visual-review-ledger.mjs'
+      - 'scripts/build-encyclopedia-visual-approved-assets.mjs'
       - '.github/workflows/encyclopedia-visual-review-packets.yml'
 
 permissions:
@@ -46,8 +47,10 @@ jobs:
           node scripts/build-encyclopedia-visual-review-ledger.mjs
           node scripts/import-encyclopedia-visual-review-decisions.mjs
           node scripts/build-encyclopedia-visual-promotion-manifest.mjs
+          node scripts/build-encyclopedia-visual-approved-assets.mjs
           test -s review/encyclopedia-visuals/index.json
           test -s data/encyclopedia-visual-promotion-manifest.json
+          test -s data/encyclopedia-visual-approved-assets.json
 
       - name: Upload reviewer packets
         uses: actions/upload-artifact@v4
@@ -58,5 +61,6 @@ jobs:
             data/encyclopedia-independent-review-manifest.json
             data/encyclopedia-visual-review-ledger.json
             data/encyclopedia-visual-promotion-manifest.json
+            data/encyclopedia-visual-approved-assets.json
           if-no-files-found: error
           retention-days: 30
