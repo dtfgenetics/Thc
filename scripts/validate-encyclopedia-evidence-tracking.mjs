@@ -9,6 +9,7 @@ const encRoot = path.join(root, 'content', 'encyclopedia');
 const evidenceRoot = path.join(encRoot, 'evidence');
 const trackingPath = path.join(root, 'data', 'encyclopedia-evidence-tracking.json');
 const sourceRegistryPath = path.join(evidenceRoot, 'authoritative-sources.json');
+const sourceQueuePath = path.join(root, 'data', 'encyclopedia-source-resolution-queue.json');
 
 const errors = [];
 const warnings = [];
@@ -62,6 +63,8 @@ const lessonById = new Map(lessons.map(lesson => [lesson.id, lesson]));
 const expectedById = new Map(registryState.entries.map(entry => [entry.id, entry]));
 const sourceRegistry = fs.existsSync(sourceRegistryPath) ? readJson(sourceRegistryPath) : { sources: [] };
 const tracking = fs.existsSync(trackingPath) ? readJson(trackingPath) : { lessons: [] };
+const sourceQueue = fs.existsSync(sourceQueuePath) ? readJson(sourceQueuePath) : { references: [] };
+const sourceReferenceById = new Map(arr(sourceQueue.references).map(row => [row.referenceId, row]));
 const batches = readEvidenceBatches();
 
 if (registryState.coreCount !== 420) fail(`Protected core registry must contain 420 entries; found ${registryState.coreCount}`);
@@ -124,7 +127,15 @@ for (const batch of batches) {
     for (const sourceId of arr(item.sourceIds)) {
       if (!sourceIds.has(sourceId)) fail(`${item.evidenceId}: unknown sourceId ${sourceId}`);
     }
-    if (!arr(item.sourceIds).length) fail(`${item.evidenceId}: at least one sourceId required`);
+    for (const refId of arr(item.sourceReferenceIds)) {
+      const ref = sourceReferenceById.get(refId);
+      if (!ref) fail(`${item.evidenceId}: unknown sourceReferenceId ${refId}`);
+      else {
+        if (ref.traceabilityRequired === false) fail(`${item.evidenceId}: control/context source reference ${refId} cannot be evidence`);
+        if (ref.traceable !== true) fail(`${item.evidenceId}: source reference ${refId} is not traceable`);
+      }
+    }
+    if (!arr(item.sourceIds).length && !arr(item.sourceReferenceIds).length) fail(`${item.evidenceId}: at least one sourceId or traceable sourceReferenceId required`);
     if (!evidenceByLesson.has(item.lessonId)) evidenceByLesson.set(item.lessonId, []);
     evidenceByLesson.get(item.lessonId).push(item.evidenceId);
   }
