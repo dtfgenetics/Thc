@@ -32,7 +32,6 @@ OVERLAY_PREFIX = "dtf-content-overlay/"
 ATLAS_TARGETS = ("atlas", "assets/images/atlas")
 ATLAS_PREFIXES = ("atlas/", "assets/images/atlas/")
 SHARED_EXACT_FILES = (
-    "assets/.htaccess",
     "assets/thc-measurement-journal-v1.js",
     "assets/thc-tool-suite-v1.js",
     "assets/thc-tool-suite-v1.css",
