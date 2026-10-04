@@ -39,6 +39,8 @@ jobs:
 
       - name: Run production runtime and zoom UI regression tests
         run: node games/high-lines/test/public-runtime.test.mjs
+      - name: Test autonomous playtest bridge
+        run: node games/high-lines/test/agent-bridge.test.mjs
 
       - name: Validate browser JavaScript syntax
         run: |
