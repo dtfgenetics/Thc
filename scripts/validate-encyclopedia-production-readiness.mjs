@@ -26,6 +26,9 @@ for(let i=0;i<rows.length;i++){
   if(row.state==='release_ready' && row.blockers.length) errors.push(row.id+': release_ready has blockers');
   if(row.state==='release_ready' && !row.publication?.authorized) errors.push(row.id+': release_ready without publication authorization');
   if(row.visual?.approved && !row.visual?.approvedAssetId) errors.push(row.id+': approved visual missing asset id');
+  if(row.visual?.approved && row.visual?.approvedAssetExists!==true) errors.push(row.id+': approved visual raster is missing');
+  if(row.visual?.approved && row.visual?.approvedAssetIntegrity!==true) errors.push(row.id+': approved visual hash integrity failed');
+  if(row.visual?.approved && row.visual?.approvedAssetSha256!==row.visual?.currentAssetSha256) errors.push(row.id+': approved visual SHA-256 drifted');
   if(row.assessment?.reviewed && !['approved','independent_review_complete'].includes(row.assessment.reviewState)) errors.push(row.id+': assessment review state mismatch');
 }
 
