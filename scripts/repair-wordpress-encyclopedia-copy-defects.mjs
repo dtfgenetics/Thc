@@ -98,15 +98,28 @@ if(!encyclopedia) throw new Error('Canonical /learn/encyclopedia/ WordPress page
 const children=await allChildren(encyclopedia.id);
 const canonical=readCanonicalEncyclopediaLessons(process.cwd());
 const byId=new Map(canonical.map(lesson=>[lesson.id,lesson]));
-const candidates=[];
+const lessonPages=children.filter(page=>/^thc-enc-\d{3}$/.test(page.slug||''));
+const scanConcurrency=Math.max(1,Math.min(24,Number(process.env.ENC_COPY_REPAIR_CONCURRENCY||8)));
+const scanResults=new Array(lessonPages.length);
+let scanNext=0;
+async function scanWorker(){
+  while(true){
+    const index=scanNext++;
+    if(index>=lessonPages.length) return;
+    const page=lessonPages[index];
+    const id=String(page.slug).toUpperCase();
+    const storedKinds=defectKinds(rendered(page.content));
+    const publicView=await fetchPublic(page.slug);
+    const renderedKinds=publicView.status===200?defectKinds(publicView.text):[];
+    const kinds=[...new Set([...storedKinds,...renderedKinds])];
+    scanResults[index]={page,id,storedKinds,publicView,renderedKinds,kinds};
+  }
+}
+await Promise.all(Array.from({length:scanConcurrency},()=>scanWorker()));
 
-for(const page of children){
-  if(!/^thc-enc-\d{3}$/.test(page.slug||'')) continue;
-  const id=String(page.slug).toUpperCase();
-  const storedKinds=defectKinds(rendered(page.content));
-  const publicView=await fetchPublic(page.slug);
-  const renderedKinds=publicView.status===200?defectKinds(publicView.text):[];
-  const kinds=[...new Set([...storedKinds,...renderedKinds])];
+const candidates=[];
+for(const row of scanResults){
+  const {page,id,storedKinds,publicView,renderedKinds,kinds}=row;
   if(!kinds.length) continue;
   const lesson=byId.get(id);
   if(!lesson) throw new Error(`${id}: live defective page has no canonical lesson source.`);
@@ -126,7 +139,8 @@ for(const page of children){
 }
 
 const report={
-  scannedPublishedLessons:children.filter(p=>/^thc-enc-\d{3}$/.test(p.slug||'')).length,
+  scannedPublishedLessons:lessonPages.length,
+  scanConcurrency,
   defectsFound:candidates.length,
   runtimeOnlyDefects:candidates.filter(x=>x.runtimeOnly).length,
   storedContentDefects:candidates.filter(x=>x.storedKinds.length>0).length,
