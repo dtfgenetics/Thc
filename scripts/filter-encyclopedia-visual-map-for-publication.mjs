@@ -8,7 +8,7 @@ const outPath=process.env.ENCYCLOPEDIA_VISUAL_MAP||'site/wordpress/education/enc
 const manifest=JSON.parse(fs.readFileSync(manifestPath,'utf8'));
 const fullMap=JSON.parse(fs.readFileSync(fullMapPath,'utf8'));
 const authorizedIds=new Set((manifest.lessonFiles||[]).map(file=>{
-  const match=String(file).match(/thc-enc-(\d{3})\.json$/i);
+  const match=String(file).match(/thc-enc-(\d{3,})\.json$/i);
   if(!match) throw new Error(`Invalid encyclopedia lesson path in manifest: ${file}`);
   return `THC-ENC-${match[1]}`;
 }));
