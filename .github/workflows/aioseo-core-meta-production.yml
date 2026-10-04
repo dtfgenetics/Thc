@@ -1,0 +1,144 @@
+name: Reconcile Core DTF SEO Metadata
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/wordpress/seo/core-page-meta.json
+      - scripts/reconcile-aioseo-core-meta.mjs
+      - .github/workflows/aioseo-core-meta-production.yml
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-aioseo-core-meta
+  cancel-in-progress: true
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_AIOSEO_CORE_META: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate guarded metadata publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/reconcile-aioseo-core-meta.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const m = JSON.parse(fs.readFileSync('site/wordpress/seo/core-page-meta.json','utf8'));
+          if (!Array.isArray(m.pages) || m.pages.length !== 3) throw new Error('Expected three canonical core metadata records');
+          for (const p of m.pages) {
+            if (!p.slug || !p.route || !p.title || !p.description) throw new Error('Incomplete metadata record');
+            if (p.title.length > 60) throw new Error(p.slug + ' title too long');
+            if (p.description.length < 80 || p.description.length > 160) throw new Error(p.slug + ' description length invalid: ' + p.description.length);
+          }
+          NODE
+
+      - name: Reconcile Home, Learn, and Courses metadata
+        shell: bash
+        run: |
+          set +e
+          set -uo pipefail
+          node scripts/reconcile-aioseo-core-meta.mjs 2>&1 | tee "$RUNNER_TEMP/core-meta.log"
+          status=${PIPESTATUS[0]}
+          set -e
+          if [[ "$status" -ne 0 ]]; then
+            if grep -Fq 'AIOSEO state saved but public metadata did not fully verify' "$RUNNER_TEMP/core-meta.log"; then
+              echo 'AIOSEO state persisted; preliminary visitor verification may be cache-stale. Continuing to explicit LiteSpeed purge.'
+            else
+              exit "$status"
+            fi
+          fi
+
+      - name: Purge Hostinger LiteSpeed cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/flush-hostinger-litespeed-mcp.mjs
+
+      - name: Verify public metadata after cache purge
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const manifest = JSON.parse(fs.readFileSync('site/wordpress/seo/core-page-meta.json', 'utf8'));
+          const attr = (tag, name) => tag.match(new RegExp(name + '=["\\']([^"\\']*)["\\']', 'i'))?.[1] || '';
+          const meta = (html) => {
+            const out = { description: '', ogDescription: '', twitterDescription: '' };
+            for (const tag of html.match(/<meta\b[^>]*>/gi) || []) {
+              const name = attr(tag, 'name').toLowerCase();
+              const property = attr(tag, 'property').toLowerCase();
+              const content = attr(tag, 'content');
+              if (name === 'description') out.description = content;
+              if (property === 'og:description') out.ogDescription = content;
+              if (name === 'twitter:description') out.twitterDescription = content;
+            }
+            return out;
+          };
+          (async () => {
+            for (const page of manifest.pages) {
+              let last = null;
+              for (let attempt = 1; attempt <= 8; attempt += 1) {
+                const response = await fetch('https://dtfseeds.com' + page.route + '?dtf_core_seo=' + Date.now() + '-' + attempt, {
+                  headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache', 'User-Agent': 'DTFSeeds-Core-SEO-Verify/1.1' },
+                  redirect: 'follow'
+                });
+                const html = await response.text();
+                const observed = meta(html);
+                last = { status: response.status, ...observed };
+                if (response.ok && observed.description === page.description && observed.ogDescription === page.description && observed.twitterDescription === page.description) {
+                  console.log('Verified ' + page.route + ' metadata; descriptionLength=' + page.description.length + '; attempt=' + attempt);
+                  last = null;
+                  break;
+                }
+                await new Promise((resolve) => setTimeout(resolve, 4000));
+              }
+              if (last) throw new Error(page.route + ' metadata did not converge: ' + JSON.stringify(last));
+            }
+          })().catch((error) => { console.error(error); process.exit(1); });
+          NODE
+
+      - name: Report core SEO reconciliation
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 1748,
+              body: [
+                '## Core SEO metadata reconciliation',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Commit: \`${context.sha}\``,
+                `Result: **${process.env.STATUS}**`,
+                '',
+                'Source-controls concise Home, Learn, and Courses metadata, round-trips existing AIOSEO records, rolls back on unrelated critical-field drift, purges LiteSpeed, and verifies visitor-facing description/social tags.'
+              ].join('\n')
+            });
