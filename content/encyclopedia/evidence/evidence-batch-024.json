@@ -1,0 +1,310 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-024",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level clonal propagation, mother-stock, rooting, sanitation, quarantine, tissue-culture, acclimatization, genetic-stability, and germplasm-preservation evidence for THC-ENC-161 through THC-ENC-180.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Cannabis-specific propagation and tissue-culture results remain bounded to tested genotypes, donor condition, media, environment, treatment range, passage history, and methods.",
+    "General plant rooting or sanitation sources support mechanisms and workflow boundaries only; they do not establish universal cannabis recipes.",
+    "Pesticide, disinfectant, plant-regulator, worker-safety, and laboratory claims remain controlled by current labels, registrations, jurisdiction, and method-specific instructions.",
+    "All mappings remain pending independent science review and do not alter lesson publication or independent-approval state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0281",
+      "lessonId": "THC-ENC-161",
+      "sourceIds": [
+        "ENC-AUTH-132",
+        "ENC-AUTH-135",
+        "ENC-AUTH-136"
+      ],
+      "claimType": "clonal-genotype-fidelity",
+      "supportedClaim": "Vegetative propagation from somatic tissue is used to preserve selected cannabis genotypes, while measured phenotype and molecular/epigenetic stability can still vary with propagation history, environment, assay, and protocol.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "Clonal identity does not guarantee identical phenotype or complete genomic/epigenomic invariance across every passage, tissue, cultivar, or propagation method.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0282",
+      "lessonId": "THC-ENC-162",
+      "sourceIds": [
+        "ENC-AUTH-116",
+        "ENC-AUTH-134"
+      ],
+      "claimType": "mother-stock-health-status",
+      "supportedClaim": "Cannabis mother stock can act as a propagation source for both plant material and transmissible biological agents, so visible health and laboratory infection status are separate controls.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "Visual inspection cannot establish freedom from latent or asymptomatic infection; organism-specific sampling and assay limitations remain material.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0283",
+      "lessonId": "THC-ENC-163",
+      "sourceIds": [
+        "ENC-AUTH-132",
+        "ENC-AUTH-134",
+        "ENC-AUTH-136",
+        "ENC-AUTH-138"
+      ],
+      "claimType": "cutting-competence-developmental-state",
+      "supportedClaim": "Cutting and micropropagation performance varies with genotype, donor condition, developmental state, tissue source, and rooting physiology rather than one universal age or node rule.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "Cross-species rooting mechanisms support developmental reasoning, but no universal cannabis juvenility threshold or donor age is established.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0284",
+      "lessonId": "THC-ENC-164",
+      "sourceIds": [
+        "ENC-AUTH-132",
+        "ENC-AUTH-133",
+        "ENC-AUTH-137",
+        "ENC-AUTH-138"
+      ],
+      "claimType": "cutting-quality-resource-status",
+      "supportedClaim": "Cannabis/hemp rooting success is influenced by cultivar, cutting condition, substrate, hormone treatment, and resource status, so cutting selection should be evaluated by measurable tissue quality rather than a rigid morphology recipe.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "Treatment effects are study- and cultivar-specific and do not establish a universal node count, leaf area, carbohydrate threshold, or cutting size.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0285",
+      "lessonId": "THC-ENC-165",
+      "sourceIds": [
+        "ENC-AUTH-133",
+        "ENC-AUTH-138",
+        "ENC-AUTH-139"
+      ],
+      "claimType": "wound-adventitious-rooting",
+      "supportedClaim": "Adventitious rooting after cutting involves wound-associated developmental and hormonal processes, and visible callus is not equivalent to a confirmed functional root system.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "General plant rooting reviews support mechanism only; cannabis-specific timing, callus behavior, and root-origin details remain genotype- and protocol-dependent.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0286",
+      "lessonId": "THC-ENC-166",
+      "sourceIds": [
+        "ENC-AUTH-133",
+        "ENC-AUTH-134",
+        "ENC-AUTH-138",
+        "ENC-AUTH-129"
+      ],
+      "claimType": "auxin-rooting-response",
+      "supportedClaim": "Auxin participates in adventitious-root formation, and cannabis/hemp experiments show exogenous hormone responses can alter rooting outcomes under defined protocols.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "No universal IBA/NAA dose or product use is established; legal label/registration requirements and genotype/protocol response remain controlling.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0287",
+      "lessonId": "THC-ENC-167",
+      "sourceIds": [
+        "ENC-AUTH-133",
+        "ENC-AUTH-134"
+      ],
+      "claimType": "rooting-media-air-water-balance",
+      "supportedClaim": "Rooting media materially affect cannabis/hemp propagation outcomes, and medium choice changes water retention, aeration, structural support, and rooting performance.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "Results from tested media and cultivars do not prove one medium is universally superior or define a universal moisture/oxygen target.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0288",
+      "lessonId": "THC-ENC-168",
+      "sourceIds": [
+        "ENC-AUTH-037",
+        "ENC-AUTH-134"
+      ],
+      "claimType": "propagation-humidity-water-loss",
+      "supportedClaim": "Humidity materially changes cannabis plant water relations and development, while tissue-culture and propagation success also depends on acclimation conditions; humidity should therefore be managed as part of a broader water-loss and disease-risk system.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "The cited cannabis humidity study and tissue-culture work do not establish a universal propagation RH/VPD target or prove that higher humidity is always beneficial.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0289",
+      "lessonId": "THC-ENC-169",
+      "sourceIds": [
+        "ENC-AUTH-132",
+        "ENC-AUTH-134",
+        "ENC-AUTH-137"
+      ],
+      "claimType": "propagation-light-demand",
+      "supportedClaim": "Cannabis propagation and micropropagation performance is affected by light environment together with genotype and hydraulic/acclimation capacity, so light during root initiation cannot be reduced to one universal PPFD or spectrum.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "The sources do not define a universal clone-light target, DLI, spectrum, or photoperiod for every genotype and propagation system.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0290",
+      "lessonId": "THC-ENC-170",
+      "sourceIds": [
+        "ENC-AUTH-116",
+        "ENC-AUTH-123"
+      ],
+      "claimType": "tool-mediated-pathogen-spread",
+      "supportedClaim": "Plant-contact tools and contaminated plant material can contribute to pathogen/viroid transmission, while effective sanitation distinguishes cleaning from appropriately applied disinfection.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "Transmission efficiency and disinfectant efficacy depend on organism, contamination load, surface, chemistry, contact time, and current label directions.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0291",
+      "lessonId": "THC-ENC-171",
+      "sourceIds": [
+        "ENC-AUTH-132",
+        "ENC-AUTH-133",
+        "ENC-AUTH-134"
+      ],
+      "claimType": "propagation-success-metrics",
+      "supportedClaim": "Propagation performance is multidimensional: rooting frequency, timing, root system development, shoot condition, acclimatization, and survival can respond differently to genotype and treatment.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "One endpoint such as rooting percentage does not by itself establish overall propagation quality or explain the cause of failure.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0292",
+      "lessonId": "THC-ENC-172",
+      "sourceIds": [
+        "ENC-AUTH-134",
+        "ENC-AUTH-137"
+      ],
+      "claimType": "rooted-cutting-acclimation",
+      "supportedClaim": "Cannabis plantlets require acclimatization when moved from protected or in-vitro conditions toward production environments, and survival depends on the transition among humidity, light, substrate, and root function.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "The sources support staged acclimatization but do not establish a universal hardening duration, humidity ramp, light ramp, or irrigation schedule.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0293",
+      "lessonId": "THC-ENC-173",
+      "sourceIds": [
+        "ENC-AUTH-116",
+        "ENC-AUTH-128",
+        "ENC-AUTH-124"
+      ],
+      "claimType": "clone-intake-quarantine-testing",
+      "supportedClaim": "Incoming vegetative material can carry pests or latent pathogens, so source identity, quarantine, representative sampling, and organism-appropriate testing are distinct controls before release into clean stock.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "A negative sample is not permanent proof of freedom from infection; sampling design, tissue choice, timing, assay performance, and quarantine context matter.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0294",
+      "lessonId": "THC-ENC-174",
+      "sourceIds": [
+        "ENC-AUTH-135",
+        "ENC-AUTH-136"
+      ],
+      "claimType": "mother-stock-rotation-stability",
+      "supportedClaim": "Cannabis clonal systems can retain high measured genetic similarity across micropropagation while still requiring ongoing identity, health, and performance verification over passages and time.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "These stability studies do not prove that every mother line or propagation method is immune to somatic variation, epigenetic change, infection, or labeling error.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0295",
+      "lessonId": "THC-ENC-175",
+      "sourceIds": [
+        "ENC-AUTH-134",
+        "ENC-AUTH-135"
+      ],
+      "claimType": "tissue-culture-workflow",
+      "supportedClaim": "Cannabis tissue culture involves explant establishment, multiplication/regeneration choices, rooting or plantlet development, and acclimatization, with genotype and regeneration pathway affecting outcomes.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "Terminology and workflow are supported, but no single medium or stage protocol is universal across cannabis genotypes and laboratories.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0296",
+      "lessonId": "THC-ENC-176",
+      "sourceIds": [
+        "ENC-AUTH-134",
+        "ENC-AUTH-123"
+      ],
+      "claimType": "explant-disinfection-contamination",
+      "supportedClaim": "Cannabis explants can carry persistent contaminants, and surface sanitation can reduce exposed contamination without proving elimination of internal endophytes or systemic pathogens.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "Greenhouse surface-disinfection guidance supports cleaning/disinfection principles only; it is not a plant-tissue sterilization recipe, and phytotoxicity/protocol response must be validated.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0297",
+      "lessonId": "THC-ENC-177",
+      "sourceIds": [
+        "ENC-AUTH-134",
+        "ENC-AUTH-135",
+        "ENC-AUTH-137"
+      ],
+      "claimType": "media-pgr-genotype-interaction",
+      "supportedClaim": "Cannabis tissue-culture response varies with genotype, basal medium, plant-growth regulators, vessel/environmental conditions, and propagation system.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "A formulation successful in one genotype or study should not be treated as a universal cannabis tissue-culture recipe or regulatory authorization.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0298",
+      "lessonId": "THC-ENC-178",
+      "sourceIds": [
+        "ENC-AUTH-134"
+      ],
+      "claimType": "tissue-culture-disorders-contamination",
+      "supportedClaim": "Cannabis tissue cultures can fail from microbial contamination and culture-response disorders, and timing, donor association, medium response, and tissue appearance help structure the differential.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "Visible symptoms alone do not identify the contaminant or establish the cause of hyperhydricity, browning, callus overgrowth, or tissue collapse.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0299",
+      "lessonId": "THC-ENC-179",
+      "sourceIds": [
+        "ENC-AUTH-134",
+        "ENC-AUTH-137"
+      ],
+      "claimType": "ex-vitro-acclimation",
+      "supportedClaim": "Cannabis plantlets produced in vitro require acclimatization to ex-vitro substrate, humidity, light, airflow, and root-zone conditions, and survival varies by protocol and system.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "The studies support controlled transition but do not establish universal humidity, light, substrate, or acclimation-duration targets.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0300",
+      "lessonId": "THC-ENC-180",
+      "sourceIds": [
+        "ENC-AUTH-140",
+        "ENC-AUTH-135",
+        "ENC-AUTH-136"
+      ],
+      "claimType": "germplasm-cryopreservation-clean-stock",
+      "supportedClaim": "Cannabis germplasm can be conserved through multiple complementary approaches, including clonal collections, in-vitro systems, and demonstrated shoot-tip cryopreservation, with recovery and stability requiring verification.",
+      "sourceLocator": "Registered peer-reviewed cannabis/hemp propagation, tissue-culture, plant-development, pathology, diagnostic, or regulatory source(s) listed in this record.",
+      "applicability": "Supports the scoped lesson claim while preserving genotype, tissue, passage, environment, media, treatment, assay, and regulatory context.",
+      "limitations": "Cryopreservation outcomes are genotype- and protocol-specific; the evidence does not establish universal survival rates, a universal vitrification recipe, or facility safety procedures.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
