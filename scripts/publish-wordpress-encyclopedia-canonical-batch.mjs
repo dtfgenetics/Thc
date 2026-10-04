@@ -112,13 +112,13 @@ async function request(endpoint,{method='GET',body}={}){
 }
 async function wp(endpoint,opts){return (await request(endpoint,opts)).data;}
 async function findPage(slug,parent=null){
-  const rows=await wp(`/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=100`);
+  const rows=await wp(`/pages?slug=${encodeURIComponent(slug)}&context=edit&status=publish&per_page=100`);
   return rows.find(x=>parent===null||Number(x.parent)===Number(parent))||null;
 }
 async function allChildren(parent){
   const out=[];
   for(let page=1;;page++){
-    const rows=await wp(`/pages?parent=${parent}&context=edit&per_page=100&page=${page}&orderby=slug&order=asc`);
+    const rows=await wp(`/pages?parent=${parent}&context=edit&status=publish&per_page=100&page=${page}&orderby=slug&order=asc`);
     out.push(...rows);
     if(rows.length<100) break;
   }
