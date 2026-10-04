@@ -1,0 +1,127 @@
+name: Generate Encyclopedia Visual Batch 001
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/generate-encyclopedia-visual-batch-001.py'
+      - '.github/workflows/encyclopedia-visual-batch-001.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: encyclopedia-visual-batch-001
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    name: Generate and safely integrate review-pending Encyclopedia PNGs
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deterministic raster dependency
+        run: python -m pip install --disable-pip-version-check --no-cache-dir pillow==12.0.0
+
+      - name: Generate controlled review-pending raster candidates
+        run: python scripts/generate-encyclopedia-visual-batch-001.py
+
+      - name: Validate generated binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          expected = [
+              'THC-ENC-098_co2-supply-ventilation-enrichment.png',
+              'THC-ENC-103_daily-light-integral-calculation.png',
+              'THC-ENC-268_heat-stress-diagnostic-context.png',
+              'THC-ENC-269_cold-chilling-stress.png',
+              'THC-ENC-270_high-light-photoinhibition.png',
+              'THC-ENC-362_latitude-daylength-seasonal-flowering.png',
+          ]
+          root = Path('site/wordpress/assets/infographics')
+          for name in expected:
+              path = root / name
+              if not path.exists():
+                  raise SystemExit(f'Missing generated visual: {path}')
+              with Image.open(path) as im:
+                  if im.format != 'PNG' or im.size != (1600, 1000):
+                      raise SystemExit(f'Invalid generated visual {path}: {im.format} {im.size}')
+              if path.stat().st_size < 20000:
+                  raise SystemExit(f'Generated visual unexpectedly small: {path}')
+          print(f'Validated {len(expected)} deterministic 1600x1000 PNG candidates.')
+          PY
+
+      - name: Rebuild visual queue and validate review boundary
+        run: |
+          npm run build:encyclopedia-visual-queue
+          node scripts/validate-encyclopedia-visual-production-queue.mjs
+
+      - name: Safely integrate generated candidates through moving-main PR lane
+        id: integrate
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          paths=(
+            site/wordpress/assets/infographics/THC-ENC-098_co2-supply-ventilation-enrichment.png
+            site/wordpress/assets/infographics/THC-ENC-103_daily-light-integral-calculation.png
+            site/wordpress/assets/infographics/THC-ENC-268_heat-stress-diagnostic-context.png
+            site/wordpress/assets/infographics/THC-ENC-269_cold-chilling-stress.png
+            site/wordpress/assets/infographics/THC-ENC-270_high-light-photoinhibition.png
+            site/wordpress/assets/infographics/THC-ENC-362_latitude-daylength-seasonal-flowering.png
+          )
+
+          changed=()
+          while IFS= read -r -d '' path; do
+            changed+=("$path")
+          done < <(
+            git diff --name-only -z -- "${paths[@]}"
+            git ls-files --others --exclude-standard -z -- "${paths[@]}"
+          )
+
+          if [[ "${#changed[@]}" -eq 0 ]]; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            echo 'Batch 001 candidates already match canonical source.'
+            exit 0
+          fi
+
+          printf 'Encyclopedia visual batch 001 generated paths:\n'
+          printf ' - %s\n' "${changed[@]}"
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='assets(encyclopedia): integrate visual batch 001 candidates' \
+            "${changed[@]}"
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+
+      - name: Report batch status
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          CHANGED: ${{ steps.integrate.outputs.changed }}
+        with:
+          script: |
+            const body = [
+              '## Encyclopedia visual batch 001',
+              '',
+              `Result: **${process.env.STATUS}**`,
+              `Canonical candidate integration created: **${process.env.CHANGED || 'false'}**`,
+              '',
+              'Six deterministic raster teaching-visual candidates were generated from controlled lesson briefs. They remain produced/review-pending and are not marked science-, accessibility-, or publication-approved by this workflow.',
+            ].join('\n');
+            await core.summary.addRaw(body).write();
