@@ -85,9 +85,21 @@ async function allChildren(parent){
 }
 
 const backups=[];
+const lessonVisualPattern=/<!-- THC-ENC-VISUAL:THC-ENC-\d{3} START -->[\s\S]*?<!-- THC-ENC-VISUAL:THC-ENC-\d{3} END -->/i;
+function preserveExistingLessonVisual(slug,existing,content){
+  if(!/^thc-enc-\d{3}$/.test(String(slug||''))||!existing) return content;
+  const raw=String(existing.content?.raw||'');
+  const match=raw.match(lessonVisualPattern);
+  if(!match||String(content).includes('THC-ENC-VISUAL:')) return content;
+  const anchor='<h2>Terms to know</h2>';
+  const idx=String(content).indexOf(anchor);
+  if(idx<0) return content;
+  return String(content).slice(0,idx)+match[0]+'\n'+String(content).slice(idx);
+}
 async function upsertPage({slug,title,parent,content,excerpt=''}){
   const existing=await findPage(slug,parent);
   if(existing) backups.push(existing);
+  content=preserveExistingLessonVisual(slug,existing,content);
   const payload={slug,title,status:'publish',parent,content,excerpt,comment_status:'closed'};
   return existing?wp(`/pages/${existing.id}`,{method:'POST',body:payload}):wp('/pages',{method:'POST',body:payload});
 }
