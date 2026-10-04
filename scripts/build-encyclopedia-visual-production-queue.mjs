@@ -2,10 +2,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons, readJson, relativePath } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root = process.cwd();
 const outPath = path.join(root, 'content', 'encyclopedia', 'visual-production-queue-v1.json');
-const registry = readJson(path.join(root, 'content', 'encyclopedia', 'current-controlled-registry.json'));
+const registryState = loadEncyclopediaRegistry(root);
+const registry = { entries: registryState.entries };
 const lessons = readCanonicalEncyclopediaLessons(root);
 const entryById = new Map((registry.entries || []).map(entry => [entry.id, entry]));
 const arr = value => Array.isArray(value) ? value.filter(Boolean) : [];
@@ -110,7 +112,7 @@ const output = {
   schemaVersion: '1.0.0',
   artifactId: 'thc-encyclopedia-visual-production-queue-v1',
   generatedBy: 'scripts/build-encyclopedia-visual-production-queue.mjs',
-  scope: 'One controlled teaching-visual brief for each of the 420 canonical THC-ENC lessons.',
+  scope: `One controlled teaching-visual brief for each of the ${registryState.totalCount} registered THC-ENC lessons.`, 
   releaseRule: 'A brief is not an approved asset. Publication requires asset-level science, accessibility, rights, and rendering QA.',
   summary: {
     lessonCount: items.length,
@@ -124,5 +126,5 @@ const output = {
 };
 
 fs.writeFileSync(outPath, `${JSON.stringify(output, null, 2)}\n`);
-console.log(`Encyclopedia visual queue: ${items.length}/420 controlled briefs · ${output.summary.artworkNeeded} artwork needed · ${output.summary.artworkProducedReviewPending} produced/pending review · ${output.summary.approvedAssets} approved`);
+console.log(`Encyclopedia visual queue: ${items.length}/${registryState.totalCount} controlled briefs · ${output.summary.artworkNeeded} artwork needed · ${output.summary.artworkProducedReviewPending} produced/pending review · ${output.summary.approvedAssets} approved`);
 console.log(`Wrote ${relativePath(root, outPath)}`);
