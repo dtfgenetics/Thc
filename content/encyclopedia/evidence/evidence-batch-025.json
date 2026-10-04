@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-025",
+  "createdAt": "2026-10-04",
+  "scope": "High-priority claim-level evidence for THC-ENC-098 carbon-dioxide supply/enrichment context and THC-ENC-111 photoinhibition/high-light stress.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Cannabis CO2 and high-light responses remain bounded to tested genotypes, environments, treatment ranges, measurement methods, and study duration.",
+    "NIOSH occupational exposure limits are worker-safety controls, not cultivation targets or system-design setpoints.",
+    "High-light studies support measured response within their tested ranges and do not establish a universal cannabis photoinhibition or injury threshold.",
+    "All mappings remain pending independent science review and do not alter lesson publication or independent-approval state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0301",
+      "lessonId": "THC-ENC-098",
+      "sourceIds": [
+        "ENC-AUTH-143",
+        "ENC-AUTH-144"
+      ],
+      "claimType": "co2-photosynthesis-and-occupational-safety",
+      "supportedClaim": "Cannabis leaf gas exchange can respond to elevated CO2 under tested conditions, while occupational CO2 exposure limits and IDLH values are separate worker-safety controls that must not be treated as crop setpoints.",
+      "sourceLocator": "Chandra et al. (2011), DOI 10.1007/s12298-011-0066-6; NIOSH Pocket Guide to Chemical Hazards: Carbon Dioxide.",
+      "applicability": "Supports the lesson's separation of measured crop response from facility life-safety limits and its warning against treating enrichment targets as safety limits.",
+      "limitations": "The cannabis study measured four varieties and defined CO2 treatments at leaf-gas-exchange scale; it does not establish universal yield, quality, enrichment, distribution, or economic targets. NIOSH limits do not design a cultivation control system.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0302",
+      "lessonId": "THC-ENC-111",
+      "sourceIds": [
+        "ENC-AUTH-046",
+        "ENC-AUTH-145"
+      ],
+      "claimType": "high-light-response-and-threshold-limits",
+      "supportedClaim": "Indoor cannabis can maintain increasing photosynthetic or yield responses across high tested PPFD ranges, but those experiments do not establish a universal no-injury or photoinhibition threshold across genotypes, environments, spectra, acclimation histories, and support conditions.",
+      "sourceLocator": "Rodriguez-Morrison, Llewellyn, and Zheng (2021), DOI 10.3389/fpls.2021.646020; Llewellyn et al. (2022), DOI 10.3389/fpls.2022.974018.",
+      "applicability": "Supports the lesson's requirement to diagnose high-light stress with mapped exposure and plant/environment context rather than a single universal PPFD ceiling.",
+      "limitations": "Both studies used specific indoor genotypes, fixtures, environments, and treatment ranges; neither alone validates a universal photoinhibition threshold or visual diagnosis.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}

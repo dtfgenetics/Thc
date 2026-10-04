@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root=process.cwd();
 const outPath=path.join(root,'data','encyclopedia-claim-evidence-candidates.json');
@@ -15,6 +16,7 @@ if(!fs.existsSync(sourceQueuePath)){
 }
 
 const lessons=readCanonicalEncyclopediaLessons(root);
+const registryState=loadEncyclopediaRegistry(root);
 const sourceQueue=JSON.parse(fs.readFileSync(sourceQueuePath,'utf8'));
 const referenceById=new Map(arr(sourceQueue.references).map(row=>[row.referenceId,row]));
 const queueLessonById=new Map(arr(sourceQueue.lessons).map(row=>[row.lessonId,row]));
@@ -51,6 +53,9 @@ for(const lesson of lessons){
         traceabilityRequired:source.traceabilityRequired!==false,
         traceable:source.traceable===true,
         resolvedAuthoritativeSourceIds:arr(source.resolvedAuthoritativeSourceIds),
+        directLocators:arr(source.directLocators),
+        sourceIdentityKeys:arr(source.sourceIdentityKeys),
+        duplicateGroupIds:arr(source.duplicateGroupIds),
         volumeRegistryRecord:source.volumeRegistryRecord||null
       })),
       mappingState:'candidate_unverified_requires_claim_source_review',
@@ -83,14 +88,15 @@ const summary={
   lessonsWithCandidateClaims:rows.filter(row=>row.claimCount>0).length,
   lessonsWithTraceableSources:rows.filter(row=>row.sourceTraceabilityState!=='source_resolution_incomplete').length,
   independentlyReviewedClaims:0,
-  publicationApprovedClaims:0
+  publicationApprovedClaims:0,
+  candidateSourceReferencesInDuplicateGroups:allClaims.reduce((n,claim)=>n+claim.candidateSourceTraceability.filter(source=>source.duplicateGroupIds.length>0).length,0)
 };
 
 const output={
   schemaVersion:'1.0.0',
   artifactId:'thc-encyclopedia-claim-evidence-candidates',
   generatedBy:'scripts/build-encyclopedia-claim-evidence-candidates.mjs',
-  scope:'Candidate objective and core-science claim/source review ledger for all 420 controlled THC-ENC lessons.',
+  scope:`Candidate objective and core-science claim/source review ledger for all ${registryState.totalCount} registered THC-ENC lessons.`, 
   releaseRule:'Candidate mappings are reviewer work aids only. They do not assert that a listed source supports a claim and never change lesson review or publication state.',
   summary,
   lessons:rows
@@ -98,10 +104,10 @@ const output={
 
 fs.mkdirSync(path.dirname(outPath),{recursive:true});
 fs.writeFileSync(outPath,JSON.stringify(output,null,2)+'\n');
-console.log(`Encyclopedia claim candidates: ${summary.lessonCount}/420 lessons · ${summary.candidateClaimCount} objective/core-science claims · ${summary.lessonsWithTraceableSources} lessons with fully traceable source sets`);
+console.log(`Encyclopedia claim candidates: ${summary.lessonCount}/${registryState.totalCount} lessons · ${summary.candidateClaimCount} objective/core-science claims · ${summary.lessonsWithTraceableSources} lessons with fully traceable source sets`);
 console.log('Wrote data/encyclopedia-claim-evidence-candidates.json');
 
-if(rows.length!==420){
-  console.error(`Expected 420 candidate-ledger lesson rows; found ${rows.length}.`);
+if(rows.length!==registryState.totalCount){
+  console.error(`Expected ${registryState.totalCount} candidate-ledger lesson rows; found ${rows.length}.`);
   process.exit(1);
 }

@@ -92,13 +92,13 @@ jobs:
           const ids=[];
           for(const file of d.lessonFiles){
             const a=JSON.parse(fs.readFileSync(file,'utf8'));
-            if(!/^THC-ENC-\d{3}$/.test(a.id)) throw new Error(`Invalid lesson ID in ${file}`);
+            if(!/^THC-ENC-\d{3,}$/.test(a.id)) throw new Error(`Invalid lesson ID in ${file}`);
             if(ids.includes(a.id)) throw new Error(`Duplicate lesson ID ${a.id}`);
             if(!a.title||!a.objective||!Array.isArray(a.coreScience)||a.coreScience.length<2||!Array.isArray(a.sourceNotes)||!a.sourceNotes.length) throw new Error(`Incomplete canonical lesson ${a.id}`);
             ids.push(a.id);
           }
           const topics=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_TOPIC_FILE,'utf8'));
-          if(topics.schemaVersion!==1||!Array.isArray(topics.topics)||topics.topics.length!==21) throw new Error('Invalid topic architecture');
+          if(topics.schemaVersion!==1||!Array.isArray(topics.topics)||topics.topics.length<21) throw new Error('Invalid topic architecture: protected 21-topic core is required and extension topics may be appended');
           console.log(`Validated ${d.batch}: ${ids.join(', ')}`);
           NODE
 
@@ -233,30 +233,47 @@ jobs:
           set -euo pipefail
           node scripts/publish-wordpress-learning-search-indexes.mjs | tee "$RUNNER_TEMP/encyclopedia-search-index-publish.json"
 
-      - name: Visitor-verify topic-first index and every current-batch article
+      - name: Visitor-verify published catalog and every current-batch article
         id: verify
         shell: bash
         run: |
           set -euo pipefail
           report="${{ steps.publish.outputs.report }}"
+
+          # The Learning Center lane owns the searchable root shell. This lesson
+          # publisher verifies that the root exists, while catalog membership is
+          # verified against the published runtime index rather than static HTML.
           index_body="$RUNNER_TEMP/encyclopedia-index.html"
-          ok=0
-          for attempt in 1 2 3 4 5 6 7 8; do
-            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-              --header 'Cache-Control: no-cache, no-store, max-age=0' \
-              --header 'Pragma: no-cache' \
-              "$WP_SITE_URL/learn/encyclopedia/?dtf_encyclopedia=${GITHUB_RUN_ID}-${attempt}" \
-              --output "$index_body"
-            if grep -Fqi -- 'Browse by topic' "$index_body" && grep -Fqi -- 'Search all published encyclopedia lessons' "$index_body"; then ok=1; break; fi
-            sleep 8
-          done
-          [[ "$ok" -eq 1 ]]
-          node - <<'NODE' "$report" > "$RUNNER_TEMP/current-batch-routes.tsv"
+          curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 3 \
+            --header 'Cache-Control: no-cache, no-store, max-age=0' \
+            --header 'Pragma: no-cache' \
+            "$WP_SITE_URL/learn/encyclopedia/?dtf_encyclopedia=${GITHUB_RUN_ID}" \
+            --output "$index_body"
+          if ! grep -Fqi -- 'data-dtf-learning-search-surface="encyclopedia"' "$index_body"; then
+            echo 'Encyclopedia root loaded but the controlled learning-search runtime marker is missing.' >&2
+            head -c 4000 "$index_body" >&2 || true
+            exit 1
+          fi
+
+          catalog_json="$RUNNER_TEMP/encyclopedia-runtime-index.json"
+          curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 3 \
+            --header 'Cache-Control: no-cache, no-store, max-age=0' \
+            "$WP_SITE_URL/wp-json/dtf-learning/v1/index/encyclopedia?dtf_encyclopedia=${GITHUB_RUN_ID}" \
+            --output "$catalog_json"
+
+          node - <<'NODE' "$report" "$catalog_json" > "$RUNNER_TEMP/current-batch-routes.tsv"
+          const fs=require('fs');
           const r=require(process.argv[2]);
-          for(const p of r.published) process.stdout.write(`${p.id}\t${p.slug}\n`);
+          const index=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
+          const byId=new Map((index.lessons||[]).map(row=>[row.id,row]));
+          for(const p of r.published){
+            const row=byId.get(p.id);
+            if(!row) throw new Error(`${p.id} missing from published encyclopedia runtime index`);
+            if(row.status!=='published') throw new Error(`${p.id} is not marked published in runtime index`);
+            process.stdout.write(`${p.id}\t${p.slug}\n`);
+          }
           NODE
           while IFS=$'\t' read -r id slug; do
-            grep -Fqi -- "$id" "$index_body" || { echo "$id missing from encyclopedia index" >&2; exit 1; }
             route="/learn/encyclopedia/$slug/"
             body="$RUNNER_TEMP/${slug}.html"
             found=0
@@ -278,7 +295,7 @@ jobs:
           const batch=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_BATCH_FILE,'utf8'));
           const topics=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_TOPIC_FILE,'utf8')).topics;
           const lessons=batch.lessonFiles.map(file=>JSON.parse(fs.readFileSync(file,'utf8')));
-          const numbers=lessons.map(x=>Number(x.id.match(/(\d{3})$/)[1]));
+          const numbers=lessons.map(x=>Number(x.id.match(/(\d{3,})$/)[1]));
           const topic=topics.find(t=>numbers.every(n=>n>=t.range[0]&&n<=t.range[1]));
           if(!topic) throw new Error(`Current batch ${batch.batch} does not resolve to one topic hub.`);
           process.stdout.write(`${topic.slug}\t${lessons[0].id}\n`);

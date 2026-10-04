@@ -2,15 +2,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 import { effectiveLessonAssessment } from './lib/encyclopedia-assessment-v2.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root=process.cwd();
-const registry=JSON.parse(fs.readFileSync(path.join(root,'content/encyclopedia/current-controlled-registry.json'),'utf8'));
+const registryState=loadEncyclopediaRegistry(root);
+const registry={entries:registryState.entries};
 const topics=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-topics.json'),'utf8')).topics||[];
 const topicByPart=new Map(topics.map(topic=>[Number(topic.part),topic]));
 
 const canonicalLessons=readCanonicalEncyclopediaLessons(root);
-if(canonicalLessons.length!==420){
-  console.error(`Completion scorecard requires 420 canonical lessons; found ${canonicalLessons.length}.`);
+if(canonicalLessons.length!==registryState.totalCount){
+  console.error(`Completion scorecard requires ${registryState.totalCount} registered canonical lessons; found ${canonicalLessons.length}.`);
   process.exit(1);
 }
 const lessonById=new Map(canonicalLessons.map(lesson=>[
@@ -110,10 +112,11 @@ const lessons=(registry.entries||[]).map(scoreLesson);
 const counts={};
 for(const row of lessons)counts[row.readiness]=(counts[row.readiness]||0)+1;
 const average=Math.round(lessons.reduce((s,x)=>s+x.score,0)/Math.max(1,lessons.length));
-const parts=topics.map(topic=>{
-  const rows=lessons.filter(x=>x.part===Number(topic.part));
+const parts=[...new Set(lessons.map(x=>Number(x.part)))].sort((a,b)=>a-b).map(part=>{
+  const topic=topicByPart.get(part);
+  const rows=lessons.filter(x=>Number(x.part)===part);
   return {
-    part:Number(topic.part),title:topic.title,count:rows.length,
+    part,title:topic?.title||rows[0]?.topic||`Part ${part}`,count:rows.length,
     averageScore:Math.round(rows.reduce((s,x)=>s+x.score,0)/Math.max(1,rows.length)),
     productionCandidates:rows.filter(x=>x.readiness==='production-candidate').length,
     majorGaps:rows.filter(x=>x.readiness==='major-gaps').length

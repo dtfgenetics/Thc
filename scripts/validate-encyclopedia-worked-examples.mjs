@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root=process.cwd();
-const registry=JSON.parse(fs.readFileSync(path.join(root,'content/encyclopedia/current-controlled-registry.json'),'utf8'));
+const registryState=loadEncyclopediaRegistry(root);
+const registry={entries:registryState.entries};
 const file=path.join(root,'content/encyclopedia/worked-examples-v1.json');
 const data=JSON.parse(fs.readFileSync(file,'utf8'));
 const errors=[];
@@ -16,7 +18,7 @@ if(!String(data.publicationRule||'').includes('canonical lesson/source/evidence 
 if(!Array.isArray(data.examples)||data.examples.length<16) errors.push('expected at least 16 worked examples');
 
 for(const ex of data.examples||[]){
-  if(!known.has(ex.lessonId)) errors.push(`${ex.lessonId}: lesson ID not in controlled 420 registry`);
+  if(!known.has(ex.lessonId)) errors.push(`${ex.lessonId}: lesson ID not in registered encyclopedia corpus`);
   if(seen.has(ex.lessonId)) errors.push(`${ex.lessonId}: duplicate worked example`);
   seen.add(ex.lessonId);
   if(String(ex.title||'').length<12) errors.push(`${ex.lessonId}: title too thin`);

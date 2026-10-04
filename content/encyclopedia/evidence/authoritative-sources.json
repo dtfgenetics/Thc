@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "registryId": "thc-encyclopedia-authoritative-source-registry",
-  "updatedAt": "2026-10-03",
+  "updatedAt": "2026-10-04",
   "scope": "Controlled external authority and peer-reviewed source registry for THC-ENC claim-level evidence collection. Source inclusion does not approve a lesson, publish a draft, or complete independent science review.",
   "rules": [
     "Source records identify authority and applicability; they do not create publication authorization.",
@@ -1766,6 +1766,72 @@
       ],
       "useAndLimitations": "Use for cannabis-specific single-element deficiency symptom progression, tissue analysis, yield effects, and the warning that visual symptoms and tissue concentrations do not always align. Results are cultivar-, hydroponic-system-, stage-, treatment-, and environment-specific and do not create universal visual-diagnosis rules.",
       "reviewUse": "claim-level cannabis nutrient-deficiency source"
+    },
+    {
+      "id": "ENC-AUTH-143",
+      "sourceType": "peer_reviewed_primary",
+      "authorityClass": "cannabis_co2_response_primary",
+      "title": "Chandra et al. (2011). Photosynthetic response of Cannabis sativa L., an important medicinal plant, to elevated levels of CO2.",
+      "publisher": "Physiology and Molecular Biology of Plants",
+      "year": 2011,
+      "doi": "10.1007/s12298-011-0066-6",
+      "pmid": "23573021",
+      "pmcid": "PMC3550578",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/23573021/",
+      "aliases": [],
+      "useAndLimitations": "Use for cannabis leaf gas-exchange responses to the tested elevated CO2 concentrations in four studied varieties. Short-term leaf photosynthesis and water-use responses do not establish universal whole-crop yield, quality, economic, or facility-control targets.",
+      "reviewUse": "claim-level cannabis CO2 response source"
+    },
+    {
+      "id": "ENC-AUTH-144",
+      "sourceType": "government_occupational_health",
+      "authorityClass": "co2_occupational_exposure",
+      "title": "NIOSH Pocket Guide to Chemical Hazards: Carbon Dioxide",
+      "publisher": "National Institute for Occupational Safety and Health",
+      "year": 2019,
+      "url": "https://www.cdc.gov/niosh/npg/npgd0103.html",
+      "aliases": [],
+      "useAndLimitations": "Use for NIOSH carbon-dioxide hazard identity, REL/ST exposure limits, IDLH concentration, symptoms, measurement-method references, and occupational-safety context. Occupational exposure limits are not crop-production setpoints and do not design a cultivation CO2 system.",
+      "reviewUse": "authoritative worker-safety source"
+    },
+    {
+      "id": "ENC-AUTH-145",
+      "sourceType": "peer_reviewed_primary",
+      "authorityClass": "cannabis_high_light_uv_primary",
+      "title": "Llewellyn et al. (2022). Indoor grown cannabis yield increased proportionally with light intensity, but ultraviolet radiation did not affect yield or cannabinoid content.",
+      "publisher": "Frontiers in Plant Science",
+      "year": 2022,
+      "doi": "10.3389/fpls.2022.974018",
+      "url": "https://doi.org/10.3389/fpls.2022.974018",
+      "aliases": [],
+      "useAndLimitations": "Use for responses of the tested indoor cannabis genotype to 600, 800, and 1,000 µmol m−2 s−1 canopy PPFD and the reported UVA/UVB treatments. The tested range and genotype do not define a universal safe-light ceiling, photoinhibition threshold, or UV response.",
+      "reviewUse": "claim-level cannabis light-response source"
+    },
+    {
+      "id": "ENC-AUTH-146",
+      "sourceType": "peer_reviewed_primary",
+      "authorityClass": "hemp_photoperiod_flowering_primary",
+      "title": "Zhang et al. (2021). Photoperiodic Flowering Response of Essential Oil, Grain, and Fiber Hemp (Cannabis sativa L.) Cultivars.",
+      "publisher": "Frontiers in Plant Science",
+      "year": 2021,
+      "doi": "10.3389/fpls.2021.694153",
+      "url": "https://doi.org/10.3389/fpls.2021.694153",
+      "aliases": [],
+      "useAndLimitations": "Use for cultivar-specific hemp flowering responses across tested 12–18 h controlled photoperiods, field day length, critical-photoperiod differences, and biologically effective twilight observations. The tested hemp cultivars and environments do not establish a universal critical photoperiod for all cannabis germplasm.",
+      "reviewUse": "claim-level cannabis/hemp photoperiod source"
+    },
+    {
+      "id": "ENC-AUTH-147",
+      "sourceType": "peer_reviewed_systematic_review",
+      "authorityClass": "cannabis_photoperiod_switch_meta_analysis",
+      "title": "Dang, Muthu Arachchige, and Campbell (2022). Optimizing Photoperiod Switch to Maximize Floral Biomass and Cannabinoid Yield in Cannabis sativa L.: A Meta-Analytic Quantile Regression Approach.",
+      "publisher": "Frontiers in Plant Science",
+      "year": 2022,
+      "doi": "10.3389/fpls.2021.797425",
+      "url": "https://doi.org/10.3389/fpls.2021.797425",
+      "aliases": [],
+      "useAndLimitations": "Use for the reviewed relationship between duration of long-day vegetative exposure, photoperiod switching, floral biomass, and cannabinoid concentration across the included studies. Meta-analytic optima reflect the included literature and methods and are not universal cultivar recipes or critical-photoperiod thresholds.",
+      "reviewUse": "claim-level cannabis photoperiod-switch synthesis"
     }
   ]
 }

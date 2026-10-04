@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-026",
+  "createdAt": "2026-10-04",
+  "scope": "High-priority claim-level photoperiod and daily-photon evidence for THC-ENC-104.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Photoperiod flowering responses remain bounded to tested germplasm, propagation material, environments, light schedules, and flowering definitions.",
+    "A daily photon integral does not preserve dark duration, photon rate, spectrum, circadian timing, or cultivar-specific flowering response.",
+    "Meta-analytic timing estimates describe the included literature and must not be converted into universal cultivar schedules.",
+    "All mappings remain pending independent science review and do not alter lesson publication or independent-approval state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0303",
+      "lessonId": "THC-ENC-104",
+      "sourceIds": [
+        "ENC-AUTH-146",
+        "ENC-AUTH-147"
+      ],
+      "claimType": "photoperiod-development-and-genotype-dependence",
+      "supportedClaim": "Cannabis/hemp flowering and production responses depend on photoperiod timing and germplasm; experiments show cultivar-specific critical-photoperiod behavior and a synthesis of indoor studies links vegetative long-day duration with differing floral-biomass and cannabinoid outcomes, so equal daily photon totals cannot be assumed biologically equivalent across schedules.",
+      "sourceLocator": "Zhang et al. (2021), DOI 10.3389/fpls.2021.694153; Dang, Muthu Arachchige, and Campbell (2022), DOI 10.3389/fpls.2021.797425.",
+      "applicability": "Supports the lesson's distinction between integrated photon dose and developmental light-dark timing, including cultivar dependence and the need to record actual photoperiod transitions.",
+      "limitations": "Zhang et al. tested specific essential-oil, fiber, and grain hemp cultivars; Dang et al. synthesized heterogeneous published studies. Neither establishes a universal critical photoperiod, flowering schedule, DLI equivalence rule, or cultivar-independent optimum.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}

@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
-import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { discoverEncyclopediaVolumes, readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root=process.cwd();
 const strict=process.argv.includes('--strict');
 const encRoot=path.join(root,'content','encyclopedia');
-const registry=JSON.parse(fs.readFileSync(path.join(encRoot,'current-controlled-registry.json'),'utf8'));
+const registryState=loadEncyclopediaRegistry(root);
+const registry={entries:registryState.entries};
 const outPath=path.join(root,'data','encyclopedia-substantive-quality-audit.json');
 const arr=v=>Array.isArray(v)?v:[];
 const txt=v=>String(v??'').replace(/\s+/g,' ').trim();
@@ -17,8 +19,8 @@ const lessons=new Map(canonicalLessons.map(lesson=>[
   {...lesson,__file:lesson.__path}
 ]));
 
-if(canonicalLessons.length!==420){
-  console.error(`Substantive audit requires 420 canonical lessons; found ${canonicalLessons.length}.`);
+if(canonicalLessons.length!==registryState.totalCount){
+  console.error(`Substantive audit requires ${registryState.totalCount} registered canonical lessons; found ${canonicalLessons.length}.`);
   process.exit(1);
 }
 for(const lesson of canonicalLessons){
@@ -30,8 +32,9 @@ for(const lesson of canonicalLessons){
 
 const values=(l,a,b)=>arr(l?.[a]).length?arr(l[a]):arr(l?.[b]);
 const sourceRegisterByPart=new Map();
-for(let part=1;part<=21;part++){
-  const registerPath=path.join(encRoot,`volume-${String(part).padStart(2,'0')}`,'source-register.json');
+for(const volumeInfo of discoverEncyclopediaVolumes(root)){
+  const part=volumeInfo.number;
+  const registerPath=path.join(encRoot,volumeInfo.name,'source-register.json');
   if(!fs.existsSync(registerPath)) continue;
   const register=JSON.parse(fs.readFileSync(registerPath,'utf8'));
   sourceRegisterByPart.set(part,new Map(arr(register.sources).map(source=>[source.id,source])));
@@ -127,5 +130,5 @@ fs.writeFileSync(outPath,JSON.stringify(output,null,2)+'\n');
 console.log(`Substantive encyclopedia audit: ${rows.length} lessons; ${output.lessonsWithIssues} with one or more substantive findings.`);
 console.log(JSON.stringify(issueCounts,null,2));
 console.log('Highest-priority lessons: '+ranked.slice(0,20).map(x=>x.id+'('+x.issueCount+')').join(', '));
-if(rows.length!==420) process.exit(1);
+if(rows.length!==registryState.totalCount) process.exit(1);
 if(strict&&output.lessonsWithIssues>0){console.error(`Strict substantive encyclopedia audit failed: ${output.lessonsWithIssues} lessons still have findings.`);process.exit(1);}

@@ -72,7 +72,7 @@ jobs:
           ENCYCLOPEDIA_BATCH_FILE="$batch" BACKUP_ROOT="/tmp/dtf-encyclopedia-repair/$name" \
             node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
 
-      - name: Rebuild 21 topic hubs
+      - name: Rebuild encyclopedia topic hubs
         shell: bash
         run: |
           set -euo pipefail
@@ -81,8 +81,8 @@ jobs:
           test -s "$report"
           node - "$report" <<'NODE'
           const r=require(process.argv[2]);
-          if(r.activeTopics.length!==21) throw new Error(`Expected 21 active topic hubs, found ${r.activeTopics.length}`);
-          if(r.articleCount!==420) throw new Error(`Expected 420 published encyclopedia articles, found ${r.articleCount}`);
+          if(r.activeTopics.length<21) throw new Error(`Expected at least the 21 protected core topic hubs, found ${r.activeTopics.length}`);
+          if(r.articleCount<420) throw new Error(`Expected at least the 420 protected core encyclopedia articles, found ${r.articleCount}`);
           console.log(`Topic organization verified: ${r.activeTopics.length} hubs, ${r.articleCount} articles`);
           NODE
 
@@ -123,4 +123,4 @@ jobs:
             grep -Fqi -- "data-thc-topic=\"$hub\"" "$RUNNER_TEMP/$hub.html"
           done
 
-          echo "Visitor verification passed for all 48 reconciled lessons and 21-topic catalog."
+          echo "Visitor verification passed for all 48 reconciled lessons and the protected-core-plus-extension catalog."

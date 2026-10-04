@@ -113,6 +113,8 @@ jobs:
         run: npm run audit:encyclopedia-learning-quality
       - name: Audit substantive lesson quality
         run: npm run audit:encyclopedia-substantive-quality:strict
+      - name: Audit cross-corpus consistency
+        run: npm run audit:encyclopedia-consistency
       - name: Build rich discovery index
         run: npm run build:encyclopedia-discovery
       - name: Build global education search
@@ -127,6 +129,10 @@ jobs:
         run: node scripts/validate-encyclopedia-search-benchmark.mjs
       - name: Validate lesson renderer contract
         run: npm run verify:encyclopedia-renderer
+      - name: Validate lesson structured data
+        run: npm run verify:encyclopedia-structured-data
+      - name: Build and validate source freshness queue
+        run: npm run verify:encyclopedia-source-freshness
       - name: Validate encyclopedia production skill
         run: npm run verify:encyclopedia-skill
       - name: Validate controlled lesson structure
@@ -152,12 +158,14 @@ jobs:
             data/encyclopedia-evidence-priority.json
             data/encyclopedia-assessment-rationale-package.json
             data/encyclopedia-source-resolution-queue.json
+            data/encyclopedia-source-freshness.json
             data/encyclopedia-claim-evidence-candidates.json
             data/encyclopedia-production-readiness.json
             data/encyclopedia-independent-review-manifest.json
             content/encyclopedia/visual-production-queue-v1.json
             data/encyclopedia-learning-quality-audit.json
             data/encyclopedia-substantive-quality-audit.json
+            data/encyclopedia-consistency-audit.json
             live-encyclopedia-copy-audit.json
             site/public-route-patch/learn/encyclopedia/encyclopedia-index.json
             site/public-route-patch/learn/search/search-index.json

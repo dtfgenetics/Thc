@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root=process.cwd();
 const read=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
 const arr=v=>Array.isArray(v)?v:[];
 const outPath=path.join(root,'data','encyclopedia-independent-review-manifest.json');
+const registryState=loadEncyclopediaRegistry(root);
 
 const readiness=read('data/encyclopedia-production-readiness.json');
 const evidence=read('data/encyclopedia-evidence-tracking.json');
@@ -98,7 +100,7 @@ const output={
   schemaVersion:'1.0.0',
   artifactId:'thc-encyclopedia-independent-review-manifest',
   generatedBy:'scripts/build-encyclopedia-independent-review-manifest.mjs',
-  scope:'Reviewer handoff for all 420 controlled THC-ENC lessons. This artifact enumerates review work but never makes reviewer decisions.',
+  scope:`Reviewer handoff for all ${registryState.totalCount} registered THC-ENC lessons. This artifact enumerates review work but never makes reviewer decisions.`, 
   reviewBoundary:'Generated content may prepare evidence, rationale, visual, accessibility, rights, QA, and release-review tasks. Independent reviewer identity, decision, date, and notes must come from an external review action and must never be synthesized by this builder.',
   summary,
   lessons:rows
@@ -109,4 +111,4 @@ fs.writeFileSync(outPath,JSON.stringify(output,null,2)+'\n');
 console.log('Encyclopedia independent-review manifest');
 console.log(JSON.stringify(summary,null,2));
 console.log('Wrote data/encyclopedia-independent-review-manifest.json');
-if(rows.length!==420) process.exitCode=1;
+if(rows.length!==registryState.totalCount) process.exitCode=1;

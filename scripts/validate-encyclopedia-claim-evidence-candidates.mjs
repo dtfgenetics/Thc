@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const file='data/encyclopedia-claim-evidence-candidates.json';
 const sourceFile='data/encyclopedia-source-resolution-queue.json';
 const errors=[];
+const registryState=loadEncyclopediaRegistry(process.cwd());
 const arr=v=>Array.isArray(v)?v:[];
 
 if(!fs.existsSync(file)) errors.push('missing claim-evidence candidate ledger');
@@ -19,11 +21,11 @@ if(!errors.length){
 
   if(data.schemaVersion!=='1.0.0') errors.push('schemaVersion must be 1.0.0');
   if(data.artifactId!=='thc-encyclopedia-claim-evidence-candidates') errors.push('artifactId mismatch');
-  if(arr(data.lessons).length!==420) errors.push(`expected 420 lessons; found ${arr(data.lessons).length}`);
+  if(arr(data.lessons).length!==registryState.totalCount) errors.push(`expected ${registryState.totalCount} lessons; found ${arr(data.lessons).length}`);
 
   for(let index=0;index<arr(data.lessons).length;index+=1){
     const row=data.lessons[index];
-    const expected=`THC-ENC-${String(index+1).padStart(3,'0')}`;
+    const expected=registryState.entries[index]?.id;
     if(row.lessonId!==expected) errors.push(`row ${index+1}: expected ${expected}, found ${row.lessonId||'(missing)'}`);
     if(seenLessons.has(row.lessonId)) errors.push(`duplicate lesson ${row.lessonId}`);
     seenLessons.add(row.lessonId);
@@ -52,6 +54,12 @@ if(!errors.length){
         const ref=refById.get(refId);
         if(ref?.traceabilityRequired===false) errors.push(`${claim.candidateId}: control/context note ${refId} cannot be attached as candidate claim evidence`);
       }
+      for(const source of arr(claim.candidateSourceTraceability)){
+        if(!refs.has(source.referenceId)) errors.push(`${claim.candidateId}: traceability row references unknown source ${source.referenceId}`);
+        if(new Set(arr(source.sourceIdentityKeys)).size!==arr(source.sourceIdentityKeys).length) errors.push(`${claim.candidateId}: duplicate sourceIdentityKeys for ${source.referenceId}`);
+        for(const key of arr(source.sourceIdentityKeys)) if(!/^(doi|pmc|pmid|url):/.test(String(key))) errors.push(`${claim.candidateId}: invalid source identity key ${key}`);
+        for(const locator of arr(source.directLocators)) if(!/^https:\/\//.test(String(locator))) errors.push(`${claim.candidateId}: direct locator must use HTTPS`);
+      }
     }
   }
 
@@ -64,4 +72,4 @@ if(errors.length){
   for(const error of errors.slice(0,200)) console.error(' - '+error);
   process.exit(1);
 }
-console.log('Encyclopedia claim-evidence candidate ledger PASS: 420 lessons; candidate mappings remain explicitly unreviewed and non-publishing.');
+console.log(`Encyclopedia claim-evidence candidate ledger PASS: ${registryState.totalCount} lessons; candidate mappings remain explicitly unreviewed and non-publishing.`);

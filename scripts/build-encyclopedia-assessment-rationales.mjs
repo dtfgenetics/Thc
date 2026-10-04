@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { effectiveLessonAssessment } from './lib/encyclopedia-assessment-v2.mjs';
 import { readCanonicalEncyclopediaLessons, relativePath } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root = process.cwd();
 const outPath = path.join(root, 'data', 'encyclopedia-assessment-rationale-package.json');
@@ -48,6 +49,7 @@ function buildRationales(lesson, prompts) {
 }
 
 const lessons = readCanonicalEncyclopediaLessons(root);
+const registryState = loadEncyclopediaRegistry(root);
 const records = lessons.map(lesson => {
   const assessment = effectiveLessonAssessment(lesson);
   const prompts = arr(assessment.prompts).slice(0, 3);
@@ -74,7 +76,7 @@ const output = {
   schemaVersion: '1.0.0',
   artifactId: 'thc-encyclopedia-assessment-rationale-package',
   generatedBy: 'scripts/build-encyclopedia-assessment-rationales.mjs',
-  scope: 'All 420 controlled THC-ENC lessons. Rationales are draft reviewer aids, not approved answer keys.',
+  scope: `All ${registryState.totalCount} registered THC-ENC lessons (${registryState.coreCount} protected core + ${registryState.extensionCount} extension). Rationales are draft reviewer aids, not approved answer keys.`, 
   releaseRule: 'No rationale becomes learner-facing or changes lesson publication state without independent assessment and science review.',
   summary: {
     lessonCount: records.length,
@@ -88,5 +90,5 @@ const output = {
 
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, `${JSON.stringify(output, null, 2)}\n`);
-console.log(`Encyclopedia assessment rationale package: ${records.length}/420 lessons · ${output.summary.rationaleCount} draft rationales · 0 approved`);
+console.log(`Encyclopedia assessment rationale package: ${records.length}/${registryState.totalCount} lessons · ${output.summary.rationaleCount} draft rationales · 0 approved`);
 console.log(`Wrote ${relativePath(root, outPath)}`);

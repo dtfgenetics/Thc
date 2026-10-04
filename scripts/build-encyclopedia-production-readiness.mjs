@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root = process.cwd();
 const outPath = path.join(root,'data','encyclopedia-production-readiness.json');
+const registryState = loadEncyclopediaRegistry(root);
 
 const read = p => JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
 const arr = v => Array.isArray(v) ? v : [];
@@ -212,7 +214,7 @@ console.log('Encyclopedia production readiness');
 console.log(JSON.stringify(output.summary,null,2));
 console.log('Wrote data/encyclopedia-production-readiness.json');
 
-if(lessons.length !== 420){
-  console.error('Expected 420 readiness rows; found '+lessons.length);
+if(lessons.length !== registryState.totalCount){
+  console.error(`Expected ${registryState.totalCount} readiness rows; found ${lessons.length}`);
   process.exit(1);
 }
