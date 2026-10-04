@@ -2,6 +2,18 @@
 
 Updated: 2026-10-03
 
+## Live publication completion
+
+- Live publication status: **complete at the canonical publication layer**.
+- Public lesson count: **420/420**.
+- Public topic hubs: **21/21**.
+- WordPress repair/reconciliation workflow: **passed**.
+- Rebuilt Learning Search / Encyclopedia indexes: **passed**.
+- Visitor-facing verification of repaired routes and full catalog: **passed**.
+- Forward-only production floor remains **THC-ENC-420**.
+- Machine-readable release evidence: `data/encyclopedia-live-release-status.json`.
+- Independent science review, assessment-rationale review, exact claim-level evidence expansion, and approved teaching-visual production remain separate quality/review workstreams; they do not mean the 420-lesson public Encyclopedia is missing or unpublished.
+
 ## Current controlled coverage
 
 - Controlled architecture: 21 parts × 20 lessons = 420 permanent THC-ENC IDs.
