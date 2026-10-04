@@ -15,6 +15,16 @@ export function stripOutdoorAtlas(html){
     if(candidates.length===0) throw new Error('Truncated Outdoor atlas closing marker has no recoverable atlas start.');
     clean=`${clean.slice(0,Math.min(...candidates))}${clean.slice(end+END.length)}`;
   }
-  if(clean.includes(START)||/class="outv6(?:-|")|data-outv6-/.test(clean)) throw new Error('Outdoor atlas cleanup left stale atlas markup.');
+  const residualStarts=FALLBACK_STARTS.map(marker=>clean.indexOf(marker)).filter(index=>index>=0);
+  if(residualStarts.length){
+    const start=Math.min(...residualStarts);
+    const boundaries=['<!-- dtf-learning-v4:start -->','<!-- dtf-outdoor-v6:start -->']
+      .map(marker=>clean.indexOf(marker,start))
+      .filter(index=>index>start);
+    if(boundaries.length===0) throw new Error('Markerless Outdoor atlas fragment has no safe following owner boundary.');
+    const end=Math.min(...boundaries);
+    clean=`${clean.slice(0,start)}${clean.slice(end)}`;
+  }
+  if(clean.includes(START)||clean.includes(END)||/class="outv6(?:-|")|data-outv6-/.test(clean)) throw new Error('Outdoor atlas cleanup left stale atlas markup.');
   return clean.trim();
 }
