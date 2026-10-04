@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-031",
+  "createdAt": "2026-10-04",
+  "scope": "High-priority evidence for transpiration, VPD interpretation, drought response, and chilling injury.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "VPD is an atmospheric gradient/input, not a complete whole-crop transpiration model or universal crop prescription.",
+    "Single Cannabis drought experiments remain bounded to cultivar, system, timing and treatment method.",
+    "Cold/chilling mechanisms from general plant literature do not establish Cannabis-specific alarm thresholds or cultivar rankings.",
+    "All mappings remain pending independent science review."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0319",
+      "lessonId": "THC-ENC-082",
+      "sourceIds": [
+        "ENC-AUTH-165",
+        "ENC-AUTH-163"
+      ],
+      "claimType": "transpiration-conductance-and-environment",
+      "supportedClaim": "Transpiration emerges from physical vapor gradients coupled to stomatal conductance and leaf energy balance, so atmospheric VPD alone cannot determine whole-canopy water loss without conductance, leaf area, radiation/temperature and system context.",
+      "sourceLocator": "Buckley (2017), PMID 28432232, PMCID PMC5462030, DOI 10.1104/pp.16.01772; Lawson and Blatt (2014), PMID 25060834.",
+      "applicability": "Supports separating physical evaporative demand from biological stomatal control and recording environmental and canopy variables together.",
+      "limitations": "General plant models require parameterization and validation; they do not supply universal Cannabis transpiration rates or irrigation volumes.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0320",
+      "lessonId": "THC-ENC-085",
+      "sourceIds": [
+        "ENC-AUTH-166"
+      ],
+      "claimType": "vpd-meaning-calculation-and-transfer-limits",
+      "supportedClaim": "Vapor pressure deficit is a psychrometric measure useful for greenhouse microclimate evaluation, but desirable ranges depend on crop, developmental state, environment and control objective rather than constituting a universal plant prescription.",
+      "sourceLocator": "Shamshiri et al. (2018), DOI 10.1515/intag-2017-0005.",
+      "applicability": "Supports teaching VPD calculation and interpretation while separating the equation from crop-specific target selection.",
+      "limitations": "The review spans greenhouse crops and systems; it does not validate a universal Cannabis VPD chart or stage-specific setpoints.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0321",
+      "lessonId": "THC-ENC-094",
+      "sourceIds": [
+        "ENC-AUTH-167"
+      ],
+      "claimType": "cannabis-drought-response-and-recovery-limits",
+      "supportedClaim": "A controlled medical-Cannabis experiment demonstrates that timed drought treatment can alter measured crop outcomes, but the response is treatment- and cultivar-specific and visible wilt is not a standardized transferable dose.",
+      "sourceLocator": "Caplan, Dixon, and Zheng (2019), DOI 10.21273/HORTSCI13510-18.",
+      "applicability": "Supports the lesson's use of measured substrate/plant response and recovery rather than generic intentional-stress recipes.",
+      "limitations": "One cultivar and experimental production system cannot establish universal drought timing, severity, recovery criteria, yield response or cannabinoid response.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0322",
+      "lessonId": "THC-ENC-097",
+      "sourceIds": [
+        "ENC-AUTH-168"
+      ],
+      "claimType": "chilling-injury-mechanisms-and-variation",
+      "supportedClaim": "Low nonfreezing temperatures can disrupt membrane behavior, photosynthesis, metabolism and water relations, while acclimation and injury thresholds vary among species and genotypes.",
+      "sourceLocator": "Theocharis, Clément, and Barka (2012), PMID 22526498, DOI 10.1007/s00425-012-1641-y.",
+      "applicability": "Supports the lesson's mechanism-based interpretation of chilling symptoms and recovery while emphasizing measured tissue/root-zone conditions.",
+      "limitations": "General plant chilling literature does not establish Cannabis-specific alarm temperatures, genotype rankings or recovery times.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
