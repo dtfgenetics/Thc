@@ -159,6 +159,14 @@ for (const result of results) {
   if (['search','encyclopedia'].includes(result.slug)) {
     if (!html.includes('data-dtf-learning-search-runtime="mu-v1"')) throw new Error(`MU-plugin search runtime marker missing on ${result.url}`);
     if (!html.includes('data-dtf-learning-search-bootstrap="mu-v1"')) throw new Error(`MU-plugin search bootstrap missing on ${result.url}`);
+    if (!html.includes('data-static-fallback')) throw new Error(`Static crawlable fallback missing on ${result.url}`);
+    if (result.slug === 'encyclopedia') {
+      if (!html.includes('DTF_STATIC_ENCYCLOPEDIA_FALLBACK_START')) throw new Error(`Static encyclopedia fallback marker missing on ${result.url}`);
+      if (!html.includes('THC-ENC-420')) throw new Error(`Static encyclopedia fallback does not prove the completed THC-ENC-420 publication floor on ${result.url}`);
+    }
+    if (result.slug === 'search' && !html.includes('DTF_STATIC_SEARCH_FALLBACK_START')) {
+      throw new Error(`Static education-search fallback marker missing on ${result.url}`);
+    }
   }
   for (const forbidden of ['email@email.com', '+123456789', 'being rebuilt', 'Needed from owner']) {
     if (html.toLowerCase().includes(forbidden.toLowerCase())) throw new Error(`Stale placeholder content found on ${result.url}: ${forbidden}`);
