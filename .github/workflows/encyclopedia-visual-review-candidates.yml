@@ -1,0 +1,71 @@
+name: Render THC Encyclopedia Visual Review Candidates
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'content/encyclopedia/visual-production-batches/**'
+      - 'scripts/build-encyclopedia-visual-candidates.mjs'
+      - '.github/workflows/encyclopedia-visual-review-candidates.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: encyclopedia-visual-review-candidates-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  render:
+    name: Render review candidates batch ${{ matrix.batch }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        batch: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install deterministic SVG rasterizer
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends librsvg2-bin
+
+      - name: Build staging review candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-visual-candidates.mjs '${{ matrix.batch }}'
+          batch=$(printf '%03d' '${{ matrix.batch }}')
+          src="build/encyclopedia-visual-candidates/batch-$batch"
+          out="build/encyclopedia-visual-candidate-png/batch-$batch"
+          mkdir -p "$out"
+          count=0
+          for svg in "$src"/*.svg; do
+            name=$(basename "$svg" .svg)
+            rsvg-convert -w 1800 -h 1200 -o "$out/$name.png" "$svg"
+            test -s "$out/$name.png"
+            count=$((count+1))
+          done
+          expected=$(node -p "require('./content/encyclopedia/visual-production-batches/batch-$batch.json').itemCount")
+          test "$count" -eq "$expected"
+          cp "$src/manifest.json" "$out/manifest.json"
+          echo "Rendered $count review-candidate PNGs for batch $batch."
+
+      - name: Upload review-only raster proofs
+        uses: actions/upload-artifact@v4
+        with:
+          name: encyclopedia-visual-review-candidates-batch-${{ matrix.batch }}-${{ github.run_id }}
+          path: |
+            build/encyclopedia-visual-candidates
+            build/encyclopedia-visual-candidate-png
+          if-no-files-found: error
+          retention-days: 30
