@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 import { encyclopediaStructuredData, encyclopediaStructuredDataHtml } from './lib/encyclopedia-structured-data.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const lessons=readCanonicalEncyclopediaLessons(process.cwd());
+const registryState=loadEncyclopediaRegistry(process.cwd());
 const errors=[];
-if(lessons.length!==420) errors.push('Expected 420 canonical lessons; found '+lessons.length);
+if(lessons.length!==registryState.totalCount) errors.push(`Expected ${registryState.totalCount} registered canonical lessons; found ${lessons.length}`);
 
 for(const lesson of lessons){
   const data=encyclopediaStructuredData(lesson,{site:'https://dtfseeds.com'});
@@ -32,4 +34,4 @@ if(errors.length){
   for(const error of errors.slice(0,100)) console.error(' - '+error);
   process.exit(1);
 }
-console.log('Encyclopedia structured data PASS: 420/420 canonical lessons produce Article + LearningResource + BreadcrumbList JSON-LD.');
+console.log(`Encyclopedia structured data PASS: ${lessons.length}/${registryState.totalCount} canonical lessons produce Article + LearningResource + BreadcrumbList JSON-LD.`);
