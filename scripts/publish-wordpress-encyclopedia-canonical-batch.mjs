@@ -71,12 +71,39 @@ const workedExampleHtml=a=>{
   return `<details class="thc-example"><summary><strong>Worked example:</strong> ${esc(ex.title)}</summary><div class="thc-example-body"><p><strong>Scenario:</strong> ${esc(ex.scenario)}</p><h3>Reasoning path</h3>${list(ex.reasoningPath||[])}<h3>Evidence to collect</h3>${list(ex.evidenceToCollect||[])}<h3>Common weak answers</h3>${list(ex.weakAnswerPatterns||[])}<p><strong>Verification:</strong> ${esc(ex.verification)}</p><p><strong>Applicability boundary:</strong> ${esc(ex.boundary)}</p></div></details>`;
 };
 
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const requestAttempts=Math.max(1,Number(process.env.WP_API_RETRY_ATTEMPTS||6));
+const retryableStatus=status=>status===408||status===425||status===429||status>=500;
+const retryDelayMs=(attempt,retryAfter)=>{
+  const retryAfterSeconds=Number(retryAfter||0);
+  if(Number.isFinite(retryAfterSeconds)&&retryAfterSeconds>0) return Math.min(60000,retryAfterSeconds*1000);
+  return Math.min(30000,1500*(2**(attempt-1)));
+};
 async function request(endpoint,{method='GET',body}={}){
-  const res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{method,headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache'},body:body?JSON.stringify(body):undefined});
-  const text=await res.text(); let parsed;
-  try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
-  if(!res.ok) throw new Error(`${method} ${endpoint} failed ${res.status}: ${typeof parsed==='string'?parsed.slice(0,800):JSON.stringify(parsed).slice(0,800)}`);
-  return {data:parsed,headers:res.headers};
+  const url=`${site}/wp-json/wp/v2${endpoint}`;
+  for(let attempt=1;attempt<=requestAttempts;attempt++){
+    let res;
+    try{
+      res=await fetch(url,{method,headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache'},body:body?JSON.stringify(body):undefined});
+    }catch(error){
+      if(attempt===requestAttempts) throw new Error(`${method} ${endpoint} network failure after ${attempt} attempt(s): ${error?.message||error}`);
+      const delay=retryDelayMs(attempt);
+      console.warn(`${method} ${endpoint} network failure on attempt ${attempt}/${requestAttempts}; retrying in ${delay}ms: ${error?.message||error}`);
+      await sleep(delay);
+      continue;
+    }
+    const text=await res.text(); let parsed;
+    try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
+    if(res.ok) return {data:parsed,headers:res.headers};
+    const detail=typeof parsed==='string'?parsed.slice(0,800):JSON.stringify(parsed).slice(0,800);
+    if(!retryableStatus(res.status)||attempt===requestAttempts){
+      throw new Error(`${method} ${endpoint} failed ${res.status} after ${attempt} attempt(s): ${detail}`);
+    }
+    const delay=retryDelayMs(attempt,res.headers.get('retry-after'));
+    console.warn(`${method} ${endpoint} returned retryable ${res.status} on attempt ${attempt}/${requestAttempts}; retrying in ${delay}ms`);
+    await sleep(delay);
+  }
+  throw new Error(`${method} ${endpoint} exhausted retry loop unexpectedly`);
 }
 async function wp(endpoint,opts){return (await request(endpoint,opts)).data;}
 async function findPage(slug,parent=null){
