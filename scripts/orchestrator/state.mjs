@@ -1,3 +1,5 @@
+import { inspectAcceptanceContract } from './acceptance.mjs'
+
 export const NORMAL_STATES = Object.freeze([
   'DISCOVERED', 'PLANNED', 'READY', 'LEASED', 'RUNNING', 'VERIFYING', 'PR_OPEN',
   'INTEGRATION_READY', 'MERGED', 'STAGING', 'PRODUCTION_READY', 'DEPLOYING',
@@ -117,6 +119,8 @@ export function validateJob(job) {
   if (!Array.isArray(job.allowedPaths)) throw new Error('allowedPaths must be an array')
   if (!Array.isArray(job.dependencies)) throw new Error('dependencies must be an array')
   if (!Array.isArray(job.acceptanceCriteria)) throw new Error('acceptanceCriteria must be an array')
+  const acceptance = inspectAcceptanceContract(job.acceptanceCriteria, { productionImpact: job.productionImpact })
+  if (!acceptance.ok) throw new Error(`invalid acceptance contract: ${acceptance.reasons.join(', ')}`)
   if (!Array.isArray(job.productionTargets)) throw new Error('productionTargets must be an array')
   if (!['local', 'external-executor'].includes(job.dispatchMode || 'local')) throw new Error('dispatchMode must be local or external-executor')
   if (job.executor !== null && job.executor !== undefined && typeof job.executor !== 'object') throw new Error('executor must be an object or null')
