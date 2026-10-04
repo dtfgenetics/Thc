@@ -207,6 +207,7 @@
     "verify:encyclopedia-independent-review": "npm run build:encyclopedia-independent-review && node scripts/validate-encyclopedia-independent-review-manifest.mjs",
     "build:encyclopedia-teaching-visuals": "node scripts/build-encyclopedia-teaching-visuals.mjs",
     "games:agents:queue": "node scripts/generate-autonomous-playtest-work-queue.mjs",
-    "games:agents:queue-check": "node scripts/generate-autonomous-playtest-work-queue.mjs --check"
+    "games:agents:queue-check": "node scripts/generate-autonomous-playtest-work-queue.mjs --check",
+    "encyclopedia:visual-approved-assets": "node scripts/build-encyclopedia-visual-approved-assets.mjs"
   }
 }
