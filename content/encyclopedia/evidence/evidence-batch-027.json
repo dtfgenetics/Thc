@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-027",
+  "createdAt": "2026-10-04",
+  "scope": "High-priority claim-level essential-element and nutrient-use evidence for THC-ENC-121.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "General higher-plant essentiality criteria support element classification but do not create cannabis-specific fertilizer rates.",
+    "Cannabis nutrient-use evidence must distinguish hemp and drug-type material, genotype, stage, environment, root-zone system, and measured response.",
+    "Element presence, product inclusion, or marketing language does not establish biological essentiality or crop requirement.",
+    "All mappings remain pending independent science review and do not alter lesson publication or independent-approval state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0304",
+      "lessonId": "THC-ENC-121",
+      "sourceIds": [
+        "ENC-AUTH-148",
+        "ENC-AUTH-149"
+      ],
+      "claimType": "essential-element-criteria-and-cannabis-knowledge-limits",
+      "supportedClaim": "Higher-plant nutrition recognizes 17 essential elements using biological essentiality criteria and separates macro- from micronutrients by required quantity, while current Cannabis literature still contains major nutrient-use knowledge gaps and differences between hemp- and drug-type material that prevent converting general essentiality into universal cannabis fertilizer requirements.",
+      "sourceLocator": "Montana State University Extension, Nutrient Management Module No. 2 (2016); Wee et al. (2025), DOI 10.1093/jxb/erae362.",
+      "applicability": "Supports the lesson's essentiality framework, 17-element classification, distinction between required quantity and importance, and caution against treating general plant nutrition or product composition as a cannabis-specific requirement.",
+      "limitations": "The MSU source is general plant nutrition. The Cannabis review synthesizes available literature and explicitly identifies unresolved nutrient-use questions; neither supplies universal cannabis tissue targets, fertilizer concentrations, or cultivar-independent recipes.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
