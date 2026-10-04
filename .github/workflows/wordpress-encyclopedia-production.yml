@@ -92,13 +92,13 @@ jobs:
           const ids=[];
           for(const file of d.lessonFiles){
             const a=JSON.parse(fs.readFileSync(file,'utf8'));
-            if(!/^THC-ENC-\d{3}$/.test(a.id)) throw new Error(`Invalid lesson ID in ${file}`);
+            if(!/^THC-ENC-\d{3,}$/.test(a.id)) throw new Error(`Invalid lesson ID in ${file}`);
             if(ids.includes(a.id)) throw new Error(`Duplicate lesson ID ${a.id}`);
             if(!a.title||!a.objective||!Array.isArray(a.coreScience)||a.coreScience.length<2||!Array.isArray(a.sourceNotes)||!a.sourceNotes.length) throw new Error(`Incomplete canonical lesson ${a.id}`);
             ids.push(a.id);
           }
           const topics=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_TOPIC_FILE,'utf8'));
-          if(topics.schemaVersion!==1||!Array.isArray(topics.topics)||topics.topics.length!==21) throw new Error('Invalid topic architecture');
+          if(topics.schemaVersion!==1||!Array.isArray(topics.topics)||topics.topics.length<21) throw new Error('Invalid topic architecture: protected 21-topic core is required and extension topics may be appended');
           console.log(`Validated ${d.batch}: ${ids.join(', ')}`);
           NODE
 
@@ -247,7 +247,7 @@ jobs:
               --header 'Pragma: no-cache' \
               "$WP_SITE_URL/learn/encyclopedia/?dtf_encyclopedia=${GITHUB_RUN_ID}-${attempt}" \
               --output "$index_body"
-            if grep -Fqi -- 'Browse by topic' "$index_body" && grep -Fqi -- 'Search all published encyclopedia lessons' "$index_body"; then ok=1; break; fi
+            if grep -Fqi -- 'Search naturally.' "$index_body" && grep -Fqi -- 'data-q' "$index_body"; then ok=1; break; fi
             sleep 8
           done
           [[ "$ok" -eq 1 ]]
@@ -278,7 +278,7 @@ jobs:
           const batch=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_BATCH_FILE,'utf8'));
           const topics=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_TOPIC_FILE,'utf8')).topics;
           const lessons=batch.lessonFiles.map(file=>JSON.parse(fs.readFileSync(file,'utf8')));
-          const numbers=lessons.map(x=>Number(x.id.match(/(\d{3})$/)[1]));
+          const numbers=lessons.map(x=>Number(x.id.match(/(\d{3,})$/)[1]));
           const topic=topics.find(t=>numbers.every(n=>n>=t.range[0]&&n<=t.range[1]));
           if(!topic) throw new Error(`Current batch ${batch.batch} does not resolve to one topic hub.`);
           process.stdout.write(`${topic.slug}\t${lessons[0].id}\n`);
