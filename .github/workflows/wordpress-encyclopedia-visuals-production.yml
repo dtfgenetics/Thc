@@ -117,7 +117,7 @@ jobs:
           const map=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_VISUAL_MAP,'utf8'));
           if(map.schemaVersion!==1 || map.batch!=='encyclopedia-authorized-approved-raster-visuals-v2' || !Array.isArray(map.items) || !map.items.length) throw new Error('Unexpected approved encyclopedia visual map.');
           const manifest=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_FULL_BATCH_FILE,'utf8'));
-          const authorized=new Set(manifest.lessonFiles.map(file=>'THC-ENC-'+String(file.match(/thc-enc-(\\d{3,})\\.json$/i)?.[1]||'')));
+          const authorized=new Set(manifest.lessonFiles.map(file=>'THC-ENC-'+String(file.match(/thc-enc-(\d{3,})\.json$/i)?.[1]||'')));
           const ids=map.items.map(x=>x.id);
           if(new Set(ids).size!==ids.length) throw new Error('Approved visual map contains duplicate lesson IDs.');
           if(ids.some(id=>!authorized.has(id))) throw new Error('Approved visual map contains a lesson that is not publication-authorized.');
