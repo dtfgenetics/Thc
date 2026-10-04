@@ -57,6 +57,7 @@ assert.match(skill,/scripts\/orchestrator-epic\.mjs/);
 assert.match(skill,/scripts\/orchestrator\.mjs/);
 assert.match(skill,/Never create a parallel campaign database or scheduler/);
 assert.match(skill,/Scheduled GitHub orchestration is reconciliation\/inspection only unless a real executor is attached/);
+assert.match(skill,/do not leave approved work stranded at INTEGRATION_READY/);
 assert.match(agents,/dtf-research-repair\/SKILL\.md/);
 assert.match(aiContext,/dtf-research-repair\/SKILL\.md/);
 assert.match(aiContext,/existing orchestrator epic\/job machinery/);

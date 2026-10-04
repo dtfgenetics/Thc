@@ -654,3 +654,17 @@ assert.equal(completionStatus.summary.verifyingJobs, 1)
 assert.equal(completionStatus.summary.integrationReadyJobs, 1)
 assert.equal(completionStatus.summary.executorAttachedJobs, 1)
 assert.equal(completionStatus.summary.productionJobsAwaitingLiveProof, 1)
+
+
+const integrationScript = fs.readFileSync('scripts/orchestrator-integrate.mjs', 'utf8')
+assert.match(integrationScript, /job\.state !== 'INTEGRATION_READY'/)
+assert.match(integrationScript, /pr\.state !== 'MERGED'/)
+assert.match(integrationScript, /pr\.headRefOid !== job\.verification\.headSha/)
+assert.match(integrationScript, /transitionJob\([^\n]+,'MERGED'/)
+assert.match(integrationScript, /'DONE'.*non-production-work-complete/)
+assert.match(integrationScript, /'PRODUCTION_READY'.*merge-ready-for-production/)
+
+const workflowWithIntegration = fs.readFileSync('.github/workflows/worker-orchestrator.yml', 'utf8')
+assert.match(workflowWithIntegration, /- integrate/)
+assert.match(workflowWithIntegration, /scripts\/orchestrator-integrate\.mjs/)
+assert.match(workflowWithIntegration, /worker-integrate\.json/)

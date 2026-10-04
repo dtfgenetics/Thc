@@ -9,6 +9,7 @@ on:
       - 'AI_CONTEXT.md'
       - '.github/workflows/worker-orchestrator.yml'
       - 'scripts/test-worker-orchestrator.mjs'
+      - 'scripts/orchestrator-integrate.mjs'
   merge_group:
   push:
     branches: [main]
