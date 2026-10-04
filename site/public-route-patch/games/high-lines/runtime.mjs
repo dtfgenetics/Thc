@@ -544,5 +544,46 @@ function load() {
   }
 }
 
+// BEGIN HIGH LINES AGENT BRIDGE
+const HIGH_LINES_AGENT_VERSION='high-lines-agent-bridge-v1';
+const HIGH_LINES_AGENT_MAX_EVENTS=32;
+const HIGH_LINES_AGENT_STALL_MS=8000;
+const highLinesTelemetry={actions:[],errors:[],lastProgressKey:'',lastProgressAt:0,lastActionAt:0};
+function highLinesAgentNow(){return typeof performance!=='undefined'&&typeof performance.now==='function'?performance.now():Date.now();}
+function pushHighLinesEvent(list,event){list.push(Object.freeze(event));if(list.length>HIGH_LINES_AGENT_MAX_EVENTS)list.splice(0,list.length-HIGH_LINES_AGENT_MAX_EVENTS);}
+function recordHighLinesAction(action,detail=null){const now=highLinesAgentNow();highLinesTelemetry.lastActionAt=now;pushHighLinesEvent(highLinesTelemetry.actions,{atMs:Math.round(now),action,detail});}
+function recordHighLinesError(kind,messageText,source=null){pushHighLinesEvent(highLinesTelemetry.errors,{atMs:Math.round(highLinesAgentNow()),kind,message:String(messageText||kind||'unknown error').slice(0,500),source:source?String(source).slice(0,500):null});}
+function observeHighLinesProgress(){const progress=state&&data?progressForState(state,data):null;const key=[state?.code||'',state?.sceneId||'',state?.selectedColorId||'',Object.keys(state?.fills||{}).length,progress?.found||0,state?.undoStack?.length||0,resetArmed?1:0,zoom].join('|');if(key!==highLinesTelemetry.lastProgressKey){highLinesTelemetry.lastProgressKey=key;highLinesTelemetry.lastProgressAt=highLinesAgentNow();}}
+function highLinesTelemetrySnapshot(){observeHighLinesProgress();const now=highLinesAgentNow();const noProgressMs=highLinesTelemetry.lastProgressAt?Math.max(0,now-highLinesTelemetry.lastProgressAt):0;const sinceActionMs=highLinesTelemetry.lastActionAt?Math.max(0,now-highLinesTelemetry.lastActionAt):0;const actionPending=highLinesTelemetry.lastActionAt>highLinesTelemetry.lastProgressAt;return{errors:highLinesTelemetry.errors.slice(),recentActions:highLinesTelemetry.actions.slice(),noProgressMs:Math.round(noProgressMs),sinceActionMs:Math.round(sinceActionMs),stallSuspected:Boolean(actionPending&&sinceActionMs>=HIGH_LINES_AGENT_STALL_MS&&noProgressMs>=HIGH_LINES_AGENT_STALL_MS),stallThresholdMs:HIGH_LINES_AGENT_STALL_MS};}
+function highLinesAgentSnapshot(){
+ const scene=state?currentScene():null;
+ const progress=state&&data?progressForState(state,data):null;
+ return{
+  version:HIGH_LINES_AGENT_VERSION,
+  ready:Boolean(data&&state&&scene),
+  scene:scene?{code:state.code,title:scene.title,description:scene.description,prompt:state.prompt,regionCount:scene.regions.length,regions:scene.regions.map(regionId=>({id:regionId,colorId:state.fills[regionId]||null})),hidden:{found:progress.found,total:progress.totalHidden},complete:progress.complete}:null,
+  palette:state?state.paletteOrder.map(colorId=>{const color=colorById.get(colorId);return{id:colorId,label:color?.label||colorId,hex:color?.hex||null,selected:colorId===state.selectedColorId};}):[],
+  activity:progress?{colored:progress.colored,totalRegions:progress.totalRegions,foundHidden:progress.found,totalHidden:progress.totalHidden,percent:progress.percent,score:state.score,undoAvailable:state.undoStack.length>0,resetArmed,zoom}:null,
+  legalActions:['select-color','fill-region','undo','reset','load-code','new-scene','zoom-in','zoom-out','zoom-reset'],
+  telemetry:highLinesTelemetrySnapshot()
+ };
+}
+function selectHighLinesAgentColor(colorId){const normalized=String(colorId||'');if(!data?.palette?.some(color=>color.id===normalized))throw new Error(`Unsupported High Lines color: ${colorId}`);recordHighLinesAction('select-color',normalized);state=selectColor(state,normalized,data);persistExperience();renderPalette();refreshSvgState();return true;}
+function fillHighLinesAgentRegion(regionId){const normalized=String(regionId||'');const scene=currentScene();if(!scene?.regions?.includes(normalized))throw new Error(`Unsupported High Lines region: ${regionId}`);recordHighLinesAction('fill-region',normalized);state=fillRegion(state,normalized,state.selectedColorId,data);persistExperience();render();return true;}
+function loadHighLinesAgentCode(value){const normalized=normalizeSceneCode(value);if(!isValidSceneCode(normalized))throw new Error(`Unsupported High Lines scene code: ${value}`);recordHighLinesAction('load-code',normalized);resetExperience(normalized);return true;}
+function installHighLinesTelemetry(){if(typeof window?.addEventListener!=='function')return;window.addEventListener('error',event=>{const target=event?.target;const resource=target&&target!==window&&(target.currentSrc||target.src||target.href);if(resource)recordHighLinesError('resource-error','Browser resource failed to load',resource);else recordHighLinesError('runtime-error',event?.message||event?.error?.message||'Browser runtime error',event?.filename||null);},true);window.addEventListener('unhandledrejection',event=>recordHighLinesError('unhandled-rejection',event?.reason?.message||event?.reason||'Unhandled promise rejection'));}
+function installHighLinesAgentBridge(){installHighLinesTelemetry();const api=Object.freeze({
+ version:HIGH_LINES_AGENT_VERSION,snapshot:highLinesAgentSnapshot,selectColor:selectHighLinesAgentColor,fillRegion:fillHighLinesAgentRegion,loadCode:loadHighLinesAgentCode,
+ undo:()=>{if(!state?.undoStack?.length)return false;recordHighLinesAction('undo');ui.undo.click();return true;},
+ reset:()=>{if(!state)return false;recordHighLinesAction('reset');ui.reset.click();return true;},
+ newScene:()=>{recordHighLinesAction('new-scene');ui.newScene.click();return true;},
+ zoomIn:()=>{recordHighLinesAction('zoom-in');ui.zoomIn.click();return true;},
+ zoomOut:()=>{recordHighLinesAction('zoom-out');ui.zoomOut.click();return true;},
+ zoomReset:()=>{recordHighLinesAction('zoom-reset');ui.zoomReset.click();return true;},
+ telemetry:highLinesTelemetrySnapshot
+});Object.defineProperty(window,'__HIGH_LINES_AGENT__',{value:api,enumerable:false,configurable:false,writable:false});Object.defineProperty(window,'__HIGH_LINES_GAME_STATE__',{get:highLinesAgentSnapshot,enumerable:false,configurable:false});document.documentElement.dataset.highLinesAgentBridge=HIGH_LINES_AGENT_VERSION;highLinesTelemetry.lastProgressAt=highLinesAgentNow();return api;}
+installHighLinesAgentBridge();
+// END HIGH LINES AGENT BRIDGE
+
 window.addEventListener('pagehide', () => window.clearTimeout(resetTimer));
 load();
