@@ -21,7 +21,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: dtfseeds-encyclopedia-copy-repair
+  group: dtfseeds-encyclopedia-production
   cancel-in-progress: false
 
 jobs:
