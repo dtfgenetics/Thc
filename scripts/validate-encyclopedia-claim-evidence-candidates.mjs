@@ -52,6 +52,12 @@ if(!errors.length){
         const ref=refById.get(refId);
         if(ref?.traceabilityRequired===false) errors.push(`${claim.candidateId}: control/context note ${refId} cannot be attached as candidate claim evidence`);
       }
+      for(const source of arr(claim.candidateSourceTraceability)){
+        if(!refs.has(source.referenceId)) errors.push(`${claim.candidateId}: traceability row references unknown source ${source.referenceId}`);
+        if(new Set(arr(source.sourceIdentityKeys)).size!==arr(source.sourceIdentityKeys).length) errors.push(`${claim.candidateId}: duplicate sourceIdentityKeys for ${source.referenceId}`);
+        for(const key of arr(source.sourceIdentityKeys)) if(!/^(doi|pmc|pmid|url):/.test(String(key))) errors.push(`${claim.candidateId}: invalid source identity key ${key}`);
+        for(const locator of arr(source.directLocators)) if(!/^https:\/\//.test(String(locator))) errors.push(`${claim.candidateId}: direct locator must use HTTPS`);
+      }
     }
   }
 
