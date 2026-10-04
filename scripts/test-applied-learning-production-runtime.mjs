@@ -8,6 +8,10 @@ const elements=new Map();
 class Element {
   value='';
   textContent='';
+  type='';
+  name='';
+  required=false;
+  step='';
   children=[];
   listeners=new Map();
   append(...children){this.children.push(...children);}
@@ -37,6 +41,8 @@ try {
   await import('data:text/javascript,'+encodeURIComponent(source));
   assert.equal(elements.get('#graph-nodes').children.length,50);
   assert.equal(elements.get('#hypotheses').children.length,3);
+  assert.equal(elements.get('#systems-tool-select').children.length,6);
+  assert.equal(elements.get('#systems-tool-title').textContent,'Grow Room Blueprint Lab');
   assert.match(elements.get('#graph-relationship').textContent,/CLAIM-ENV-VPD-001/);
   const filter=elements.get('#graph-filter');
   filter.value='VPD';
@@ -56,10 +62,28 @@ try {
   const observation=JSON.parse(elements.get('#measurement-output').textContent);
   assert.equal(observation.status,'local-learning-evidence');
   assert.equal(observation.sourceSha,data.sourceSha);
+
+  submit('#systems-tool-form',{roomLengthFt:'10',roomWidthFt:'10',accessNotes:'Training layout'});
+  const blueprint=JSON.parse(elements.get('#systems-tool-output').textContent);
+  assert.equal(blueprint.result.floorAreaSqFt,100);
+
+  const toolSelect=elements.get('#systems-tool-select');
+  toolSelect.value='ALTOOL-CALIBRATION-BENCH-001';
+  toolSelect.listeners.get('change')();
+  submit('#systems-tool-form',{deviceId:'SIM-PH-1',verificationResult:'fail',notes:'Failed standard check'});
+  const calibration=JSON.parse(elements.get('#systems-tool-output').textContent);
+  assert.match(calibration.result.decision,/recalibrate-or-service/);
+
+  toolSelect.value='ALTOOL-GROWER-FLIGHT-RECORDER-001';
+  toolSelect.listeners.get('change')();
+  submit('#systems-tool-form',{subjectId:'ZONE-A',timestamp:'2026-10-03T12:00',eventType:'observation',eventDetail:'Uneven airflow',nextAction:'Compare readings'});
+  const flight=JSON.parse(elements.get('#systems-tool-output').textContent);
+  assert.equal(flight.status,'local-learning-record');
+  assert.match(flight.note,/not credential evidence/);
   assert.equal(requests,1,'local interactions must not transmit observations');
   globalThis.fetch=async()=>({ok:true,json:async()=>({...data,sourceSha:'wrong-revision'})});
   await assert.rejects(import('data:text/javascript,'+encodeURIComponent(source+'\n// mismatch fixture')),/source pin mismatch/);
-  console.log('Applied Learning runtime: graph/filter, hypotheses, DLI, invalid inputs, local privacy and revision rejection passed.');
+  console.log('Applied Learning runtime: graph/filter, hypotheses, DLI, six systems tools, local privacy and revision rejection passed.');
 } finally {
   for(const [key,value] of Object.entries(globals)){
     if(value===undefined) delete globalThis[key];
