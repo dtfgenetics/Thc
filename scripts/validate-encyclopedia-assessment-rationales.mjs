@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root = process.cwd();
 const artifactPath = path.join(root, 'data', 'encyclopedia-assessment-rationale-package.json');
@@ -9,10 +10,11 @@ const errors = [];
 if (!fs.existsSync(artifactPath)) errors.push('Assessment rationale package is missing.');
 const artifact = errors.length ? { lessons: [] } : JSON.parse(fs.readFileSync(artifactPath, 'utf8'));
 const canonical = readCanonicalEncyclopediaLessons(root);
+const registryState = loadEncyclopediaRegistry(root);
 const canonicalById = new Map(canonical.map(lesson => [lesson.id, lesson]));
 const rows = Array.isArray(artifact.lessons) ? artifact.lessons : [];
 
-if (rows.length !== 420) errors.push(`Expected 420 lesson rationale records; found ${rows.length}.`);
+if (rows.length !== registryState.totalCount) errors.push(`Expected ${registryState.totalCount} lesson rationale records; found ${rows.length}.`);
 if (new Set(rows.map(row => row.lessonId)).size !== rows.length) errors.push('Lesson rationale records must have unique lesson IDs.');
 for (const row of rows) {
   if (!canonicalById.has(row.lessonId)) errors.push(`${row.lessonId}: no canonical lesson.`);
@@ -35,4 +37,4 @@ if (errors.length) {
   errors.slice(0, 80).forEach(error => console.error(` - ${error}`));
   process.exit(1);
 }
-console.log('Encyclopedia assessment rationales PASS: 420/420 lessons have three materialized draft rationales; all remain non-public and pending independent review.');
+console.log(`Encyclopedia assessment rationales PASS: ${rows.length}/${registryState.totalCount} lessons have three materialized draft rationales; all remain non-public and pending independent review.`);
