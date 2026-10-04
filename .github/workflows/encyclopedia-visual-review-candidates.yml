@@ -7,6 +7,8 @@ on:
     paths:
       - 'content/encyclopedia/visual-production-batches/**'
       - 'scripts/build-encyclopedia-visual-candidates.mjs'
+      - 'content/encyclopedia/visual-production-queue-v1.json'
+      - 'data/encyclopedia-evidence-tracking.json'
       - '.github/workflows/encyclopedia-visual-review-candidates.yml'
 
 permissions:
@@ -58,7 +60,23 @@ jobs:
           expected=$(node -p "require('./content/encyclopedia/visual-production-batches/batch-$batch.json').itemCount")
           test "$count" -eq "$expected"
           cp "$src/manifest.json" "$out/manifest.json"
-          echo "Rendered $count review-candidate PNGs for batch $batch."
+          node - "$out" "$batch" <<'NODE'
+          const fs=require('fs'),crypto=require('crypto'),path=require('path');
+          const [out,batch]=process.argv.slice(2);
+          const manifest=JSON.parse(fs.readFileSync(path.join(out,'manifest.json'),'utf8'));
+          const rows=[];
+          for(const item of manifest.items||[]){
+            const png=path.join(out,path.basename(item.svg,'.svg')+'.png');
+            const bytes=fs.readFileSync(png);
+            if(bytes.subarray(0,8).toString('hex')!=='89504e470d0a1a0a') throw new Error('Invalid PNG signature: '+png);
+            const width=bytes.readUInt32BE(16),height=bytes.readUInt32BE(20);
+            if(width!==1800||height!==1200) throw new Error(`Unexpected dimensions ${width}x${height}: ${png}`);
+            rows.push({lessonId:item.lessonId,file:path.basename(png),bytes:bytes.length,width,height,sha256:crypto.createHash('sha256').update(bytes).digest('hex'),state:'review_candidate_not_publication_approved'});
+          }
+          fs.writeFileSync(path.join(out,'raster-qa.json'),JSON.stringify({schemaVersion:'1.0.0',batchId:manifest.batchId,batchNumber:Number(batch),candidateCount:rows.length,requiredWidth:1800,requiredHeight:1200,publicationApproved:false,candidates:rows},null,2)+'\n');
+          NODE
+          test -s "$out/raster-qa.json"
+          echo "Rendered and hashed $count review-candidate PNGs for batch $batch."
 
       - name: Upload review-only raster proofs
         uses: actions/upload-artifact@v4
