@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "sourceRepository": "dtfgenetics/Thc-learning-courses-",
-  "sourceSha": "dcb6733082c2caf31502112f952c254feeca1e5f",
+  "sourceSha": "9ce4c11da8f7749775e2b886d57c303ea6723a61",
   "releaseState": "development-preview",
   "graph": {
     "id": "ALGRAPH-ACADEMY-SEED-001",
@@ -473,5 +473,492 @@
       "Use laboratory/tissue analysis where appropriate and authorized when the decision requires stronger evidence."
     ],
     "boundary": "This activity teaches differential reasoning. It does not diagnose a crop, prescribe a nutrient correction, or authorize pesticide, HVAC, electrical, irrigation-system or other controlled operational changes."
-  }
+  },
+  "tools": [
+    {
+      "id": "ALTOOL-GROW-ROOM-BLUEPRINT-001",
+      "version": "0.1.0",
+      "status": "draft",
+      "kind": "blueprint",
+      "title": "Grow Room Blueprint Lab",
+      "summary": "Build a simple training-room footprint, calculate floor area, and document where measurements, airflow observations, access paths and equipment zones would need verification before any real design decision.",
+      "competencyIds": [
+        "COMP-ENV-VPD-001"
+      ],
+      "objectiveIds": [
+        "LO-ENV-VPD-001"
+      ],
+      "referenceIds": [
+        "REF-VPD-002"
+      ],
+      "canonicalSources": [
+        "LESSON-ENV-VPD-001"
+      ],
+      "steps": [
+        {
+          "id": "dimensions",
+          "instruction": "Enter the training-room length and width.",
+          "evidence": "room dimensions"
+        },
+        {
+          "id": "zones",
+          "instruction": "Identify a crop zone, access path, environmental measurement zone and equipment influence zone.",
+          "evidence": "zone notes"
+        },
+        {
+          "id": "verify",
+          "instruction": "List the measurements or qualified design inputs still required before a real facility decision.",
+          "evidence": "verification list"
+        }
+      ],
+      "fields": [
+        {
+          "id": "roomLengthFt",
+          "label": "Training-room length",
+          "type": "number",
+          "required": true,
+          "unit": "ft"
+        },
+        {
+          "id": "roomWidthFt",
+          "label": "Training-room width",
+          "type": "number",
+          "required": true,
+          "unit": "ft"
+        },
+        {
+          "id": "accessNotes",
+          "label": "Access and equipment-zone notes",
+          "type": "text",
+          "required": true,
+          "unit": null
+        }
+      ],
+      "boundary": "Training geometry only. This lab does not size HVAC, electrical, structural, fire/life-safety, compressed-gas, irrigation or code-required systems and is not an engineering design.",
+      "review": {
+        "humanTechnicalReviewRequired": true,
+        "accessibilityReviewRequired": true,
+        "credentialUseAuthorized": false
+      }
+    },
+    {
+      "id": "ALTOOL-CALIBRATION-BENCH-001",
+      "version": "0.1.0",
+      "status": "draft",
+      "kind": "calibration",
+      "title": "THC Calibration Bench",
+      "summary": "Practice the measurement-quality decision that follows a simulated pH-meter verification result before using readings for crop-management decisions.",
+      "competencyIds": [
+        "COMP-WATER-QUALITY-ADV-001"
+      ],
+      "objectiveIds": [
+        "LO-WATER-METER-003"
+      ],
+      "referenceIds": [
+        "REF-WATER-ALKALINITY-EXT-001"
+      ],
+      "canonicalSources": [
+        "LESSON-WATER-METER-003"
+      ],
+      "steps": [
+        {
+          "id": "inspect",
+          "instruction": "Record device identity, probe condition and standard status before interpreting a reading.",
+          "evidence": "pre-check"
+        },
+        {
+          "id": "verify",
+          "instruction": "Choose the simulated verification result.",
+          "evidence": "verification state"
+        },
+        {
+          "id": "decide",
+          "instruction": "Select whether the reading can support a decision or the instrument must be corrected/verified first.",
+          "evidence": "bounded decision"
+        }
+      ],
+      "fields": [
+        {
+          "id": "deviceId",
+          "label": "Simulated meter ID",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "verificationResult",
+          "label": "Verification result",
+          "type": "choice",
+          "required": true,
+          "unit": null,
+          "options": [
+            "pass",
+            "fail"
+          ]
+        },
+        {
+          "id": "notes",
+          "label": "Probe/standard notes",
+          "type": "text",
+          "required": true,
+          "unit": null
+        }
+      ],
+      "boundary": "Simulation only. Follow the effective manufacturer procedure and facility SOP for real calibration, storage, cleaning, service and acceptance limits.",
+      "review": {
+        "humanTechnicalReviewRequired": true,
+        "accessibilityReviewRequired": true,
+        "credentialUseAuthorized": false
+      }
+    },
+    {
+      "id": "ALTOOL-PLANT-TIMELINE-ATLAS-001",
+      "version": "0.1.0",
+      "status": "draft",
+      "kind": "timeline-atlas",
+      "title": "Plant Timeline Atlas",
+      "summary": "Capture standardized lifecycle observations so stage, time, context and uncertainty remain visible instead of being collapsed into a single diagnosis.",
+      "competencyIds": [
+        "COMP-PLANT-BIO-001"
+      ],
+      "objectiveIds": [],
+      "referenceIds": [
+        "REF-PLANT-BIO-001"
+      ],
+      "canonicalSources": [
+        "LESSON-PLANT-BIO-001"
+      ],
+      "steps": [
+        {
+          "id": "identify",
+          "instruction": "Record subject identifier, observation time and developmental-stage label.",
+          "evidence": "identity and time"
+        },
+        {
+          "id": "observe",
+          "instruction": "Record observable morphology or growth-state evidence without naming an unsupported cause.",
+          "evidence": "direct observation"
+        },
+        {
+          "id": "context",
+          "instruction": "Add environmental or management context and note uncertainty.",
+          "evidence": "context and uncertainty"
+        }
+      ],
+      "fields": [
+        {
+          "id": "subjectId",
+          "label": "Plant/subject ID",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "timestamp",
+          "label": "Observation time",
+          "type": "timestamp",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "stage",
+          "label": "Developmental stage",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "observation",
+          "label": "Direct observation",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "uncertainty",
+          "label": "Uncertainty or next evidence needed",
+          "type": "text",
+          "required": true,
+          "unit": null
+        }
+      ],
+      "boundary": "The Atlas records observations and stage context; it does not diagnose disease, deficiency or cause from appearance alone.",
+      "review": {
+        "humanTechnicalReviewRequired": true,
+        "accessibilityReviewRequired": true,
+        "credentialUseAuthorized": false
+      }
+    },
+    {
+      "id": "ALTOOL-GROWER-FLIGHT-RECORDER-001",
+      "version": "0.1.0",
+      "status": "draft",
+      "kind": "flight-recorder",
+      "title": "Grower Flight Recorder",
+      "summary": "Create a reconstructable crop-history event with identity, timestamp, event type, observed state and action so later review can distinguish what happened from what was assumed.",
+      "competencyIds": [
+        "COMP-PRO-SOP-001"
+      ],
+      "objectiveIds": [],
+      "referenceIds": [
+        "REF-ASTM-D8403-001"
+      ],
+      "canonicalSources": [
+        "LESSON-LH-TECH1-002-04"
+      ],
+      "steps": [
+        {
+          "id": "identity",
+          "instruction": "Identify the crop/zone and timestamp.",
+          "evidence": "traceable identity"
+        },
+        {
+          "id": "event",
+          "instruction": "Record what was observed or performed using neutral event language.",
+          "evidence": "event record"
+        },
+        {
+          "id": "handoff",
+          "instruction": "Record action, unresolved question and next responsible handoff.",
+          "evidence": "handoff record"
+        }
+      ],
+      "fields": [
+        {
+          "id": "subjectId",
+          "label": "Crop/zone ID",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "timestamp",
+          "label": "Event time",
+          "type": "timestamp",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "eventType",
+          "label": "Event type",
+          "type": "choice",
+          "required": true,
+          "unit": null,
+          "options": [
+            "observation",
+            "measurement",
+            "intervention",
+            "equipment",
+            "handoff",
+            "outcome"
+          ]
+        },
+        {
+          "id": "eventDetail",
+          "label": "Event detail",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "nextAction",
+          "label": "Next action or unresolved question",
+          "type": "text",
+          "required": true,
+          "unit": null
+        }
+      ],
+      "boundary": "This recorder preserves chronology and handoff context. It does not replace controlled facility records, seed-to-sale systems or required regulatory documentation.",
+      "review": {
+        "humanTechnicalReviewRequired": true,
+        "accessibilityReviewRequired": true,
+        "credentialUseAuthorized": false
+      }
+    },
+    {
+      "id": "ALTOOL-CROP-INCIDENT-REPORT-001",
+      "version": "0.1.0",
+      "status": "draft",
+      "kind": "incident-report",
+      "title": "Crop Incident Report",
+      "summary": "Document an unexpected crop, equipment or process event using observable facts, immediate containment, escalation and follow-up fields without inventing a root cause.",
+      "competencyIds": [
+        "COMP-SAFETY-WORK-001"
+      ],
+      "objectiveIds": [],
+      "referenceIds": [
+        "REF-ASTM-D8403-001"
+      ],
+      "canonicalSources": [
+        "LESSON-SAFETY-HAZARDS-001"
+      ],
+      "steps": [
+        {
+          "id": "facts",
+          "instruction": "Record what happened, where and when using observable facts.",
+          "evidence": "incident facts"
+        },
+        {
+          "id": "contain",
+          "instruction": "Record immediate safe containment or stop-work action within assigned authority.",
+          "evidence": "containment"
+        },
+        {
+          "id": "escalate",
+          "instruction": "Record who was notified and what remains unresolved.",
+          "evidence": "escalation"
+        },
+        {
+          "id": "followup",
+          "instruction": "Record corrective-action owner or effectiveness check only when assigned.",
+          "evidence": "follow-up"
+        }
+      ],
+      "fields": [
+        {
+          "id": "timestamp",
+          "label": "Incident time",
+          "type": "timestamp",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "location",
+          "label": "Location/zone",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "facts",
+          "label": "Observed facts",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "containment",
+          "label": "Immediate containment/stop action",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "escalation",
+          "label": "Escalation/handoff",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "followUp",
+          "label": "Assigned follow-up",
+          "type": "text",
+          "required": false,
+          "unit": null
+        }
+      ],
+      "boundary": "Training documentation only. Emergency response, injury reporting, hazardous-energy control, chemical incidents and regulated events must follow the applicable site procedure and legal requirements.",
+      "review": {
+        "humanTechnicalReviewRequired": true,
+        "accessibilityReviewRequired": true,
+        "credentialUseAuthorized": false
+      }
+    },
+    {
+      "id": "ALTOOL-CAUSE-CHAIN-001",
+      "version": "0.1.0",
+      "status": "draft",
+      "kind": "cause-chain",
+      "title": "THC Cause Chain",
+      "summary": "Map an evidence-bounded reasoning chain from observation through mechanism and hypothesis to intervention and outcome while keeping uncertainty and alternative explanations visible.",
+      "competencyIds": [
+        "COMP-PLANT-BIO-001"
+      ],
+      "objectiveIds": [],
+      "referenceIds": [
+        "REF-PLANT-BIO-001"
+      ],
+      "canonicalSources": [
+        "LESSON-LH-TECH1-002-03"
+      ],
+      "steps": [
+        {
+          "id": "observe",
+          "instruction": "Start with a direct observation or measured event.",
+          "evidence": "observation"
+        },
+        {
+          "id": "mechanism",
+          "instruction": "Add a plausible mechanism supported by canonical evidence.",
+          "evidence": "mechanism link"
+        },
+        {
+          "id": "hypothesis",
+          "instruction": "State a bounded hypothesis and at least one alternative explanation.",
+          "evidence": "hypotheses"
+        },
+        {
+          "id": "test",
+          "instruction": "Name discriminating evidence or an authorized low-risk check.",
+          "evidence": "next evidence"
+        },
+        {
+          "id": "outcome",
+          "instruction": "Record what changed after the intervention without treating temporal order as proof of cause.",
+          "evidence": "outcome"
+        }
+      ],
+      "fields": [
+        {
+          "id": "observation",
+          "label": "Observation",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "mechanism",
+          "label": "Evidence-supported mechanism",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "hypothesis",
+          "label": "Primary hypothesis",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "alternative",
+          "label": "Alternative explanation",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "nextEvidence",
+          "label": "Discriminating evidence needed",
+          "type": "text",
+          "required": true,
+          "unit": null
+        },
+        {
+          "id": "outcome",
+          "label": "Observed outcome",
+          "type": "text",
+          "required": false,
+          "unit": null
+        }
+      ],
+      "boundary": "A cause chain is a reasoning aid, not proof of diagnosis or causation. High-consequence decisions require the appropriate confirmation and authorized escalation.",
+      "review": {
+        "humanTechnicalReviewRequired": true,
+        "accessibilityReviewRequired": true,
+        "credentialUseAuthorized": false
+      }
+    }
+  ]
 }
