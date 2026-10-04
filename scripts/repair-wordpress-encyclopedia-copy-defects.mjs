@@ -104,14 +104,17 @@ const copyDefectKinds=html=>{
   if(genericMisconceptionPlaceholder.test(html)) kinds.push('generic-misconception-placeholder');
   return kinds;
 };
-const parityDefectKinds=(raw,id,expectedFingerprint)=>{
+const fingerprintDefectKinds=(raw,expectedFingerprint)=>{
   const kinds=[];
-  if(!hasStructuredData(raw,id)) kinds.push('structured-data-missing');
   const found=liveFingerprint(raw);
   if(!found) kinds.push('source-fingerprint-missing');
   else if(expectedFingerprint&&found!==expectedFingerprint) kinds.push('source-fingerprint-mismatch');
   return kinds;
 };
+const publicParityDefectKinds=(raw,id,expectedFingerprint)=>[
+  ...(!hasStructuredData(raw,id)?['structured-data-missing']:[]),
+  ...fingerprintDefectKinds(raw,expectedFingerprint)
+];
 
 const learn=await findPage('learn');
 if(!learn) throw new Error('Canonical /learn/ WordPress page not found.');
@@ -136,11 +139,11 @@ async function scanWorker(){
     const storedRaw=rendered(page.content);
     const storedKinds=[
       ...copyDefectKinds(storedRaw),
-      ...parityDefectKinds(storedRaw,id,expectedFingerprint)
+      ...fingerprintDefectKinds(storedRaw,expectedFingerprint)
     ];
     const publicView=await fetchPublic(page.slug);
     const renderedKinds=publicView.status===200
-      ? [...copyDefectKinds(publicView.text),...parityDefectKinds(publicView.raw,id,expectedFingerprint)]
+      ? [...copyDefectKinds(publicView.text),...publicParityDefectKinds(publicView.raw,id,expectedFingerprint)]
       : [];
     const kinds=[...new Set([...storedKinds,...renderedKinds])];
     scanResults[index]={page,id,expectedFingerprint,storedKinds,publicView,renderedKinds,kinds};
