@@ -5,6 +5,10 @@ on:
     paths:
       - '.agents/skills/dtf-research-repair/**'
       - '.github/workflows/research-repair-skill.yml'
+      - 'AGENTS.md'
+      - 'AI_CONTEXT.md'
+      - 'AGENTS.md'
+      - 'AI_CONTEXT.md'
   merge_group:
   push:
     branches: [main]
