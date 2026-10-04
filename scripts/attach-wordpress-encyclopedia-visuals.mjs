@@ -8,6 +8,8 @@ const pass=process.env.WP_API_PASSWORD;
 const mapFile=process.env.ENCYCLOPEDIA_VISUAL_MAP||'site/wordpress/education/encyclopedia/volume03-visual-map.json';
 const backupRoot=process.env.BACKUP_ROOT||'/tmp/dtf-encyclopedia-visuals';
 const assetRoot=path.join(process.cwd(),'site/wordpress/assets/infographics');
+const canonicalRawBase='https://raw.githubusercontent.com/dtfgenetics/Thc/main/site/wordpress/assets/infographics/';
+const canonicalAssetUrl=item=>canonicalRawBase+encodeURIComponent(item.assetPath).replaceAll('%2F','/');
 if(!user||!pass) throw new Error('Missing WordPress API credentials.');
 const auth=Buffer.from(`${user}:${pass}`).toString('base64');
 const map=JSON.parse(await readFile(mapFile,'utf8'));
@@ -153,7 +155,7 @@ async function uploadCanonicalMedia(item,identity){
     description
   }});
   if(!String(updated?.source_url||'').includes('/wp-content/uploads/')) throw new Error(`${item.id}: uploaded media source URL is not a WordPress upload URL.`);
-  return updated;
+  return {...updated,sourceType:'wordpress-media'};
 }
 async function getAll(endpoint){
   const out=[];
@@ -197,25 +199,27 @@ for(const item of map.items){
     return m.slug===identity.slug||description.includes(pathMarker);
   }).map(m=>[m.id,m])).values()];
   if(mediaMatches.length>1) throw new Error(`${item.id}: expected at most one WordPress media item for ${item.assetPath} (slug ${identity.slug}), found ${mediaMatches.length}.`);
-  let mediaItem=mediaMatches[0]||null;
+  let mediaItem=mediaMatches[0]?{...mediaMatches[0],sourceType:'wordpress-media'}:null;
   let mediaCreated=false;
   if(!mediaItem){
-    mediaItem=await uploadCanonicalMedia(item,identity);
-    media.push(mediaItem);
-    mediaCreated=true;
+    const sourceUrl=canonicalAssetUrl(item);
+    mediaItem={id:null,slug:identity.slug,source_url:sourceUrl,sourceType:'github-canonical'};
   }
-  if(!String(mediaItem.source_url||'').includes('/wp-content/uploads/')) throw new Error(`${item.id}: media source URL is not a WordPress upload URL.`);
+  const sourceUrl=String(mediaItem.source_url||'');
+  const allowedWordPress=sourceUrl.includes('/wp-content/uploads/');
+  const allowedCanonical=sourceUrl.startsWith(canonicalRawBase);
+  if(!allowedWordPress&&!allowedCanonical) throw new Error(`${item.id}: media source URL is outside the approved WordPress/GitHub canonical origins.`);
   const pagePreflight=pagePreflightById.get(item.id);
   if(!pagePreflight) throw new Error(`${item.id}: page preflight record is missing.`);
   const {page,raw}=pagePreflight;
-  preflight.push({item,media:mediaItem,page,raw,mediaSlug:mediaItem.slug,assetHash:identity.hash,mediaCreated});
+  preflight.push({item,media:mediaItem,page,raw,mediaSlug:mediaItem.slug,assetHash:identity.hash,mediaCreated,mediaSourceType:mediaItem.sourceType||'unknown'});
 }
 
 const now=new Date().toISOString().replace(/[:.]/g,'-');
 const backupDir=path.join(backupRoot,now);
 await mkdir(backupDir,{recursive:true});
 await writeFile(path.join(backupDir,'preflight.json'),JSON.stringify(preflight.map(x=>({
-  id:x.item.id,title:x.item.title,assetPath:x.item.assetPath,assetSha256:x.assetHash,pageId:x.page.id,pageLink:x.page.link,mediaId:x.media.id,mediaSlug:x.mediaSlug,mediaSourceUrl:x.media.source_url,mediaCreated:x.mediaCreated
+  id:x.item.id,title:x.item.title,assetPath:x.item.assetPath,assetSha256:x.assetHash,pageId:x.page.id,pageLink:x.page.link,mediaId:x.media.id,mediaSlug:x.mediaSlug,mediaSourceUrl:x.media.source_url,mediaSourceType:x.mediaSourceType,mediaCreated:x.mediaCreated
 })),null,2));
 await writeFile(path.join(backupDir,'pre-write-pages.json'),JSON.stringify(preflight.map(x=>({
   id:x.item.id,pageId:x.page.id,status:x.page.status,slug:x.page.slug,title:x.page.title?.raw||x.page.title?.rendered||'',content:x.raw,excerpt:x.page.excerpt?.raw||''
@@ -243,7 +247,7 @@ try{
   for(const x of preflight){
     const content=nextContent(x);
     const page=await wp(`/pages/${x.page.id}`,{method:'POST',body:{content,status:x.page.status}});
-    const mutation={id:x.item.id,pageId:page.id,link:page.link,mediaId:x.media.id,mediaSlug:x.mediaSlug,mediaSourceUrl:x.media.source_url,assetPath:x.item.assetPath,assetSha256:x.assetHash,storedContentVerified:false};
+    const mutation={id:x.item.id,pageId:page.id,link:page.link,mediaId:x.media.id,mediaSlug:x.mediaSlug,mediaSourceUrl:x.media.source_url,mediaSourceType:x.mediaSourceType,assetPath:x.item.assetPath,assetSha256:x.assetHash,storedContentVerified:false};
     updated.push(mutation);
     await verifyStoredVisual(x);
     mutation.storedContentVerified=true;
@@ -275,7 +279,8 @@ const report={
   batch:map.batch,
   mapFile,
   lessonVisualsAttached:updated.length,
-  existingWordPressMediaReused:preflight.filter(x=>!x.mediaCreated).length,
+  existingWordPressMediaReused:preflight.filter(x=>x.mediaSourceType==='wordpress-media'&&!x.mediaCreated).length,
+  existingCanonicalRepositoryAssetsReused:preflight.filter(x=>x.mediaSourceType==='github-canonical').length,
   newMediaUploads:preflight.filter(x=>x.mediaCreated).length,
   updated,
   rollback,
