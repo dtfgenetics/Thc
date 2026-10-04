@@ -2,6 +2,10 @@ name: Repair THC Encyclopedia Missing Production Lessons
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Repair THC Encyclopedia Live Copy Drift
+    types: [completed]
   push:
     branches: [main]
     paths:
@@ -26,7 +30,8 @@ concurrency:
 
 jobs:
   repair:
-    name: Publish and verify 28 missing Encyclopedia lessons
+    name: Reconcile and verify missing Encyclopedia lessons
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     environment: production
@@ -40,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
       - uses: actions/setup-node@v4
         with:
@@ -124,4 +129,4 @@ jobs:
             grep -Fqi -- "data-thc-topic=\"$hub\"" "$RUNNER_TEMP/$hub.html"
           done
 
-          echo "Visitor verification passed for all 28 repaired lessons and 21-topic catalog."
+          echo "Visitor verification passed for all targeted repaired lessons and the 21-topic, 420-article catalog."
