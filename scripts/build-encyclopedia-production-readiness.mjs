@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root = process.cwd();
@@ -59,7 +60,12 @@ const lessons = ids.map(id => {
   const claimEvidenceReviewed = ['independent_science_review_complete','approved'].includes(claimEvidenceReviewState);
   const claimEvidenceComplete = claimEvidenceMapped && claimEvidenceReviewed;
   const sourcesResolved = q.resolutionState === 'authority_links_available_claim_review_pending' || q.resolutionState === 'source_traceable_authority_review_pending';
-  const visualApproved = Boolean(av.approvedAssetId) && av.assetQaStatus === 'approved' && av.publicationAuthorized === false;
+  const approvedAssetPath=String(av.repositoryPath||'');
+  const approvedAssetAbs=approvedAssetPath?path.join(root,approvedAssetPath):null;
+  const approvedAssetExists=Boolean(approvedAssetAbs)&&fs.existsSync(approvedAssetAbs);
+  const approvedAssetSha256=approvedAssetExists?crypto.createHash('sha256').update(fs.readFileSync(approvedAssetAbs)).digest('hex'):null;
+  const approvedAssetIntegrity=approvedAssetExists && /^[a-f0-9]{64}$/i.test(String(av.sha256||'')) && approvedAssetSha256===String(av.sha256).toLowerCase();
+  const visualApproved = Boolean(av.approvedAssetId) && av.assetQaStatus === 'approved' && av.publicationAuthorized === false && approvedAssetIntegrity;
   const rationaleReviewed = r.reviewState === 'approved' || r.reviewState === 'independent_review_complete';
   const publicationAuthorized = bool(s.publicationAuthorized) || bool(e?.publicationState?.publicationAuthorized);
 
@@ -116,7 +122,10 @@ const lessons = ids.map(id => {
       approved:visualApproved,
       approvedAssetId:av.approvedAssetId || null,
       approvedRepositoryPath:av.repositoryPath || null,
+      approvedAssetExists,
+      approvedAssetIntegrity,
       approvedAssetSha256:av.sha256 || null,
+      currentAssetSha256:approvedAssetSha256,
       approvedAssetBytes:Number(av.bytes || 0) || null,
       accuracyReview:v.accuracyReview || null,
       accessibilityReview:v.accessibilityReview || null,
