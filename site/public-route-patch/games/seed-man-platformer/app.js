@@ -450,6 +450,112 @@ function combatSnapshot() {
   catch { return null; }
 }
 
+// BEGIN SEED MAN AGENT BRIDGE
+const SEED_MAN_AGENT_VERSION = 'seed-man-agent-bridge-v1';
+const SEED_MAN_AGENT_CONTROLS = Object.freeze(['left','right','jump']);
+
+function agentSnapshot() {
+  const combat = combatSnapshot();
+  const required = requiredSprouts();
+  const collected = player?.collected?.length || 0;
+  return {
+    version: SEED_MAN_AGENT_VERSION,
+    ready: Boolean(level && player),
+    running: Boolean(running),
+    paused: Boolean(paused),
+    elapsedSeconds: Number(elapsed.toFixed(3)),
+    cameraX: Number(cameraX.toFixed(2)),
+    level: level ? {
+      id: level.id || null,
+      number: Number(level.levelNumber) || null,
+      worldId: level.worldId || null,
+      worldWidth: Number(level.worldWidth) || null,
+      worldHeight: Number(level.worldHeight) || null,
+      requiredPickups: required,
+      boss: level.boss ? {
+        id: level.boss.id || null,
+        name: level.boss.name || null,
+        defeated: Boolean(level.boss.defeated)
+      } : null,
+      finishX: Number(level.finish?.x) || null
+    } : null,
+    player: player ? {
+      x: Number(player.x.toFixed(2)),
+      y: Number(player.y.toFixed(2)),
+      vx: Number(player.vx.toFixed(2)),
+      vy: Number(player.vy.toFixed(2)),
+      state: player.state || null,
+      grounded: Boolean(player.grounded),
+      airJumpsRemaining: Number(player.airJumpsRemaining) || 0,
+      checkpointId: player.checkpoint?.id || 'start',
+      collected,
+      missingPickups: Math.max(0, required - collected),
+      deaths: Number(player.deaths) || 0,
+      health: Number(player.health ?? player.maxHealth ?? 3),
+      maxHealth: Number(player.maxHealth) || 3,
+      finished: Boolean(player.finished),
+      finishBlocked: Boolean(player.finishBlocked)
+    } : null,
+    combat: combat ? {
+      phenotypeForm: combat.phenotypeForm || 'plant',
+      phenotypeRemaining: Number(combat.phenotypeRemaining) || 0,
+      installed: Boolean(combat.installed ?? true)
+    } : null,
+    input: {
+      left: Boolean(input.left),
+      right: Boolean(input.right),
+      jumpHeld: Boolean(input.jumpHeld),
+      gamepadConnected: Boolean(gamepadInput.connected)
+    }
+  };
+}
+
+function setAgentControl(control, pressed) {
+  if (!SEED_MAN_AGENT_CONTROLS.includes(control)) throw new Error(`Unsupported Seed Man agent control: ${control}`);
+  if (!level || !player || player.finished || paused) return false;
+  const active = Boolean(pressed);
+  if (control === 'jump') {
+    if (active) queueJump();
+    else input.jumpHeld = false;
+  } else {
+    input[control] = active;
+  }
+  return true;
+}
+
+function installAgentBridge() {
+  const api = Object.freeze({
+    version: SEED_MAN_AGENT_VERSION,
+    actions: Object.freeze(['left','right','jump','attack','phenotype','pause','resume','retry','restart']),
+    snapshot: agentSnapshot,
+    press: (control) => setAgentControl(control, true),
+    release: (control) => setAgentControl(control, false),
+    attack: () => !paused && Boolean(window.__SPROUT_COMBAT_BROWSER__?.fireWeapon?.()),
+    phenotype: () => !paused && Boolean(window.__SPROUT_COMBAT_BROWSER__?.fireAbility?.()),
+    pause: () => { togglePause(true); return agentSnapshot(); },
+    resume: () => { togglePause(false); return agentSnapshot(); },
+    retry: () => { retryCheckpoint(); return agentSnapshot(); },
+    restart: () => { reset(); return agentSnapshot(); },
+    clearInput: () => { clearInput(); return agentSnapshot(); }
+  });
+  Object.defineProperty(window, '__SEED_MAN_AGENT__', {
+    value: api,
+    enumerable: false,
+    configurable: false,
+    writable: false
+  });
+  Object.defineProperty(window, '__SEED_MAN_GAME_STATE__', {
+    get: agentSnapshot,
+    enumerable: false,
+    configurable: false
+  });
+  document.documentElement.dataset.seedManAgentBridge = SEED_MAN_AGENT_VERSION;
+  return api;
+}
+
+installAgentBridge();
+// END SEED MAN AGENT BRIDGE
+
 function phenotypeLabel() {
   const snapshot = combatSnapshot();
   const form = snapshot?.phenotypeForm || 'plant';
