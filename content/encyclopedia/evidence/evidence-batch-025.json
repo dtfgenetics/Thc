@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-025",
+  "createdAt": "2026-10-03",
+  "scope": "Claim-level evidence for the remaining isolated mid-series encyclopedia gaps THC-ENC-201 and THC-ENC-281.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Flowering-stage claims remain genotype-, photoperiod-, environment-, and endpoint-dependent.",
+    "Arthropod identification requires organism evidence and life-stage/morphology context; plant injury alone does not prove species identity.",
+    "Mappings remain pending independent science review and do not alter publication or independent-approval state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0301",
+      "lessonId": "THC-ENC-201",
+      "sourceIds": [
+        "ENC-AUTH-141",
+        "ENC-AUTH-142",
+        "ENC-AUTH-143"
+      ],
+      "claimType": "cannabis-reproductive-transition",
+      "supportedClaim": "Cannabis reproductive development is staged rather than instantaneous, and flowering initiation/development varies with genotype and photoperiod, so a timer change or one visible marker should not be treated as the complete biological transition.",
+      "sourceLocator": "Ahrens et al. 2023 photoperiod experiment; Spitzer-Rimon et al. 2019 florogenesis study; Steel et al. 2023 comparative flowering genomics review.",
+      "applicability": "Supports staged reproductive-transition teaching and the distinction among induction, visible flower development, and genotype-dependent flowering behavior.",
+      "limitations": "The cited studies do not define one universal critical daylength, transition duration, or morphological onset criterion for all cannabis cultivars.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0302",
+      "lessonId": "THC-ENC-281",
+      "sourceIds": [
+        "ENC-AUTH-144",
+        "ENC-AUTH-145"
+      ],
+      "claimType": "hemp-arthropod-identification",
+      "supportedClaim": "Hemp/cannabis supports a diverse arthropod pest complex, and defensible pest identification should combine organism morphology and life stage with injury pattern, crop location, and production context rather than diagnosing species from symptoms alone.",
+      "sourceLocator": "Ahmed et al. 2024 hemp pest diagnostic review and Cranshaw et al. 2019 U.S. hemp insect-pest systems review.",
+      "applicability": "Supports the lesson's life-stage, specimen, injury-pattern, and diagnostic-confidence workflow.",
+      "limitations": "Pest prevalence and species importance vary by region, season, production system, and sampling method; species-level identification may require specialist or laboratory confirmation.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
