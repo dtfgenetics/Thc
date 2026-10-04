@@ -270,6 +270,98 @@ jobs:
           }
           NODE
           while IFS=
+            body="$RUNNER_TEMP/${slug}.html"
+            found=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "$WP_SITE_URL${route}?dtf_encyclopedia=${GITHUB_RUN_ID}-${attempt}" \
+                --output "$body"
+              if grep -Fqi -- "$id" "$body" && grep -Fqi -- 'Educational reference' "$body" && grep -Fqi -- 'Terms to know' "$body" && grep -Fqi -- 'Related tools' "$body"; then found=1; break; fi
+              sleep 8
+            done
+            [[ "$found" -eq 1 ]] || { echo "Visitor verification failed for $route" >&2; head -c 4000 "$body" >&2 || true; exit 1; }
+            echo "$route visitor verification passed"
+          done < "$RUNNER_TEMP/current-batch-routes.tsv"
+
+          node - <<'NODE' > "$RUNNER_TEMP/current-topic.tsv"
+          const fs=require('fs');
+          const batch=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_BATCH_FILE,'utf8'));
+          const topics=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_TOPIC_FILE,'utf8')).topics;
+          const lessons=batch.lessonFiles.map(file=>JSON.parse(fs.readFileSync(file,'utf8')));
+          const numbers=lessons.map(x=>Number(x.id.match(/(\d{3,})$/)[1]));
+          const topic=topics.find(t=>numbers.every(n=>n>=t.range[0]&&n<=t.range[1]));
+          if(!topic) throw new Error(`Current batch ${batch.batch} does not resolve to one topic hub.`);
+          process.stdout.write(`${topic.slug}\t${lessons[0].id}\n`);
+          NODE
+          IFS=$'\t' read -r topic_slug topic_first_id < "$RUNNER_TEMP/current-topic.tsv"
+          current_topic="$RUNNER_TEMP/current-topic.html"
+          hub_ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            if ! curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/encyclopedia/$topic_slug/?dtf_encyclopedia=${GITHUB_RUN_ID}-${attempt}" -o "$current_topic"; then
+              sleep 8
+              continue
+            fi
+            if grep -Fqi -- "$topic_first_id" "$current_topic" && grep -Fqi -- "data-thc-topic=\"$topic_slug\"" "$current_topic"; then
+              hub_ok=1
+              break
+            fi
+            sleep 8
+          done
+          [[ "$hub_ok" -eq 1 ]] || { echo "Current topic hub verification failed: $topic_slug" >&2; head -c 4000 "$current_topic" >&2 || true; exit 1; }
+
+          # Visual approval is governed by the canonical encyclopedia visual ledger.
+          # Do not hard-code a legacy lesson asset as a release prerequisite.
+
+      - name: Upload encyclopedia rollback package
+        if: always() && steps.publish.outputs.backup_dir != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thc-encyclopedia-production-${{ github.run_id }}
+          path: ${{ steps.publish.outputs.backup_dir }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload topic-organization rollback package
+        if: always() && steps.organize.outputs.backup_dir != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thc-encyclopedia-topics-${{ github.run_id }}
+          path: ${{ steps.organize.outputs.backup_dir }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Report production result to issue 46
+        if: always()
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const success='${{ job.status }}'==='success';
+            const body=[
+              '## THC encyclopedia production publication',
+              '',
+              `- Result: **${success?'success':'failed'}**`,
+              `- Published batch: **${{ steps.publish.outputs.batch || 'unknown' }}**`,
+              `- Article count this batch: **${{ steps.publish.outputs.count || 'unknown' }}**`,
+              `- Encyclopedia lessons listed: **${{ steps.publish.outputs.listed || 'unknown' }}**`,
+              `- Active topic hubs after organization: **${{ steps.organize.outputs.topics || 'unknown' }}**`,
+              `- Encyclopedia index page ID: **${{ steps.publish.outputs.index_id || 'unknown' }}**`,
+              `- Visitor verification: **${success?'passed':'not passed'}**`,
+              '- Teaching-visual state is governed by the canonical visual ledger; no legacy single-lesson asset is required for release.',
+              '- Current batch topic-hub verification: **included in primary gate**',
+              '- Review control: **website publication does not represent independent lesson approval**',
+              `- Source: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            ].join('\n');
+            try {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
+            } catch (error) {
+              core.warning(`Production report could not be posted to issue #46 and will not affect the release result: ${error.message}`);
+            }
+\t' read -r id slug; do
             route="/learn/encyclopedia/$slug/"
             body="$RUNNER_TEMP/${slug}.html"
             found=0
