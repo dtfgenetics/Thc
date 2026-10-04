@@ -15,6 +15,8 @@ import { inspectContractScope, validateAgentContract, verificationProfileFromCon
 import { inspectAcceptanceContract, normalizeAcceptanceCriterion } from './orchestrator/acceptance.mjs'
 import { classifyVerificationFailure } from './orchestrator/verification.mjs'
 import { applyRepairPlan, planRepair } from './orchestrator/repair.mjs'
+import { recordDeploymentComplete, recordLiveVerification, startProductionRelease } from './orchestrator/release.mjs'
+import { executorDemand, executorQueue } from './orchestrator/executor-pool.mjs'
 import { buildOperatorStatus } from './orchestrator/operator-status.mjs'
 
 const config = validateConfig({
@@ -705,3 +707,31 @@ assert.equal(blockPlan.state, 'BLOCKED')
 const exhausted = { ...repairJob, attempt:3 }
 const exhaustedPlan = planRepair(exhausted, testFailure, retryConfig)
 assert.equal(exhaustedPlan.state, 'QUARANTINED')
+
+
+const productionJob = newJob({ jobId:'prod-1', title:'ship it', state:'PRODUCTION_READY', productionImpact:true, productionTargets:['route:/learn/'], acceptanceCriteria:[{type:'production-live',target:'route:/learn/'}] })
+const productionSourceSha = 'a'.repeat(40)
+const deploying = startProductionRelease(productionJob,{workflowRunId:9001,sourceSha:productionSourceSha,now:'2026-10-04T01:00:00.000Z'})
+assert.equal(deploying.state,'DEPLOYING')
+const live = recordDeploymentComplete(deploying,{workflowRunId:9001,sourceSha:productionSourceSha,conclusion:'success',now:'2026-10-04T01:05:00.000Z'})
+assert.equal(live.state,'LIVE_VERIFYING')
+const done = recordLiveVerification(live,{workflowRunId:9001,sourceSha:productionSourceSha,checks:[{target:'/learn/',ok:true}],now:'2026-10-04T01:06:00.000Z'})
+assert.equal(done.state,'DONE')
+assert.throws(()=>recordLiveVerification(live,{workflowRunId:9001,sourceSha:'b'.repeat(40),checks:[{target:'/learn/',ok:true}]}),/does not match release source/)
+assert.throws(()=>recordLiveVerification(live,{workflowRunId:9001,sourceSha:productionSourceSha,checks:[{ok:true}]}),/requires a target/)
+assert.throws(()=>recordDeploymentComplete(deploying,{workflowRunId:9001,sourceSha:'b'.repeat(40),conclusion:'success'}),/deployed source SHA/)
+assert.throws(()=>recordDeploymentComplete(deploying,{workflowRunId:9001,sourceSha:productionSourceSha,conclusion:'failure'}),/must be success/)
+assert.throws(()=>startProductionRelease(productionJob,{workflowRunId:'invalid',sourceSha:productionSourceSha}),/positive integer/)
+
+
+const repairReady = { ...repairJob, state:'REPAIRING', repair:{ workerKind:'test-repair', nextEligibleAt:'2026-10-04T00:00:00.000Z' } }
+assert.equal(executorDemand(repairReady,{now:new Date('2026-10-04T00:01:00Z')}).workerKind,'test-repair')
+assert.equal(executorDemand({...repairReady,repair:{...repairReady.repair,nextEligibleAt:'2026-10-04T01:00:00.000Z'}},{now:new Date('2026-10-04T00:01:00Z')}).ready,false)
+assert.equal(executorQueue([repairReady],{now:new Date('2026-10-04T00:01:00Z')}).length,1)
+
+const repairReady2 = { ...repairReady, jobId:'repair-2', createdAt:'2026-10-04T00:00:01.000Z' }
+const repairReady3 = { ...repairReady, jobId:'repair-3', createdAt:'2026-10-04T00:00:02.000Z' }
+assert.equal(executorQueue([repairReady,repairReady2,repairReady3],{now:new Date('2026-10-04T00:01:00Z')}).length,2)
+const activeRepair = { ...repairReady, jobId:'repair-active', executor:{status:'RUNNING'} }
+const capacityQueue = executorQueue([activeRepair,repairReady2,repairReady3],{now:new Date('2026-10-04T00:01:00Z')})
+assert.deepEqual(capacityQueue.map(({job})=>job.jobId),['repair-2'])

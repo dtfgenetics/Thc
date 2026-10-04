@@ -13,6 +13,8 @@ on:
       - 'scripts/orchestrator/acceptance.mjs'
       - 'scripts/orchestrator/verification.mjs'
       - 'scripts/orchestrator/repair.mjs'
+      - 'scripts/orchestrator/release.mjs'
+      - 'scripts/orchestrator/executor-pool.mjs'
       - 'configuration/orchestrator/retry-policies.json'
       - 'scripts/orchestrator-check.mjs'
       - 'scripts/orchestrator/state.mjs'
