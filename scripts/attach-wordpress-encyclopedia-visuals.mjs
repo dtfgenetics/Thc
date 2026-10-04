@@ -48,6 +48,22 @@ async function request(endpoint,{method='GET',body}={}){
   return {data:parsed,headers:res.headers};
 }
 async function wp(endpoint,opts){return (await request(endpoint,opts)).data;}
+function assertStoredVisual(x,page){
+  const raw=String(page?.content?.raw||'');
+  const marker=`data-thc-lesson-visual-id="${x.item.id}"`;
+  const markerCount=raw.split(marker).length-1;
+  if(markerCount!==1) throw new Error(`${x.item.id}: WordPress stored-content verification expected exactly one visual marker, found ${markerCount}.`);
+  if(!raw.includes(String(x.media.source_url||''))) throw new Error(`${x.item.id}: WordPress stored-content verification is missing the mapped media URL.`);
+  if(!raw.includes('<h2>Terms to know</h2>')) throw new Error(`${x.item.id}: WordPress stored-content verification lost the canonical Terms to know marker.`);
+  const canonicalMarkerA=`data-thc-encyclopedia-id="${x.item.id}"`;
+  const canonicalMarkerB=`data-thc-encyclopedia-id=\\\\"${x.item.id}\\\\"`;
+  if(!raw.includes(canonicalMarkerA)&&!raw.includes(canonicalMarkerB)) throw new Error(`${x.item.id}: WordPress stored-content verification lost the canonical lesson identity marker.`);
+}
+async function verifyStoredVisual(x){
+  const stored=await wp(`/pages/${x.page.id}?context=edit`);
+  assertStoredVisual(x,stored);
+  return stored;
+}
 async function uploadCanonicalMedia(item,identity){
   const bytes=await readFile(identity.full);
   const ext=path.extname(item.assetPath).toLowerCase();
@@ -159,7 +175,10 @@ try{
   for(const x of preflight){
     const content=nextContent(x);
     const page=await wp(`/pages/${x.page.id}`,{method:'POST',body:{content,status:x.page.status}});
-    updated.push({id:x.item.id,pageId:page.id,link:page.link,mediaId:x.media.id,mediaSlug:x.mediaSlug,mediaSourceUrl:x.media.source_url,assetPath:x.item.assetPath,assetSha256:x.assetHash});
+    const mutation={id:x.item.id,pageId:page.id,link:page.link,mediaId:x.media.id,mediaSlug:x.mediaSlug,mediaSourceUrl:x.media.source_url,assetPath:x.item.assetPath,assetSha256:x.assetHash,storedContentVerified:false};
+    updated.push(mutation);
+    await verifyStoredVisual(x);
+    mutation.storedContentVerified=true;
   }
 }catch(error){
   rollback.attempted=true;
