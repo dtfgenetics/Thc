@@ -269,7 +269,7 @@ jobs:
             process.stdout.write(`${p.id}\t${p.slug}\n`);
           }
           NODE
-          while IFS=
+          while IFS=$'\t' read -r id slug; do
             route="/learn/encyclopedia/$slug/"
             body="$RUNNER_TEMP/${slug}.html"
             found=0
