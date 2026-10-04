@@ -6,6 +6,7 @@ import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-l
 
 const root=process.cwd();
 const renderPng=process.argv.includes('--render-png');
+const allowGeneratedRaster=renderPng;
 const assetRoot=path.join(root,'site','wordpress','assets','infographics');
 const mapPath=path.join(root,'site','wordpress','education','encyclopedia','all-visual-map-v1.json');
 fs.mkdirSync(assetRoot,{recursive:true});
@@ -82,20 +83,21 @@ for(const lesson of lessons){
     reused+=1;
     continue;
   }
-  const base=`${lesson.id}_generated-teaching-visual-v1`;
-  const svgName=base+'.svg';
-  fs.writeFileSync(path.join(assetRoot,svgName),svgFor(lesson));
-  let assetPath=svgName;
-  if(renderPng){
-    const pngName=base+'.png';
-    const result=spawnSync('rsvg-convert',['-w','1600','-h','1000','-o',path.join(assetRoot,pngName),path.join(assetRoot,svgName)],{stdio:'inherit'});
-    if(result.status!==0)throw new Error(`rsvg-convert failed for ${lesson.id}`);
-    assetPath=pngName;
+  if(!allowGeneratedRaster){
+    items.push({id:lesson.id,title:lesson.title,assetPath:null,assetKind:'raster-artwork-needed',altText:`${lesson.title} — lesson-specific raster teaching diagram required`});
+    continue;
   }
-  items.push({id:lesson.id,title:lesson.title,assetPath,assetKind:renderPng?'generated-raster-review-pending':'generated-svg-review-pending',altText:`${lesson.title} — lesson-specific teaching diagram showing controlled terms, mechanism, measurement, and misconception guard`});
+  const base=`${lesson.id}_generated-teaching-visual-v1`;
+  const pngName=base+'.png';
+  const tempSvg=path.join(root,'.tmp-'+base+'.svg');
+  fs.writeFileSync(tempSvg,svgFor(lesson));
+  const result=spawnSync('rsvg-convert',['-w','1800','-h','1125','-o',path.join(assetRoot,pngName),tempSvg],{stdio:'inherit'});
+  try{fs.unlinkSync(tempSvg)}catch{}
+  if(result.status!==0)throw new Error(`rsvg-convert failed for ${lesson.id}`);
+  items.push({id:lesson.id,title:lesson.title,assetPath:pngName,assetKind:'generated-raster-review-pending',altText:`${lesson.title} — lesson-specific teaching diagram showing controlled terms, mechanism, measurement, and misconception guard`});
   generated+=1;
 }
 const map={schemaVersion:1,batch:'encyclopedia-all-visuals-v1',generatedAt:new Date().toISOString(),reviewState:'generated_candidates_pending_independent_science_accessibility_and_asset_qa',publicationEffect:'none_review_state_unchanged',lessonCount:items.length,reusedCanonicalRaster:reused,generatedCandidates:generated,items};
 fs.writeFileSync(mapPath,JSON.stringify(map,null,2)+'\n');
-console.log(`Encyclopedia teaching visuals: ${items.length}/420 mapped · ${reused} canonical raster reused · ${generated} generated candidate(s) · renderPng=${renderPng}`);
+console.log(`Encyclopedia teaching visuals: ${items.length}/420 mapped · ${reused} canonical raster reused · ${generated} generated raster candidate(s) · raster-only policy enforced · renderPng=${renderPng}`);
 console.log('Wrote '+path.relative(root,mapPath));

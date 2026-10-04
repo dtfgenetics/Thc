@@ -16,25 +16,29 @@ if (items.length !== 420) errors.push(`Expected 420 visual briefs; found ${items
 if (new Set(items.map(item => item.lessonId)).size !== items.length) errors.push('Visual briefs must have unique lesson IDs.');
 for (const item of items) {
   if (!canonicalIds.has(item.lessonId)) errors.push(`${item.lessonId}: no canonical lesson.`);
-  if (!item.visualType || !item.purpose) errors.push(`${item.lessonId}: visual type or purpose missing.`);
+  if (!item.visualType || !item.visualFamily || !item.purpose) errors.push(`${item.lessonId}: visual type/family or purpose missing.`);
+  if (item.rasterRequired !== true) errors.push(`${item.lessonId}: rasterRequired must be true.`);
+  if (!Array.isArray(item.disallowedProductionFormats) || !item.disallowedProductionFormats.includes('svg')) errors.push(`${item.lessonId}: SVG must remain disallowed for production artwork.`);
+  if (!Number.isFinite(item.visualPriorityScore) || item.visualPriorityScore < 0) errors.push(`${item.lessonId}: visualPriorityScore must be a non-negative number.`);
   if (!Array.isArray(item.accuracyRequirements) || item.accuracyRequirements.length < 2) errors.push(`${item.lessonId}: needs at least 2 accuracy requirements.`);
   if (!Array.isArray(item.requiredLabels) || item.requiredLabels.length < 4) errors.push(`${item.lessonId}: needs at least 4 controlled labels.`);
   if (!Array.isArray(item.misconceptionGuards) || item.misconceptionGuards.length < 2) errors.push(`${item.lessonId}: needs at least 2 misconception guards.`);
   if (!Array.isArray(item.sourceAnchors) || item.sourceAnchors.length < 2) errors.push(`${item.lessonId}: needs at least 2 source anchors.`);
   if (!item.altTextDraft || !item.captionDraft) errors.push(`${item.lessonId}: accessibility copy is incomplete.`);
   if (item.approvedAssetId !== null) errors.push(`${item.lessonId}: queue builder must not approve an asset.`);
-  if (item.productionStatus === 'artwork_produced_review_pending') {
+  if (item.productionStatus === 'raster_artwork_produced_review_pending') {
     if (!item.canonicalAssetPath) errors.push(`${item.lessonId}: produced artwork must name its canonical asset path.`);
     else if (!fs.existsSync(path.join(root, item.canonicalAssetPath))) errors.push(`${item.lessonId}: canonical produced artwork is missing from the repository.`);
     if (!Array.isArray(item.canonicalAssetPaths) || item.canonicalAssetPaths.length < 1) errors.push(`${item.lessonId}: produced artwork must retain its canonical candidate list.`);
     else {
       for (const assetPath of item.canonicalAssetPaths) {
         if (!fs.existsSync(path.join(root, assetPath))) errors.push(`${item.lessonId}: visual candidate is missing from the repository: ${assetPath}`);
+        if (!/\.(?:png|jpe?g|webp)$/i.test(String(assetPath))) errors.push(`${item.lessonId}: production visual candidate must be raster: ${assetPath}`);
       }
       if (Number(item.assetCandidateCount) !== item.canonicalAssetPaths.length) errors.push(`${item.lessonId}: asset candidate count does not match canonical asset paths.`);
     }
     if (item.assetQaStatus !== 'produced_pending_asset_qa') errors.push(`${item.lessonId}: produced artwork must remain pending asset QA.`);
-  } else if (item.productionStatus !== 'brief_ready_artwork_needed') {
+  } else if (item.productionStatus !== 'brief_ready_raster_artwork_needed') {
     errors.push(`${item.lessonId}: unsupported visual production status ${item.productionStatus}.`);
   }
   if (!/pending/.test(String(item.accuracyReview))) errors.push(`${item.lessonId}: accuracy review must remain pending.`);
@@ -47,4 +51,4 @@ if (errors.length) {
   errors.slice(0, 80).forEach(error => console.error(` - ${error}`));
   process.exit(1);
 }
-console.log(`Encyclopedia visual queue PASS: 420/420 lessons have controlled briefs; ${items.filter(item=>item.productionStatus==='artwork_produced_review_pending').length} produced assets remain review-pending and no artwork is misclassified as approved.`);
+console.log(`Encyclopedia visual queue PASS: 420/420 lessons have raster-only controlled briefs; ${items.filter(item=>item.productionStatus==='raster_artwork_produced_review_pending').length} produced raster assets remain review-pending and no artwork is misclassified as approved.`);
