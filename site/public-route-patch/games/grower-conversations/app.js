@@ -300,6 +300,42 @@ function load() {
   }
 }
 
+// BEGIN GROWER CONVERSATIONS AGENT BRIDGE
+const GROWER_CONV_AGENT_VERSION='grower-conversations-agent-bridge-v1';
+const GROWER_CONV_AGENT_MAX_EVENTS=32;
+const GROWER_CONV_AGENT_STALL_MS=8000;
+const growerConvTelemetry={actions:[],errors:[],lastProgressKey:'',lastProgressAt:0,lastActionAt:0};
+function growerConvNow(){return typeof performance!=='undefined'&&typeof performance.now==='function'?performance.now():Date.now();}
+function pushGrowerConvEvent(list,event){list.push(Object.freeze(event));if(list.length>GROWER_CONV_AGENT_MAX_EVENTS)list.splice(0,list.length-GROWER_CONV_AGENT_MAX_EVENTS);}
+function recordGrowerConvAction(action,detail=null){const now=growerConvNow();growerConvTelemetry.lastActionAt=now;pushGrowerConvEvent(growerConvTelemetry.actions,{atMs:Math.round(now),action,detail});}
+function recordGrowerConvError(kind,messageText,source=null){pushGrowerConvEvent(growerConvTelemetry.errors,{atMs:Math.round(growerConvNow()),kind,message:String(messageText||kind||'unknown error').slice(0,500),source:source?String(source).slice(0,500):null});}
+function observeGrowerConvProgress(){const filtered=pool();const available=remaining();const key=[ui.category.value,ui.depth.value,current?.prompt||'',used.size,filtered.length,available.length].join('|');if(key!==growerConvTelemetry.lastProgressKey){growerConvTelemetry.lastProgressKey=key;growerConvTelemetry.lastProgressAt=growerConvNow();}}
+function growerConvTelemetrySnapshot(){observeGrowerConvProgress();const now=growerConvNow();const noProgressMs=growerConvTelemetry.lastProgressAt?Math.max(0,now-growerConvTelemetry.lastProgressAt):0;const sinceActionMs=growerConvTelemetry.lastActionAt?Math.max(0,now-growerConvTelemetry.lastActionAt):0;const actionPending=growerConvTelemetry.lastActionAt>growerConvTelemetry.lastProgressAt;return{errors:growerConvTelemetry.errors.slice(),recentActions:growerConvTelemetry.actions.slice(),noProgressMs:Math.round(noProgressMs),sinceActionMs:Math.round(sinceActionMs),stallSuspected:Boolean(actionPending&&sinceActionMs>=GROWER_CONV_AGENT_STALL_MS&&noProgressMs>=GROWER_CONV_AGENT_STALL_MS),stallThresholdMs:GROWER_CONV_AGENT_STALL_MS};}
+function growerConvSnapshot(){const filtered=pool();const available=remaining();return{
+ version:GROWER_CONV_AGENT_VERSION,
+ ready:Boolean(cards.length===96),
+ filters:{category:ui.category.value,depth:ui.depth.value,categories:['all',...Object.keys(categoryLabels)],depths:['all','easy','reflective','technical']},
+ deck:{total:cards.length,matching:filtered.length,remaining:available.length,usedMatching:filtered.length-available.length,usedTotal:used.size},
+ current:current?{category:current.category,categoryLabel:current.categoryLabel,depth:current.depth,prompt:current.prompt}:null,
+ legalActions:['draw','shuffle','reset','set-category','set-depth','copy-current'],
+ telemetry:growerConvTelemetrySnapshot()
+};}
+function setGrowerConvFilter(element,value,allowed,action){const normalized=String(value||'');if(!allowed.includes(normalized))throw new Error(`Unsupported Grow Room Confessions ${action}: ${value}`);element.value=normalized;element.dispatchEvent(new Event('change',{bubbles:true}));recordGrowerConvAction(action,normalized);return true;}
+function installGrowerConvTelemetry(){if(typeof window?.addEventListener!=='function')return;window.addEventListener('error',event=>{const target=event?.target;const resource=target&&target!==window&&(target.currentSrc||target.src||target.href);if(resource)recordGrowerConvError('resource-error','Browser resource failed to load',resource);else recordGrowerConvError('runtime-error',event?.message||event?.error?.message||'Browser runtime error',event?.filename||null);},true);window.addEventListener('unhandledrejection',event=>recordGrowerConvError('unhandled-rejection',event?.reason?.message||event?.reason||'Unhandled promise rejection'));}
+function installGrowerConvAgentBridge(){installGrowerConvTelemetry();const api=Object.freeze({
+ version:GROWER_CONV_AGENT_VERSION,
+ snapshot:growerConvSnapshot,
+ draw:()=>{if(!cards.length)return false;recordGrowerConvAction('draw');ui.next.click();return true;},
+ shuffle:()=>{if(!cards.length)return false;recordGrowerConvAction('shuffle');ui.shuffle.click();return true;},
+ reset:()=>{if(!cards.length)return false;recordGrowerConvAction('reset');ui.reset.click();return true;},
+ setCategory:value=>setGrowerConvFilter(ui.category,value,['all',...Object.keys(categoryLabels)],'set-category'),
+ setDepth:value=>setGrowerConvFilter(ui.depth,value,['all','easy','reflective','technical'],'set-depth'),
+ copyCurrent:()=>{if(!current||ui.copy.disabled)return false;recordGrowerConvAction('copy-current');ui.copy.click();return true;},
+ telemetry:growerConvTelemetrySnapshot
+});Object.defineProperty(window,'__GROWER_CONVERSATIONS_AGENT__',{value:api,enumerable:false,configurable:false,writable:false});Object.defineProperty(window,'__GROWER_CONVERSATIONS_GAME_STATE__',{get:growerConvSnapshot,enumerable:false,configurable:false});document.documentElement.dataset.growerConversationsAgentBridge=GROWER_CONV_AGENT_VERSION;growerConvTelemetry.lastProgressAt=growerConvNow();return api;}
+installGrowerConvAgentBridge();
+// END GROWER CONVERSATIONS AGENT BRIDGE
+
 ui.next.addEventListener('click', draw);
 ui.reset.addEventListener('click', resetUsed);
 ui.shuffle.addEventListener('click', shuffleDeck);

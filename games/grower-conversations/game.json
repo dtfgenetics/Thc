@@ -40,7 +40,9 @@
     "clipboardPromptCopy": true,
     "selfHosted": true,
     "visibleCardIds": false,
-    "productionTitle": true
+    "productionTitle": true,
+    "agentBridge": "window.__GROWER_CONVERSATIONS_AGENT__",
+    "agentBridgeTest": "games/grower-conversations/test/agent-bridge.test.mjs"
   },
   "materializationRule": "Each category contains 12 prompts. Positions 1-4 are Easy, 5-8 Reflective, and 9-12 Technical. IDs are gc-{category}-{01..12}.",
   "releaseGates": {
@@ -60,7 +62,8 @@
     "interaction-tokens": false,
     "production-bank-validator": true,
     "production-bank-editorial-review": false,
-    "production-bank-playtest-review": false
+    "production-bank-playtest-review": false,
+    "browser-agent-playtest": true
   },
   "legacyTitle": "Grower Conversations",
   "tagline": "A conversation game for cultivators, breeders, and growers who have stories.",

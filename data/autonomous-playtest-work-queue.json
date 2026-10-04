@@ -11,38 +11,17 @@
   },
   "summary": {
     "totalGames": 30,
-    "agentReady": 5,
-    "remaining": 25
+    "agentReady": 6,
+    "remaining": 24
   },
   "nextRecommended": [
-    "grower-conversations",
     "high-lines",
     "mystery-strain",
     "trichome-trials",
-    "who-took-it"
+    "who-took-it",
+    "root-cause"
   ],
   "items": [
-    {
-      "gameId": "grower-conversations",
-      "title": "Grow Room Confessions",
-      "currentProfile": "planned",
-      "nextTarget": "observable",
-      "estimatedEffortScore": 2,
-      "releasePriority": 0,
-      "gameplayProfile": "party-social",
-      "rendererProfile": "dom",
-      "networkProfile": "local",
-      "canonicalRepository": "dtfgenetics/Thc",
-      "sourcePaths": [
-        "games/grower-conversations"
-      ],
-      "publicRoute": "/games/grower-conversations/",
-      "verificationCommands": [
-        "node games/grower-conversations/scripts/validate-prompt-bank.mjs && node games/grower-conversations/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grower-conversations/app.js && cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json"
-      ],
-      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 1
-    },
     {
       "gameId": "high-lines",
       "title": "High Lines",
@@ -62,7 +41,7 @@
         "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node games/high-lines/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/runtime.mjs && cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 2
+      "rank": 1
     },
     {
       "gameId": "mystery-strain",
@@ -83,7 +62,7 @@
         "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node games/mystery-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/runtime.mjs && cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 3
+      "rank": 2
     },
     {
       "gameId": "trichome-trials",
@@ -104,7 +83,7 @@
         "node games/trichome-trials/scripts/validate-data.mjs && node games/trichome-trials/test/engine.test.mjs && node games/trichome-trials/test/public-runtime.test.mjs && node --check site/public-route-patch/games/trichome-trials/app.js && node --check site/public-route-patch/games/trichome-trials/runtime.mjs && cmp games/trichome-trials/src/engine.mjs site/public-route-patch/games/trichome-trials/engine.mjs"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 4
+      "rank": 3
     },
     {
       "gameId": "who-took-it",
@@ -125,7 +104,7 @@
         "npm run check"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 5
+      "rank": 4
     },
     {
       "gameId": "root-cause",
@@ -148,7 +127,7 @@
         "node games/root-cause/test/public-runtime.test.mjs"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 6
+      "rank": 5
     },
     {
       "gameId": "crossword",
@@ -171,7 +150,7 @@
         "npm test && npm run verify && npm run build"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 7
+      "rank": 6
     },
     {
       "gameId": "grow-room-defense",
@@ -192,7 +171,7 @@
         "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node games/grow-room-defense/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/runtime.mjs && cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 8
+      "rank": 7
     },
     {
       "gameId": "harvest-hustle",
@@ -213,7 +192,7 @@
         "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node games/harvest-hustle/test/public-runtime.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/runtime.mjs && cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 9
+      "rank": 8
     },
     {
       "gameId": "pheno-draft",
@@ -234,7 +213,7 @@
         "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node games/pheno-draft/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/runtime.mjs && cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 10
+      "rank": 9
     },
     {
       "gameId": "strain-showdown",
@@ -255,7 +234,7 @@
         "node games/strain-showdown/scripts/validate-roster.mjs && node games/strain-showdown/test/engine.test.mjs && node games/strain-showdown/scripts/simulate-balance.mjs --seeds=32 --assert-balanced && node games/strain-showdown/scripts/validate-browser-build.mjs"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 11
+      "rank": 10
     },
     {
       "gameId": "high-life",
@@ -276,7 +255,7 @@
         "node games/high-life/test/engine.test.mjs && node games/high-life/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-life/app.js && cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs && cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 12
+      "rank": 11
     },
     {
       "gameId": "spin-the-strain",
@@ -297,7 +276,7 @@
         "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node games/spin-the-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/runtime.mjs && cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 13
+      "rank": 12
     },
     {
       "gameId": "terpocalypse",
@@ -318,7 +297,7 @@
         "node games/terpocalypse-integration/validate.mjs && node games/terpocalypse/test/public-runtime.test.mjs && node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js && node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 14
+      "rank": 13
     },
     {
       "gameId": "thc-rpg",
@@ -343,7 +322,7 @@
         "npm run validate:release"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 15
+      "rank": 14
     },
     {
       "gameId": "seed-ascent",
@@ -368,7 +347,7 @@
         "npm run typecheck"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 16
+      "rank": 15
     },
     {
       "gameId": "weedopolis",
@@ -391,7 +370,7 @@
         "npm run validate && npm run check:preview && npm run build:preview"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 17
+      "rank": 16
     },
     {
       "gameId": "ganjumanji",
@@ -416,7 +395,7 @@
         "npm run validate:release"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 18
+      "rank": 17
     },
     {
       "gameId": "phenoquest",
@@ -439,7 +418,7 @@
         "canonical repo: npm run check (includes self-contained production build)"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 19
+      "rank": 18
     },
     {
       "gameId": "bud-or-bluff",
@@ -460,7 +439,7 @@
         "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node games/bud-or-bluff/test/keyboard-v1.test.mjs && node games/bud-or-bluff/test/visual-state-v3.test.mjs && node games/bud-or-bluff/test/online-lobby.test.mjs && node games/bud-or-bluff/test/online-lobby-v2.test.mjs"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 20
+      "rank": 19
     },
     {
       "gameId": "high-land",
@@ -481,7 +460,7 @@
         "npm run test:high-land && npm run build:high-land"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 21
+      "rank": 20
     },
     {
       "gameId": "protect-the-plants",
@@ -502,7 +481,7 @@
         "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 22
+      "rank": 21
     },
     {
       "gameId": "kush-kings",
@@ -526,7 +505,7 @@
         "pnpm live:check"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 23
+      "rank": 22
     },
     {
       "gameId": "stoner-duck-race",
@@ -549,7 +528,7 @@
         "npm run typecheck"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 24
+      "rank": 23
     },
     {
       "gameId": "thc-u-know",
@@ -575,7 +554,7 @@
         "pnpm live:check"
       ],
       "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
-      "rank": 25
+      "rank": 24
     }
   ]
 }
