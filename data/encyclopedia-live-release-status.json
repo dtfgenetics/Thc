@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "project": "THC 420-lesson Encyclopedia",
+  "recordedAt": "2026-10-04T01:00:00Z",
+  "livePublication": {
+    "complete": true,
+    "lessonCount": 420,
+    "topicHubCount": 21,
+    "publicationFloor": 420,
+    "productionBatch": "volume21-final-release",
+    "searchIndexesPublished": true,
+    "visitorVerificationPassed": true,
+    "workflow": {
+      "name": "Repair THC Encyclopedia Missing Production Lessons",
+      "runId": 37169545266,
+      "jobId": 111339508404,
+      "sourceCommit": "0fe2562b60796f009c1a5c77ed9062cee36534f9",
+      "conclusion": "success"
+    }
+  },
+  "repositoryValidation": {
+    "canonicalLessons": "420/420",
+    "substantiveFindings": 0,
+    "assessmentCoverage": "420/420 lessons have unique effective v2 reasoning, misconception, and applied-verification checks",
+    "publicationControl": "forward-only floor through THC-ENC-420"
+  },
+  "separateQualityBacklog": {
+    "independentScienceReview": "pending where not recorded; publication does not imply independent approval",
+    "assessmentRationaleIndependentReview": "pending",
+    "claimLevelEvidenceExpansion": "in progress / review-pending",
+    "teachingVisuals": "separate production and approval lane; do not block canonical text publication"
+  },
+  "rule": "Do not regress current-production-batch.json below THC-ENC-420. Repair or replay work must use separate repair manifests."
+}
