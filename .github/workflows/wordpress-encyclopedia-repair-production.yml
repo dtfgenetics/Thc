@@ -5,10 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'site/wordpress/education/encyclopedia/repair-part01-missing.json'
-      - 'site/wordpress/education/encyclopedia/repair-part17-tail.json'
-      - 'site/wordpress/education/encyclopedia/repair-part19-full.json'
-      - 'site/wordpress/education/encyclopedia/repair-part20-full.json'
+      - 'site/wordpress/education/encyclopedia/repair-final-missing-28.json'
       - 'content/encyclopedia/volume-01/lessons/thc-enc-001.json'
       - 'content/encyclopedia/volume-01/lessons/thc-enc-002.json'
       - 'content/encyclopedia/volume-01/lessons/thc-enc-005.json'
@@ -52,10 +49,7 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/validate-encyclopedia-production-pointer.mjs
-          for batch in             site/wordpress/education/encyclopedia/repair-part01-missing.json             site/wordpress/education/encyclopedia/repair-part17-tail.json             site/wordpress/education/encyclopedia/repair-part19-full.json             site/wordpress/education/encyclopedia/repair-part20-full.json
-          do
-            node scripts/validate-encyclopedia-release-control.mjs "$batch"
-          done
+          node scripts/validate-encyclopedia-release-control.mjs site/wordpress/education/encyclopedia/repair-final-missing-28.json
           npm run verify:encyclopedia-content-control
           npm run verify:encyclopedia-assessments
           npm run audit:encyclopedia-substantive-quality
@@ -71,12 +65,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for batch in             site/wordpress/education/encyclopedia/repair-part01-missing.json             site/wordpress/education/encyclopedia/repair-part17-tail.json             site/wordpress/education/encyclopedia/repair-part19-full.json             site/wordpress/education/encyclopedia/repair-part20-full.json
-          do
-            name="$(basename "$batch" .json)"
-            echo "Publishing $name"
-            ENCYCLOPEDIA_BATCH_FILE="$batch" BACKUP_ROOT="/tmp/dtf-encyclopedia-repair/$name"               node scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
-          done
+          batch=site/wordpress/education/encyclopedia/repair-final-missing-28.json
+          name="$(basename "$batch" .json)"
+          echo "Publishing $name"
+          ENCYCLOPEDIA_BATCH_FILE="$batch" BACKUP_ROOT="/tmp/dtf-encyclopedia-repair/$name" \
+            node scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
 
       - name: Rebuild 21 topic hubs
         shell: bash
