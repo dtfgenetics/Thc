@@ -38,9 +38,11 @@ if(!errors.length){
  const academyTarget=JSON.parse(fs.readFileSync(files.academyTarget,'utf8'));
  const staticRecords=JSON.parse(fs.readFileSync(files.staticRecords,'utf8'));
  if(!page.includes('Search THC Education')||!page.includes('data-search-input')||!page.includes('search-v1.mjs')) errors.push('search page missing primary UI/runtime contract');
+ if(!page.includes('DTF_STATIC_SEARCH_FALLBACK_START')||!page.includes('data-static-search-fallback')||(page.match(/class="search-card"/g)||[]).length<20) errors.push('search page missing materialized static fallback directory');
  if(!runtime.includes("Fuse from '/assets/vendor/fuse-7.1.0.min.mjs'")||!runtime.includes('threshold:.34')||!runtime.includes('includeScore:true')) errors.push('search runtime missing pinned fuzzy-search contract');
  if(!runtime.includes("../encyclopedia/encyclopedia-index.json")) errors.push('global education search must merge the complete encyclopedia index');
  if(!runtime.includes("name:'aliases'")||!runtime.includes('history.replaceState')) errors.push('global search missing alias/deep-link contract');
+ if(!runtime.includes("data-static-search-fallback")||!runtime.includes('staticFallback.hidden=true')||!runtime.includes('static resource directory remains available')) errors.push('global search runtime no longer preserves static fallback until successful initialization');
  if(!Array.isArray(index.documents)||index.documents.length<20) errors.push('search index must contain at least 20 canonical resources');
  if(!Array.isArray(staticRecords.documents)||staticRecords.documents.length<1)errors.push('curated static search records must be explicit and non-empty');
  const routeCounts=new Map();
@@ -51,6 +53,7 @@ if(!errors.length){
  const builderSource=fs.readFileSync(files.builder,'utf8');
  if(builderSource.includes("readJson('site/public-route-patch/learn/search/search-index.json')"))errors.push('search generator must not ingest its own previous output');
  if(!builderSource.includes("configuration/education-search-static-records.json"))errors.push('search generator must consume explicit curated static records');
+ if(!builderSource.includes('DTF_STATIC_SEARCH_FALLBACK_START')||!builderSource.includes('DTF_STATIC_ENCYCLOPEDIA_FALLBACK_START')||!builderSource.includes('replaceGeneratedBlock'))errors.push('search generator must materialize static search and encyclopedia fallbacks from canonical indexes');
  const publicCourseRefs=[...(tech1Public.courses||[]),...(tech2Public.courses||[])];
  for(const ref of publicCourseRefs){
    const row=index.documents?.find(x=>x.id===ref.id);
@@ -86,10 +89,12 @@ if(!errors.length){
  if(!fallbackBuilder.includes('Static education fallbacks built')) errors.push('static education fallback builder contract missing');
  if(!fs.readFileSync(files.builder,'utf8').includes('build-static-search-fallbacks.mjs')) errors.push('education search index build no longer materializes static fallbacks');
  if(!encyclopediaPage.includes('data-q')||!encyclopediaPage.includes('data-topics')||!encyclopediaPage.includes('encyclopedia-v1.mjs')) errors.push('encyclopedia page missing searchable library UI');
+ if(!encyclopediaPage.includes('DTF_STATIC_ENCYCLOPEDIA_FALLBACK_START')||!encyclopediaPage.includes('data-static-encyclopedia-fallback')||(encyclopediaPage.match(/class="lesson"/g)||[]).length<420) errors.push('encyclopedia page missing complete materialized static fallback directory');
  if(!encyclopediaPage.includes('Search naturally.')||!encyclopediaPage.includes('data-reset-all')||!encyclopediaPage.includes('data-stat-subjects')||!encyclopediaPage.includes('data-subject-count')) errors.push('encyclopedia hub missing plain-language search guidance or dynamic 420+ summary controls');
  if(/All 420 topics|<b>21<\/b><span>subject areas/.test(encyclopediaPage)) errors.push('encyclopedia hub must not hard-code the expandable lesson or subject totals');
  if(!encyclopediaRuntime.includes("Fuse from '/assets/vendor/fuse-7.1.0.min.mjs'")||!encyclopediaRuntime.includes('activePart')) errors.push('encyclopedia runtime missing fuzzy search/topic filtering');
  if(!encyclopediaRuntime.includes("name:'aliases'")||!encyclopediaRuntime.includes('history.replaceState')) errors.push('encyclopedia runtime missing alias/deep-link contract');
+ if(!encyclopediaRuntime.includes("data-static-encyclopedia-fallback")||!encyclopediaRuntime.includes('staticFallback.hidden=true')||!encyclopediaRuntime.includes('static encyclopedia directory remains available')) errors.push('encyclopedia runtime no longer preserves static fallback until successful initialization');
  if(!encyclopediaRuntime.includes('Math.max(1000,payload.lessons.length)')||!encyclopediaRuntime.includes('aria-pressed')||!encyclopediaRuntime.includes('resetFilters')) errors.push('encyclopedia runtime missing expandable search limit, accessible topic state, or unified filter reset');
  if(!encyclopediaRuntime.includes('PAGE_SIZE=60')||!encyclopediaRuntime.includes('data-load-more')) errors.push('encyclopedia runtime missing progressive result rendering for large 420+ catalogs');
  if(encyclopediaRuntime.includes("q.addEventListener('input',()=>{activePart=null")) errors.push('encyclopedia search must preserve an explicitly selected subject while typing');

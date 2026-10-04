@@ -14,6 +14,7 @@ const totalStat=document.querySelector('[data-stat-total]');
 const subjectStat=document.querySelector('[data-stat-subjects]');
 const subjectCount=document.querySelector('[data-subject-count]');
 const resetAll=document.querySelector('[data-reset-all]');
+const staticFallback=document.querySelector('[data-static-encyclopedia-fallback]');
 
 let payload={topics:[],lessons:[]};
 let fuse=null;
@@ -152,4 +153,5 @@ loadIndex.then(data=>{
  const statusButton=document.querySelector('[data-status="'+activeStatus+'"]');if(statusButton)setPressed(document.querySelector('[data-status-filters]'),statusButton);
  const formatButton=[...formatHost.querySelectorAll('[data-format]')].find(x=>normalize(x.dataset.format)===normalize(activeFormat));if(formatButton)setPressed(formatHost,formatButton);
  render();
-}).catch(error=>{console.error('[THC encyclopedia]',error);library.setAttribute('aria-busy','false');statusText.textContent='The encyclopedia index could not load.';library.innerHTML='<div class="empty"><strong>Encyclopedia index unavailable.</strong><p>Use the Learning Center while this index is restored.</p></div>'});
+ if(staticFallback)staticFallback.hidden=true;
+}).catch(error=>{console.error('[THC encyclopedia]',error);library.setAttribute('aria-busy','false');statusText.textContent='Interactive filtering could not load. The static encyclopedia directory remains available below.';library.innerHTML='<div class="empty"><strong>Interactive encyclopedia filtering unavailable.</strong><p>Use the static directory below or return to the Learning Center.</p></div>'});
