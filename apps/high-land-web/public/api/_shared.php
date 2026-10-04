@@ -14,6 +14,57 @@ const THC_GAME_MAX_PLAYERS_DEFAULT = 10;
 const THC_GAME_ROOM_TTL_SECONDS = 86400;
 const THC_GAME_CREDENTIAL_MIN_LENGTH = 32;
 
+function api_liveops_state(): array
+{
+    return [
+        'maintenance' => getenv('HIGH_LAND_MAINTENANCE_MODE') === 'true',
+        'multiplayerEnabled' => getenv('HIGH_LAND_MULTIPLAYER_ENABLED') !== 'false'
+    ];
+}
+
+function api_require_multiplayer_available(): void
+{
+    $state = api_liveops_state();
+    if ($state['maintenance']) {
+        api_send_json(['ok' => false, 'error' => 'High Land multiplayer is temporarily under maintenance.'], 503);
+    }
+    if (!$state['multiplayerEnabled']) {
+        api_send_json(['ok' => false, 'error' => 'High Land multiplayer is temporarily disabled.'], 503);
+    }
+}
+
+function api_metrics_path(): string
+{
+    return api_rooms_dir() . '/.metrics.json';
+}
+
+function api_record_operation(string $name): void
+{
+    $path = api_metrics_path();
+    $lock = fopen($path . '.lock', 'c');
+    if ($lock === false) {
+        return;
+    }
+    flock($lock, LOCK_EX);
+    $current = is_file($path) ? json_decode(file_get_contents($path) ?: '{}', true) : [];
+    if (!is_array($current)) {
+        $current = [];
+    }
+    $current['requests'] = ((int)($current['requests'] ?? 0)) + 1;
+    $current[$name] = ((int)($current[$name] ?? 0)) + 1;
+    $current['updatedAt'] = api_now();
+    @file_put_contents($path, json_encode($current, JSON_UNESCAPED_SLASHES), LOCK_EX);
+    flock($lock, LOCK_UN);
+    fclose($lock);
+}
+
+function api_operation_metrics(): array
+{
+    $path = api_metrics_path();
+    $current = is_file($path) ? json_decode(file_get_contents($path) ?: '{}', true) : [];
+    return is_array($current) ? $current : [];
+}
+
 function api_send_json(array $payload, int $statusCode = 200): void
 {
     http_response_code($statusCode);
