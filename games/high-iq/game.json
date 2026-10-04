@@ -15,7 +15,11 @@
     "version": "2.4",
     "questions": 200,
     "sources": 50,
-    "recordVersions": ["2.2", "2.3", "2.4"],
+    "recordVersions": [
+      "2.2",
+      "2.3",
+      "2.4"
+    ],
     "manifestDriven": true,
     "validation": "node games/high-iq/scripts/validate-data.mjs",
     "publicRuntimeValidation": "node games/high-iq/scripts/validate-public-runtime.mjs",
@@ -26,7 +30,8 @@
     "gameCoreTests": "node games/high-iq/test/game-core.test.mjs",
     "runtimeAcceptance": "node games/high-iq/test/runtime-smoke.mjs",
     "liveVerification": "node games/high-iq/scripts/verify-live-v3.mjs",
-    "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx + source-backed v2.3/v2.4 expansions"
+    "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx + source-backed v2.3/v2.4 expansions",
+    "agentBridgeTests": "node games/high-iq/test/agent-bridge.test.mjs"
   },
   "browserSource": {
     "html": "site/public-route-patch/games/high-iq/index.html",
@@ -70,7 +75,12 @@
       "minimum-44px-answer-targets",
       "shared-platform-replay-debug-export",
       "sanitized-question-action-trace",
-      "deterministic-runtime-acceptance"
+      "deterministic-runtime-acceptance",
+      "autonomous-playtest-bridge",
+      "read-only-agent-state",
+      "legal-agent-actions",
+      "agent-runtime-telemetry",
+      "agent-stall-detection"
     ]
   },
   "integration": {
@@ -93,6 +103,7 @@
     "pending_content_release": "2.4",
     "pending_visual_release": "v3.3",
     "pending_release_questions": 200,
-    "production_route_verified": false
+    "production_route_verified": false,
+    "autonomous_playtest_ready": true
   }
 }

@@ -891,6 +891,242 @@ function handleKeyboard(event) {
   }
 }
 
+// BEGIN HIGH IQ AGENT BRIDGE
+
+const HIGH_IQ_AGENT_VERSION = 'high-iq-agent-bridge-v1';
+const HIGH_IQ_AGENT_MAX_EVENTS = 32;
+const HIGH_IQ_AGENT_STALL_MS = 8000;
+const agentTelemetry = { actions: [], errors: [], lastProgressKey: '', lastProgressAt: 0, lastActionAt: 0 };
+
+function highIqAgentNow() {
+  return typeof performance !== 'undefined' && typeof performance.now === 'function' ? performance.now() : Date.now();
+}
+
+function pushHighIqAgentEvent(list, event) {
+  list.push(Object.freeze(event));
+  if (list.length > HIGH_IQ_AGENT_MAX_EVENTS) list.splice(0, list.length - HIGH_IQ_AGENT_MAX_EVENTS);
+}
+
+function recordHighIqAgentAction(action, detail = null) {
+  const now = highIqAgentNow();
+  agentTelemetry.lastActionAt = now;
+  pushHighIqAgentEvent(agentTelemetry.actions, { atMs: Math.round(now), action, detail });
+}
+
+function recordHighIqAgentError(kind, message, source = null) {
+  pushHighIqAgentEvent(agentTelemetry.errors, {
+    atMs: Math.round(highIqAgentNow()),
+    kind,
+    message: String(message || kind || 'unknown error').slice(0, 500),
+    source: source ? String(source).slice(0, 500) : null
+  });
+}
+
+function highIqStage() {
+  if (!ui.results.hidden) return 'results';
+  if (!ui.quiz.hidden) return state.locked ? 'review' : 'question';
+  if (!ui.setup.hidden) return 'setup';
+  if (!ui.fallback.hidden) return 'error';
+  return 'loading';
+}
+
+function observeHighIqAgentProgress() {
+  const progressKey = [
+    highIqStage(),
+    state.manifest?.datasetVersion || '',
+    state.session.length,
+    state.index,
+    state.selectedLetter || '',
+    state.locked ? 1 : 0,
+    state.answered,
+    state.score,
+    state.answers.length,
+    state.loadErrors.length
+  ].join('|');
+  if (progressKey !== agentTelemetry.lastProgressKey) {
+    agentTelemetry.lastProgressKey = progressKey;
+    agentTelemetry.lastProgressAt = highIqAgentNow();
+  }
+}
+
+function highIqAgentTelemetrySnapshot() {
+  observeHighIqAgentProgress();
+  const now = highIqAgentNow();
+  const noProgressMs = agentTelemetry.lastProgressAt ? Math.max(0, now - agentTelemetry.lastProgressAt) : 0;
+  const sinceActionMs = agentTelemetry.lastActionAt ? Math.max(0, now - agentTelemetry.lastActionAt) : 0;
+  const actionPending = agentTelemetry.lastActionAt > agentTelemetry.lastProgressAt;
+  return {
+    errors: agentTelemetry.errors.slice(),
+    recentActions: agentTelemetry.actions.slice(),
+    noProgressMs: Math.round(noProgressMs),
+    sinceActionMs: Math.round(sinceActionMs),
+    stallSuspected: Boolean(actionPending && sinceActionMs >= HIGH_IQ_AGENT_STALL_MS && noProgressMs >= HIGH_IQ_AGENT_STALL_MS),
+    stallThresholdMs: HIGH_IQ_AGENT_STALL_MS
+  };
+}
+
+function highIqAgentSnapshot() {
+  const question = currentQuestion();
+  const stage = highIqStage();
+  const publicQuestion = question ? {
+    id: question.id,
+    category: question.category,
+    difficulty: question.difficulty,
+    points: Number(question.points) || 0,
+    prompt: question.question,
+    choices: Object.fromEntries(LETTERS.map((letter) => [letter, question.choices?.[letter] || '']))
+  } : null;
+  return {
+    version: HIGH_IQ_AGENT_VERSION,
+    ready: Boolean(state.manifest && state.questions.length),
+    stage,
+    dataset: {
+      version: state.manifest?.datasetVersion || null,
+      questions: state.questions.length,
+      sources: state.sources.size,
+      loadErrorCount: state.loadErrors.length
+    },
+    setup: {
+      category: ui.category.value || null,
+      difficulty: ui.difficulty.value || null,
+      mode: ui.mode.value || null,
+      count: Number.parseInt(ui.count.value || '0', 10) || 0,
+      matchingPool: state.questions.length ? filterPool().length : 0
+    },
+    session: {
+      mode: state.runMode,
+      index: state.index,
+      length: state.session.length,
+      selectedLetter: state.selectedLetter,
+      locked: Boolean(state.locked),
+      score: state.score,
+      possible: state.possible,
+      answered: state.answered,
+      correct: state.correct,
+      streak: state.streak,
+      bestStreak: state.bestStreak,
+      completed: stage === 'results',
+      currentQuestion: publicQuestion,
+      lastOutcome: state.answers.length ? Boolean(state.answers.at(-1)?.correct) : null
+    },
+    legalActions: stage === 'setup'
+      ? ['configure','start','daily']
+      : stage === 'question'
+        ? ['select']
+        : stage === 'review'
+          ? ['next']
+          : stage === 'results'
+            ? ['restart','practice-missed']
+            : stage === 'error'
+              ? ['retry-data']
+              : [],
+    telemetry: highIqAgentTelemetrySnapshot()
+  };
+}
+
+function configureHighIqAgent({ category, difficulty, mode, count } = {}) {
+  if (highIqStage() !== 'setup') return false;
+  const setSelect = (element, value) => {
+    if (value == null) return true;
+    const requested = String(value);
+    if (![...element.options].some((option) => option.value === requested)) return false;
+    element.value = requested;
+    element.dispatchEvent(new Event('change', { bubbles: true }));
+    return true;
+  };
+  if (!setSelect(ui.category, category)) return false;
+  if (!setSelect(ui.difficulty, difficulty)) return false;
+  if (!setSelect(ui.mode, mode)) return false;
+  if (count != null) updateCountOptions(Number.parseInt(String(count), 10));
+  recordHighIqAgentAction('configure', { category: ui.category.value, difficulty: ui.difficulty.value, mode: ui.mode.value, count: ui.count.value });
+  return true;
+}
+
+function selectHighIqAgentAnswer(letter) {
+  const normalized = String(letter || '').toUpperCase();
+  if (!LETTERS.includes(normalized)) throw new Error(`Unsupported High IQ answer: ${letter}`);
+  if (highIqStage() !== 'question') return false;
+  const button = ui.answers.querySelector(`[data-letter="${normalized}"]`);
+  if (!button || button.disabled) return false;
+  recordHighIqAgentAction('select', normalized);
+  button.click();
+  return true;
+}
+
+function installHighIqAgentTelemetry() {
+  if (typeof window?.addEventListener !== 'function') return;
+  window.addEventListener('error', (event) => {
+    const target = event?.target;
+    const resource = target && target !== window && (target.currentSrc || target.src || target.href);
+    if (resource) recordHighIqAgentError('resource-error', 'Browser resource failed to load', resource);
+    else recordHighIqAgentError('runtime-error', event?.message || event?.error?.message || 'Browser runtime error', event?.filename || null);
+  }, true);
+  window.addEventListener('unhandledrejection', (event) => {
+    recordHighIqAgentError('unhandled-rejection', event?.reason?.message || event?.reason || 'Unhandled promise rejection');
+  });
+}
+
+function installHighIqAgentBridge() {
+  installHighIqAgentTelemetry();
+  const api = Object.freeze({
+    version: HIGH_IQ_AGENT_VERSION,
+    snapshot: highIqAgentSnapshot,
+    configure: configureHighIqAgent,
+    start: () => {
+      if (highIqStage() !== 'setup' || ui.start.disabled) return false;
+      recordHighIqAgentAction('start');
+      ui.start.click();
+      return true;
+    },
+    daily: () => {
+      if (highIqStage() !== 'setup') return false;
+      recordHighIqAgentAction('daily');
+      ui.daily.click();
+      return true;
+    },
+    select: selectHighIqAgentAnswer,
+    lock: () => {
+      if (highIqStage() !== 'question' || ui.lock.disabled) return false;
+      recordHighIqAgentAction('lock');
+      ui.lock.click();
+      return true;
+    },
+    next: () => {
+      if (highIqStage() !== 'review' || ui.next.hidden) return false;
+      recordHighIqAgentAction('next');
+      ui.next.click();
+      return true;
+    },
+    restart: () => {
+      if (highIqStage() !== 'results') return false;
+      recordHighIqAgentAction('restart');
+      ui.restart.click();
+      return true;
+    },
+    practiceMissed: () => {
+      if (highIqStage() !== 'results' || ui.practiceMissed.hidden) return false;
+      recordHighIqAgentAction('practice-missed');
+      ui.practiceMissed.click();
+      return true;
+    },
+    retryData: () => {
+      if (highIqStage() !== 'error') return false;
+      recordHighIqAgentAction('retry-data');
+      ui.retry.click();
+      return true;
+    },
+    telemetry: highIqAgentTelemetrySnapshot
+  });
+  Object.defineProperty(window, '__HIGH_IQ_AGENT__', { value: api, enumerable: false, configurable: false, writable: false });
+  Object.defineProperty(window, '__HIGH_IQ_GAME_STATE__', { get: highIqAgentSnapshot, enumerable: false, configurable: false });
+  document.documentElement.dataset.highIqAgentBridge = HIGH_IQ_AGENT_VERSION;
+  agentTelemetry.lastProgressAt = highIqAgentNow();
+  return api;
+}
+
+installHighIqAgentBridge();
+// END HIGH IQ AGENT BRIDGE
+
 function wireEvents() {
   ui.category.addEventListener('change', () => updateCountOptions());
   ui.difficulty.addEventListener('change', () => updateCountOptions());
