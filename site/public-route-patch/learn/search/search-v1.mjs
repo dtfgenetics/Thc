@@ -5,6 +5,7 @@ const input=document.querySelector('[data-search-input]');
 const results=document.querySelector('[data-search-results]');
 const status=document.querySelector('[data-search-status]');
 const filters=[...document.querySelectorAll('[data-search-filter]')];
+const staticFallback=document.querySelector('[data-static-search-fallback]');
 let documents=[];
 let fuse=null;
 let activeType='all';
@@ -134,9 +135,10 @@ Promise.all([
     const requestedButton=[...filterHost.querySelectorAll('[data-search-filter]')].find(x=>normalize(x.dataset.searchFilter)===normalize(activeType));
     if(requestedButton)[...filterHost.querySelectorAll('[data-search-filter]')].forEach(x=>x.setAttribute('aria-pressed',String(x===requestedButton)));
     render();
+    if(staticFallback)staticFallback.hidden=true;
   })
   .catch(error=>{
     console.error('[THC Education Search]',error);
-    status.textContent='Search index could not load.';
+    status.textContent='Interactive search could not load. The static resource directory remains available below.';
     results.innerHTML='<div class="empty"><strong>Search is temporarily unavailable.</strong><span>Use the Learning Center, Encyclopedia, Atlases or Tools links above.</span></div>';
   });
