@@ -15,7 +15,7 @@ if(data.artifactId!=='thc-encyclopedia-source-freshness') errors.push('artifactI
 if(!rows.length) errors.push('No source freshness rows found');
 if(new Set(rows.map(x=>x.sourceId)).size!==rows.length) errors.push('source IDs must be unique');
 for(const row of rows){
-  if(!/^ENC-AUTH-\d{3}$/.test(String(row.sourceId||''))) errors.push('invalid sourceId '+row.sourceId);
+  if(!/^(?:ENC-AUTH-\d{3}|V\d{2}-SRC-\d{3})$/.test(String(row.sourceId||''))) errors.push('invalid sourceId '+row.sourceId);
   if(!['high','medium'].includes(row.volatility)) errors.push(row.sourceId+': invalid volatility');
   if(!Number.isFinite(row.reviewIntervalDays)||row.reviewIntervalDays<1) errors.push(row.sourceId+': invalid review interval');
   if(!['verification_date_missing','invalid_verification_date','overdue','due_soon','current'].includes(row.freshnessStatus)) errors.push(row.sourceId+': invalid freshnessStatus');
@@ -34,6 +34,7 @@ for(let i=0;i<queue.length;i++){
 }
 const summary=data.summary||{};
 if(Number(summary.sourceCount)!==rows.length) errors.push('summary sourceCount stale');
+if(Number(summary.centralRegistrySources||0)+Number(summary.externalVolumeSources||0)!==rows.length) errors.push('summary central/external source accounting stale');
 if(Number(summary.requiresRevalidation)!==requires.length) errors.push('summary requiresRevalidation stale');
 if(Number(summary.verificationDateMissing)!==rows.filter(x=>x.freshnessStatus==='verification_date_missing').length) errors.push('summary verificationDateMissing stale');
 
@@ -42,4 +43,4 @@ if(errors.length){
   for(const error of errors.slice(0,100)) console.error(' - '+error);
   process.exit(1);
 }
-console.log('Encyclopedia source freshness PASS: '+rows.length+' authoritative sources tracked without synthesizing verification or retraction clearance.');
+console.log('Encyclopedia source freshness PASS: '+rows.length+' central + volume authoritative sources tracked without synthesizing verification or retraction clearance.');
