@@ -112,13 +112,13 @@ async function request(endpoint,{method='GET',body}={}){
 }
 async function wp(endpoint,opts){return (await request(endpoint,opts)).data;}
 async function findPage(slug,parent=null){
-  const rows=await wp(`/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=100`);
+  const rows=await wp(`/pages?slug=${encodeURIComponent(slug)}&context=edit&status=publish&per_page=100`);
   return rows.find(x=>parent===null||Number(x.parent)===Number(parent))||null;
 }
 async function allChildren(parent){
   const out=[];
   for(let page=1;;page++){
-    const rows=await wp(`/pages?parent=${parent}&context=edit&per_page=100&page=${page}&orderby=slug&order=asc`);
+    const rows=await wp(`/pages?parent=${parent}&context=edit&status=publish&per_page=100&page=${page}&orderby=slug&order=asc`);
     out.push(...rows);
     if(rows.length<100) break;
   }
@@ -200,11 +200,19 @@ const learn=await findPage('learn');if(!learn) throw new Error('Canonical /learn
 let encyclopedia=await findPage('encyclopedia',learn.id);
 if(!encyclopedia) encyclopedia=await upsertPage({slug:'encyclopedia',title:'Cannabis Plant Science Encyclopedia',parent:learn.id,content:'<p>Encyclopedia publication initializing.</p>',excerpt:'Controlled THC Cannabis Encyclopedia.'});
 const published=[];
-for(const lesson of lessons){
-  const slug=stableSlug(lesson.id);
-  const page=await upsertPage({slug,title:`${lesson.id} — ${lesson.title}`,parent:encyclopedia.id,content:articleHtml(lesson),excerpt:lesson.objective});
-  published.push({id:lesson.id,title:lesson.title,slug,pageId:page.id,link:page.link,sourceFile:lesson._sourceFile,sourceFingerprint:fingerprintOf(lesson)});
+const publishConcurrency=Math.max(1,Math.min(6,Number(process.env.WP_PUBLISH_CONCURRENCY||1)));
+let publishCursor=0;
+async function publishWorker(){
+  while(true){
+    const index=publishCursor++;
+    if(index>=lessons.length) return;
+    const lesson=lessons[index];
+    const slug=stableSlug(lesson.id);
+    const page=await upsertPage({slug,title:`${lesson.id} — ${lesson.title}`,parent:encyclopedia.id,content:articleHtml(lesson),excerpt:lesson.objective});
+    published[index]={id:lesson.id,title:lesson.title,slug,pageId:page.id,link:page.link,sourceFile:lesson._sourceFile,sourceFingerprint:fingerprintOf(lesson)};
+  }
 }
+await Promise.all(Array.from({length:Math.min(publishConcurrency,lessons.length)},()=>publishWorker()));
 const children=await allChildren(encyclopedia.id);
 encyclopedia=await upsertPage({slug:'encyclopedia',title:'Cannabis Plant Science Encyclopedia',parent:learn.id,content:indexHtml(children),excerpt:'Search visitor-verified THC Cannabis Encyclopedia lessons published from the controlled 420-ID education system.'});
 await writeFile(path.join(backupDir,'pre-write-pages.json'),JSON.stringify(backups,null,2));
