@@ -113,6 +113,8 @@ jobs:
         run: npm run audit:encyclopedia-learning-quality
       - name: Audit substantive lesson quality
         run: npm run audit:encyclopedia-substantive-quality:strict
+      - name: Audit cross-corpus consistency
+        run: npm run audit:encyclopedia-consistency
       - name: Build rich discovery index
         run: npm run build:encyclopedia-discovery
       - name: Build global education search
@@ -163,6 +165,7 @@ jobs:
             content/encyclopedia/visual-production-queue-v1.json
             data/encyclopedia-learning-quality-audit.json
             data/encyclopedia-substantive-quality-audit.json
+            data/encyclopedia-consistency-audit.json
             live-encyclopedia-copy-audit.json
             site/public-route-patch/learn/encyclopedia/encyclopedia-index.json
             site/public-route-patch/learn/search/search-index.json
