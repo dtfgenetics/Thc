@@ -53,7 +53,15 @@ jobs:
           for slug in "${expected[@]}"; do
             file="site/wordpress/pages/$slug.html"
             test -s "$file"
-            grep -Fq '<h1' "$file"
+            grep -Eq '<h[12][ >]' "$file"
+          done
+
+          # These WordPress routes render the canonical page title as the sole H1.
+          # Their stored body must not add a second H1.
+          for slug in seeds community gallery about contact; do
+            file="site/wordpress/pages/$slug.html"
+            ! grep -Fq '<h1' "$file"
+            grep -Fq '<h2' "$file"
           done
 
           test ! -e site/wordpress/pages/games.html
