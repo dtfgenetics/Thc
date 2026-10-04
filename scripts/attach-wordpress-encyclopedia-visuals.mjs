@@ -81,7 +81,7 @@ function assertStoredVisual(x,page){
   const markerCount=raw.split(marker).length-1;
   if(markerCount!==1) throw new Error(`${x.item.id}: WordPress stored-content verification expected exactly one visual marker, found ${markerCount}.`);
   if(!raw.includes(String(x.media.source_url||''))) throw new Error(`${x.item.id}: WordPress stored-content verification is missing the mapped media URL.`);
-  if(!raw.includes('<h2>Terms to know</h2>')) throw new Error(`${x.item.id}: WordPress stored-content verification lost the canonical Terms to know marker.`);
+  if(!raw.includes('<!-- THC-ENC-VISUAL-ANCHOR -->')) throw new Error(`${x.item.id}: WordPress stored-content verification lost the canonical visual anchor.`);
   const canonicalMarkerA=`data-thc-encyclopedia-id="${x.item.id}"`;
   const canonicalMarkerB=`data-thc-encyclopedia-id=\\\\"${x.item.id}\\\\"`;
   if(!raw.includes(canonicalMarkerA)&&!raw.includes(canonicalMarkerB)) throw new Error(`${x.item.id}: WordPress stored-content verification lost the canonical lesson identity marker.`);
@@ -180,7 +180,7 @@ async function preflightWorker(){
     if(pageMatches.length!==1) throw new Error(`${item.id}: expected exactly one canonical encyclopedia page, found ${pageMatches.length}.`);
     const page=pageMatches[0];
     const raw=String(page.content?.raw||'');
-    if(!raw.includes('<h2>Terms to know</h2>')) throw new Error(`${item.id}: canonical insertion marker is missing.`);
+    if(!raw.includes('<!-- THC-ENC-VISUAL-ANCHOR -->')) throw new Error(`${item.id}: canonical visual insertion marker is missing.`);
     pagePreflightById.set(item.id,{page,raw});
   }
 }
@@ -228,7 +228,7 @@ function visualBlock(x){
 function nextContent(x){
   const marker=new RegExp(`<!-- THC-ENC-VISUAL:${x.item.id} START -->[\\s\\S]*?<!-- THC-ENC-VISUAL:${x.item.id} END -->\\s*`,'g');
   const cleaned=x.raw.replace(marker,'');
-  const anchor='<h2>Terms to know</h2>';
+  const anchor='<!-- THC-ENC-VISUAL-ANCHOR -->';
   const idx=cleaned.indexOf(anchor);
   if(idx<0) throw new Error(`${x.item.id}: insertion marker disappeared after cleanup.`);
   const result=cleaned.slice(0,idx)+visualBlock(x)+'\n'+cleaned.slice(idx);
