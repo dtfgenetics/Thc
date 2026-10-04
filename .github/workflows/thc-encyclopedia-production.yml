@@ -139,6 +139,18 @@ jobs:
         run: npm run verify:encyclopedia-skill
       - name: Validate controlled lesson structure
         run: npm run verify:encyclopedia-content-control
+      - name: Validate release-review control coverage
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build:encyclopedia-release-review-queue
+          node - <<'NODE'
+          const fs=require('fs');
+          const q=JSON.parse(fs.readFileSync('data/encyclopedia-release-review-queue.json','utf8'));
+          if(q.summary.releaseReviewUnrecorded!==0) throw new Error(`Release review control is missing for ${q.summary.releaseReviewUnrecorded} owner-authorized lesson(s).`);
+          if(q.summary.safetyHolds!==0) console.log(`Safety holds remain explicit: ${q.summary.safetyHolds}`);
+          console.log(`Release-review control coverage PASS: ${q.summary.publicationControlledComplete}/420 core lessons controlled.`);
+          NODE
       - name: Validate assessments
         run: npm run verify:encyclopedia-assessments
       - name: Audit live encyclopedia copy
