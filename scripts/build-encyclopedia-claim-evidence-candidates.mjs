@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root=process.cwd();
 const outPath=path.join(root,'data','encyclopedia-claim-evidence-candidates.json');
@@ -15,6 +16,7 @@ if(!fs.existsSync(sourceQueuePath)){
 }
 
 const lessons=readCanonicalEncyclopediaLessons(root);
+const registryState=loadEncyclopediaRegistry(root);
 const sourceQueue=JSON.parse(fs.readFileSync(sourceQueuePath,'utf8'));
 const referenceById=new Map(arr(sourceQueue.references).map(row=>[row.referenceId,row]));
 const queueLessonById=new Map(arr(sourceQueue.lessons).map(row=>[row.lessonId,row]));
@@ -94,7 +96,7 @@ const output={
   schemaVersion:'1.0.0',
   artifactId:'thc-encyclopedia-claim-evidence-candidates',
   generatedBy:'scripts/build-encyclopedia-claim-evidence-candidates.mjs',
-  scope:'Candidate objective and core-science claim/source review ledger for all 420 controlled THC-ENC lessons.',
+  scope:`Candidate objective and core-science claim/source review ledger for all ${registryState.totalCount} registered THC-ENC lessons.`, 
   releaseRule:'Candidate mappings are reviewer work aids only. They do not assert that a listed source supports a claim and never change lesson review or publication state.',
   summary,
   lessons:rows
@@ -102,10 +104,10 @@ const output={
 
 fs.mkdirSync(path.dirname(outPath),{recursive:true});
 fs.writeFileSync(outPath,JSON.stringify(output,null,2)+'\n');
-console.log(`Encyclopedia claim candidates: ${summary.lessonCount}/420 lessons · ${summary.candidateClaimCount} objective/core-science claims · ${summary.lessonsWithTraceableSources} lessons with fully traceable source sets`);
+console.log(`Encyclopedia claim candidates: ${summary.lessonCount}/${registryState.totalCount} lessons · ${summary.candidateClaimCount} objective/core-science claims · ${summary.lessonsWithTraceableSources} lessons with fully traceable source sets`);
 console.log('Wrote data/encyclopedia-claim-evidence-candidates.json');
 
-if(rows.length!==420){
-  console.error(`Expected 420 candidate-ledger lesson rows; found ${rows.length}.`);
+if(rows.length!==registryState.totalCount){
+  console.error(`Expected ${registryState.totalCount} candidate-ledger lesson rows; found ${rows.length}.`);
   process.exit(1);
 }
