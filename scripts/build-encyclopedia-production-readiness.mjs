@@ -15,6 +15,9 @@ const scorecard = read('data/encyclopedia-completion-scorecard.json');
 const evidence = read('data/encyclopedia-evidence-tracking.json');
 const rationales = read('data/encyclopedia-assessment-rationale-package.json');
 const visuals = read('content/encyclopedia/visual-production-queue-v1.json');
+const approvedVisuals = fs.existsSync(path.join(root,'data','encyclopedia-visual-approved-assets.json'))
+  ? read('data/encyclopedia-visual-approved-assets.json')
+  : { assets: [] };
 const sourceQueue = read('data/encyclopedia-source-resolution-queue.json');
 const evidencePriority = fs.existsSync(path.join(root,'data','encyclopedia-evidence-priority.json'))
   ? read('data/encyclopedia-evidence-priority.json')
@@ -28,6 +31,7 @@ const scoreById = byId(scorecard.lessons);
 const evidenceById = byId(evidence.lessons);
 const rationaleById = byId(rationales.lessons);
 const visualById = byId(visuals.items);
+const approvedVisualById = byId(approvedVisuals.assets);
 const sourceById = byId(sourceQueue.lessons || sourceQueue.items || []);
 const priorityById = byId(evidencePriority.lessons || []);
 
@@ -45,6 +49,7 @@ const lessons = ids.map(id => {
   const e = evidenceById.get(id) || {};
   const r = rationaleById.get(id) || {};
   const v = visualById.get(id) || {};
+  const av = approvedVisualById.get(id) || {};
   const q = sourceById.get(id) || {};
   const p = priorityById.get(id) || {};
 
@@ -54,7 +59,7 @@ const lessons = ids.map(id => {
   const claimEvidenceReviewed = ['independent_science_review_complete','approved'].includes(claimEvidenceReviewState);
   const claimEvidenceComplete = claimEvidenceMapped && claimEvidenceReviewed;
   const sourcesResolved = q.resolutionState === 'authority_links_available_claim_review_pending' || q.resolutionState === 'source_traceable_authority_review_pending';
-  const visualApproved = Boolean(v.approvedAssetId) && v.assetQaStatus === 'approved';
+  const visualApproved = Boolean(av.approvedAssetId) && av.assetQaStatus === 'approved' && av.publicationAuthorized === false;
   const rationaleReviewed = r.reviewState === 'approved' || r.reviewState === 'independent_review_complete';
   const publicationAuthorized = bool(s.publicationAuthorized) || bool(e?.publicationState?.publicationAuthorized);
 
@@ -109,10 +114,13 @@ const lessons = ids.map(id => {
     visual:{
       briefReady:Boolean(v.queueId),
       approved:visualApproved,
-      approvedAssetId:v.approvedAssetId || null,
+      approvedAssetId:av.approvedAssetId || null,
+      approvedRepositoryPath:av.repositoryPath || null,
+      approvedAssetSha256:av.sha256 || null,
+      approvedAssetBytes:Number(av.bytes || 0) || null,
       accuracyReview:v.accuracyReview || null,
       accessibilityReview:v.accessibilityReview || null,
-      assetQaStatus:v.assetQaStatus || null
+      assetQaStatus:av.assetQaStatus || v.assetQaStatus || null
     },
     assessment:{
       promptCount:arr(r.prompts).length,
