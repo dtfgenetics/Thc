@@ -1,6 +1,6 @@
 # THC Encyclopedia Content Gap Register
 
-Updated: 2026-10-03
+Updated: 2026-10-04
 
 ## Live publication completion
 
@@ -109,13 +109,14 @@ The goal is to make the strict command pass without weakening the standard.
 - Strict validation fails until all 420 lessons are truly release-ready; do not weaken the strict gate to make unfinished work appear complete.
 
 
-## Canonical source pin
+## Canonical source reconciliation
 
+- The canonical repository now contains the production-controlled 420-entry registry (Master Map v1.1 plus controlled Parts 18–21 overrides).\n- Deterministic cross-repository parity now hard-gates the controlled registry and existence of all 420 canonical lesson paths at the pinned source SHA.\n- Lesson-body reconciliation remains quality-aware work: the 2026-10-04 audit found 131/420 lesson files byte-identical and 289/420 differing between the canonical source and integration copy. Drift is reported explicitly and must not be resolved by blind mirroring.\n\n## Canonical source pin\n
 - Canonical authoring repository: `dtfgenetics/thc-grow-hub`.
 - Production integration source target: `site/wordpress/education/encyclopedia-deployment-target.json`.
 - The target must use a full immutable 40-character commit SHA; production integration must not float on `main`.
 - Resolver: `scripts/resolve-encyclopedia-deployment-target.mjs`.
 - Validator: `scripts/validate-encyclopedia-source-pin.mjs`.
 - Environment handoff: `THC_ENCYCLOPEDIA_SOURCE_SHA`.
-- Current pinned canonical source: `dtfgenetics/thc-grow-hub@b3fb362d969a5242f7f46ec609abdb8e5a954514`.
+- Current pinned canonical source: `dtfgenetics/thc-grow-hub@be607adcdcfad623beb75e7febce37345fa1c3d5`.
 - This is a source-target contract only. It does not by itself prove byte-for-byte parity, scientific approval, or publication authorization.
