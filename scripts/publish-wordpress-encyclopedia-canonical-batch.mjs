@@ -89,8 +89,8 @@ const workedExampleHtml=a=>{
 
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const requestAttempts=Math.max(1,Number(process.env.WP_API_RETRY_ATTEMPTS||6));
-const writeDelayMs=Math.max(0,Number(process.env.WP_WRITE_DELAY_MS||150));
-const retryableStatus=status=>status===408||status===425||status===429||status>=500;
+const writeDelayMs=Math.max(0,Number(process.env.WP_WRITE_DELAY_MS||600));
+const retryableStatus=status=>status===403||status===408||status===425||status===429||status>=500;
 const canRetryRequest=(endpoint,method)=>method==='GET'||(method==='POST'&&/^\/(?:pages|media)\/\d+(?:\?|$)/.test(endpoint));
 const retryDelayMs=(attempt,retryAfter)=>{
   const retryAfterSeconds=Number(retryAfter||0);
@@ -156,6 +156,26 @@ async function upsertPage({slug,title,parent,content,excerpt=''}){
   if(existing) backups.push(existing);
   content=preserveExistingLessonVisual(slug,existing,content);
   const payload={slug,title,status:'publish',parent,content,excerpt,comment_status:'closed'};
+
+  if(existing){
+    const currentContent=String(existing.content?.raw??existing.content?.rendered??'');
+    const currentTitle=String(existing.title?.raw??existing.title?.rendered??'').replace(/<[^>]+>/g,'').trim();
+    const currentExcerpt=String(existing.excerpt?.raw??existing.excerpt?.rendered??'').replace(/<[^>]+>/g,'').trim();
+    const desiredTitle=String(title).replace(/<[^>]+>/g,'').trim();
+    const desiredExcerpt=String(excerpt).replace(/<[^>]+>/g,'').trim();
+    const unchanged=
+      currentContent===String(content) &&
+      currentTitle===desiredTitle &&
+      currentExcerpt===desiredExcerpt &&
+      String(existing.status||'')==='publish' &&
+      Number(existing.parent||0)===Number(parent||0) &&
+      String(existing.comment_status||'closed')==='closed';
+
+    if(unchanged){
+      return existing;
+    }
+  }
+
   const result=existing?await wp(`/pages/${existing.id}`,{method:'POST',body:payload}):await wp('/pages',{method:'POST',body:payload});
   if(writeDelayMs>0) await sleep(writeDelayMs);
   return result;
