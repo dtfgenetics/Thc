@@ -7,6 +7,8 @@ on:
       - '.github/workflows/research-repair-skill.yml'
       - 'AGENTS.md'
       - 'AI_CONTEXT.md'
+      - '.github/workflows/worker-orchestrator.yml'
+      - 'scripts/test-worker-orchestrator.mjs'
   merge_group:
   push:
     branches: [main]
@@ -29,3 +31,5 @@ jobs:
           node-version: 22
       - name: Validate research-repair controller
         run: node .agents/skills/dtf-research-repair/scripts/self-test.mjs
+      - name: Validate worker-orchestrator integration
+        run: node scripts/test-worker-orchestrator.mjs
