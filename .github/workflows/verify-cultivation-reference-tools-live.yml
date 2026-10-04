@@ -16,7 +16,9 @@ concurrency:
 
 jobs:
   verify:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    # Always verify the currently served canonical tool suite after a deployment run
+    # completes. A failed deploy should still prove that production stayed on the
+    # previous known-good release instead of silently skipping live acceptance.
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
