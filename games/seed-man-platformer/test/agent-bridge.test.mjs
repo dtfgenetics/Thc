@@ -53,21 +53,23 @@ function togglePause(force){ paused=Boolean(force); running=!paused; clearInput(
 function retryCheckpoint(){ retries+=1; return true; }
 function reset(){ restarts+=1; player={...player,x:0,y:0,collected:[],finished:false}; elapsed=0; running=true; paused=false; clearInput(); }
 const document={documentElement:{dataset:{}}};
+const listeners={};
 const window={
   __SPROUT_COMBAT_BROWSER__:{
     fireWeapon(){attacks+=1;return true;},
     fireAbility(){phenotypes+=1;return true;}
-  }
+  },
+  addEventListener(type,handler){ (listeners[type] ||= []).push(handler); }
 };
 ${bridge}
-globalThis.__HARNESS__={window,document,input,getState:()=>({paused,running,attacks,phenotypes,retries,restarts})};
+globalThis.__HARNESS__={window,document,input,listeners,getState:()=>({paused,running,attacks,phenotypes,retries,restarts})};
 `;
 
 const sandbox = { console, Object, Number, Boolean, Math, Error };
 vm.createContext(sandbox);
 vm.runInContext(harness, sandbox, { filename:'seed-man-agent-bridge-v1.js' });
 
-const { window, document, input, getState } = sandbox.__HARNESS__;
+const { window, document, input, listeners, getState } = sandbox.__HARNESS__;
 const api = window.__SEED_MAN_AGENT__;
 assert.equal(api.version, 'seed-man-agent-bridge-v1');
 assert.deepEqual(Array.from(api.actions), ['left','right','jump','attack','phenotype','pause','resume','retry','restart']);
@@ -83,6 +85,20 @@ assert.equal(snapshot.combat.phenotypeForm, 'fire');
 assert.equal(snapshot.elapsedSeconds, 12.346);
 assert.equal(document.documentElement.dataset.seedManAgentBridge, 'seed-man-agent-bridge-v1');
 
+assert.equal(typeof api.telemetry, 'function');
+assert.equal(snapshot.telemetry.stallThresholdMs, 12000);
+assert.equal(snapshot.telemetry.stallSuspected, false);
+assert.ok(Array.isArray(snapshot.telemetry.errors));
+assert.ok(Array.isArray(snapshot.telemetry.recentActions));
+assert.equal(listeners.error.length, 1);
+assert.equal(listeners.unhandledrejection.length, 1);
+listeners.error[0]({ message:'synthetic runtime failure', filename:'game.js', target:window });
+listeners.unhandledrejection[0]({ reason:new Error('synthetic rejection') });
+snapshot=api.snapshot();
+assert.equal(snapshot.telemetry.errors.length, 2);
+assert.equal(snapshot.telemetry.errors[0].kind, 'runtime-error');
+assert.equal(snapshot.telemetry.errors[1].kind, 'unhandled-rejection');
+
 assert.equal(api.press('left'), true);
 assert.equal(input.left, true);
 assert.equal(api.release('left'), true);
@@ -92,6 +108,10 @@ assert.equal(input.jumpHeld, true);
 assert.equal(input.jumpQueued, true);
 assert.equal(api.release('jump'), true);
 assert.equal(input.jumpHeld, false);
+
+snapshot=api.snapshot();
+assert.ok(snapshot.telemetry.recentActions.some(event=>event.action==='jump:press'));
+assert.ok(snapshot.telemetry.recentActions.some(event=>event.action==='jump:release'));
 
 assert.equal(api.attack(), true);
 assert.equal(api.phenotype(), true);
