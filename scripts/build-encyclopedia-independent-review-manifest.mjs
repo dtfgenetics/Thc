@@ -86,10 +86,14 @@ const rows=arr(readiness.lessons).map(row=>{
 
 
 const reviewBatchSize=20;
+const readinessById=new Map(arr(readiness.lessons).map(row=>[row.id,row]));
 const reviewBatches=[];
 for(let start=0;start<rows.length;start+=reviewBatchSize){
   const batchRows=rows.slice(start,start+reviewBatchSize);
   const batchNumber=Math.floor(start/reviewBatchSize)+1;
+  const riskScores=batchRows.map(row=>Number(readinessById.get(row.lessonId)?.workPriority?.evidenceRiskScore||0));
+  const priorityScores=batchRows.map(row=>Number(readinessById.get(row.lessonId)?.workPriority?.evidencePriorityScore||0));
+  const producedVisuals=batchRows.filter(row=>row.reviewTasks.teachingVisual.candidateCount>0);
   reviewBatches.push({
     batchId:`ENC-REVIEW-BATCH-${String(batchNumber).padStart(2,'0')}`,
     lessonRange:`${batchRows[0]?.lessonId || ''}..${batchRows.at(-1)?.lessonId || ''}`,
@@ -100,12 +104,27 @@ for(let start=0;start<rows.length;start+=reviewBatchSize){
     visualCandidatesPresent:batchRows.filter(row=>row.reviewTasks.teachingVisual.candidateCount>0).length,
     visualProductionNeeded:batchRows.filter(row=>row.reviewTasks.teachingVisual.candidateCount===0).length,
     rationaleReviewTasks:batchRows.length,
+    evidenceReviewTasks:batchRows.filter(row=>row.reviewTasks.claimEvidence.mapped).length,
+    producedVisualReviewTasks:producedVisuals.length,
+    maxEvidenceRiskScore:Math.max(0,...riskScores),
+    maxEvidencePriorityScore:Math.max(0,...priorityScores),
+    reviewPriorityScore:Math.max(0,...priorityScores)+Math.max(0,...riskScores)+(producedVisuals.length*2),
+    recommendedSequence:[
+      'claim_evidence_science_review',
+      ...(producedVisuals.length?['produced_visual_science_accessibility_rights_asset_qa']:[]),
+      'assessment_rationale_review',
+      ...(batchRows.some(row=>row.reviewTasks.teachingVisual.candidateCount===0)?['remaining_visual_production_then_review']:[]),
+      'release_authorization_check'
+    ],
     reviewerDecision:null,
     reviewerId:null,
     reviewedAt:null,
     reviewNotes:null
   });
 }
+
+reviewBatches.sort((a,b)=>b.reviewPriorityScore-a.reviewPriorityScore||a.batchId.localeCompare(b.batchId));
+reviewBatches.forEach((batch,index)=>{batch.reviewPriorityRank=index+1;});
 
 const summary={
   lessonCount:rows.length,
