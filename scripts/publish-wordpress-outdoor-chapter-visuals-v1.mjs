@@ -1,6 +1,7 @@
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
+import { buildWordPressPageQuery, requireSingleWordPressPage } from './wordpress-learning-page-query.mjs';
 
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const user=process.env.WP_API_USERNAME||'';
@@ -77,10 +78,9 @@ async function uploadMedia(item){
   throw last;
 }
 
-async function pageBySlug(slug){
-  const rows=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=20`);
-  if(!Array.isArray(rows)||rows.length!==1) throw new Error(`${slug}: expected exactly one WordPress page, found ${Array.isArray(rows)?rows.length:'invalid response'}.`);
-  return rows[0];
+async function pageBySlug(slug,parentId=null){
+  const rows=await request(buildWordPressPageQuery(slug,{parentId,perPage:20}));
+  return requireSingleWordPressPage(rows,{slug,parentId});
 }
 
 const manifest=JSON.parse(await readFile(manifestPath,'utf8'));
@@ -153,7 +153,8 @@ function insertChapterVisuals(html){
   return next;
 }
 
-const page=await pageBySlug('outdoor');
+const learnPage=await pageBySlug('learn');
+const page=await pageBySlug('outdoor',learnPage.id);
 const before=rendered(page.content);
 if(!before.includes('data-dtf-outdoor-v6="true"')||!before.includes('data-dtf-topic="outdoor-cultivation"')||!before.includes('data-dtf-learning-v4="topic-outdoor-cultivation"')) throw new Error('Outdoor V6 canonical owner markers are missing; refusing chapter visual publication.');
 if((before.match(/data-hov6-chapter=/g)||[]).length!==8||(before.match(/class="hov6-lesson"/g)||[]).length!==32) throw new Error('Outdoor V6 chapter/lesson boundary is not 8 chapters and 32 lessons.');
@@ -167,7 +168,7 @@ try{
     await request(`/wp-json/wp/v2/pages/${page.id}`,{method:'POST',body:JSON.stringify({content:next,status:'publish'})});
     wrote=true;
   }
-  const edit=rendered((await pageBySlug('outdoor')).content);
+  const edit=rendered((await pageBySlug('outdoor',learnPage.id)).content);
   if((edit.match(/data-outdoor-chapter-visual=/g)||[]).length!==8) throw new Error('Edit-context Outdoor chapter visual count is not 8.');
   if((edit.match(/data-hov6-chapter=/g)||[]).length!==8||(edit.match(/class="hov6-lesson"/g)||[]).length!==32) throw new Error('Edit-context Outdoor V6 chapter/lesson boundary changed.');
   for(const item of resolved){
