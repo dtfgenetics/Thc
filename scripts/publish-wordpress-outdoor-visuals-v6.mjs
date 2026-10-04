@@ -2,6 +2,7 @@ import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
 import { buildWordPressPageQuery, requireSingleWordPressPage } from './wordpress-learning-page-query.mjs';
+import { stripOutdoorAtlas } from './wordpress-outdoor-atlas-content.mjs';
 
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const user=process.env.WP_API_USERNAME||'';
@@ -98,7 +99,7 @@ const before=rendered(page.content);
 if(!before.includes('data-dtf-outdoor-v6="true"')) throw new Error('Outdoor V6 curriculum is not live; refusing to publish the visual atlas onto an older page.');
 if(!before.includes('data-dtf-topic="outdoor-cultivation"')) throw new Error('Outdoor page lost its canonical V3 topic owner marker.');
 if(!before.includes('data-dtf-learning-v4="topic-outdoor-cultivation"')) throw new Error('Outdoor page lost its canonical V4 learning owner marker.');
-const clean=before.replace(/<!-- dtf-outdoor-visuals-v6:start -->[\s\S]*?<!-- dtf-outdoor-visuals-v6:end -->/g,'').trim();
+const clean=stripOutdoorAtlas(before);
 const next=`${clean}\n${atlas()}`;
 await writeFile(join(backupDir,'before.json'),`${JSON.stringify(page,null,2)}\n`);
 await writeFile(join(backupDir,'next.html'),next);
