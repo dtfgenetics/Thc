@@ -199,48 +199,6 @@ const documents=[...docs.values()].sort((a,b)=>a.type.localeCompare(b.type)||a.t
 fs.mkdirSync(path.dirname(out),{recursive:true});
 fs.writeFileSync(out,JSON.stringify({schemaVersion:3,generated:new Date().toISOString(),documents},null,2)+'\n');
 
-const escapeHtml=(value)=>String(value??'').replace(/[&<>"']/g,char=>({
-  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-}[char]));
-
-function replaceGeneratedBlock(rel,startMarker,endMarker,body){
-  const file=path.join(root,rel);
-  const source=fs.readFileSync(file,'utf8');
-  const start=source.indexOf(startMarker);
-  const end=source.indexOf(endMarker);
-  if(start<0||end<0||end<start)throw new Error('Missing generated fallback markers in '+rel);
-  const next=source.slice(0,start+startMarker.length)+'\n'+body.trim()+'\n'+source.slice(end);
-  fs.writeFileSync(file,next);
-}
-
-const searchFallbackDocuments=documents
-  .filter(item=>item.type!=='Encyclopedia')
-  .slice(0,96);
-const searchFallback=searchFallbackDocuments.length
-  ? '<section class="static-fallback" data-static-search-fallback aria-label="Education resource fallback"><div class="section-head"><h2>Browse education resources</h2><p>This server-rendered directory remains available if interactive search cannot start.</p></div><div class="grid">'+searchFallbackDocuments.map(item=>
-      '<article class="search-card"><div class="search-meta"><span>'+escapeHtml(item.type)+'</span><code>'+escapeHtml(item.id)+'</code></div><h2><a href="'+escapeHtml(item.route)+'">'+escapeHtml(item.title)+'</a></h2><p>'+escapeHtml(item.summary||'Teaching Healthy Cultivation resource.')+'</p><a class="open-link" href="'+escapeHtml(item.route)+'">Open resource →</a></article>'
-    ).join('')+'</div></section>'
-  : '<section class="static-fallback" data-static-search-fallback><p>Browse the <a href="/learn/">Learning Center</a>, <a href="/learn/encyclopedia/">Encyclopedia</a>, and <a href="/tools/">Cultivation Tools</a>.</p></section>';
-replaceGeneratedBlock(
-  'site/public-route-patch/learn/search/index.html',
-  '<!-- DTF_STATIC_SEARCH_FALLBACK_START -->',
-  '<!-- DTF_STATIC_SEARCH_FALLBACK_END -->',
-  searchFallback
-);
-
-const fallbackLessons=(encyclopedia?.lessons||[]);
-const encyclopediaFallback='<section class="static-fallback" data-static-encyclopedia-fallback aria-label="Encyclopedia fallback directory"><div class="section-head"><div><p class="eyebrow" style="color:#8b6f26">Static directory</p><h2>Browse all registered encyclopedia topics</h2></div><p>This canonical directory remains readable if interactive filtering cannot start.</p></div><div class="library">'+fallbackLessons.map(item=>{
-  const published=item.status==='published';
-  const summary=item.objective||('Reference topic in '+(item.topic||'THC plant science')+'.');
-  return '<article class="lesson"><div class="lesson-top"><span class="id">'+escapeHtml(item.id)+'</span><span class="badge '+(published?'':'review')+'">'+(published?'Published':'In review')+'</span></div><h3>'+escapeHtml(item.title)+'</h3><p>'+escapeHtml(summary)+'</p><div class="meta"><span>'+escapeHtml(item.topic||'Encyclopedia')+'</span><span>'+escapeHtml(item.primaryFormat||'Reference')+'</span></div>'+(published?'<a href="'+escapeHtml(item.route)+'">Open lesson →</a>':'<span class="disabled">Registered · full lesson not yet released</span>')+'</article>';
-}).join('')+'</div></section>';
-replaceGeneratedBlock(
-  'site/public-route-patch/learn/encyclopedia/index.html',
-  '<!-- DTF_STATIC_ENCYCLOPEDIA_FALLBACK_START -->',
-  '<!-- DTF_STATIC_ENCYCLOPEDIA_FALLBACK_END -->',
-  encyclopediaFallback
-);
-
 console.log(`THC education search index: ${documents.length} documents -> ${path.relative(root,out)}`);
 const fallback=spawnSync(process.execPath,[path.join(root,'scripts/build-static-search-fallbacks.mjs')],{stdio:'inherit'});
 if(fallback.status!==0)process.exit(fallback.status||1);
