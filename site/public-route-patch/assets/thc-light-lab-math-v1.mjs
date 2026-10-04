@@ -7,9 +7,10 @@ export function calculateStableLight({ppfd,hours,targetDli=null}){
 }
 
 export function calculateVariableLight(blocks){
- const segments=blocks.map(block=>({ppfd:Number(block.ppfd),hours:Number(block.hours)})).filter(block=>Number.isFinite(block.ppfd)&&block.ppfd>=0&&Number.isFinite(block.hours)&&block.hours>=0&&block.hours<=24);
+ const segments=(Array.isArray(blocks)?blocks:[]).map(block=>({ppfd:Number(block.ppfd),hours:Number(block.hours)})).filter(block=>Number.isFinite(block.ppfd)&&block.ppfd>=0&&block.ppfd<=3000&&Number.isFinite(block.hours)&&block.hours>=0&&block.hours<=24);
  const hours=segments.reduce((sum,block)=>sum+block.hours,0);
- return {dli:segments.length?integrateDli(segments):0,hours,segments};
+ const validDay=hours<=24;
+ return {dli:segments.length&&validDay?integrateDli(segments):null,hours,segments,validDay};
 }
 
 export function dliRangeForMap(values,hours){

@@ -33,6 +33,8 @@ import {collectManualCultivationMeasurement} from '/assets/thc-cultivation-data-
   const id=()=>globalThis.crypto?.randomUUID?.()||'obs-'+Date.now()+'-'+Math.random().toString(36).slice(2);
   const state=()=>load();
   const values=()=>Object.fromEntries(new FormData(form).entries());
+  const numericOrNull=(value,{integer=false}={})=>{if(value===''||value==null)return null;const n=Number(value);if(!Number.isFinite(n)||n<0||(integer&&!Number.isInteger(n)))return NaN;return n;};
+  const growthMetrics=(data)=>({heightCm:numericOrNull(data.heightCm),widthCm:numericOrNull(data.widthCm),stemDiameterMm:numericOrNull(data.stemDiameterMm),leafCount:numericOrNull(data.leafCount,{integer:true}),nodeCount:numericOrNull(data.nodeCount,{integer:true}),internodeLengthCm:numericOrNull(data.internodeLengthCm),branchCount:numericOrNull(data.branchCount,{integer:true}),flowerDays:numericOrNull(data.flowerDays,{integer:true})});
 
   function setMessage(text){message.textContent=text||'';}
   function reset(){
@@ -61,13 +63,17 @@ import {collectManualCultivationMeasurement} from '/assets/thc-cultivation-data-
   form.addEventListener('submit',(event)=>{
     event.preventDefault();
     const data=values();
-    const title=clean(data.title,180), observations=clean(data.observations,6000);
+    const title=clean(data.title,180), observations=clean(data.observations,6000), growth=growthMetrics(data);
     if(!title||!observations){setMessage('Add a short title and the observation you actually saw before saving.');return;}
+    if(Object.values(growth).some(Number.isNaN)){setMessage('Growth measurements must be zero or greater; leaf, node, branch and flower-day counts must be whole numbers.');return;}
     const current=state(), now=new Date().toISOString();
     const existing=editingId?current.entries.find(x=>x.id===editingId):null;
-    const next={...data,id:existing?.id||id(),createdAt:existing?.createdAt||now,updatedAt:now,title,observations};
+    const next={...data,...growth,id:existing?.id||id(),createdAt:existing?.createdAt||now,updatedAt:now,title,observations};
     save({version:1,entries:[next,...current.entries.filter(x=>x.id!==next.id)]});
-    collectManualCultivationMeasurement({type:'plant-observation',toolId:'plant-atlas',observedAt:next.observedAt?new Date(next.observedAt).toISOString():now,stage:next.stage,values:{symptoms:[title,observations],locationOnPlant:next.plantArea,visiblePattern:next.pattern,progression:next.progression,status:next.status,recordAction:existing?'updated':'created'},method:'atlas-observation-notebook'});
+    const observedAt=next.observedAt?new Date(next.observedAt).toISOString():now;
+    collectManualCultivationMeasurement({type:'plant-observation',toolId:'plant-atlas',observedAt,stage:next.stage,values:{symptoms:[title,observations],locationOnPlant:next.plantArea,visiblePattern:next.pattern,progression:next.progression,status:next.status,possibleCauses:clean(next.workingDifferential,3000)?[clean(next.workingDifferential,3000)]:[],recordAction:existing?'updated':'created'},method:'atlas-observation-notebook'});
+    const measuredGrowth=Object.fromEntries(Object.entries(growth).filter(([,value])=>Number.isFinite(value)));
+    if(Object.keys(measuredGrowth).length)collectManualCultivationMeasurement({type:'plant-growth',toolId:'plant-atlas',observedAt,stage:next.stage,metrics:measuredGrowth,values:{plantArea:next.plantArea,recordAction:existing?'updated':'created'},method:'atlas-observation-notebook'});
     reset();setMessage(existing?'Observation updated.':'Observation saved on this device.');render();
   });
   entriesRoot.addEventListener('click',(event)=>{
@@ -90,6 +96,7 @@ import {collectManualCultivationMeasurement} from '/assets/thc-cultivation-data-
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
     a.href=url;a.download='dtf-atlas-observations-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   });
+  document.querySelector('[data-clear-all]').addEventListener('click',()=>{const current=state();if(!current.entries.length){setMessage('No saved Atlas observations to clear.');return}if(!confirm('Clear all saved Atlas observations on this device?'))return;save({version:1,entries:[]});reset();setMessage('All Atlas observations cleared.');render();});
   document.querySelector('[data-import]').addEventListener('change',async(event)=>{
     const file=event.target.files?.[0];if(!file)return;
     try{

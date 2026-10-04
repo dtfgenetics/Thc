@@ -77,6 +77,16 @@
           <label>EC / conductivity<input name="ec" maxlength="40" placeholder="Measured value/scale if available"></label>
           <label>Light / airflow context<input name="lightAirflowContext" maxlength="1000"></label>
         </div>
+        <fieldset style="border:1px solid var(--line);border-radius:14px;padding:14px"><legend style="font-weight:900;padding:0 6px">Optional plant-growth measurements</legend><div class="grid2">
+          <label>Height (cm)<input name="heightCm" type="number" min="0" step=".1" placeholder="Optional"></label>
+          <label>Width (cm)<input name="widthCm" type="number" min="0" step=".1" placeholder="Optional"></label>
+          <label>Stem diameter (mm)<input name="stemDiameterMm" type="number" min="0" step=".1" placeholder="Optional"></label>
+          <label>Leaf count<input name="leafCount" type="number" min="0" step="1" placeholder="Optional"></label>
+          <label>Node count<input name="nodeCount" type="number" min="0" step="1" placeholder="Optional"></label>
+          <label>Internode length (cm)<input name="internodeLengthCm" type="number" min="0" step=".1" placeholder="Optional"></label>
+          <label>Branch count<input name="branchCount" type="number" min="0" step="1" placeholder="Optional"></label>
+          <label>Flower days<input name="flowerDays" type="number" min="0" step="1" placeholder="Optional"></label>
+        </div><small style="color:var(--muted)">Leave these blank when not measured. Numeric values are saved with the observation and emitted as a canonical plant-growth record.</small></fieldset>
         <label>Irrigation / recent-change context<textarea name="irrigationContext" maxlength="1000"></textarea></label>
         <label>Working differential<textarea name="workingDifferential" maxlength="3000" placeholder="List plausible explanations; keep uncertainty visible."></textarea></label>
         <label>Next discriminating check<textarea name="nextCheck" maxlength="2000" placeholder="What observation or measurement would help separate the plausible explanations?"></textarea></label>
@@ -86,7 +96,7 @@
     </section>
     <section class="panel">
       <div class="toolbar"><div><h2>Saved observations</h2><small>Stored locally in this browser.</small></div><select data-filter aria-label="Filter observations by status"><option>All</option><option>Open observation</option><option>Monitoring</option><option>Resolved</option></select></div>
-      <div class="actions" style="margin-bottom:14px"><a class="button" href="/atlas/notebook/compare/">Compare saved observations</a><button type="button" data-export>Export JSON</button><label class="button" style="display:inline-flex;align-items:center">Import JSON<input data-import type="file" accept="application/json" hidden></label></div>
+      <div class="actions" style="margin-bottom:14px"><a class="button" href="/atlas/notebook/compare/">Compare saved observations</a><button type="button" data-export>Export JSON</button><label class="button" style="display:inline-flex;align-items:center">Import JSON<input data-import type="file" accept="application/json" hidden></label><button class="danger" type="button" data-clear-all>Clear all observations</button></div>
       <div class="entries" data-entries></div>
     </section>
   </div>
