@@ -11,12 +11,17 @@ const queue = errors.length ? { items: [] } : JSON.parse(fs.readFileSync(queuePa
 const canonical = readCanonicalEncyclopediaLessons(root);
 const canonicalIds = new Set(canonical.map(lesson => lesson.id));
 const items = Array.isArray(queue.items) ? queue.items : [];
+const productionQueue = Array.isArray(queue.productionQueue) ? queue.productionQueue : [];
 
 if (items.length !== 420) errors.push(`Expected 420 visual briefs; found ${items.length}.`);
 if (new Set(items.map(item => item.lessonId)).size !== items.length) errors.push('Visual briefs must have unique lesson IDs.');
 for (const item of items) {
   if (!canonicalIds.has(item.lessonId)) errors.push(`${item.lessonId}: no canonical lesson.`);
   if (!item.visualType || !item.purpose) errors.push(`${item.lessonId}: visual type or purpose missing.`);
+  if (!['diagnostic-decision-tree','measurement-workflow','process-flow','comparison-matrix','labeled-structure','mechanism-system-map','timeline-sequence','spatial-map','concept-mechanism-diagram'].includes(item.visualArchetype)) errors.push(`${item.lessonId}: unsupported visualArchetype ${item.visualArchetype}.`);
+  if (!Number.isFinite(item.productionPriorityScore) || item.productionPriorityScore < 0 || item.productionPriorityScore > 100) errors.push(`${item.lessonId}: invalid productionPriorityScore.`);
+  if (item.productionStatus === 'brief_ready_artwork_needed' && !['P0','P1','P2','P3'].includes(item.productionBatch)) errors.push(`${item.lessonId}: artwork-needed item must have P0-P3 productionBatch.`);
+  if (item.productionStatus === 'artwork_produced_review_pending' && item.productionBatch !== null) errors.push(`${item.lessonId}: already-produced artwork must not remain in a production batch.`);
   if (!Array.isArray(item.accuracyRequirements) || item.accuracyRequirements.length < 2) errors.push(`${item.lessonId}: needs at least 2 accuracy requirements.`);
   if (!Array.isArray(item.requiredLabels) || item.requiredLabels.length < 4) errors.push(`${item.lessonId}: needs at least 4 controlled labels.`);
   if (!Array.isArray(item.misconceptionGuards) || item.misconceptionGuards.length < 2) errors.push(`${item.lessonId}: needs at least 2 misconception guards.`);
@@ -41,6 +46,16 @@ for (const item of items) {
   if (item.publicationEffect !== 'none_review_state_unchanged') errors.push(`${item.lessonId}: visual brief must not change publication state.`);
 }
 for (const lesson of canonical) if (!items.some(item => item.lessonId === lesson.id)) errors.push(`${lesson.id}: missing visual brief.`);
+
+const needed = items.filter(item => item.productionStatus === 'brief_ready_artwork_needed');
+if (productionQueue.length !== needed.length) errors.push(`Production queue length mismatch: expected ${needed.length}, found ${productionQueue.length}.`);
+const queued = new Set(productionQueue.map(row => row.lessonId));
+for (const item of needed) if (!queued.has(item.lessonId)) errors.push(`${item.lessonId}: missing from productionQueue.`);
+for (let i = 0; i < productionQueue.length; i += 1) {
+  const row = productionQueue[i];
+  if (row.rank !== i + 1) errors.push(`Production queue rank mismatch at row ${i + 1}.`);
+  if (i > 0 && Number(productionQueue[i - 1].productionPriorityScore || 0) < Number(row.productionPriorityScore || 0)) errors.push(`Production queue is not priority-descending at rank ${i + 1}.`);
+}
 
 if (errors.length) {
   console.error(`Encyclopedia visual queue validation failed with ${errors.length} error(s):`);
