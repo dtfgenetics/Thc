@@ -92,8 +92,10 @@ function refreshGuardrailProfiles(){const selected=guardrailProfileSelect.value;
 function applyGuardrailProfile(p){if(!p)return;vpdLow.value=p.vpdLow;vpdHigh.value=p.vpdHigh;rhHigh.value=p.rhHigh;dewMargin.value=p.dewMargin;render();guardrailOut.insertAdjacentHTML('beforeend','<p class="muted">Loaded profile '+THC.esc(p.name)+'.</p>')}
 saveGuardrailProfile.onclick=()=>{const g=guardrails(),name=guardrailProfileName.value.trim()||'Guardrail profile',id='envprofile-'+(crypto.randomUUID?crypto.randomUUID():Date.now()),profile=normalizeGuardrailProfile({id,name,...g,savedAt:new Date().toISOString()});if(!profile){guardrailOut.insertAdjacentHTML('beforeend','<p class="muted">Enter valid guardrails before saving a profile.</p>');return}profiles=[...profiles,profile].slice(-100);if(!THC.save(profileKey,profiles)){profiles.pop();guardrailOut.insertAdjacentHTML('beforeend','<p class="muted">Browser storage is unavailable. Guardrail profile was not saved.</p>');return}refreshGuardrailProfiles();guardrailProfileSelect.value=id;guardrailOut.insertAdjacentHTML('beforeend','<p class="muted">Guardrail profile saved locally.</p>')};loadGuardrailProfile.onclick=()=>applyGuardrailProfile(profiles.find(p=>p.id===guardrailProfileSelect.value));deleteGuardrailProfile.onclick=()=>{const p=profiles.find(x=>x.id===guardrailProfileSelect.value);if(!p||!confirm('Delete guardrail profile '+p.name+'?'))return;profiles=profiles.filter(x=>x.id!==p.id);THC.save(profileKey,profiles);refreshGuardrailProfiles()};
 zoneFilter.addEventListener('change',renderSummary);environmentTrendMetric.addEventListener('change',renderSummary);window.addEventListener('resize',()=>renderEnvironmentTrend(filteredHistory()));printEnv.onclick=()=>window.print();clearReadings.onclick=()=>{if(confirm('Clear saved environmental history on this device?')){history=[];THC.save(key,history);renderSummary()}};
-const telemetryDashboard=mountTelemetryDashboard({container:document.getElementById('telemetryDashboard')});
-mountTelemetryAlertBoard({
+render();
+let telemetryDashboard={getPackets:()=>[]};
+try{telemetryDashboard=mountTelemetryDashboard({container:document.getElementById('telemetryDashboard')})}catch(error){console.error('Optional telemetry dashboard failed to mount.',error)}
+try{mountTelemetryAlertBoard({
   container:document.getElementById('telemetryAlertBoard'),
   getRecords:()=>telemetryDashboard.getPackets(),
   getRules:()=>{
@@ -103,6 +105,7 @@ mountTelemetryAlertBoard({
       {id:'rh-high',metric:'humidity',high:g.rhHigh,sustainSamples:2,clearMargin:2}
     ];
   }
-});
-mountLiveToolAdapter({container:document.getElementById('liveToolAdapter'),tool:'environment',zoneField:zone,title:'Live environment adapter',onApplied:()=>render()});history=(Array.isArray(THC.load(key,[]))?THC.load(key,[]):[]).map(normalizeEnvironmentRecord).filter(Boolean);profiles=(Array.isArray(THC.load(profileKey,[]))?THC.load(profileKey,[]):[]).map(normalizeGuardrailProfile).filter(Boolean);refreshGuardrailProfiles();render();renderSummary();
+})}catch(error){console.error('Optional telemetry alert board failed to mount.',error)}
+try{mountLiveToolAdapter({container:document.getElementById('liveToolAdapter'),tool:'environment',zoneField:zone,title:'Live environment adapter',onApplied:()=>render()})}catch(error){console.error('Optional live environment adapter failed to mount.',error)}
+history=(Array.isArray(THC.load(key,[]))?THC.load(key,[]):[]).map(normalizeEnvironmentRecord).filter(Boolean);profiles=(Array.isArray(THC.load(profileKey,[]))?THC.load(profileKey,[]):[]).map(normalizeGuardrailProfile).filter(Boolean);refreshGuardrailProfiles();render();renderSummary();
 </script></body></html>
