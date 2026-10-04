@@ -87,7 +87,7 @@ It checks:
 - Every user has one matching email index and one grow-data record
 - No orphan email indexes or grow-data records
 - Non-negative synchronization revisions
-- Schema version 1 and all eight state collections
+- Supported state schema versions 1 and 2. Schema v1 validates the original eight collections; schema v2 additionally validates irrigation, feeding, reservoir, harvest, and observation-outcome records
 - Record-object shape, record limits, valid IDs, and duplicate IDs
 - Cross-reference warnings for missing plants, cycles, or spaces
 - Session filename, owner, CSRF token, timestamp, and expiry shape
@@ -101,7 +101,7 @@ The report contains counts, digests, warnings, and error codes. It does not incl
 
 ## Protected Hostinger workflow
 
-The manual workflow is `.github/workflows/growlens-private-data-backup.yml`.
+The guarded workflow is `.github/workflows/growlens-private-data-backup.yml`. It intentionally remains manual until at least one current production run proves the Hostinger SSH secrets, private paths, snapshot tooling, restored-copy audit, and retention behavior end to end. Do not add a schedule before that first successful production run; a secret-dependent scheduled job that has never passed would create noise without proving recoverability.
 
 It requires:
 
@@ -202,5 +202,7 @@ The GrowLens backend should not be called production-ready until all three have 
 1. Guarded Hostinger deployment with live commit and health verification
 2. Protected two-account/two-device live acceptance testing
 3. Private snapshot plus extracted restored-copy audit
+
+After the first successful manual production run is retained and reviewed, add a low-traffic recurring schedule while preserving `workflow_dispatch` for drills and incident operations. Scheduled runs must use the same strict path, checksum, restored-copy audit, retention, and non-sensitive-report controls as the manual workflow.
 
 For stronger disaster recovery, add and periodically test the encrypted off-host copy described above.
