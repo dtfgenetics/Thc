@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readFile, writeFile } from 'node:fs/promises';
-import { createHash } from 'node:crypto';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { canonicalEncyclopediaFingerprint } from './lib/encyclopedia-live-fingerprint.mjs';
 
 const BASE_URL=(process.env.DTF_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const REGISTRY='content/encyclopedia/current-controlled-registry.json';
@@ -18,22 +18,6 @@ const canonicalLessons=readCanonicalEncyclopediaLessons(process.cwd());
 const canonicalById=new Map(canonicalLessons.map(lesson=>[lesson.id,lesson]));
 if(canonicalLessons.length!==420) throw new Error(`Expected 420 canonical lessons; found ${canonicalLessons.length}`);
 
-const canonicalFingerprint=lesson=>{
-  const payload={
-    id:lesson.id,
-    title:lesson.title,
-    objective:lesson.objective,
-    terms:lesson.terms||lesson.termsToKnow||[],
-    coreScience:lesson.coreScience||[],
-    cultivationRelevance:lesson.cultivationRelevance||[],
-    measureAndRecord:lesson.measureAndRecord||lesson.measurements||[],
-    misconceptions:lesson.misconceptions||[],
-    evidenceLimits:lesson.evidenceLimits||[],
-    crossLinks:lesson.crossLinks||[],
-    sourceNotes:lesson.sourceNotes||[]
-  };
-  return createHash('sha256').update(JSON.stringify(payload)).digest('hex');
-};
 
 const defects=[
   {id:'malformed-source-label',re:/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i},
@@ -55,7 +39,7 @@ function decodeHtml(value=''){
 
 async function fetchRoute(id){
   const canonical=canonicalById.get(id);
-  const expectedFingerprint=canonical?canonicalFingerprint(canonical):null;
+  const expectedFingerprint=canonical?canonicalEncyclopediaFingerprint(canonical):null;
   const slug=id.toLowerCase();
   let lastError='';
   for(let attempt=1;attempt<=ATTEMPTS;attempt++){
