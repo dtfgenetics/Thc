@@ -36,16 +36,40 @@ async function canonicalMediaIdentity(assetPath){
   return {full,hash,slug:`dtf-edu-${baseSlug}-${hash.slice(0,10)}`.slice(0,190)};
 }
 
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const writeDelayMs=Math.max(0,Number(process.env.WP_WRITE_DELAY_MS||150));
+const retryStatuses=new Set([429,500,502,503,504]);
+const canRetryRequest=(endpoint,method)=>method==='GET'||(method==='POST'&&/^\\/(?:pages|media)\\/\\d+(?:\\?|$)/.test(endpoint))||(method==='DELETE'&&/^\\/media\\/\\d+/.test(endpoint));
 async function request(endpoint,{method='GET',body}={}){
-  const res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{
-    method,
-    headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},
-    body:body?JSON.stringify(body):undefined
-  });
-  const text=await res.text(); let parsed;
-  try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
-  if(!res.ok) throw new Error(`${method} ${endpoint} failed ${res.status}: ${typeof parsed==='string'?parsed.slice(0,900):JSON.stringify(parsed).slice(0,900)}`);
-  return {data:parsed,headers:res.headers};
+  const maxAttempts=canRetryRequest(endpoint,method)?6:1;
+  let lastError=null;
+  for(let attempt=1;attempt<=maxAttempts;attempt+=1){
+    try{
+      const res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{
+        method,
+        headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},
+        body:body?JSON.stringify(body):undefined,
+        signal:AbortSignal.timeout(60_000)
+      });
+      const text=await res.text(); let parsed;
+      try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
+      if(res.ok) return {data:parsed,headers:res.headers};
+      const message=`${method} ${endpoint} failed ${res.status}: ${typeof parsed==='string'?parsed.slice(0,900):JSON.stringify(parsed).slice(0,900)}`;
+      if(!retryStatuses.has(res.status)||attempt===maxAttempts) throw new Error(message);
+      const retryAfter=Number(res.headers.get('retry-after')||0);
+      const delay=retryAfter>0?retryAfter*1000:Math.min(20_000,750*2**(attempt-1));
+      console.warn(`${message} · retrying in ${delay}ms (attempt ${attempt}/${maxAttempts})`);
+      await sleep(delay);
+    }catch(error){
+      lastError=error;
+      if(attempt===maxAttempts) throw error;
+      if(error?.name!=='TimeoutError'&&error?.name!=='AbortError'&&!/fetch failed/i.test(String(error?.message||error))) throw error;
+      const delay=Math.min(20_000,750*2**(attempt-1));
+      console.warn(`${method} ${endpoint} transport failure · retrying in ${delay}ms (attempt ${attempt}/${maxAttempts})`);
+      await sleep(delay);
+    }
+  }
+  throw lastError||new Error(`${method} ${endpoint} failed after retries`);
 }
 async function wp(endpoint,opts){return (await request(endpoint,opts)).data;}
 async function uploadCanonicalMedia(item,identity){
@@ -159,6 +183,7 @@ try{
   for(const x of preflight){
     const content=nextContent(x);
     const page=await wp(`/pages/${x.page.id}`,{method:'POST',body:{content,status:x.page.status}});
+    if(writeDelayMs>0) await sleep(writeDelayMs);
     updated.push({id:x.item.id,pageId:page.id,link:page.link,mediaId:x.media.id,mediaSlug:x.mediaSlug,mediaSourceUrl:x.media.source_url,assetPath:x.item.assetPath,assetSha256:x.assetHash});
   }
 }catch(error){
