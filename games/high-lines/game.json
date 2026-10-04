@@ -11,7 +11,9 @@
     "engine": "games/high-lines/src/engine.mjs",
     "assets": "games/high-lines/assets/",
     "validator": "games/high-lines/scripts/validate-data.mjs",
-    "publicRoute": "site/public-route-patch/games/high-lines/"
+    "publicRoute": "site/public-route-patch/games/high-lines/",
+    "agentBridge": "window.__HIGH_LINES_AGENT__",
+    "agentBridgeTest": "games/high-lines/test/agent-bridge.test.mjs"
   },
   "releaseGates": {
     "rulesTested": true,
@@ -19,6 +21,7 @@
     "mobileTested": false,
     "accessibilityReviewed": false,
     "originalArtCleared": true,
-    "deploymentRegistered": true
+    "deploymentRegistered": true,
+    "autonomousPlaytestReady": true
   }
 }
