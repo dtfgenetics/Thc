@@ -49,6 +49,15 @@ package_exact = {
 }
 bridge_exact = {path for path in bridge_shared if not path.startswith("assets/vendor/")}
 
+mime_guard = ASSET_ROOT / ".htaccess"
+if not mime_guard.is_file():
+    raise SystemExit("shared /assets MIME guard is missing")
+mime_text = mime_guard.read_text()
+if "AddType text/javascript .mjs" not in mime_text:
+    raise SystemExit("shared /assets MIME guard does not declare .mjs as JavaScript")
+if 'X-Content-Type-Options "nosniff"' not in mime_text:
+    raise SystemExit("shared /assets MIME guard does not enforce nosniff")
+
 referenced_assets: set[str] = set()
 for suffix in ("*.html", "*.js", "*.mjs"):
     for source in PUBLIC_ROOT.rglob(suffix):
