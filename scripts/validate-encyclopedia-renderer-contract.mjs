@@ -21,7 +21,20 @@ const required=[
   ['previous lesson behavior','← Previous'],
   ['next lesson behavior','Next →'],
   ['canonical live fingerprint','data-thc-source-fingerprint'],
-  ['structured-data renderer','encyclopediaStructuredDataHtml']
+  ['structured-data renderer','encyclopediaStructuredDataHtml'],
+  ['breadcrumb navigation','thc-breadcrumbs'],
+  ['long-page contents navigation','thc-toc'],
+  ['glossary integration','/learn/glossary/'],
+  ['titled related lesson cards','thc-related-card'],
+  ['source/evidence section','Sources and evidence'],
+  ['source link handling','noopener noreferrer'],
+  ['explicit uncertainty messaging','Evidence limits and uncertainty'],
+  ['review state note','thc-review-note'],
+  ['download state','thc-downloads'],
+  ['small-phone breakpoint','@media(max-width:380px)'],
+  ['tablet breakpoint','@media(max-width:900px)'],
+  ['horizontal table overflow','overflow-x:auto'],
+  ['print/offline reading support','@media print']
 ];
 for(const [label,needle] of required)if(!src.includes(needle))errors.push('renderer missing '+label);
 if(src.includes('fake visual')||src.includes('placeholder teaching visual'))errors.push('renderer must not emit fake visual placeholders');
