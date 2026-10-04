@@ -1,4 +1,4 @@
-const SOURCE_SHA='dcb6733082c2caf31502112f952c254feeca1e5f';
+const SOURCE_SHA='9ce4c11da8f7749775e2b886d57c303ea6723a61';
 
 const data=await fetch('./data.json',{cache:'no-store'}).then(response=>{
   if(!response.ok) throw new Error('Applied Learning data unavailable');
@@ -66,3 +66,61 @@ wrap.replaceChildren(...data.differential.hypotheses.map(h=>{
   article.append(title,why,upTitle,up,downTitle,down);
   return article;
 }));
+
+const systemsSelect=document.querySelector('#systems-tool-select');
+const systemsForm=document.querySelector('#systems-tool-form');
+let activeSystemTool=null;
+
+function createSystemField(field){
+  const label=document.createElement('label');
+  label.textContent=field.label+(field.unit?` (${field.unit})`:'');
+  let input;
+  if(field.type==='choice'){
+    input=document.createElement('select');
+    input.append(new Option('Select…',''));
+    for(const option of field.options||[]) input.append(new Option(option,option));
+  }else{
+    input=document.createElement('input');
+    input.type=field.type==='number'?'number':field.type==='timestamp'?'datetime-local':'text';
+    if(input.type==='number') input.step='any';
+  }
+  input.name=field.id;
+  input.required=field.required===true;
+  label.append(input);
+  return label;
+}
+function renderSystemTool(tool){
+  activeSystemTool=tool;
+  document.querySelector('#systems-tool-title').textContent=tool.title;
+  document.querySelector('#systems-tool-summary').textContent=tool.summary;
+  document.querySelector('#systems-tool-boundary').textContent=tool.boundary;
+  document.querySelector('#systems-tool-output').textContent='';
+  document.querySelector('#systems-tool-steps').replaceChildren(...tool.steps.map(step=>{
+    const li=document.createElement('li');li.textContent=step.instruction;return li;
+  }));
+  document.querySelector('#systems-tool-fields').replaceChildren(...tool.fields.map(createSystemField));
+}
+function evaluateSystemTool(tool,values){
+  if(tool.kind==='blueprint'){
+    const length=Number(values.roomLengthFt),width=Number(values.roomWidthFt);
+    if(!(length>0&&width>0&&length<=1000&&width<=1000)) return {error:'Room dimensions must be positive and within the training range.'};
+    return {toolId:tool.id,status:'local-learning-preview',result:{floorAreaSqFt:length*width},values,note:tool.boundary};
+  }
+  if(tool.kind==='calibration'){
+    return {toolId:tool.id,status:'local-learning-preview',result:{decision:values.verificationResult==='pass'?'measurement-eligible-for-contextual-interpretation':'stop-recalibrate-or-service-and-repeat-verification'},values,note:tool.boundary};
+  }
+  return {toolId:tool.id,status:'local-learning-record',values,note:'Stored nowhere; not credential evidence or a controlled facility record.'};
+}
+const tools=data.tools||[];
+systemsSelect.replaceChildren(...tools.map(tool=>new Option(tool.title,tool.id)));
+if(tools.length) renderSystemTool(tools[0]);
+systemsSelect.addEventListener('change',()=>{
+  const tool=tools.find(row=>row.id===systemsSelect.value);
+  if(tool) renderSystemTool(tool);
+});
+systemsForm.addEventListener('submit',event=>{
+  event.preventDefault();
+  if(!activeSystemTool) return;
+  const values=Object.fromEntries(new FormData(event.currentTarget).entries());
+  document.querySelector('#systems-tool-output').textContent=JSON.stringify(evaluateSystemTool(activeSystemTool,values),null,2);
+});
