@@ -77,8 +77,8 @@ function createSystemField(field){
   let input;
   if(field.type==='choice'){
     input=document.createElement('select');
-    input.append(new Option('Select…',''));
-    for(const option of field.options||[]) input.append(new Option(option,option));
+    const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Select…';input.append(placeholder);
+    for(const option of field.options||[]){const row=document.createElement('option');row.value=option;row.textContent=option;input.append(row);}
   }else{
     input=document.createElement('input');
     input.type=field.type==='number'?'number':field.type==='timestamp'?'datetime-local':'text';
@@ -112,7 +112,7 @@ function evaluateSystemTool(tool,values){
   return {toolId:tool.id,status:'local-learning-record',values,note:'Stored nowhere; not credential evidence or a controlled facility record.'};
 }
 const tools=data.tools||[];
-systemsSelect.replaceChildren(...tools.map(tool=>new Option(tool.title,tool.id)));
+systemsSelect.replaceChildren(...tools.map(tool=>{const option=document.createElement('option');option.value=tool.id;option.textContent=tool.title;return option;}));
 if(tools.length) renderSystemTool(tools[0]);
 systemsSelect.addEventListener('change',()=>{
   const tool=tools.find(row=>row.id===systemsSelect.value);
