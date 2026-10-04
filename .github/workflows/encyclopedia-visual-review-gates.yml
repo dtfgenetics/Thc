@@ -26,12 +26,12 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Build and validate independent-review manifest boundary
+      - name: Build production-readiness prerequisites and independent-review boundary
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/build-encyclopedia-independent-review-manifest.mjs
-          node scripts/validate-encyclopedia-independent-review-manifest.mjs
+          npm run verify:encyclopedia-production-readiness
+          npm run verify:encyclopedia-independent-review
 
       - name: Build objective visual machine preflight
         shell: bash
@@ -55,7 +55,8 @@ jobs:
           const fs=require('fs');
           const pre=JSON.parse(fs.readFileSync('data/encyclopedia-visual-machine-preflight.json','utf8'));
           const promo=JSON.parse(fs.readFileSync('data/encyclopedia-visual-promotion-manifest.json','utf8'));
-          if(pre.summary.candidateCount!==372) throw new Error(`Expected 372 visual candidates; found ${pre.summary.candidateCount}`);
+          const index=JSON.parse(fs.readFileSync('content/encyclopedia/visual-production-batches/index.json','utf8'));
+          if(pre.summary.candidateCount!==index.artworkNeededCount) throw new Error(`Expected ${index.artworkNeededCount} visual candidates; found ${pre.summary.candidateCount}`);
           if(pre.summary.machinePreflightFailed!==0) throw new Error(`Machine preflight failures remain: ${pre.summary.machinePreflightFailed}`);
           if((promo.items||[]).some(x=>x.independentVisualReview?.decision && !x.independentVisualReview?.reviewerId)) throw new Error('Reviewer decision without reviewer identity detected.');
           console.log(`Machine-ready: ${pre.summary.machinePreflightPassed}/${pre.summary.candidateCount}; externally approved: ${promo.summary.externallyApprovedVisuals}; promotion eligible: ${promo.summary.promotionEligible}.`);
