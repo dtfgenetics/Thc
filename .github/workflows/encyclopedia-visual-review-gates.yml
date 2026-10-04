@@ -6,6 +6,9 @@ on:
     branches: [main]
     paths:
       - 'content/encyclopedia/visual-production-batches/**'
+      - 'content/encyclopedia/evidence/**'
+      - 'data/encyclopedia-evidence-tracking.json'
+      - 'scripts/build-encyclopedia-candidate-evidence-batch.mjs'
       - 'data/encyclopedia-independent-review-manifest.json'
       - 'scripts/build-encyclopedia-visual-machine-preflight.mjs'
       - 'scripts/build-encyclopedia-visual-promotion-manifest.mjs'
