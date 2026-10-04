@@ -56,6 +56,7 @@ const aiContext=fs.readFileSync(path.join(repoRoot,'AI_CONTEXT.md'),'utf8');
 assert.match(skill,/scripts\/orchestrator-epic\.mjs/);
 assert.match(skill,/scripts\/orchestrator\.mjs/);
 assert.match(skill,/Never create a parallel campaign database or scheduler/);
+assert.match(skill,/Scheduled GitHub orchestration is reconciliation\/inspection only unless a real executor is attached/);
 assert.match(agents,/dtf-research-repair\/SKILL\.md/);
 assert.match(aiContext,/dtf-research-repair\/SKILL\.md/);
 assert.match(aiContext,/existing orchestrator epic\/job machinery/);
