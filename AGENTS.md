@@ -29,7 +29,9 @@ Then read the resolved game's own source-of-truth/game contract in its canonical
 
 ## DTF system orchestration
 
-For broad work spanning several projects, repositories, workers, checks, deployments, or recovery steps, use `.agents/skills/dtf-system-orchestrator/SKILL.md` as the orchestration guide.
+For broad **continue / audit-and-fix / finish / research-and-implement** requests, start with `.agents/skills/dtf-research-repair/SKILL.md`. It is the high-throughput controller that reconciles existing work, rotates inspection, selects executable repairs, and keeps working after the first fix.
+
+`dtf-research-repair` delegates durable job/lease/epic mechanics to `.agents/skills/dtf-system-orchestrator/SKILL.md`; it does not replace that control plane. For explicit orchestration mechanics, cross-repository scheduling, lease recovery, or job-state work, use the system orchestrator directly.
 
 Use specialized skills where useful:
 
