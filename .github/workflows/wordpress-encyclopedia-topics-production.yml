@@ -49,12 +49,21 @@ jobs:
           node - <<'NODE'
           const fs=require('fs');
           const d=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_TOPIC_FILE,'utf8'));
-          if(d.schemaVersion!==1||!Array.isArray(d.topics)||d.topics.length!==21) throw new Error('Expected 21 encyclopedia topics.');
-          for(let i=0;i<21;i++){
-            const t=d.topics[i], start=i*20+1, end=(i+1)*20;
-            if(t.part!==i+1||t.range[0]!==start||t.range[1]!==end||!t.slug||!t.title) throw new Error(`Invalid part ${i+1}`);
+          if(d.schemaVersion!==1||!Array.isArray(d.topics)||d.topics.length<21) throw new Error('Expected protected 21-topic core plus optional extension topics.');
+          let previousEnd=0;
+          for(let i=0;i<d.topics.length;i++){
+            const t=d.topics[i];
+            if(t.part!==i+1||!Array.isArray(t.range)||t.range.length!==2||!t.slug||!t.title) throw new Error(`Invalid part ${i+1}`);
+            const [start,end]=t.range.map(Number);
+            if(!Number.isInteger(start)||!Number.isInteger(end)||start<1||end<start) throw new Error(`Invalid range for part ${i+1}`);
+            if(i<21){
+              if(start!==i*20+1||end!==(i+1)*20) throw new Error(`Protected core range changed at part ${i+1}`);
+            }else if(start!==previousEnd+1){
+              throw new Error(`Extension part ${i+1} must start at ${previousEnd+1}`);
+            }
+            previousEnd=end;
           }
-          console.log('Validated 21 topic areas covering THC-ENC-001 through THC-ENC-420.');
+          console.log(`Validated ${d.topics.length} topic areas; protected core remains THC-ENC-001 through THC-ENC-420.`);
           NODE
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
@@ -73,7 +82,7 @@ jobs:
           echo "articles=$(node -p "require(process.argv[1]).articleCount" "$report")" >> "$GITHUB_OUTPUT"
           echo "topics=$(node -p "require(process.argv[1]).activeTopics.length" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Visitor-verify topic-first encyclopedia
+      - name: Visitor-verify searchable root and topic hubs
         id: verify
         shell: bash
         run: |
@@ -92,12 +101,11 @@ jobs:
           }
 
           index="$RUNNER_TEMP/encyclopedia-index.html"
-          get_page '/learn/encyclopedia/' 'Browse by topic' "$index"
-          grep -Fqi -- 'Plant Structure &amp; Anatomy' "$index" || grep -Fqi -- 'Plant Structure & Anatomy' "$index"
-          grep -Fqi -- 'Seeds, Germination &amp; Seedlings' "$index" || grep -Fqi -- 'Seeds, Germination & Seedlings' "$index"
-          grep -Fqi -- 'Roots, Rhizosphere &amp; Growing Media' "$index" || grep -Fqi -- 'Roots, Rhizosphere & Growing Media' "$index"
-          grep -Fqi -- '57' "$index"
-          grep -Fqi -- 'Search all published encyclopedia lessons' "$index"
+          get_page '/learn/encyclopedia/' 'Search naturally.' "$index"
+          grep -Fqi -- 'data-q' "$index"
+          grep -Fqi -- 'data-topics' "$index"
+          grep -Fqi -- 'data-library' "$index"
+          grep -Fqi -- 'data-dtf-learning-search-runtime="mu-v1"' "$index"
 
           plant="$RUNNER_TEMP/plant.html"
           seeds="$RUNNER_TEMP/seeds.html"
@@ -139,7 +147,7 @@ jobs:
           script: |
             const success=process.env.JOB_STATUS==='success';
             const body=[
-              '## THC encyclopedia topic-first organization',
+              '## THC encyclopedia subject-hub organization',
               '',
               `Run: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.JOB_STATUS}**`,
@@ -149,7 +157,7 @@ jobs:
               `Published encyclopedia lessons organized: **${process.env.ARTICLES || '0'}**`,
               `Active topic hubs: **${process.env.TOPICS || '0'}**`,
               '',
-              success ? 'The public encyclopedia is topic-first and all current verification routes passed.' : 'This organization release is not accepted; inspect the rollback artifact before retrying.',
+              success ? 'The searchable encyclopedia root was preserved and all current subject-hub verification routes passed.' : 'This organization release is not accepted; inspect the rollback artifact before retrying.',
               '',
               'Permanent THC-ENC IDs remain stable backend identifiers; visitor-facing display titles may evolve.'
             ].join('\n');
