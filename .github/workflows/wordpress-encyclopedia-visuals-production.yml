@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: wordpress-encyclopedia-visuals-production
+  group: dtfseeds-encyclopedia-production
   cancel-in-progress: false
 
 permissions:
