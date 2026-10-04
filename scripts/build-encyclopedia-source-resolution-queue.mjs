@@ -129,9 +129,9 @@ const lessonRows = lessons.map(lesson => {
   const traceableEvidenceCount=evidenceTraces.filter(trace=>trace.traceable).length;
   const unresolvedEvidenceCount=evidenceTraces.filter(trace=>!trace.traceable).length;
   const controlContextCount=traces.filter(trace=>!trace.traceabilityRequired).length;
-  const enoughEvidence=evidenceTraces.length>=2;
-  const allCentral=enoughEvidence && evidenceTraces.every(trace=>trace.authorityIds.length>0);
-  const allTraceable=enoughEvidence && unresolvedEvidenceCount===0;
+  const hasEvidence=evidenceTraces.length>=1;
+  const allCentral=hasEvidence && evidenceTraces.every(trace=>trace.authorityIds.length>0);
+  const allTraceable=hasEvidence && unresolvedEvidenceCount===0;
   return {
     lessonId: lesson.id,
     number: Number(lesson.number),
@@ -143,6 +143,11 @@ const lessonRows = lessons.map(lesson => {
     traceableReferenceCount: traceableEvidenceCount,
     unresolvedEvidenceReferenceCount: unresolvedEvidenceCount,
     controlContextNoteCount: controlContextCount,
+    sourceDiversityState: evidenceTraces.length>=2
+      ? 'multi_source_set'
+      : evidenceTraces.length===1
+        ? 'single_source_traceable_review_needed'
+        : 'no_evidence_source_reference',
     resolutionState: allCentral
       ? 'authority_links_available_claim_review_pending'
       : allTraceable
