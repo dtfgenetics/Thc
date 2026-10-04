@@ -11,12 +11,35 @@ const headers={Authorization:auth,Accept:'application/json','Content-Type':'appl
 const search=JSON.parse(fs.readFileSync('site/public-route-patch/learn/search/search-index.json','utf8'));
 const encyclopedia=JSON.parse(fs.readFileSync('site/public-route-patch/learn/encyclopedia/encyclopedia-index.json','utf8'));
 
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const transientStatuses=new Set([429,500,502,503,504]);
 async function request(path,options={}){
-  const r=await fetch(site+path,{...options,headers:{...headers,...(options.headers||{})},redirect:'follow',signal:AbortSignal.timeout(60000)});
-  const text=await r.text();
-  let body=text;try{body=text?JSON.parse(text):null}catch{}
-  if(!r.ok)throw new Error((options.method||'GET')+' '+path+' failed ('+r.status+'): '+String(typeof body==='string'?body:JSON.stringify(body)).slice(0,800));
-  return body;
+  const method=options.method||'GET';
+  const retrySafe=method==='GET'||(method==='POST'&&path.startsWith('/wp-json/dtf-learning/v1/index/'));
+  const maxAttempts=retrySafe?7:1;
+  let lastError=null;
+  for(let attempt=1;attempt<=maxAttempts;attempt+=1){
+    try{
+      const r=await fetch(site+path,{...options,headers:{...headers,...(options.headers||{})},redirect:'follow',signal:AbortSignal.timeout(60000)});
+      const text=await r.text();
+      let body=text;try{body=text?JSON.parse(text):null}catch{}
+      if(r.ok) return body;
+      const message=method+' '+path+' failed ('+r.status+'): '+String(typeof body==='string'?body:JSON.stringify(body)).slice(0,800);
+      if(!retrySafe||!transientStatuses.has(r.status)||attempt===maxAttempts) throw new Error(message);
+      const retryAfter=Number(r.headers.get('retry-after')||0);
+      const delay=retryAfter>0?retryAfter*1000:Math.min(15_000,750*(2**(attempt-1)));
+      console.warn(message+` · retrying attempt ${attempt+1}/${maxAttempts} after ${delay}ms`);
+      await sleep(delay);
+    }catch(error){
+      lastError=error;
+      const retryableNetwork=retrySafe&&(error?.name==='TimeoutError'||error?.name==='AbortError'||/fetch failed|ECONNRESET|ETIMEDOUT|socket/i.test(String(error?.message||error)));
+      if(!retryableNetwork||attempt===maxAttempts) throw error;
+      const delay=Math.min(15_000,750*(2**(attempt-1)));
+      console.warn(`${method} ${path} network error: ${String(error?.message||error)} · retrying attempt ${attempt+1}/${maxAttempts} after ${delay}ms`);
+      await sleep(delay);
+    }
+  }
+  throw lastError||new Error(`${method} ${path} exhausted retries`);
 }
 const healthBefore=await request('/wp-json/dtf-learning/v1/health',{headers:{Authorization:auth,Accept:'application/json'}});
 if(!healthBefore?.ok) throw new Error('DTF Learning Search runtime health endpoint is unavailable.');
