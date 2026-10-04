@@ -18,6 +18,9 @@ const canonical=readCanonicalEncyclopediaLessons(process.cwd());
 const canonicalById=new Map(canonical.map(lesson=>[lesson.id,lesson]));
 const fingerprintOf=a=>createHash('sha256').update(JSON.stringify({id:a.id,title:a.title,objective:a.objective,terms:a.terms,coreScience:a.coreScience,cultivationRelevance:a.cultivationRelevance,measureAndRecord:a.measureAndRecord,misconceptions:a.misconceptions,evidenceLimits:a.evidenceLimits,crossLinks:a.crossLinks,sourceNotes:a.sourceNotes,assessment:effectiveLessonAssessment(a).prompts})).digest('hex').slice(0,24);
 if(entries.length!==420) throw new Error(`Expected 420 controlled encyclopedia entries; found ${entries.length}`);
+const canonicalLessons=readCanonicalEncyclopediaLessons(process.cwd());
+const canonicalById=new Map(canonicalLessons.map(lesson=>[lesson.id,lesson]));
+if(canonicalLessons.length!==420) throw new Error(`Expected 420 canonical encyclopedia lessons; found ${canonicalLessons.length}`);
 
 const defects=[
   {id:'malformed-source-label',re:/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i},
@@ -101,6 +104,10 @@ const report={
   livePages:live.length,
   unpublished404:results.filter(r=>r.status===404).length,
   failures:failures.length,
+  fingerprintVerified:results.filter(r=>r.live&&r.fingerprintPassed).length,
+  fingerprintMissingOrMismatched:results.filter(r=>r.live&&!r.fingerprintPassed).length,
+  structuredDataVerified:results.filter(r=>r.live&&r.structuredDataPassed).length,
+  structuredDataMissingOrInvalid:results.filter(r=>r.live&&!r.structuredDataPassed).length,
   defectCounts:{...Object.fromEntries(defects.map(d=>[d.id,failures.filter(r=>r.defects.includes(d.id)).length])),sourceFingerprintMissing:failures.filter(r=>r.defects.includes('source-fingerprint-missing')).length,sourceFingerprintMismatch:failures.filter(r=>r.defects.includes('source-fingerprint-mismatch')).length},
   failedRoutes:failures,
   passed:failures.length===0
