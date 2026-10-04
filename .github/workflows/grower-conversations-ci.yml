@@ -67,3 +67,5 @@ jobs:
           fi
       - name: Run public runtime regression checks
         run: node games/grower-conversations/test/public-runtime.test.mjs
+      - name: Test autonomous playtest bridge
+        run: node games/grower-conversations/test/agent-bridge.test.mjs
