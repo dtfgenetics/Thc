@@ -109,7 +109,7 @@
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/ppfd-chart/index.html",
-      "notes": "Interactive THC Light Lab with PPFD↔DLI calculations, variable-light integration, configurable 3×3 through 9×9 canopy mapping, saved-survey comparison, distribution metrics, edge/center analysis, CSV/JSON round-trip, and measurement-protocol guidance.",
+      "notes": "Production-hardened THC Light Lab with stable and variable-light DLI math, impossible-day rejection, 3×3–9×9 canopy mapping, corrected measurement-point spacing, metric/imperial geometry, validated survey/workspace imports, fixture calibration profiles, baseline delta comparisons, distribution/edge-center metrics, CSV/JSON round-trip, print/share reports, GrowLens handoff, light logging and live PPFD adapter.",
       "mirrorPath": "site/public-route-patch/ppfd-chart",
       "canonicalRepository": "dtfgenetics/Tools",
       "integrationRepository": "dtfgenetics/Thc"
