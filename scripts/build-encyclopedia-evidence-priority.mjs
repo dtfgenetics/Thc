@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root=process.cwd(), enc=path.join(root,'content','encyclopedia');
-const registry=JSON.parse(fs.readFileSync(path.join(enc,'current-controlled-registry.json'),'utf8'));
+const registryState=loadEncyclopediaRegistry(root);
+const registry={entries:registryState.entries};
 const batches=fs.readdirSync(path.join(enc,'evidence')).filter(x=>/^evidence-batch-\d+\.json$/.test(x)).sort()
   .map(x=>JSON.parse(fs.readFileSync(path.join(enc,'evidence',x),'utf8')));
 const mapped=new Map();
@@ -18,8 +20,8 @@ function walk(d){
     if(e.isDirectory()) walk(p);
     else if(e.isFile()&&e.name.endsWith('.json')){
       let j;try{j=JSON.parse(fs.readFileSync(p,'utf8'))}catch{continue}
-      if(/^THC-ENC-\d{3}$/.test(j.id||'')) lessons.set(j.id,j);
-      for(const x of Array.isArray(j.lessons)?j.lessons:[]) if(/^THC-ENC-\d{3}$/.test(x?.id||'')) lessons.set(x.id,x);
+      if(/^THC-ENC-\d{3,}$/.test(j.id||'')) lessons.set(j.id,j);
+      for(const x of Array.isArray(j.lessons)?j.lessons:[]) if(/^THC-ENC-\d{3,}$/.test(x?.id||'')) lessons.set(x.id,x);
     }
   }
 }
@@ -64,4 +66,4 @@ fs.mkdirSync(path.dirname(dest),{recursive:true});
 fs.writeFileSync(dest,JSON.stringify(out,null,2)+'\n');
 console.log(`Evidence priority audit: ${summary.withClaimEvidence}/${summary.lessonCount} lessons mapped; ${summary.highPriorityUnmapped} high-priority unmapped lessons.`);
 console.log('Top unmapped: '+rows.filter(x=>!x.claimEvidenceCount).slice(0,20).map(x=>x.id+'('+x.priorityScore+')').join(', '));
-if(rows.length!==420) process.exit(1);
+if(rows.length!==registryState.totalCount) process.exit(1);
