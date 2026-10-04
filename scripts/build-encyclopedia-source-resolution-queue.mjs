@@ -46,8 +46,12 @@ function extractDirectLocators(reference) {
     if (cleaned) locators.add(cleaned);
   }
 
-  for (const match of value.matchAll(/(?:doi\s*[:.]?\s*|https?:\/\/doi\.org\/)(10\.\d{4,9}\/[-._;()/:A-Z0-9]+)/gi)) {
-    locators.add(`https://doi.org/${match[1]}`);
+  // Any DOI token is already a stable external locator, even when the source note
+  // omits a "doi:" label or doi.org URL. Keep this in sync with identityKeysFromText
+  // so a citation cannot be identity-resolved while remaining non-navigable.
+  for (const match of value.matchAll(/10\.\d{4,9}\/[-._;()/:A-Z0-9]+/gi)) {
+    const doi = match[0].replace(/[.,;:]+$/g, '').toLowerCase();
+    if (doi) locators.add(`https://doi.org/${doi}`);
   }
 
   for (const match of value.matchAll(/\b(PMC\d{5,})\b/gi)) {
