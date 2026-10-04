@@ -44,7 +44,7 @@ if((indexHtml.match(/class="static-card"/g)||[]).length<4)fail('GrowLens static 
 
 const packageJson=JSON.parse(fs.readFileSync(packagePath,'utf8'));
 const scripts=packageJson.scripts||{};
-for(const command of ['test:growlens','test:growlens:live-client','test:live:growlens','build:growlens','verify:growlens']){
+for(const command of ['test:growlens','test:growlens:backend','test:growlens:live-client','test:live:growlens','build:growlens','verify:growlens']){
   if(!scripts[command])fail(`package.json is missing GrowLens command: ${command}`);
 }
 if(scripts['test:e2e:growlens'])fail('GrowLens must not advertise an undefined or duplicate local E2E lane; use the deterministic acceptance-client selftest plus guarded live acceptance.');
@@ -52,6 +52,7 @@ if(scripts['test:e2e:growlens'])fail('GrowLens must not advertise an undefined o
 const readme=fs.readFileSync(readmePath,'utf8');
 for(const token of [
   'npm run test:growlens',
+  'php apps/growlens-web/tests/php-private-data-tools-smoke.php',
   'npm run test:growlens:live-client',
   'npm run build:growlens',
   'PHP backend smoke tests',
