@@ -9,7 +9,8 @@ const root=process.cwd();
 const renderPng=process.argv.includes('--render-png');
 const allowGeneratedRaster=renderPng;
 const assetRoot=path.join(root,'site','wordpress','assets','infographics');
-const mapPath=path.join(root,'site','wordpress','education','encyclopedia','all-visual-map-v1.json');
+const encyclopediaMapRoot=path.join(root,'site','wordpress','education','encyclopedia');
+const mapPath=path.join(encyclopediaMapRoot,'all-visual-map-v1.json');
 fs.mkdirSync(assetRoot,{recursive:true});
 fs.mkdirSync(path.dirname(mapPath),{recursive:true});
 
@@ -30,8 +31,28 @@ const wrap=(value,max=58,lines=3)=>{
   return out.slice(0,lines);
 };
 const textLines=(lines,x,y,dy=30,cls='body')=>lines.map((line,i)=>`<text class="${cls}" x="${x}" y="${y+i*dy}">${esc(line)}</text>`).join('\n');
+function loadCuratedVisualMap(){
+  const curated=new Map();
+  const files=fs.readdirSync(encyclopediaMapRoot)
+    .filter(name=>/^volume\d+-visual-map\.json$/i.test(name))
+    .sort();
+  for(const name of files){
+    const doc=JSON.parse(fs.readFileSync(path.join(encyclopediaMapRoot,name),'utf8'));
+    if(doc?.schemaVersion!==1||!Array.isArray(doc.items)) throw new Error(`Invalid curated encyclopedia visual map: ${name}`);
+    for(const item of doc.items){
+      if(!/^THC-ENC-\d{3}$/.test(String(item?.id||''))) throw new Error(`${name}: invalid lesson id ${item?.id}`);
+      if(typeof item?.assetPath!=='string'||!/\.(?:png|jpe?g|webp)$/i.test(item.assetPath)) throw new Error(`${name}: invalid raster assetPath for ${item.id}`);
+      const full=path.join(assetRoot,item.assetPath);
+      if(!fs.existsSync(full)) throw new Error(`${name}: missing mapped raster ${item.assetPath}`);
+      if(curated.has(item.id)) throw new Error(`Duplicate curated visual mapping for ${item.id}`);
+      curated.set(item.id,{...item,mapFile:name});
+    }
+  }
+  return curated;
+}
+const curatedVisualById=loadCuratedVisualMap();
 function existingRasterFor(id){
-  const names=fs.readdirSync(assetRoot).filter(name=>new RegExp('^'+id+'(?:_|\\b)','i').test(name)&&/\\.(?:png|jpe?g|webp)$/i.test(name)).sort();
+  const names=fs.readdirSync(assetRoot).filter(name=>new RegExp('^'+id+'(?:_|\\b)','i').test(name)&&/\.(?:png|jpe?g|webp)$/i.test(name)).sort();
   return names[0]||null;
 }
 function svgFor(lesson){
@@ -79,10 +100,16 @@ if(lessons.length!==registryState.totalCount)throw new Error(`Expected ${registr
 const items=[];
 let generated=0,reused=0;
 for(const lesson of lessons){
+  const curated=curatedVisualById.get(lesson.id)||null;
+  if(curated){
+    if(curated.title&&clean(curated.title)!==clean(lesson.title)) throw new Error(`${lesson.id}: curated visual title does not match canonical lesson title.`);
+    items.push({id:lesson.id,title:lesson.title,assetPath:curated.assetPath,assetKind:'existing-canonical-raster',assetSource:`curated:${curated.mapFile}`,altText:`${lesson.title} — controlled companion teaching visual`});
+    reused+=1;
+    continue;
+  }
   const existing=existingRasterFor(lesson.id);
   if(existing){
-    items.push({id:lesson.id,title:lesson.title,assetPath:existing,assetKind:'existing-canonical-raster',altText:`${lesson.title} — controlled companion teaching visual`});
-    reused+=1;
+    items.push({id:lesson.id,title:lesson.title,assetPath:existing,assetKind:'generated-raster-review-pending',assetSource:'repository-prefix-scan-unreviewed',altText:`${lesson.title} — repository raster candidate pending controlled visual-map review`});
     continue;
   }
   if(!allowGeneratedRaster){
@@ -99,7 +126,7 @@ for(const lesson of lessons){
   items.push({id:lesson.id,title:lesson.title,assetPath:pngName,assetKind:'generated-raster-review-pending',altText:`${lesson.title} — lesson-specific teaching diagram showing controlled terms, mechanism, measurement, and misconception guard`});
   generated+=1;
 }
-const map={schemaVersion:1,batch:'encyclopedia-all-visuals-v1',generatedAt:new Date().toISOString(),reviewState:'generated_candidates_pending_independent_science_accessibility_and_asset_qa',publicationEffect:'none_review_state_unchanged',lessonCount:items.length,reusedCanonicalRaster:reused,generatedCandidates:generated,items};
+const map={schemaVersion:1,batch:'encyclopedia-all-visuals-v1',generatedAt:new Date().toISOString(),reviewState:'curated_volume_maps_are_canonical_other_candidates_pending_review',publicationEffect:'curated_existing_rasters_eligible_generated_candidates_held',lessonCount:items.length,reusedCanonicalRaster:reused,generatedCandidates:generated,curatedVisualMapCount:curatedVisualById.size,items};
 fs.writeFileSync(mapPath,JSON.stringify(map,null,2)+'\n');
 console.log(`Encyclopedia teaching visuals: ${items.length}/${registryState.totalCount} mapped · ${reused} canonical raster reused · ${generated} generated raster candidate(s) · raster-only policy enforced · renderPng=${renderPng}`);
 console.log('Wrote '+path.relative(root,mapPath));
