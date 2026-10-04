@@ -62,7 +62,7 @@ for(const game of scopedGames){
   if(!profiles.requiredChecks?.[values.gameplayProfile]){
     fail(`${game.id}: missing gameplay requiredChecks profile for ${values.gameplayProfile}`);
   }
-  for(const dimension of ['rendererProfile','sessionProfile','persistenceProfile','networkProfile','contentProfile','performanceProfile','securityProfile','accessibilityProfile']){
+  for(const dimension of ['rendererProfile','sessionProfile','persistenceProfile','networkProfile','contentProfile','performanceProfile','securityProfile','accessibilityProfile','autonomousPlaytestProfile']){
     if(!profiles.dimensionChecks?.[dimension]?.[values[dimension]]){
       fail(`${game.id}: missing dimensionChecks for ${dimension}=${values[dimension]}`);
     }
@@ -108,6 +108,13 @@ for(const game of scopedGames){
 
   if(values.gameplayProfile==='campaign-rpg' && !['long','persistent'].includes(values.sessionProfile)){
     fail(`${game.id}: campaign-rpg should use long or persistent session profile`);
+  }
+
+  if(values.autonomousPlaytestProfile==='agent-ready'){
+    const required=profiles.dimensionChecks?.autonomousPlaytestProfile?.['agent-ready']||[];
+    for(const check of ['structured-game-state','legal-action-surface','agent-contract-test','browser-critical-path','soft-lock-detection','telemetry-capture']){
+      if(!required.includes(check)) fail(`${game.id}: agent-ready profile missing required autonomous check ${check}`);
+    }
   }
 }
 

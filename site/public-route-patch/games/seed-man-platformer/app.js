@@ -450,6 +450,206 @@ function combatSnapshot() {
   catch { return null; }
 }
 
+// BEGIN SEED MAN AGENT BRIDGE
+const SEED_MAN_AGENT_VERSION = 'seed-man-agent-bridge-v1';
+const SEED_MAN_AGENT_CONTROLS = Object.freeze(['left','right','jump']);
+const SEED_MAN_AGENT_MAX_EVENTS = 32;
+const SEED_MAN_AGENT_STALL_MS = 12000;
+const agentTelemetry = {
+  actions: [],
+  errors: [],
+  lastProgressAt: 0,
+  lastProgressKey: '',
+  activeInputSince: 0
+};
+
+function agentNow() {
+  return typeof performance !== 'undefined' && typeof performance.now === 'function' ? performance.now() : Date.now();
+}
+
+function pushAgentEvent(list, event) {
+  list.push(Object.freeze(event));
+  if (list.length > SEED_MAN_AGENT_MAX_EVENTS) list.splice(0, list.length - SEED_MAN_AGENT_MAX_EVENTS);
+}
+
+function recordAgentAction(action, detail = null) {
+  const now = agentNow();
+  pushAgentEvent(agentTelemetry.actions, { atMs: Math.round(now), action, detail });
+  if (['left:press','right:press','jump:press','attack','phenotype'].includes(action) && !agentTelemetry.activeInputSince) {
+    agentTelemetry.activeInputSince = now;
+  }
+  if (['left:release','right:release','jump:release','clear-input','pause','restart','retry'].includes(action)) {
+    if (!input.left && !input.right && !input.jumpHeld) agentTelemetry.activeInputSince = 0;
+  }
+}
+
+function recordAgentError(kind, message, source = null) {
+  pushAgentEvent(agentTelemetry.errors, {
+    atMs: Math.round(agentNow()),
+    kind,
+    message: String(message || kind || 'unknown error').slice(0, 500),
+    source: source ? String(source).slice(0, 500) : null
+  });
+}
+
+function observeAgentProgress() {
+  if (!level || !player) return;
+  const progressKey = [
+    level.id || '',
+    Math.round(Number(player.x) || 0),
+    Math.round(Number(player.y) || 0),
+    player.checkpoint?.id || 'start',
+    player.collected?.length || 0,
+    player.deaths || 0,
+    player.finished ? 1 : 0,
+    level.boss?.defeated ? 1 : 0
+  ].join('|');
+  if (progressKey !== agentTelemetry.lastProgressKey) {
+    agentTelemetry.lastProgressKey = progressKey;
+    agentTelemetry.lastProgressAt = agentNow();
+  }
+}
+
+function agentTelemetrySnapshot() {
+  observeAgentProgress();
+  const now = agentNow();
+  const activeInput = Boolean(input.left || input.right || input.jumpHeld);
+  const noProgressMs = agentTelemetry.lastProgressAt ? Math.max(0, now - agentTelemetry.lastProgressAt) : 0;
+  const activeInputMs = agentTelemetry.activeInputSince ? Math.max(0, now - agentTelemetry.activeInputSince) : 0;
+  const stallSuspected = Boolean(
+    running && !paused && player && !player.finished && activeInput &&
+    activeInputMs >= SEED_MAN_AGENT_STALL_MS && noProgressMs >= SEED_MAN_AGENT_STALL_MS
+  );
+  return {
+    errors: agentTelemetry.errors.slice(),
+    recentActions: agentTelemetry.actions.slice(),
+    noProgressMs: Math.round(noProgressMs),
+    activeInputMs: Math.round(activeInputMs),
+    stallSuspected,
+    stallThresholdMs: SEED_MAN_AGENT_STALL_MS
+  };
+}
+
+function agentSnapshot() {
+  const combat = combatSnapshot();
+  const required = requiredSprouts();
+  const collected = player?.collected?.length || 0;
+  return {
+    version: SEED_MAN_AGENT_VERSION,
+    ready: Boolean(level && player),
+    running: Boolean(running),
+    paused: Boolean(paused),
+    elapsedSeconds: Number(elapsed.toFixed(3)),
+    cameraX: Number(cameraX.toFixed(2)),
+    level: level ? {
+      id: level.id || null,
+      number: Number(level.levelNumber) || null,
+      worldId: level.worldId || null,
+      worldWidth: Number(level.worldWidth) || null,
+      worldHeight: Number(level.worldHeight) || null,
+      requiredPickups: required,
+      boss: level.boss ? {
+        id: level.boss.id || null,
+        name: level.boss.name || null,
+        defeated: Boolean(level.boss.defeated)
+      } : null,
+      finishX: Number(level.finish?.x) || null
+    } : null,
+    player: player ? {
+      x: Number(player.x.toFixed(2)),
+      y: Number(player.y.toFixed(2)),
+      vx: Number(player.vx.toFixed(2)),
+      vy: Number(player.vy.toFixed(2)),
+      state: player.state || null,
+      grounded: Boolean(player.grounded),
+      airJumpsRemaining: Number(player.airJumpsRemaining) || 0,
+      checkpointId: player.checkpoint?.id || 'start',
+      collected,
+      missingPickups: Math.max(0, required - collected),
+      deaths: Number(player.deaths) || 0,
+      health: Number(player.health ?? player.maxHealth ?? 3),
+      maxHealth: Number(player.maxHealth) || 3,
+      finished: Boolean(player.finished),
+      finishBlocked: Boolean(player.finishBlocked)
+    } : null,
+    combat: combat ? {
+      phenotypeForm: combat.phenotypeForm || 'plant',
+      phenotypeRemaining: Number(combat.phenotypeRemaining) || 0,
+      installed: Boolean(combat.installed ?? true)
+    } : null,
+    input: {
+      left: Boolean(input.left),
+      right: Boolean(input.right),
+      jumpHeld: Boolean(input.jumpHeld),
+      gamepadConnected: Boolean(gamepadInput.connected)
+    },
+    telemetry: agentTelemetrySnapshot()
+  };
+}
+
+function setAgentControl(control, pressed) {
+  if (!SEED_MAN_AGENT_CONTROLS.includes(control)) throw new Error(`Unsupported Seed Man agent control: ${control}`);
+  if (!level || !player || player.finished || paused) return false;
+  const active = Boolean(pressed);
+  if (control === 'jump') {
+    if (active) queueJump();
+    else input.jumpHeld = false;
+  } else {
+    input[control] = active;
+  }
+  recordAgentAction(`${control}:${active ? 'press' : 'release'}`);
+  return true;
+}
+
+function installAgentTelemetry() {
+  if (typeof window?.addEventListener !== 'function') return;
+  window.addEventListener('error', (event) => {
+    const target = event?.target;
+    const resource = target && target !== window && (target.currentSrc || target.src || target.href);
+    if (resource) recordAgentError('resource-error', 'Browser resource failed to load', resource);
+    else recordAgentError('runtime-error', event?.message || event?.error?.message || 'Browser runtime error', event?.filename || null);
+  }, true);
+  window.addEventListener('unhandledrejection', (event) => {
+    recordAgentError('unhandled-rejection', event?.reason?.message || event?.reason || 'Unhandled promise rejection');
+  });
+}
+
+function installAgentBridge() {
+  installAgentTelemetry();
+  const api = Object.freeze({
+    version: SEED_MAN_AGENT_VERSION,
+    actions: Object.freeze(['left','right','jump','attack','phenotype','pause','resume','retry','restart']),
+    snapshot: agentSnapshot,
+    press: (control) => setAgentControl(control, true),
+    release: (control) => setAgentControl(control, false),
+    attack: () => { recordAgentAction('attack'); return !paused && Boolean(window.__SPROUT_COMBAT_BROWSER__?.fireWeapon?.()); },
+    phenotype: () => { recordAgentAction('phenotype'); return !paused && Boolean(window.__SPROUT_COMBAT_BROWSER__?.fireAbility?.()); },
+    pause: () => { togglePause(true); recordAgentAction('pause'); return agentSnapshot(); },
+    resume: () => { togglePause(false); recordAgentAction('resume'); return agentSnapshot(); },
+    retry: () => { retryCheckpoint(); recordAgentAction('retry'); return agentSnapshot(); },
+    restart: () => { reset(); agentTelemetry.lastProgressKey=''; agentTelemetry.lastProgressAt=agentNow(); recordAgentAction('restart'); return agentSnapshot(); },
+    clearInput: () => { clearInput(); recordAgentAction('clear-input'); return agentSnapshot(); },
+    telemetry: agentTelemetrySnapshot
+  });
+  Object.defineProperty(window, '__SEED_MAN_AGENT__', {
+    value: api,
+    enumerable: false,
+    configurable: false,
+    writable: false
+  });
+  Object.defineProperty(window, '__SEED_MAN_GAME_STATE__', {
+    get: agentSnapshot,
+    enumerable: false,
+    configurable: false
+  });
+  document.documentElement.dataset.seedManAgentBridge = SEED_MAN_AGENT_VERSION;
+  agentTelemetry.lastProgressAt = agentNow();
+  return api;
+}
+
+installAgentBridge();
+// END SEED MAN AGENT BRIDGE
+
 function phenotypeLabel() {
   const snapshot = combatSnapshot();
   const form = snapshot?.phenotypeForm || 'plant';

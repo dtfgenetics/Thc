@@ -19,7 +19,13 @@ for (const required of [
   'Game Studio',
   'Burn Buds',
   'Seed Ascent',
-  'Terpocalypse'
+  'Terpocalypse',
+  'Autonomous playtest contract',
+  'structured game state',
+  'legal actions',
+  '__SEED_MAN_AGENT__',
+  '__SEED_MAN_GAME_STATE__',
+  'must not teleport the player'
 ]) {
   assert.ok(skill.includes(required), `skill missing required contract marker: ${required}`);
 }

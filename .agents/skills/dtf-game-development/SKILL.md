@@ -61,6 +61,30 @@ A game task is ready for implementation only after these are known:
 
 Use Game Studio after this DTF-specific resolution, not instead of it.
 
+## Autonomous playtest contract
+
+For browser-playable games, treat code inspection alone as insufficient. When the runtime can support it, expose a versioned, read-only observation surface plus controlled actions that travel through normal gameplay paths.
+
+Required target pattern:
+
+`screenshot + structured game state + legal actions + console/network telemetry → agent decision → normal input/action path → new observation`
+
+The structured state should include only gameplay-relevant values such as game/level ID, player position/state, score or objectives, turn/phase, health/resources, checkpoint/progress, win/loss/finish state, and active errors. Do not expose secrets or administrative controls.
+
+The action surface must not bypass game rules. In particular, autonomous test hooks must not teleport the player, directly assign physics state, force wins, fabricate inventory, skip required objectives, or mutate authoritative multiplayer state outside the same validated action path used by players.
+
+For qualifying games, release verification should cover:
+
+- deterministic logic/unit tests;
+- an executable agent-bridge contract test;
+- browser playthrough or critical-path interaction coverage;
+- desktop and mobile visual checks;
+- runtime console and failed-request checks;
+- soft-lock / completion detection;
+- regression evidence tied to the exact commit under test.
+
+Seed Man's reference implementation is `window.__SEED_MAN_AGENT__` plus the read-only `window.__SEED_MAN_GAME_STATE__` snapshot. Reuse the contract shape concept, not Seed Man-specific names, when adding support to other games.
+
 ## Common mistakes
 
 - Editing `site/public-route-patch` or Dtf420 because it is easier to find than canonical source.
