@@ -27,6 +27,7 @@ on:
     paths:
       - scripts/build-education-image-derivatives.py
       - scripts/validate-education-visual-system.mjs
+      - scripts/audit-education-assets.mjs
       - scripts/build-encyclopedia-teaching-visuals.mjs
       - scripts/build-encyclopedia-visual-production-queue.mjs
       - scripts/validate-encyclopedia-visual-production-queue.mjs
@@ -34,6 +35,10 @@ on:
       - scripts/build-public-learning-center.mjs
       - scripts/publish-wordpress-education-wave2.mjs
       - site/public-route-patch/learn/infographics/**
+      - site/public-route-patch/assets/education/infographics/**
+      - site/public-route-patch/learn/encyclopedia/**
+      - site/wordpress/education/**
+      - content/encyclopedia/**
       - site/wordpress/assets/infographics/**
       - site/wordpress/pages/gallery.html
       - .github/workflows/dtfseeds-education-assets.yml
