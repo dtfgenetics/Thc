@@ -7,9 +7,10 @@ const ciPath=path.join(root,'.github/workflows/growlens-ci.yml');
 const suitePath=path.join(root,'.github/workflows/build-dtfseeds-public-suite.yml');
 const swPath=path.join(root,'apps/growlens-web/public/sw.js');
 const pwaTestPath=path.join(root,'apps/growlens-web/src/pwaHealth.test.ts');
+const indexPath=path.join(root,'apps/growlens-web/index.html');
 
 const fail=(message)=>{console.error('GrowLens release contract validation failed:',message);process.exitCode=1;};
-for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath]){
+for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath,indexPath]){
   if(!fs.existsSync(file))fail(`Required file missing: ${path.relative(root,file)}`);
 }
 if(process.exitCode)process.exit();
@@ -25,6 +26,18 @@ else{
   if(growlens.status!=='ready-to-package')fail(`Unexpected GrowLens status: ${growlens.status}`);
   if(growlens.build!=='npm run verify:growlens')fail(`GrowLens registry must use canonical verifier; found: ${growlens.build}`);
 }
+
+const indexHtml=fs.readFileSync(indexPath,'utf8');
+for(const token of [
+  'data-growlens-static-fallback',
+  'Local-first data and privacy',
+  '/thc-grow-doc/',
+  '/learn/search/',
+  '/learn/encyclopedia/'
+]){
+  if(!indexHtml.includes(token))fail(`GrowLens static fallback is missing: ${token}`);
+}
+if((indexHtml.match(/class="static-card"/g)||[]).length<4)fail('GrowLens static fallback must expose at least four workflow cards.');
 
 const ci=fs.readFileSync(ciPath,'utf8');
 for(const token of [
