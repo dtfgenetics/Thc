@@ -21,7 +21,8 @@ permissions:
 
 concurrency:
   group: dtfseeds-encyclopedia-production
-  cancel-in-progress: false
+  # Repair runs are idempotent and retry-hardened; a newer repair supersedes an older stuck repair.
+  cancel-in-progress: true
 
 jobs:
   repair:
