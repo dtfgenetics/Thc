@@ -114,6 +114,7 @@ Promise.all([
       seen.add(String(item.id));
     }
     buildFuse();
+    document.querySelectorAll('[data-static-fallback]').forEach(node=>node.hidden=true);
     const params=new URLSearchParams(location.search);
     const requestedQuery=params.get('q');
     const requestedType=params.get('type');
