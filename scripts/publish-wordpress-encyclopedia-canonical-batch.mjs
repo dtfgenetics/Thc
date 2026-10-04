@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { effectiveLessonAssessment, buildLessonAnswerRationalesV1 } from './lib/encyclopedia-assessment-v2.mjs';
 import { learnerFacingWorkedExampleFor } from './lib/encyclopedia-worked-examples.mjs';
+import { canonicalEncyclopediaFingerprint } from './lib/encyclopedia-live-fingerprint.mjs';
 
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const user=process.env.WP_API_USERNAME;
@@ -49,6 +50,51 @@ for(const file of batch.lessonFiles){
 
 const esc=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const stableSlug=id=>id.toLowerCase();
+const structuredDataHtml=a=>{
+  const slug=stableSlug(a.id);
+  const url=`${site}/learn/encyclopedia/${slug}/`;
+  const termsList=(Array.isArray(a.terms)?a.terms:Array.isArray(a.termsToKnow)?a.termsToKnow:[])
+    .map(x=>typeof x==='string'?x:x?.term)
+    .filter(Boolean);
+  const graph=[
+    {
+      '@type':['Article','LearningResource'],
+      '@id':url+'#article',
+      mainEntityOfPage:url,
+      url,
+      headline:a.title,
+      name:a.title,
+      identifier:a.id,
+      description:a.objective,
+      inLanguage:'en-US',
+      learningResourceType:'Encyclopedia article',
+      educationalUse:'Reference',
+      teaches:a.objective,
+      about:termsList.map(name=>({'@type':'DefinedTerm',name})),
+      isPartOf:{
+        '@type':'CollectionPage',
+        '@id':`${site}/learn/encyclopedia/#collection`,
+        url:`${site}/learn/encyclopedia/`,
+        name:'THC Cannabis Plant Science Encyclopedia'
+      },
+      publisher:{
+        '@type':'Organization',
+        name:'DTF Genetics',
+        url:site
+      }
+    },
+    {
+      '@type':'BreadcrumbList',
+      '@id':url+'#breadcrumbs',
+      itemListElement:[
+        {'@type':'ListItem',position:1,name:'Learning Center',item:`${site}/learn/`},
+        {'@type':'ListItem',position:2,name:'Cannabis Plant Science Encyclopedia',item:`${site}/learn/encyclopedia/`},
+        {'@type':'ListItem',position:3,name:a.title,item:url}
+      ]
+    }
+  ];
+  return '<script type="application/ld+json">'+JSON.stringify({'@context':'https://schema.org','@graph':graph}).replace(/</g,'\\u003c')+'</script>';
+};
 const list=a=>`<ul class="thc-list">${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
 const terms=a=>`<dl class="thc-terms">${(a||[]).map(x=>`<div><dt>${esc(x.term)}</dt><dd>${esc(x.definition)}</dd></div>`).join('')}</dl>`;
 const records=a=>`<div class="thc-records">${(a||[]).map(x=>`<article><h3>${esc(x.field)}</h3><p>${esc(x.requirement)}</p></article>`).join('')}</div>`;
@@ -180,9 +226,10 @@ const css=`<style>
 
 function articleHtml(a){
   const summary=a.objective;
+  const fingerprint=canonicalEncyclopediaFingerprint(a);
   const cross=Array.isArray(a.crossLinks)?a.crossLinks:[a.crossLinks].filter(Boolean);
   const checks=assessment(a);
-  return `${css}<main class="thc-ency" data-thc-encyclopedia-id="${esc(a.id)}"><section class="thc-hero"><div class="thc-wrap"><div class="thc-kicker">THC Cannabis Encyclopedia · ${esc(a.id)}</div><h1>${esc(a.title)}</h1><p>${esc(summary)}</p><div class="thc-nav"><a class="thc-btn" href="/learn/encyclopedia/">Browse Encyclopedia</a><a class="thc-btn alt" href="/learn/search/">Search THC Education</a></div></div></section><section class="thc-content"><div class="thc-wrap"><div class="thc-layout"><article class="thc-main"><div class="thc-note thc-objective"><strong>What you will learn</strong><p>${esc(a.objective)}</p></div><h2>Core science</h2>${a.coreScience.map(p=>`<p>${esc(p)}</p>`).join('')}<h2>Why this matters in cultivation</h2>${list(a.cultivationRelevance||[])}<h2>Measure and record</h2>${records(a.measureAndRecord)}<h2>Common misconceptions</h2>${paired(misconceptionPairs(a.misconceptions))}<h2>Evidence limits</h2>${evidence(a.evidenceLimits).map(p=>`<p>${esc(p)}</p>`).join('')}<h2>Check your reasoning</h2>${list(checks.prompts)}<div class="thc-note"><strong>Try first, then compare your reasoning</strong><p>${esc(checks.scoringIntent)} Open the rationales after you have written or discussed your own answer.</p></div>${rationaleHtml(a)}${workedExampleHtml(a)}${practicalResourcesHtml(a)}<h2>Related encyclopedia topics</h2>${linkedCrossRefs(cross)}<h2>Source notes</h2>${list(sourceNotes(a.sourceNotes))}${lessonNav(a)}</article><aside class="thc-aside" aria-label="Lesson reference"><section class="thc-panel"><span class="thc-badge">Educational reference</span><h2>Terms to know</h2>${terms(a.terms)}</section><section class="thc-panel"><h2>Related tools</h2><p>Use measurements and records from the lesson with the connected THC tools.</p>${toolLinksHtml(a)}</section><section class="thc-panel"><h2>Keep the context</h2><p>Record method, units, plant stage, location, timing and cultivar when comparing observations or measurements.</p></section></aside></div></div></section><section class="thc-footerbar"><div class="thc-wrap">Continue with the <a href="/learn/encyclopedia/">Encyclopedia</a>, <a href="/learn/infographics/">visual library</a>, or <a href="/learn/">THC Learning Center</a>.</div></section></main>`;
+  return `${css}${structuredDataHtml(a)}<main class="thc-ency" data-thc-encyclopedia-id="${esc(a.id)}" data-thc-canonical-fingerprint="${fingerprint}"><section class="thc-hero"><div class="thc-wrap"><div class="thc-kicker">THC Cannabis Encyclopedia · ${esc(a.id)}</div><h1>${esc(a.title)}</h1><p>${esc(summary)}</p><div class="thc-nav"><a class="thc-btn" href="/learn/encyclopedia/">Browse Encyclopedia</a><a class="thc-btn alt" href="/learn/search/">Search THC Education</a></div></div></section><section class="thc-content"><div class="thc-wrap"><div class="thc-layout"><article class="thc-main"><div class="thc-note thc-objective"><strong>What you will learn</strong><p>${esc(a.objective)}</p></div><h2>Core science</h2>${a.coreScience.map(p=>`<p>${esc(p)}</p>`).join('')}<h2>Why this matters in cultivation</h2>${list(a.cultivationRelevance||[])}<h2>Measure and record</h2>${records(a.measureAndRecord)}<h2>Common misconceptions</h2>${paired(misconceptionPairs(a.misconceptions))}<h2>Evidence limits</h2>${evidence(a.evidenceLimits).map(p=>`<p>${esc(p)}</p>`).join('')}<h2>Check your reasoning</h2>${list(checks.prompts)}<div class="thc-note"><strong>Try first, then compare your reasoning</strong><p>${esc(checks.scoringIntent)} Open the rationales after you have written or discussed your own answer.</p></div>${rationaleHtml(a)}${workedExampleHtml(a)}${practicalResourcesHtml(a)}<h2>Related encyclopedia topics</h2>${linkedCrossRefs(cross)}<h2>Source notes</h2>${list(sourceNotes(a.sourceNotes))}${lessonNav(a)}</article><aside class="thc-aside" aria-label="Lesson reference"><section class="thc-panel"><span class="thc-badge">Educational reference</span><h2>Terms to know</h2>${terms(a.terms)}</section><section class="thc-panel"><h2>Related tools</h2><p>Use measurements and records from the lesson with the connected THC tools.</p>${toolLinksHtml(a)}</section><section class="thc-panel"><h2>Keep the context</h2><p>Record method, units, plant stage, location, timing and cultivar when comparing observations or measurements.</p></section></aside></div></div></section><section class="thc-footerbar"><div class="thc-wrap">Continue with the <a href="/learn/encyclopedia/">Encyclopedia</a>, <a href="/learn/infographics/">visual library</a>, or <a href="/learn/">THC Learning Center</a>.</div></section></main>`;
 }
 
 function cleanRendered(s=''){return String(s).replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();}
@@ -201,7 +248,7 @@ const published=[];
 for(const lesson of lessons){
   const slug=stableSlug(lesson.id);
   const page=await upsertPage({slug,title:`${lesson.id} — ${lesson.title}`,parent:encyclopedia.id,content:articleHtml(lesson),excerpt:lesson.objective});
-  published.push({id:lesson.id,title:lesson.title,slug,pageId:page.id,link:page.link,sourceFile:lesson._sourceFile});
+  published.push({id:lesson.id,title:lesson.title,slug,pageId:page.id,link:page.link,sourceFile:lesson._sourceFile,canonicalFingerprint:canonicalEncyclopediaFingerprint(lesson)});
 }
 const children=await allChildren(encyclopedia.id);
 encyclopedia=await upsertPage({slug:'encyclopedia',title:'Cannabis Plant Science Encyclopedia',parent:learn.id,content:indexHtml(children),excerpt:'Search visitor-verified THC Cannabis Encyclopedia lessons published from the controlled 420-ID education system.'});
