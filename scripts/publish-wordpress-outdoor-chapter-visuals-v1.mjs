@@ -154,7 +154,9 @@ function insertChapterVisuals(html){
 }
 
 const learnPage=await pageBySlug('learn');
-const page=await pageBySlug('outdoor',learnPage.id);
+const pageRef=await pageBySlug('outdoor',learnPage.id);
+const page=await request(`/wp-json/wp/v2/pages/${pageRef.id}?context=edit&dtf_chapter_read=${Date.now()}`);
+if(Number(page.parent)!==Number(learnPage.id)) throw new Error(`Outdoor page ${page.id} no longer belongs to canonical Learn parent ${learnPage.id}.`);
 const before=rendered(page.content);
 if(!before.includes('data-dtf-outdoor-v6="true"')||!before.includes('data-dtf-topic="outdoor-cultivation"')||!before.includes('data-dtf-learning-v4="topic-outdoor-cultivation"')) throw new Error('Outdoor V6 canonical owner markers are missing; refusing chapter visual publication.');
 if((before.match(/data-hov6-chapter=/g)||[]).length!==8||(before.match(/class="hov6-lesson"/g)||[]).length!==32) throw new Error('Outdoor V6 chapter/lesson boundary is not 8 chapters and 32 lessons.');
@@ -168,7 +170,7 @@ try{
     await request(`/wp-json/wp/v2/pages/${page.id}`,{method:'POST',body:JSON.stringify({content:next,status:'publish'})});
     wrote=true;
   }
-  const edit=rendered((await pageBySlug('outdoor',learnPage.id)).content);
+  const edit=rendered((await request(`/wp-json/wp/v2/pages/${page.id}?context=edit&dtf_chapter_verify=${Date.now()}`)).content);
   if((edit.match(/data-outdoor-chapter-visual=/g)||[]).length!==8) throw new Error('Edit-context Outdoor chapter visual count is not 8.');
   if((edit.match(/data-hov6-chapter=/g)||[]).length!==8||(edit.match(/class="hov6-lesson"/g)||[]).length!==32) throw new Error('Edit-context Outdoor V6 chapter/lesson boundary changed.');
   for(const item of resolved){
