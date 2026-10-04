@@ -84,7 +84,7 @@ if(!errors.length){
  if(!encyclopediaPage.includes('DTF_STATIC_ENCYCLOPEDIA_FALLBACK_START')||!encyclopediaPage.includes('data-static-fallback')) errors.push('encyclopedia page missing static crawlable fallback');
  const publishedRows=(encyclopediaIndex.lessons||[]).filter(x=>x.status==='published');
  for(const row of publishedRows){
-   const match=String(row.id||'').match(/^THC-ENC-(\\d{3,})$/);
+   const match=String(row.id||'').match(/^THC-ENC-(\d{3,})$/);
    const expected=match?'/learn/encyclopedia/thc-enc-'+match[1]+'/':null;
    if(!expected||row.route!==expected) errors.push((row.id||'<missing-id>')+': published encyclopedia route must be '+(expected||'<valid permanent-ID route>')+' not '+(row.route||'<missing>'));
  }
