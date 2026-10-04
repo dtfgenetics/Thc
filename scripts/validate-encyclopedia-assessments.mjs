@@ -12,6 +12,11 @@ const lessons=readCanonicalEncyclopediaLessons(root);
 const registryState=loadEncyclopediaRegistry(root);
 const promptOwners=new Map();
 const normalize=s=>String(s||'').toLowerCase().replace(/\s+/g,' ').trim();
+const misconceptionClaim=value=>{
+  const text=String(value||'').trim();
+  const first=text.match(/^.*?[.!?](?:\s|$)/)?.[0]||text;
+  return first.trim();
+};
 
 if(lessons.length!==registryState.totalCount) errors.push(`Expected ${registryState.totalCount} registered encyclopedia lessons; found ${lessons.length}`);
 
@@ -23,7 +28,7 @@ for(const lesson of lessons){
   if(Number(a.version)!==2) errors.push(`${id}: effective assessment version must be 2`);
   if(qs[0] && !normalize(qs[0]).includes(normalize(lesson.title))) errors.push(`${id}: first check must explicitly name the lesson topic`);
   const misconceptions=Array.isArray(lesson.misconceptions)?lesson.misconceptions:[];
-  if(qs[1] && misconceptions.length && !misconceptions.some(m=>normalize(qs[1]).includes(normalize(m)))) errors.push(`${id}: misconception challenge must use a lesson-specific misconception`);
+  if(qs[1] && misconceptions.length && !misconceptions.some(m=>normalize(qs[1]).includes(normalize(misconceptionClaim(m))))) errors.push(`${id}: misconception challenge must use a lesson-specific misconception claim`);
   if(qs[2] && !normalize(qs[2]).startsWith('applied case')) errors.push(`${id}: third check must be an applied case`);
   for(const q of qs){
     const n=normalize(q);
