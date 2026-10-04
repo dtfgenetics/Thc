@@ -95,7 +95,7 @@
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/vpd-chart/index.html",
-      "notes": "Interactive approximate leaf-VPD calculator and nearby-condition reference table.",
+      "notes": "Production-hardened leaf-VPD workbench with measured-leaf and offset modes, air-VPD/dew-point context, non-prescriptive operating references, RH/temperature scenario solving, dew-boundary heatmap handling, validated local profiles, logger CSV trend analysis with sustained excursions and explicit dew-risk rows, uPlot fallback rendering, GrowLens handoff and live sensor adapter.",
       "mirrorPath": "site/public-route-patch/vpd-chart",
       "canonicalRepository": "dtfgenetics/Tools",
       "integrationRepository": "dtfgenetics/Thc"
