@@ -137,7 +137,7 @@ try {
     ]);
 
     $sessionToken = str_repeat('b', 64);
-    growlens_atomic_write_json(growlens_session_path($sessionToken), [
+    growlens_atomic_write_json(growlens_session_path_from_token($sessionToken), [
         'userId' => $userId,
         'csrfToken' => str_repeat('c', 43),
         'createdAt' => $now,
