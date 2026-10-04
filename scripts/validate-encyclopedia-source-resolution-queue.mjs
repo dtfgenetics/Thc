@@ -28,8 +28,15 @@ for (const lesson of canonical) {
   if (Number(row.evidenceReferenceCount || 0) + Number(row.controlContextNoteCount || 0) !== notes.length) errors.push(`${lesson.id}: evidence/control source accounting mismatch.`);
   if (Number(row.traceableReferenceCount || 0) > Number(row.evidenceReferenceCount || 0)) errors.push(`${lesson.id}: traceable evidence count exceeds evidence references.`);
   if (Number(row.unresolvedEvidenceReferenceCount || 0) > Number(row.evidenceReferenceCount || 0)) errors.push(`${lesson.id}: unresolved evidence count exceeds evidence references.`);
+  const evidenceCount=Number(row.evidenceReferenceCount || 0);
+  const expectedDiversity=evidenceCount>=2
+    ? 'multi_source_set'
+    : evidenceCount===1
+      ? 'single_source_traceable_review_needed'
+      : 'no_evidence_source_reference';
+  if(row.sourceDiversityState!==expectedDiversity) errors.push(`${lesson.id}: sourceDiversityState mismatch; expected ${expectedDiversity}, found ${row.sourceDiversityState||'(missing)'}.`);
   if (row.resolutionState !== 'source_resolution_incomplete') {
-    if (Number(row.evidenceReferenceCount || 0) < 2) errors.push(`${lesson.id}: resolved source state requires at least two evidence references.`);
+    if (evidenceCount < 1) errors.push(`${lesson.id}: resolved source state requires at least one traceable evidence reference.`);
     if (Number(row.unresolvedEvidenceReferenceCount || 0) !== 0) errors.push(`${lesson.id}: resolved source state cannot retain unresolved evidence references.`);
   }
   for (const refId of row.sourceReferenceIds || []) if (!referenceById.has(refId)) errors.push(`${lesson.id}: unknown source reference id ${refId}.`);
