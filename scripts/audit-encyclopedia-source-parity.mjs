@@ -49,6 +49,9 @@ let localMissing=0;
 let bodyDrift=0;
 let identicalBodies=0;
 const driftExamples=[];
+const reconciliationQueue=[];
+const reconciliationSummary={canonicalPreferred:0,integrationPreferred:0,bodyOnly:0,controlConflict:0};
+const controlledTitleById=new Map((localRegistry?.entries||[]).map(entry=>[entry.id,entry.title]));
 for(let number=1;number<=420;number++){
   const volume=String(Math.ceil(number/20)).padStart(2,'0');
   const id=String(number).padStart(3,'0');
@@ -57,10 +60,41 @@ for(let number=1;number<=420;number++){
   const local=path.join(localRoot,rel);
   if(!fs.existsSync(canonical)){ canonicalMissing++; continue; }
   if(!fs.existsSync(local)){ localMissing++; continue; }
-  if(digest(canonical)===digest(local)) identicalBodies++;
+  const canonicalDigest=digest(canonical);
+  const localDigest=digest(local);
+  if(canonicalDigest===localDigest) identicalBodies++;
   else {
     bodyDrift++;
     if(driftExamples.length<20) driftExamples.push(rel);
+    const canonicalLesson=readJson(canonical);
+    const localLesson=readJson(local);
+    const lessonId=`THC-ENC-${id}`;
+    const controlledTitle=controlledTitleById.get(lessonId)||null;
+    const canonicalTitle=canonicalLesson.title||null;
+    const localTitle=localLesson.title||null;
+    const canonicalMatchesControl=Boolean(controlledTitle&&canonicalTitle===controlledTitle);
+    const integrationMatchesControl=Boolean(controlledTitle&&localTitle===controlledTitle);
+    let classification='control-conflict';
+    if(canonicalMatchesControl&&!integrationMatchesControl) classification='canonical-preferred';
+    else if(!canonicalMatchesControl&&integrationMatchesControl) classification='integration-preferred';
+    else if(canonicalMatchesControl&&integrationMatchesControl) classification='body-only';
+    if(classification==='canonical-preferred') reconciliationSummary.canonicalPreferred++;
+    else if(classification==='integration-preferred') reconciliationSummary.integrationPreferred++;
+    else if(classification==='body-only') reconciliationSummary.bodyOnly++;
+    else reconciliationSummary.controlConflict++;
+    reconciliationQueue.push({
+      id:lessonId,
+      number,
+      path:rel,
+      controlledTitle,
+      canonicalTitle,
+      integrationTitle:localTitle,
+      canonicalMatchesControl,
+      integrationMatchesControl,
+      classification,
+      canonical:{sha256:canonicalDigest,bytes:fs.statSync(canonical).size},
+      integration:{sha256:localDigest,bytes:fs.statSync(local).size}
+    });
   }
 }
 if(canonicalMissing>0) errors.push(`pinned canonical source is missing ${canonicalMissing} of 420 lesson files`);
@@ -81,6 +115,8 @@ const report={
     differingBodies:bodyDrift,
     driftExamples
   },
+  reconciliationSummary,
+  reconciliationQueue,
   note:'Lesson-body drift is reported but not auto-resolved. Controlled-registry parity and 420-file existence are hard gates; lesson-body reconciliation remains quality-aware work.'
 };
 fs.mkdirSync('artifacts',{recursive:true});
@@ -92,4 +128,4 @@ if(errors.length){
   for(const error of errors) console.error(' - '+error);
   process.exit(1);
 }
-console.log(`Encyclopedia source control parity PASS; lesson-body drift reported: ${bodyDrift}/420 differing.`);
+console.log(`Encyclopedia source control parity PASS; lesson-body drift reported: ${bodyDrift}/420 differing. Reconciliation queue: ${JSON.stringify(reconciliationSummary)}.`);
