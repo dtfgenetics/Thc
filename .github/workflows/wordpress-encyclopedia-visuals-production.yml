@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - scripts/attach-wordpress-encyclopedia-visuals.mjs
+      - scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
+      - scripts/build-encyclopedia-full-publication-manifest.mjs
+      - scripts/verify-wordpress-encyclopedia-full-live.mjs
       - scripts/build-encyclopedia-teaching-visuals.mjs
       - scripts/build-encyclopedia-visual-production-queue.mjs
       - package.json
@@ -26,7 +29,7 @@ jobs:
   publish:
     name: Publish and verify full encyclopedia lesson visuals
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     environment:
       name: production
       url: https://dtfseeds.com/learn/encyclopedia/
@@ -35,6 +38,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       ENCYCLOPEDIA_VISUAL_MAP: site/wordpress/education/encyclopedia/all-visual-map-v1.json
+      ENCYCLOPEDIA_FULL_BATCH_FILE: site/wordpress/education/encyclopedia/full-420-production-batch.generated.json
       BACKUP_ROOT: /tmp/dtf-encyclopedia-visuals
 
     steps:
@@ -52,6 +56,37 @@ jobs:
           set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y librsvg2-bin
+
+      - name: Build full canonical publication manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/build-encyclopedia-full-publication-manifest.mjs
+          node --check scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
+          node --check scripts/verify-wordpress-encyclopedia-full-live.mjs
+          node scripts/build-encyclopedia-full-publication-manifest.mjs
+          node scripts/validate-encyclopedia-release-control.mjs "$ENCYCLOPEDIA_FULL_BATCH_FILE"
+
+      - name: Synchronize all 420 canonical encyclopedia pages
+        id: canonical_sync
+        shell: bash
+        env:
+          ENCYCLOPEDIA_BATCH_FILE: ${{ env.ENCYCLOPEDIA_FULL_BATCH_FILE }}
+          BACKUP_ROOT: /tmp/dtf-encyclopedia-full-sync
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-encyclopedia-canonical-batch.mjs | tee "$RUNNER_TEMP/encyclopedia-full-sync.json"
+          report="$(find "$BACKUP_ROOT" -name encyclopedia-publication-report.json -type f | sort | tail -n 1)"
+          test -s "$report"
+          test "$(node -p "require(process.argv[1]).published.length" "$report")" -eq 420
+          test "$(node -p "require(process.argv[1]).index.listedLessons" "$report")" -eq 420
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+
+      - name: Verify all 420 canonical lesson routes before visual writes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/verify-wordpress-encyclopedia-full-live.mjs
 
       - name: Generate full controlled visual set
         shell: bash
@@ -147,42 +182,29 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report encyclopedia visual publication
+      - name: Record encyclopedia visual publication
         if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
+        shell: bash
         env:
           JOB_STATUS: ${{ job.status }}
+          CANONICAL_SYNC: ${{ steps.canonical_sync.outcome }}
           VALIDATE_OUTCOME: ${{ steps.validate.outcome }}
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
           COUNT: ${{ steps.publish.outputs.count }}
           REUSED: ${{ steps.publish.outputs.reused }}
           UPLOADS: ${{ steps.publish.outputs.uploads }}
-        with:
-          script: |
-            const success=process.env.JOB_STATUS==='success';
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## THC encyclopedia full visual publication',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.JOB_STATUS}**`,
-                'Visual batch: **encyclopedia-all-visuals-v1**',
-                `Validation: **${process.env.VALIDATE_OUTCOME || 'not-run'}**`,
-                `WordPress page update: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
-                `Visitor verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-                `Lesson visuals attached: **${process.env.COUNT || '0'}**`,
-                `Existing WordPress media reused: **${process.env.REUSED || '0'}**`,
-                `New media uploads: **${process.env.UPLOADS || '0'}**`,
-                '',
-                success
-                  ? 'All 420 controlled lesson pages passed fresh visitor-facing visual verification.'
-                  : 'This visual release is not accepted; inspect the workflow artifact and rollback evidence before retrying.',
-                '',
-                'Review control: **visual placement does not represent independent lesson approval**'
-              ].join('\n')
-            });
+        run: |
+          {
+            echo '## THC encyclopedia full canonical + visual production'
+            echo
+            echo "- Result: **${JOB_STATUS:-unknown}**"
+            echo "- Canonical 420-page sync: **${CANONICAL_SYNC:-not-run}**"
+            echo "- Visual-map validation: **${VALIDATE_OUTCOME:-not-run}**"
+            echo "- WordPress visual update: **${PUBLISH_OUTCOME:-not-run}**"
+            echo "- 420-page visitor visual verification: **${VERIFY_OUTCOME:-not-run}**"
+            echo "- Lesson visuals attached: **${COUNT:-0}**"
+            echo "- Existing WordPress media reused: **${REUSED:-0}**"
+            echo "- New media uploads: **${UPLOADS:-0}**"
+            echo '- Review control: website publication and visual placement do not represent independent lesson approval.'
+          } >> "$GITHUB_STEP_SUMMARY"
