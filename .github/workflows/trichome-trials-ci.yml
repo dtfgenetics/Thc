@@ -39,6 +39,7 @@ jobs:
           node --check site/public-route-patch/games/trichome-trials/app.js
           node --check site/public-route-patch/games/trichome-trials/engine.mjs
           node --check site/public-route-patch/games/trichome-trials/confidence.mjs
+          node --check site/public-route-patch/games/trichome-trials/runtime.mjs
 
       - name: Verify canonical and public rules modules match
         run: |
@@ -55,6 +56,7 @@ jobs:
           const confidence = fs.readFileSync('site/public-route-patch/games/trichome-trials/confidence.css','utf8');
           const visual = fs.readFileSync('site/public-route-patch/games/trichome-trials/trichome-trials-v2.css','utf8');
           const app = fs.readFileSync('site/public-route-patch/games/trichome-trials/app.js','utf8');
+          const runtime = fs.readFileSync('site/public-route-patch/games/trichome-trials/runtime.mjs','utf8');
           const requireText = (source, text, label) => {
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
           };
@@ -66,15 +68,15 @@ jobs:
           requireText(html, '<script defer src="./app.js"></script>', 'classic deferred entrypoint');
           requireText(html, 'id="trichome-trials-data"', 'embedded canonical judging data');
           requireText(html, 'Game boundary:', 'fictional content boundary');
-          requireText(app, 'MAX_CONFIDENCE_CALLS', 'confidence call limit');
-          requireText(app, 'submitConfidentScorecard(', 'confidence scorer usage');
-          requireText(app, 'let touchedIds = new Set();', 'reviewed-category gate');
-          requireText(app, 'button[data-score-step][data-category]', 'tap score stepper');
-          requireText(app, 'ui.submit.disabled = !judging || !allReviewed', 'complete scorecard submit gate');
-          requireText(app, 'payload?.roundsPerRun !== 5', 'five-round browser contract');
-          requireText(app, 'payload?.categories?.length !== 7', 'seven-category browser contract');
-          requireText(app, 'payload?.entries?.length !== 12', '12-entry browser contract');
-          requireText(app, 'type="range" min="1" max="10" step="1"', '1–10 score control');
+          requireText(runtime, 'MAX_CONFIDENCE_CALLS', 'confidence call limit');
+          requireText(runtime, 'submitConfidentScorecard(', 'confidence scorer usage');
+          requireText(runtime, 'let touchedIds = new Set();', 'reviewed-category gate');
+          requireText(runtime, 'button[data-score-step][data-category]', 'tap score stepper');
+          requireText(runtime, 'ui.submit.disabled = !judging || !allReviewed', 'complete scorecard submit gate');
+          requireText(runtime, 'payload?.roundsPerRun !== 5', 'five-round browser contract');
+          requireText(runtime, 'payload?.categories?.length !== 7', 'seven-category browser contract');
+          requireText(runtime, 'payload?.entries?.length !== 12', '12-entry browser contract');
+          requireText(runtime, 'type="range" min="1" max="10" step="1"', '1–10 score control');
           requireText(css, '.sample-visual', 'fictional sample artwork');
           requireText(css, '.loupe', 'loupe artwork');
           requireText(css, '.accuracy-ring', 'accuracy meter artwork');
@@ -86,8 +88,8 @@ jobs:
           requireText(visual, '@media(max-width:640px)', 'mobile layout');
           requireText(visual, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
           if (/^\s*import\s/m.test(app)) throw new Error('public runtime regressed to browser module imports');
-          if (/fetch\s*\(/.test(app)) throw new Error('public runtime regressed to browser-time JSON fetch');
-          if (/CSS\.escape/.test(app)) throw new Error('public runtime regressed to CSS.escape dependency');
+          if (/fetch\s*\(/.test(runtime)) throw new Error('public runtime regressed to browser-time JSON fetch');
+          if (/CSS\.escape/.test(runtime)) throw new Error('public runtime regressed to CSS.escape dependency');
           NODE
 
       - name: Verify truthful release boundary

@@ -13,6 +13,9 @@ assert.equal(publicEngine, canonicalEngine, 'public Pheno Draft engine must matc
 assert.match(bootstrap, /import\('\.\/runtime\.mjs'\)/);
 assert.ok(bootstrap.length < 1500, 'Pheno Draft app.js must remain a thin bootstrap');
 assert.match(runtime, /from '\.\/engine\.mjs';/);
+assert.match(runtime, /from '\/games\/shared-platform\/index\.mjs';/, 'runtime must use shared clipboard helper');
+assert.doesNotMatch(runtime, /async function copyText\(/, 'runtime must not duplicate clipboard fallback');
+assert.match(runtime, /copied\.ok/, 'runtime must honor shared clipboard result contract');
 for (const forbidden of ['function createRun(', 'function refreshDraft(', 'function selectParent(', 'function selectPhenotype(', 'function goalFit(']) {
   assert.equal(runtime.includes(forbidden), false, `runtime must not duplicate canonical rules: ${forbidden}`);
 }
