@@ -43,6 +43,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       APPLY_HARVEST_OUTDOOR_V6: 'true'
+      APPLY_LEARNING_V4: 'true'
       APPLY_OUTDOOR_VISUALS_V6: 'true'
       OUTDOOR_VISUAL_MAP: site/wordpress/education/outdoor-v6-visual-map.json
       BACKUP_ROOT: /tmp/dtf-outdoor-visuals-v6
@@ -66,6 +67,7 @@ jobs:
           node --check scripts/publish-wordpress-outdoor-visuals-v6.mjs
           node --check scripts/publish-wordpress-outdoor-chapter-visuals-v1.mjs
           node --check scripts/fix-harvest-outdoor-v6-owner-markers.mjs
+          node --check scripts/enhance-wordpress-learning-v4.mjs
           node --check scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
           node - <<'NODE'
           const fs=require('fs');
@@ -102,6 +104,8 @@ jobs:
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
           node scripts/fix-harvest-outdoor-v6-owner-markers.mjs | tee "$RUNNER_TEMP/outdoor-v6-owner-normalize.log"
+          node scripts/enhance-wordpress-learning-v4.mjs | tee "$RUNNER_TEMP/outdoor-v6-learning-v4-refresh.log"
+          test -s "$BACKUP_ROOT/learning-v4-report.json"
           node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs --validate-only | tee "$RUNNER_TEMP/outdoor-v6-owner-validate.log"
           node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs | tee "$RUNNER_TEMP/outdoor-v6-owner-restore.log"
           report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
@@ -224,7 +228,7 @@ jobs:
           CHAPTER_VISUALS: ${{ steps.chapters.outputs.chapter_visuals }}
         with:
           script: |
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+            try { await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
               '## Outdoor V6 visual atlas','',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
@@ -240,4 +244,4 @@ jobs:
               `Canonical GitHub fallbacks: **${process.env.FALLBACKS || '0'}**`,
               `Purpose-built THC-OUT artwork gaps: **${process.env.GAPS || '0'}**`,'',
               'The proven Outdoor production workflow now restores the 8-chapter/32-lesson V6 curriculum, attaches the 12 supporting atlas visuals, embeds the eight finished THC chapter-level infographics inside their matching chapters, and keeps all eleven narrower THC-OUT originals explicitly queued until their dedicated artwork is complete.'
-            ].join('\n')});
+            ].join('\n')}); } catch (error) { core.warning(`Could not post non-critical issue report: ${error.message}`); }
