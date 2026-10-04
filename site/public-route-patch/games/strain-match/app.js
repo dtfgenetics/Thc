@@ -302,6 +302,187 @@ function renderDeckPicker() {
   }
 }
 
+// BEGIN STRAIN MATCH AGENT BRIDGE
+const STRAIN_MATCH_AGENT_VERSION = 'strain-match-agent-bridge-v1';
+const STRAIN_MATCH_AGENT_MAX_EVENTS = 32;
+const STRAIN_MATCH_AGENT_STALL_MS = 8000;
+const strainMatchAgentTelemetry = { actions: [], errors: [], lastProgressKey: '', lastProgressAt: 0, lastActionAt: 0 };
+
+function strainMatchAgentNow() {
+  return typeof performance !== 'undefined' && typeof performance.now === 'function' ? performance.now() : Date.now();
+}
+
+function pushStrainMatchAgentEvent(list, event) {
+  list.push(Object.freeze(event));
+  if (list.length > STRAIN_MATCH_AGENT_MAX_EVENTS) list.splice(0, list.length - STRAIN_MATCH_AGENT_MAX_EVENTS);
+}
+
+function recordStrainMatchAgentAction(action, detail = null) {
+  const now = strainMatchAgentNow();
+  strainMatchAgentTelemetry.lastActionAt = now;
+  pushStrainMatchAgentEvent(strainMatchAgentTelemetry.actions, { atMs: Math.round(now), action, detail });
+}
+
+function recordStrainMatchAgentError(kind, message, source = null) {
+  pushStrainMatchAgentEvent(strainMatchAgentTelemetry.errors, {
+    atMs: Math.round(strainMatchAgentNow()),
+    kind,
+    message: String(message || kind || 'unknown error').slice(0, 500),
+    source: source ? String(source).slice(0, 500) : null
+  });
+}
+
+function strainMatchAgentCardState() {
+  const buttons = [...board.querySelectorAll('.match-card')];
+  return buttons.map((button, index) => {
+    const matched = button.classList.contains('matched');
+    const revealed = matched || button.classList.contains('revealed');
+    return {
+      index,
+      state: matched ? 'matched' : revealed ? 'revealed' : 'hidden',
+      text: revealed ? (cards[index]?.text || '') : null,
+      kind: revealed ? (cards[index]?.kind || null) : null,
+      disabled: Boolean(button.disabled)
+    };
+  });
+}
+
+function observeStrainMatchAgentProgress() {
+  const progressKey = [
+    activeDeck?.id || '',
+    roundToken,
+    moves,
+    matches,
+    streak,
+    openCards.length,
+    locked ? 1 : 0,
+    roundStarted ? 1 : 0,
+    completePanel.hidden ? 0 : 1
+  ].join('|');
+  if (progressKey !== strainMatchAgentTelemetry.lastProgressKey) {
+    strainMatchAgentTelemetry.lastProgressKey = progressKey;
+    strainMatchAgentTelemetry.lastProgressAt = strainMatchAgentNow();
+  }
+}
+
+function strainMatchAgentTelemetrySnapshot() {
+  observeStrainMatchAgentProgress();
+  const now = strainMatchAgentNow();
+  const noProgressMs = strainMatchAgentTelemetry.lastProgressAt ? Math.max(0, now - strainMatchAgentTelemetry.lastProgressAt) : 0;
+  const sinceActionMs = strainMatchAgentTelemetry.lastActionAt ? Math.max(0, now - strainMatchAgentTelemetry.lastActionAt) : 0;
+  const actionPending = strainMatchAgentTelemetry.lastActionAt > strainMatchAgentTelemetry.lastProgressAt;
+  return {
+    errors: strainMatchAgentTelemetry.errors.slice(),
+    recentActions: strainMatchAgentTelemetry.actions.slice(),
+    noProgressMs: Math.round(noProgressMs),
+    sinceActionMs: Math.round(sinceActionMs),
+    stallSuspected: Boolean(actionPending && sinceActionMs >= STRAIN_MATCH_AGENT_STALL_MS && noProgressMs >= STRAIN_MATCH_AGENT_STALL_MS),
+    stallThresholdMs: STRAIN_MATCH_AGENT_STALL_MS
+  };
+}
+
+function strainMatchAgentSnapshot() {
+  const cardStates = activeDeck ? strainMatchAgentCardState() : [];
+  const completed = Boolean(activeDeck && matches === activeDeck.pairs.length);
+  const restartArmed = restartArmedUntil > Date.now();
+  return {
+    version: STRAIN_MATCH_AGENT_VERSION,
+    ready: Boolean(data && activeDeck && cards.length),
+    deck: activeDeck ? {
+      id: activeDeck.id,
+      title: activeDeck.title,
+      pairCount: activeDeck.pairs.length,
+      available: data.decks.map((deck) => ({ id: deck.id, title: deck.title }))
+    } : null,
+    round: {
+      started: Boolean(roundStarted),
+      locked: Boolean(locked),
+      moves,
+      matches,
+      streak,
+      bestStreak,
+      elapsedSeconds: elapsedSeconds(),
+      completed,
+      restartArmed,
+      openCount: openCards.length
+    },
+    cards: cardStates,
+    legalActions: completed
+      ? ['play-again','select-deck']
+      : locked
+        ? []
+        : ['reveal','restart','select-deck'],
+    telemetry: strainMatchAgentTelemetrySnapshot()
+  };
+}
+
+function revealStrainMatchAgentCard(index) {
+  const normalized = Number(index);
+  if (!Number.isInteger(normalized) || normalized < 0 || normalized >= cards.length) {
+    throw new Error(`Unsupported Strain Match card index: ${index}`);
+  }
+  if (locked || matches === activeDeck.pairs.length) return false;
+  const button = [...board.querySelectorAll('.match-card')][normalized];
+  if (!button || button.disabled || button.classList.contains('revealed') || button.classList.contains('matched')) return false;
+  recordStrainMatchAgentAction('reveal', normalized);
+  button.click();
+  return true;
+}
+
+function selectStrainMatchAgentDeck(deckId) {
+  const normalized = String(deckId || '');
+  if (!data?.decks?.some((deck) => deck.id === normalized)) throw new Error(`Unsupported Strain Match deck: ${deckId}`);
+  const button = [...deckPicker.querySelectorAll('button')].find((candidate) => candidate.dataset.deck === normalized);
+  if (!button) return false;
+  recordStrainMatchAgentAction('select-deck', normalized);
+  button.click();
+  return true;
+}
+
+function installStrainMatchAgentTelemetry() {
+  if (typeof window?.addEventListener !== 'function') return;
+  window.addEventListener('error', (event) => {
+    const target = event?.target;
+    const resource = target && target !== window && (target.currentSrc || target.src || target.href);
+    if (resource) recordStrainMatchAgentError('resource-error', 'Browser resource failed to load', resource);
+    else recordStrainMatchAgentError('runtime-error', event?.message || event?.error?.message || 'Browser runtime error', event?.filename || null);
+  }, true);
+  window.addEventListener('unhandledrejection', (event) => {
+    recordStrainMatchAgentError('unhandled-rejection', event?.reason?.message || event?.reason || 'Unhandled promise rejection');
+  });
+}
+
+function installStrainMatchAgentBridge() {
+  installStrainMatchAgentTelemetry();
+  const api = Object.freeze({
+    version: STRAIN_MATCH_AGENT_VERSION,
+    snapshot: strainMatchAgentSnapshot,
+    reveal: revealStrainMatchAgentCard,
+    selectDeck: selectStrainMatchAgentDeck,
+    restart: () => {
+      if (!activeDeck || matches === activeDeck.pairs.length) return false;
+      recordStrainMatchAgentAction('restart');
+      restartButton.click();
+      return true;
+    },
+    playAgain: () => {
+      if (!activeDeck || matches !== activeDeck.pairs.length) return false;
+      recordStrainMatchAgentAction('play-again');
+      playAgainButton.click();
+      return true;
+    },
+    telemetry: strainMatchAgentTelemetrySnapshot
+  });
+  Object.defineProperty(window, '__STRAIN_MATCH_AGENT__', { value: api, enumerable: false, configurable: false, writable: false });
+  Object.defineProperty(window, '__STRAIN_MATCH_GAME_STATE__', { get: strainMatchAgentSnapshot, enumerable: false, configurable: false });
+  document.documentElement.dataset.strainMatchAgentBridge = STRAIN_MATCH_AGENT_VERSION;
+  strainMatchAgentTelemetry.lastProgressAt = strainMatchAgentNow();
+  return api;
+}
+
+installStrainMatchAgentBridge();
+// END STRAIN MATCH AGENT BRIDGE
+
 restartButton.addEventListener('click', requestRestart);
 playAgainButton.addEventListener('click', resetRound);
 document.addEventListener('visibilitychange', () => {

@@ -9,14 +9,17 @@
   "implementation": {
     "data": "games/strain-match/data/decks.json",
     "validator": "games/strain-match/scripts/validate-data.mjs",
-    "publicRoute": "site/public-route-patch/games/strain-match/"
+    "publicRoute": "site/public-route-patch/games/strain-match/",
+    "agentBridge": "window.__STRAIN_MATCH_AGENT__",
+    "agentBridgeTest": "games/strain-match/test/agent-bridge.test.mjs"
   },
   "releaseGates": {
     "rulesTested": true,
-    "browserTested": false,
+    "browserTested": true,
     "mobileTested": false,
     "accessibilityReviewed": false,
     "originalArtCleared": true,
-    "deploymentRegistered": true
+    "deploymentRegistered": true,
+    "autonomousPlaytestReady": true
   }
 }

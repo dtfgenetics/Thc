@@ -29,6 +29,8 @@ jobs:
         run: node games/strain-match/scripts/validate-data.mjs
       - name: Test self-contained public runtime
         run: node games/strain-match/test/public-runtime.test.mjs
+      - name: Test autonomous playtest bridge
+        run: node games/strain-match/test/agent-bridge.test.mjs
       - name: Validate browser runtime syntax and route contract
         shell: bash
         run: |
