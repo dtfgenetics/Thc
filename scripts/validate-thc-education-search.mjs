@@ -76,6 +76,15 @@ if(!errors.length){
  const wordpressRuntimeBuilder=fs.readFileSync(files.wordpressRuntimeBuilder,'utf8');
  for(const marker of ['register_rest_route','wp_footer','data-dtf-learning-search-runtime="mu-v1"','current_user_can(\'manage_options\')']) if(!wordpressRuntime.includes(marker)) errors.push('WordPress learning search runtime missing '+marker);
  if(!wordpressRuntimeBuilder.includes('build-wordpress-learning-search-runtime')&&!wordpressRuntimeBuilder.includes('dtf-learning-search')) errors.push('WordPress learning search runtime builder contract missing');
+ const searchPage=fs.readFileSync(files.page,'utf8');
+ const fallbackBuilder=fs.readFileSync('scripts/build-static-search-fallbacks.mjs','utf8');
+ if(!searchPage.includes('DTF_STATIC_SEARCH_FALLBACK_START')||!searchPage.includes('data-static-fallback')) errors.push('education search page missing static crawlable fallback');
+ if(!encyclopediaPage.includes('DTF_STATIC_ENCYCLOPEDIA_FALLBACK_START')||!encyclopediaPage.includes('data-static-fallback')) errors.push('encyclopedia page missing static crawlable fallback');
+ const publishedRows=(encyclopediaIndex.lessons||[]).filter(x=>x.status==='published');
+ const missingStaticRoutes=publishedRows.filter(row=>!encyclopediaPage.includes('href="'+row.route+'"'));
+ if(missingStaticRoutes.length) errors.push('static encyclopedia directory missing '+missingStaticRoutes.length+' published lesson routes; first '+missingStaticRoutes.slice(0,3).map(x=>x.id).join(', '));
+ if(!fallbackBuilder.includes('Static education fallbacks built')) errors.push('static education fallback builder contract missing');
+ if(!fs.readFileSync(files.builder,'utf8').includes('build-static-search-fallbacks.mjs')) errors.push('education search index build no longer materializes static fallbacks');
  if(!encyclopediaPage.includes('data-q')||!encyclopediaPage.includes('data-topics')||!encyclopediaPage.includes('encyclopedia-v1.mjs')) errors.push('encyclopedia page missing searchable library UI');
  if(!encyclopediaPage.includes('Search naturally.')||!encyclopediaPage.includes('data-reset-all')||!encyclopediaPage.includes('data-stat-subjects')||!encyclopediaPage.includes('data-subject-count')) errors.push('encyclopedia hub missing plain-language search guidance or dynamic 420+ summary controls');
  if(/All 420 topics|<b>21<\/b><span>subject areas/.test(encyclopediaPage)) errors.push('encyclopedia hub must not hard-code the expandable lesson or subject totals');

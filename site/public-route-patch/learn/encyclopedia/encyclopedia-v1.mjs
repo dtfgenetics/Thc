@@ -113,6 +113,7 @@ const params=new URLSearchParams(location.search);const requested=params.get('le
 const loadIndex=window.__THC_ENCYCLOPEDIA_INDEX__?Promise.resolve(window.__THC_ENCYCLOPEDIA_INDEX__):fetch('./encyclopedia-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Index failed to load');return r.json()});
 loadIndex.then(data=>{
  payload=data;
+ document.querySelectorAll('[data-static-fallback]').forEach(node=>node.hidden=true);
  totalStat.textContent=String(payload.lessons.length);
  publishedStat.textContent=String(payload.lessons.filter(x=>x.status==='published').length);
  subjectStat.textContent=String(payload.topics.length);

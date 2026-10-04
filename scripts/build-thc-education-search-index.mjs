@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 const root=process.cwd();
 const out=path.join(root,'site/public-route-patch/learn/search/search-index.json');
@@ -198,3 +199,5 @@ const documents=[...docs.values()].sort((a,b)=>a.type.localeCompare(b.type)||a.t
 fs.mkdirSync(path.dirname(out),{recursive:true});
 fs.writeFileSync(out,JSON.stringify({schemaVersion:3,generated:new Date().toISOString(),documents},null,2)+'\n');
 console.log(`THC education search index: ${documents.length} documents -> ${path.relative(root,out)}`);
+const fallback=spawnSync(process.execPath,[path.join(root,'scripts/build-static-search-fallbacks.mjs')],{stdio:'inherit'});
+if(fallback.status!==0)process.exit(fallback.status||1);
