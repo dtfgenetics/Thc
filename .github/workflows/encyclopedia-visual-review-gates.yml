@@ -1,0 +1,72 @@
+name: THC Encyclopedia Visual Review Gates
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'content/encyclopedia/visual-production-batches/**'
+      - 'data/encyclopedia-independent-review-manifest.json'
+      - 'scripts/build-encyclopedia-visual-machine-preflight.mjs'
+      - 'scripts/build-encyclopedia-visual-promotion-manifest.mjs'
+      - '.github/workflows/encyclopedia-visual-review-gates.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  review-gates:
+    name: Validate machine preflight and independent-review promotion boundary
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate independent-review manifest boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/validate-encyclopedia-independent-review-manifest.mjs
+
+      - name: Build objective visual machine preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-visual-machine-preflight.mjs
+          test -s data/encyclopedia-visual-machine-preflight.json
+
+      - name: Build controlled promotion manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-visual-promotion-manifest.mjs
+          test -s data/encyclopedia-visual-promotion-manifest.json
+
+      - name: Assert no synthetic approval
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs=require('fs');
+          const pre=JSON.parse(fs.readFileSync('data/encyclopedia-visual-machine-preflight.json','utf8'));
+          const promo=JSON.parse(fs.readFileSync('data/encyclopedia-visual-promotion-manifest.json','utf8'));
+          if(pre.summary.candidateCount!==372) throw new Error(`Expected 372 visual candidates; found ${pre.summary.candidateCount}`);
+          if(pre.summary.machinePreflightFailed!==0) throw new Error(`Machine preflight failures remain: ${pre.summary.machinePreflightFailed}`);
+          if((promo.items||[]).some(x=>x.independentVisualReview?.decision && !x.independentVisualReview?.reviewerId)) throw new Error('Reviewer decision without reviewer identity detected.');
+          console.log(`Machine-ready: ${pre.summary.machinePreflightPassed}/${pre.summary.candidateCount}; externally approved: ${promo.summary.externallyApprovedVisuals}; promotion eligible: ${promo.summary.promotionEligible}.`);
+          NODE
+
+      - name: Upload review gate evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: encyclopedia-visual-review-gates-${{ github.run_id }}
+          path: |
+            data/encyclopedia-visual-machine-preflight.json
+            data/encyclopedia-visual-promotion-manifest.json
+            data/encyclopedia-independent-review-manifest.json
+          if-no-files-found: error
+          retention-days: 30
