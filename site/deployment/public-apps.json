@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-10-02",
+  "updated": "2026-10-04",
   "apps": [
     {
       "id": "high-land",
@@ -980,8 +980,15 @@
       "build": "node scripts/validate-applied-learning-production-mirror.mjs",
       "canonicalRepository": "dtfgenetics/Thc-learning-courses-",
       "integrationRepository": "dtfgenetics/Thc",
-      "notes": "Static development-preview learner surface driven by learner-safe mirrored canonical data for Knowledge Graph, Measurement School, Crop Math and evidence-based differential reasoning. Production mirror is pinned to the exact Academy source SHA; credential use remains unauthorized.",
-      "canonicalSourcePath": "apps/web/public"
+      "notes": "Static development-preview learner surface pinned to Academy source 9ce4c11da8f7749775e2b886d57c303ea6723a61. Includes Knowledge Graph, Measurement School, Crop Math, Same Symptom Different Cause, Grow Room Blueprint Lab, Calibration Bench, Plant Timeline Atlas, Grower Flight Recorder, Crop Incident Report and Cause Chain. All interactions remain local-only; professional credential use remains unauthorized.",
+      "canonicalSourcePath": "apps/web/public",
+      "machineData": {
+        "sourceSha": "9ce4c11da8f7749775e2b886d57c303ea6723a61",
+        "toolCount": 10,
+        "systemsToolCount": 6,
+        "localOnly": true,
+        "credentialUseAuthorized": false
+      }
     }
   ]
 }
