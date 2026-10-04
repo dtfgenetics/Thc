@@ -63,7 +63,7 @@ const encHtml=`
 <h2>Browse the encyclopedia now</h2>
 <p>The complete published directory is embedded in the page as ordinary links. Interactive search and filters enhance this directory when JavaScript loads.</p>
 <div class="static-topic-links">${topics.map(t=>`<a href="/learn/encyclopedia/?topic=${Number(t.part)}">Part ${String(t.part).padStart(2,'0')} · ${esc(t.title)}</a>`).join('')}</div>
-<div class="static-lesson-list">${lessons.map(item=>`<a href="${esc(item.route)}"><code>${esc(item.id)}</code> · ${esc(item.title)}</a>`).join('\n')}</div>
+<div class="static-lesson-list">${lessons.map(item=>`<a href="${esc(item.route)}"><code>${esc(item.id)}</code></a>`).join('\n')}</div>
 </div>
 </section>`;
 replaceBlock(encyclopediaPagePath,ENC_START,ENC_END,encHtml);
