@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-032",
+  "createdAt": "2026-10-04",
+  "scope": "High-priority evidence for environment risk review, magnesium nutrition, nutrient trend/control records, and Cannabis genome interpretation.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Controlled Cannabis environmental and nutrient studies remain bounded to tested genotype, stage, media and environmental conditions.",
+    "Response-surface optima are experimental model outputs, not universal fertilizer recipes.",
+    "Visual nutrient symptoms are nonspecific and require measured system context.",
+    "Genome coordinates, associations and annotations must name the reference/assay context; variants are not complete phenotype predictions.",
+    "All mappings remain pending independent science review."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0323",
+      "lessonId": "THC-ENC-100",
+      "sourceIds": [
+        "ENC-AUTH-169",
+        "ENC-AUTH-166"
+      ],
+      "claimType": "stage-aware-environment-envelope-and-transfer-limits",
+      "supportedClaim": "Controlled Cannabis humidity experiments show that environmental humidity can alter flowering development and measured cannabinoid outcomes, while greenhouse VPD literature shows that useful microclimate ranges remain crop- and system-dependent rather than universal.",
+      "sourceLocator": "Corredor-Perilla et al. (2025), DOI 10.3389/fpls.2025.1678142; Shamshiri et al. (2018), DOI 10.1515/intag-2017-0005.",
+      "applicability": "Supports building environmental control envelopes from stage, measured crop response, tissue/environment measurements and facility capability instead of copying one chart.",
+      "limitations": "The Cannabis study's treatment effects are specific to its germplasm and conditions; neither source establishes a universal temperature-RH-VPD schedule.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0324",
+      "lessonId": "THC-ENC-126",
+      "sourceIds": [
+        "ENC-AUTH-170"
+      ],
+      "claimType": "magnesium-function-response-and-diagnostic-limits",
+      "supportedClaim": "Vegetative medical-Cannabis responses to magnesium supply include measurable physiological, mineral and visual changes, supporting magnesium's nutritional role while showing that supply-response interpretation requires stage and system context.",
+      "sourceLocator": "Morad and Bernstein (2023), PMID 37514248, PMCID PMC10384070, DOI 10.3390/plants12142676.",
+      "applicability": "Supports measured magnesium diagnosis and correction while separating physiological evidence from symptom-only diagnosis.",
+      "limitations": "The experiment is vegetative-stage and genotype/system specific. Its treatment concentrations and response optimum are not universal Cannabis feed targets, and interveinal chlorosis is not uniquely diagnostic of Mg deficiency.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0325",
+      "lessonId": "THC-ENC-140",
+      "sourceIds": [
+        "ENC-AUTH-171"
+      ],
+      "claimType": "nutrient-response-model-and-record-control",
+      "supportedClaim": "Multifactor Cannabis nutrient experiments can model interacting N-P-K responses and identify treatment-specific response surfaces, illustrating why nutrient decisions should retain treatment composition, response measurements and model context rather than reducing records to a single EC value.",
+      "sourceLocator": "Bevan, Jones, and Zheng (2021), PMID 34868115, PMCID PMC8638000, DOI 10.3389/fpls.2021.764103.",
+      "applicability": "Supports controlled nutrient records, trend review and traceable corrective-action reasoning using measured variables and explicit experimental/system context.",
+      "limitations": "Response-surface model optima are bounded to the studied cultivar, flowering stage, soilless system and environmental conditions; production correlations do not by themselves prove causation.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0326",
+      "lessonId": "THC-ENC-141",
+      "sourceIds": [
+        "ENC-AUTH-172"
+      ],
+      "claimType": "genome-reference-variation-and-prediction-limits",
+      "supportedClaim": "Cannabis genome assemblies and population comparisons provide reference coordinates and evidence of genomic variation/introgression, but assembly choice, ancestry and structural variation affect interpretation and a detected allele or locus is not a complete prediction of crop phenotype.",
+      "sourceLocator": "Grassa et al. (2021), PMID 33340409, DOI 10.1111/nph.17243.",
+      "applicability": "Supports the lesson's DNA/gene/allele/chromosome hierarchy and requirement to record reference build and assay limitations when interpreting variants.",
+      "limitations": "Genome associations and coordinates are reference- and germplasm-dependent; the study does not establish deterministic phenotype prediction for arbitrary Cannabis lines.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
