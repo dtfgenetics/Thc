@@ -8,10 +8,10 @@ const required=[
   ['related tools panel','toolLinksFor'],
   ['GrowLens link',"'GrowLens','/growlens/'"],
   ['education search link','/learn/search/'],
-  ['measurement section','<h2>Measure and record</h2>'],
-  ['misconception section','<h2>Common misconceptions</h2>'],
-  ['evidence limits section','<h2>Evidence limits</h2>'],
-  ['assessment section','<h2>Check your reasoning</h2>'],
+  ['measurement section','<h2 id="measure">Measure and record</h2>'],
+  ['misconception section','<h2 id="misconceptions">Common misconceptions</h2>'],
+  ['evidence limits section','<h2 id="evidence-limits">Evidence limits and uncertainty</h2>'],
+  ['assessment section','<h2 id="reasoning">Check your reasoning</h2>'],
   ['approved practical-resource section','practicalResourcesHtml'],
   ['practical-resource approval gate',"status==='approved'&&x.publicRoute"],
   ['learner answer rationales','rationaleHtml'],
@@ -21,7 +21,20 @@ const required=[
   ['previous lesson behavior','← Previous'],
   ['next lesson behavior','Next →'],
   ['canonical live fingerprint','data-thc-source-fingerprint'],
-  ['structured-data renderer','encyclopediaStructuredDataHtml']
+  ['structured-data renderer','encyclopediaStructuredDataHtml'],
+  ['breadcrumb navigation','thc-breadcrumbs'],
+  ['long-page contents navigation','thc-toc'],
+  ['glossary integration','/learn/glossary/'],
+  ['titled related lesson cards','thc-related-card'],
+  ['source/evidence section','Sources and evidence'],
+  ['source link handling','noopener noreferrer'],
+  ['explicit uncertainty messaging','Evidence limits and uncertainty'],
+  ['review state note','thc-review-note'],
+  ['download state','thc-downloads'],
+  ['small-phone breakpoint','@media(max-width:380px)'],
+  ['tablet breakpoint','@media(max-width:900px)'],
+  ['horizontal table overflow','overflow-x:auto'],
+  ['print/offline reading support','@media print']
 ];
 for(const [label,needle] of required)if(!src.includes(needle))errors.push('renderer missing '+label);
 if(src.includes('fake visual')||src.includes('placeholder teaching visual'))errors.push('renderer must not emit fake visual placeholders');

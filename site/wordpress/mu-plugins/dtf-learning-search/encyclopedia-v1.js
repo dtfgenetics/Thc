@@ -75,13 +75,13 @@ function render(){
  clear.disabled=!q.value.trim()&&activePart===null&&activeStatus==='all'&&activeFormat==='all';
  if(resetAll)resetAll.hidden=clear.disabled;
  const topic=activePart?payload.topics.find(x=>x.part===activePart):null;
- title.textContent=topic?topic.title:(q.value.trim()?'Search results':`All ${payload.lessons.length} topics`);
+ title.textContent=topic?topic.title:(q.value.trim()?'Search results':`All ${payload.lessons.length} lessons`);
  const parts=[];
  if(q.value.trim())parts.push('query “'+q.value.trim()+'”');
  if(topic)parts.push(topic.title);
  if(activeStatus!=='all')parts.push(activeStatus==='published'?'published only':'in review only');
  if(activeFormat!=='all')parts.push(activeFormat);
- statusText.textContent='Showing '+visibleRows.length+' of '+rows.length+' matching entr'+(rows.length===1?'y':'ies')+' · '+payload.lessons.length+' total'+(parts.length?' · '+parts.join(' · '):'');
+ statusText.textContent='Showing '+visibleRows.length+' of '+rows.length+' matching lesson'+(rows.length===1?'':'s')+' · '+payload.lessons.length+' total'+(parts.length?' · '+parts.join(' · '):'');
  library.innerHTML=rows.length?visibleRows.map(item=>{
   const published=item.status==='published';
   const summary=item.objective||('Reference topic in '+item.topic+'.');
