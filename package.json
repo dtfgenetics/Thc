@@ -110,6 +110,8 @@
     "build:encyclopedia-assessment-rationales": "node scripts/build-encyclopedia-assessment-rationales.mjs",
     "verify:encyclopedia-assessment-rationales": "npm run build:encyclopedia-assessment-rationales && node scripts/validate-encyclopedia-assessment-rationales.mjs",
     "build:encyclopedia-visual-queue": "node scripts/build-encyclopedia-visual-production-queue.mjs",
+    "build:encyclopedia-visual-batches": "node scripts/build-encyclopedia-visual-production-batches.mjs",
+    "verify:encyclopedia-visual-batches": "npm run build:encyclopedia-visual-batches && node scripts/validate-encyclopedia-visual-production-batches.mjs",
     "verify:encyclopedia-visual-queue": "npm run build:encyclopedia-teaching-visuals && npm run build:encyclopedia-visual-queue && node scripts/validate-encyclopedia-visual-production-queue.mjs",
     "build:encyclopedia-source-queue": "node scripts/build-encyclopedia-source-resolution-queue.mjs",
     "verify:encyclopedia-source-queue": "npm run build:encyclopedia-source-queue && node scripts/validate-encyclopedia-source-resolution-queue.mjs",
