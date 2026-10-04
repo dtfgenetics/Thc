@@ -36,16 +36,43 @@ async function canonicalMediaIdentity(assetPath){
   return {full,hash,slug:`dtf-edu-${baseSlug}-${hash.slice(0,10)}`.slice(0,190)};
 }
 
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const transientStatuses=new Set([429,500,502,503,504]);
+const writeDelayMs=Math.max(0,Number(process.env.ENCYCLOPEDIA_VISUAL_WP_WRITE_DELAY_MS||100));
 async function request(endpoint,{method='GET',body}={}){
-  const res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{
-    method,
-    headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},
-    body:body?JSON.stringify(body):undefined
-  });
-  const text=await res.text(); let parsed;
-  try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
-  if(!res.ok) throw new Error(`${method} ${endpoint} failed ${res.status}: ${typeof parsed==='string'?parsed.slice(0,900):JSON.stringify(parsed).slice(0,900)}`);
-  return {data:parsed,headers:res.headers};
+  const retrySafe=method==='GET'||(method==='POST'&&/^\/(?:pages|media)\/\d+$/.test(endpoint))||(method==='DELETE'&&/^\/media\/\d+/.test(endpoint));
+  const maxAttempts=retrySafe?7:1;
+  let lastError=null;
+  for(let attempt=1;attempt<=maxAttempts;attempt+=1){
+    try{
+      const res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{
+        method,
+        headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},
+        body:body?JSON.stringify(body):undefined,
+        signal:AbortSignal.timeout(60_000)
+      });
+      const text=await res.text(); let parsed;
+      try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
+      if(res.ok){
+        if(method!=='GET'&&writeDelayMs) await sleep(writeDelayMs);
+        return {data:parsed,headers:res.headers};
+      }
+      const message=`${method} ${endpoint} failed ${res.status}: ${typeof parsed==='string'?parsed.slice(0,900):JSON.stringify(parsed).slice(0,900)}`;
+      if(!retrySafe||!transientStatuses.has(res.status)||attempt===maxAttempts) throw new Error(message);
+      const retryAfter=Number(res.headers.get('retry-after')||0);
+      const delay=retryAfter>0?retryAfter*1000:Math.min(15_000,750*(2**(attempt-1)));
+      console.warn(`${message} · retrying attempt ${attempt+1}/${maxAttempts} after ${delay}ms`);
+      await sleep(delay);
+    }catch(error){
+      lastError=error;
+      const retryableNetwork=retrySafe&&(error?.name==='TimeoutError'||error?.name==='AbortError'||/fetch failed|ECONNRESET|ETIMEDOUT|socket/i.test(String(error?.message||error)));
+      if(!retryableNetwork||attempt===maxAttempts) throw error;
+      const delay=Math.min(15_000,750*(2**(attempt-1)));
+      console.warn(`${method} ${endpoint} network error: ${String(error?.message||error)} · retrying attempt ${attempt+1}/${maxAttempts} after ${delay}ms`);
+      await sleep(delay);
+    }
+  }
+  throw lastError||new Error(`${method} ${endpoint} exhausted retries`);
 }
 async function wp(endpoint,opts){return (await request(endpoint,opts)).data;}
 function assertStoredVisual(x,page){
@@ -64,26 +91,59 @@ async function verifyStoredVisual(x){
   assertStoredVisual(x,stored);
   return stored;
 }
+async function recoverUploadedMedia(item,identity,defaultSlug){
+  const candidates=[];
+  for(const slug of [identity.slug,defaultSlug]){
+    const rows=await wp(`/media?slug=${encodeURIComponent(slug)}&context=edit&per_page=100`).catch(()=>[]);
+    for(const row of rows||[]) if(!candidates.some(x=>x.id===row.id)) candidates.push(row);
+  }
+  const matching=candidates.filter(row=>{
+    const source=String(row.source_url||'');
+    const filename=path.basename(item.assetPath).replace(/["\r\n]/g,'_');
+    return row.slug===identity.slug||row.slug===defaultSlug||source.endsWith('/'+filename);
+  });
+  if(matching.length>1) throw new Error(`${item.id}: ambiguous media recovery found ${matching.length} candidate uploads.`);
+  return matching[0]||null;
+}
 async function uploadCanonicalMedia(item,identity){
   const bytes=await readFile(identity.full);
   const ext=path.extname(item.assetPath).toLowerCase();
   const mime=ext==='.png'?'image/png':ext==='.webp'?'image/webp':'image/jpeg';
   const filename=path.basename(item.assetPath).replace(/["\r\n]/g,'_');
-  const res=await fetch(`${site}/wp-json/wp/v2/media`,{
-    method:'POST',
-    headers:{
-      Authorization:`Basic ${auth}`,
-      'Content-Type':mime,
-      'Content-Disposition':`attachment; filename="${filename}"`,
-      'Cache-Control':'no-cache, no-store, max-age=0',
-      Pragma:'no-cache'
-    },
-    body:bytes,
-    signal:AbortSignal.timeout(60_000)
-  });
-  const text=await res.text(); let created;
-  try{created=text?JSON.parse(text):null;}catch{created=text;}
-  if(!res.ok||!created?.id) throw new Error(`${item.id}: media upload failed ${res.status}: ${typeof created==='string'?created.slice(0,900):JSON.stringify(created).slice(0,900)}`);
+  const defaultSlug=slugify(filename.slice(0,-ext.length));
+  let created=null;
+  let lastError=null;
+  for(let attempt=1;attempt<=5;attempt+=1){
+    try{
+      const res=await fetch(`${site}/wp-json/wp/v2/media`,{
+        method:'POST',
+        headers:{
+          Authorization:`Basic ${auth}`,
+          'Content-Type':mime,
+          'Content-Disposition':`attachment; filename="${filename}"`,
+          'Cache-Control':'no-cache, no-store, max-age=0',
+          Pragma:'no-cache'
+        },
+        body:bytes,
+        signal:AbortSignal.timeout(60_000)
+      });
+      const text=await res.text();
+      try{created=text?JSON.parse(text):null;}catch{created=text;}
+      if(res.ok&&created?.id) break;
+      const message=`${item.id}: media upload failed ${res.status}: ${typeof created==='string'?created.slice(0,900):JSON.stringify(created).slice(0,900)}`;
+      if(!transientStatuses.has(res.status)||attempt===5) throw new Error(message);
+      lastError=new Error(message);
+    }catch(error){
+      lastError=error;
+      const recovered=await recoverUploadedMedia(item,identity,defaultSlug);
+      if(recovered){created=recovered;break;}
+      if(attempt===5) throw error;
+    }
+    const delay=Math.min(15_000,1000*(2**(attempt-1)));
+    console.warn(`${item.id}: retrying media upload attempt ${attempt+1}/5 after ${delay}ms`);
+    await sleep(delay);
+  }
+  if(!created?.id) throw lastError||new Error(`${item.id}: media upload exhausted retries`);
   const description=`DTF Genetics THC Encyclopedia companion teaching visual. Repository path: ${item.assetPath}. SHA-256: ${identity.hash}.`;
   const updated=await wp(`/media/${created.id}`,{method:'POST',body:{
     slug:identity.slug,
@@ -108,15 +168,23 @@ async function getAll(endpoint){
 }
 
 const pagePreflightById=new Map();
-for(const item of map.items){
-  const pages=await wp(`/pages?slug=${encodeURIComponent(stablePageSlug(item.id))}&context=edit&per_page=100`);
-  const pageMatches=(pages||[]).filter(p=>String(p.content?.raw||'').includes(`data-thc-encyclopedia-id=\\"${item.id}\\"`)||String(p.content?.raw||'').includes(`data-thc-encyclopedia-id="${item.id}"`));
-  if(pageMatches.length!==1) throw new Error(`${item.id}: expected exactly one canonical encyclopedia page, found ${pageMatches.length}.`);
-  const page=pageMatches[0];
-  const raw=String(page.content?.raw||'');
-  if(!raw.includes('<h2>Terms to know</h2>')) throw new Error(`${item.id}: canonical insertion marker is missing.`);
-  pagePreflightById.set(item.id,{page,raw});
+const preflightConcurrency=Math.max(1,Math.min(20,Number(process.env.ENCYCLOPEDIA_VISUAL_PREFLIGHT_CONCURRENCY||8)));
+let preflightNext=0;
+async function preflightWorker(){
+  while(true){
+    const index=preflightNext++;
+    if(index>=map.items.length) return;
+    const item=map.items[index];
+    const pages=await wp(`/pages?slug=${encodeURIComponent(stablePageSlug(item.id))}&context=edit&per_page=100`);
+    const pageMatches=(pages||[]).filter(p=>String(p.content?.raw||'').includes(`data-thc-encyclopedia-id=\\"${item.id}\\"`)||String(p.content?.raw||'').includes(`data-thc-encyclopedia-id="${item.id}"`));
+    if(pageMatches.length!==1) throw new Error(`${item.id}: expected exactly one canonical encyclopedia page, found ${pageMatches.length}.`);
+    const page=pageMatches[0];
+    const raw=String(page.content?.raw||'');
+    if(!raw.includes('<h2>Terms to know</h2>')) throw new Error(`${item.id}: canonical insertion marker is missing.`);
+    pagePreflightById.set(item.id,{page,raw});
+  }
 }
+await Promise.all(Array.from({length:preflightConcurrency},()=>preflightWorker()));
 if(pagePreflightById.size!==map.items.length) throw new Error('Page preflight did not resolve every visual-map lesson.');
 
 const media=await getAll('/media?context=edit&orderby=id&order=asc');
