@@ -16,6 +16,7 @@ import { inspectAcceptanceContract, normalizeAcceptanceCriterion } from './orche
 import { classifyVerificationFailure } from './orchestrator/verification.mjs'
 import { applyRepairPlan, planRepair } from './orchestrator/repair.mjs'
 import { recordDeploymentComplete, recordLiveVerification, startProductionRelease } from './orchestrator/release.mjs'
+import { executorDemand, executorQueue } from './orchestrator/executor-pool.mjs'
 import { buildOperatorStatus } from './orchestrator/operator-status.mjs'
 
 const config = validateConfig({
@@ -717,3 +718,9 @@ const done = recordLiveVerification(live,{workflowRunId:9001,sourceSha:'abc123',
 assert.equal(done.state,'DONE')
 assert.throws(()=>recordLiveVerification(live,{workflowRunId:9001,sourceSha:'wrong',checks:[{target:'/learn/',ok:true}]}),/does not match release source/)
 assert.throws(()=>recordDeploymentComplete(deploying,{workflowRunId:9001,conclusion:'failure'}),/must be success/)
+
+
+const repairReady = { ...repairJob, state:'REPAIRING', repair:{ workerKind:'test-repair', nextEligibleAt:'2026-10-04T00:00:00.000Z' } }
+assert.equal(executorDemand(repairReady,{now:new Date('2026-10-04T00:01:00Z')}).workerKind,'test-repair')
+assert.equal(executorDemand({...repairReady,repair:{...repairReady.repair,nextEligibleAt:'2026-10-04T01:00:00.000Z'}},{now:new Date('2026-10-04T00:01:00Z')}).ready,false)
+assert.equal(executorQueue([repairReady],{now:new Date('2026-10-04T00:01:00Z')}).length,1)
