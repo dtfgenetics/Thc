@@ -87,15 +87,8 @@ jobs:
         run: npm run verify:encyclopedia-source-pin
       - name: Resolve pinned canonical encyclopedia revision
         run: node scripts/resolve-encyclopedia-deployment-target.mjs --github-env
-      - name: Checkout pinned canonical encyclopedia source
-        uses: actions/checkout@v4
-        with:
-          repository: dtfgenetics/thc-grow-hub
-          ref: ${{ env.THC_ENCYCLOPEDIA_SOURCE_SHA }}
-          path: .canonical/thc-grow-hub
-          persist-credentials: false
       - name: Verify pinned canonical source parity
-        run: npm run verify:encyclopedia-source-parity -- --canonical-root .canonical/thc-grow-hub
+        run: npm run verify:encyclopedia-source-parity
       - name: Validate forward-only production pointer
         run: node scripts/validate-encyclopedia-production-pointer.mjs
       - name: Validate shared authoritative source bridge
