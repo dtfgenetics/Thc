@@ -85,7 +85,7 @@ jobs:
           node - <<'NODE'
           const fs = require('node:fs');
           const manifest = JSON.parse(fs.readFileSync('site/wordpress/seo/core-page-meta.json', 'utf8'));
-          const attr = (tag, name) => tag.match(new RegExp(name + '=["\\']([^"\\']*)["\\']', 'i'))?.[1] || '';
+          const attr = (tag, name) => tag.match(new RegExp(name + "=[\\\"']([^\\\"']*)[\\\"']", "i"))?.[1] || '';
           const meta = (html) => {
             const out = { description: '', ogDescription: '', twitterDescription: '' };
             for (const tag of html.match(/<meta\b[^>]*>/gi) || []) {
