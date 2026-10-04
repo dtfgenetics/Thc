@@ -6,20 +6,24 @@ on:
     paths:
       - scripts/package-public-suite-wordpress.py
       - scripts/test-wordpress-suite-shared-assets-parity.py
+      - scripts/test-public-tool-inline-modules.py
       - scripts/assemble-wordpress-suite-v2.py
       - scripts/wordpress_suite_registry_patch.py
       - scripts/wordpress-suite-v2/**
       - site/deployment/public-apps.json
+      - site/public-route-patch/*/index.html
       - .github/workflows/wordpress-suite-registry-parity.yml
   push:
     branches: [main]
     paths:
       - scripts/package-public-suite-wordpress.py
       - scripts/test-wordpress-suite-shared-assets-parity.py
+      - scripts/test-public-tool-inline-modules.py
       - scripts/assemble-wordpress-suite-v2.py
       - scripts/wordpress_suite_registry_patch.py
       - scripts/wordpress-suite-v2/**
       - site/deployment/public-apps.json
+      - site/public-route-patch/*/index.html
       - .github/workflows/wordpress-suite-registry-parity.yml
 
 permissions:
@@ -48,8 +52,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m py_compile scripts/assemble-wordpress-suite-v2.py scripts/wordpress_suite_registry_patch.py
+          python -m py_compile scripts/assemble-wordpress-suite-v2.py scripts/wordpress_suite_registry_patch.py scripts/test-public-tool-inline-modules.py
           python scripts/test-wordpress-suite-shared-assets-parity.py
+          python scripts/test-public-tool-inline-modules.py
           python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           python scripts/wordpress_suite_registry_patch.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs" | tee "$RUNNER_TEMP/registry-parity.json"
           grep -Fq '"breeder-pedigree"' "$RUNNER_TEMP/registry-parity.json"
