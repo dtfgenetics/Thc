@@ -1,0 +1,74 @@
+name: Build THC Encyclopedia Visual Production Batches
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'content/encyclopedia/visual-production-queue-v1.json'
+      - 'scripts/build-encyclopedia-visual-production-batches.mjs'
+      - 'scripts/validate-encyclopedia-visual-production-batches.mjs'
+      - '.github/workflows/encyclopedia-visual-production-batches.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: encyclopedia-visual-production-batches
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build and validate controlled visual batches
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build current visual production queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-teaching-visuals.mjs
+          node scripts/build-encyclopedia-visual-production-queue.mjs
+          node scripts/validate-encyclopedia-visual-production-queue.mjs
+
+      - name: Build review-controlled production batches
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-visual-production-batches.mjs
+          node scripts/validate-encyclopedia-visual-production-batches.mjs
+          test -s content/encyclopedia/visual-production-batches/index.json
+
+      - name: Commit refreshed production packets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add content/encyclopedia/visual-production-queue-v1.json content/encyclopedia/visual-production-batches
+          if git diff --cached --quiet; then
+            echo 'Visual production packets are already current.'
+          else
+            git commit -m 'Refresh encyclopedia visual production batches'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Upload production packet evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: encyclopedia-visual-production-batches-${{ github.run_id }}
+          path: |
+            content/encyclopedia/visual-production-queue-v1.json
+            content/encyclopedia/visual-production-batches
+          if-no-files-found: error
+          retention-days: 30
