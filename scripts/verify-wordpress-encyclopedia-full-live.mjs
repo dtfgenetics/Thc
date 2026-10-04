@@ -1,8 +1,17 @@
 #!/usr/bin/env node
+import fs from 'node:fs';
+
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
+const manifestPath=process.env.ENCYCLOPEDIA_FULL_BATCH_FILE||'site/wordpress/education/encyclopedia/full-420-production-batch.generated.json';
 const concurrency=Math.max(1,Number(process.env.ENCYCLOPEDIA_VERIFY_CONCURRENCY||8));
 const attempts=Math.max(1,Number(process.env.ENCYCLOPEDIA_VERIFY_ATTEMPTS||4));
-const ids=Array.from({length:420},(_,i)=>`THC-ENC-${String(i+1).padStart(3,'0')}`);
+const manifest=JSON.parse(fs.readFileSync(manifestPath,'utf8'));
+const ids=(manifest.lessonFiles||[]).map(file=>{
+  const match=String(file).match(/thc-enc-(\d{3})\.json$/i);
+  if(!match) throw new Error(`Invalid encyclopedia lesson path in manifest: ${file}`);
+  return `THC-ENC-${match[1]}`;
+});
+if(!ids.length) throw new Error('Publication manifest contains no lesson IDs.');
 const queue=[...ids], failures=[];
 let verified=0;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -23,5 +32,5 @@ async function verify(id){
 }
 async function worker(){while(queue.length){const id=queue.shift();if(id)await verify(id);}}
 await Promise.all(Array.from({length:concurrency},()=>worker()));
-if(failures.length){console.error(`Full encyclopedia live verification failed: ${failures.length}/420 route(s).`);for(const row of failures.slice(0,80))console.error(` - ${row.id}: ${row.error}`);process.exit(1);}
-console.log(`Full encyclopedia live verification PASS: ${verified}/420 canonical lesson routes.`);
+if(failures.length){console.error(`Authorized encyclopedia live verification failed: ${failures.length}/${ids.length} route(s).`);for(const row of failures.slice(0,80))console.error(` - ${row.id}: ${row.error}`);process.exit(1);}
+console.log(`Authorized encyclopedia live verification PASS: ${verified}/${ids.length} canonical lesson routes.`);
