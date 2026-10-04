@@ -107,6 +107,15 @@ assert(library.includes('48 core reference slots'),'Visual library must expose t
 assert(library.includes('Reference image, not decoration.'),'Visual library must expose the new production standard');
 assert(!/<img\b/i.test(library),'Static visual library must not reintroduce unapproved images');
 
+
+const encyclopediaVisualPublisher=fs.readFileSync(path.join(root,'scripts/attach-wordpress-encyclopedia-visuals.mjs'),'utf8');
+assert(encyclopediaVisualPublisher.includes('async function verifyStoredVisual(x)'),'Encyclopedia visual publisher must verify authenticated WordPress storage after each write');
+assert(encyclopediaVisualPublisher.includes('?context=edit'),'Encyclopedia visual publisher must read authenticated raw content after each write');
+assert(encyclopediaVisualPublisher.includes('storedContentVerified:false'),'Encyclopedia visual publisher must track the mutation before storage verification so rollback includes false-positive writes');
+assert(encyclopediaVisualPublisher.includes('mutation.storedContentVerified=true'),'Encyclopedia visual publisher must only mark stored-content verification after the authenticated read passes');
+assert(encyclopediaVisualPublisher.includes('WordPress stored-content verification is missing the mapped media URL.'),'Encyclopedia visual publisher must reject stored content that loses the mapped media URL');
+assert(encyclopediaVisualPublisher.includes('WordPress stored-content verification lost the canonical lesson identity marker.'),'Encyclopedia visual publisher must preserve canonical lesson identity during visual writes');
+
 if(errors.length){
   console.error(`Education visual-system validation failed with ${errors.length} issue(s):`);
   for(const error of errors) console.error(' - '+error);
