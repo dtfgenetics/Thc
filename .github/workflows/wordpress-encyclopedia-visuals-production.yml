@@ -84,7 +84,7 @@ jobs:
           BACKUP_ROOT: /tmp/dtf-encyclopedia-full-sync
         run: |
           set -euo pipefail
-          node scripts/publish-wordpress-encyclopedia-canonical-batch.mjs | tee "$RUNNER_TEMP/encyclopedia-full-sync.json"
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-encyclopedia-canonical-batch.mjs | tee "$RUNNER_TEMP/encyclopedia-full-sync.json"
           report="$(find "$BACKUP_ROOT" -name encyclopedia-publication-report.json -type f | sort | tail -n 1)"
           test -s "$report"
           expected="$(node -p "require('./' + process.env.ENCYCLOPEDIA_FULL_BATCH_FILE).lessonFiles.length")"
@@ -98,7 +98,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/verify-wordpress-encyclopedia-full-live.mjs
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-wordpress-encyclopedia-full-live.mjs
 
       - name: Generate full controlled visual set
         shell: bash
@@ -137,7 +137,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/attach-wordpress-encyclopedia-visuals.mjs
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/attach-wordpress-encyclopedia-visuals.mjs
           report="$(find "$BACKUP_ROOT" -name encyclopedia-visual-publication-report.json -type f | sort | tail -n 1)"
           test -s "$report"
           echo "report=$report" >> "$GITHUB_OUTPUT"
