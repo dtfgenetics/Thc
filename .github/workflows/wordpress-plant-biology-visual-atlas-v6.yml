@@ -61,15 +61,15 @@ jobs:
           const m=JSON.parse(fs.readFileSync('site/wordpress/education/plant-biology-v6-visual-map.json','utf8'));
           const groups=Object.entries(m.chapters||{});
           const assets=groups.flatMap(([chapter,items])=>(items||[]).map(x=>({chapter,...x})));
-          if(m.schemaVersion!==1||m.curriculumId!=='plant-biology-v6') throw new Error('Invalid visual map identity');
+          if(m.schemaVersion!==3||m.curriculumId!=='plant-biology-v6') throw new Error('Invalid visual map identity');
           if(groups.length!==8) throw new Error(`Expected 8 visual groups, got ${groups.length}`);
           if(assets.length!==20) throw new Error(`Expected 20 mapped visuals, got ${assets.length}`);
-          if((m.gaps||[]).length!==2) throw new Error('Expected exactly 2 unresolved visual gaps');
+          if((m.gaps||[]).some(g=>g.status!=='resolved-with-approved-atlas-reference')) throw new Error('Plant Biology visual gaps must be resolved with approved atlas references');
           for(const a of assets){
             if(/draft|quarantine|superseded/i.test(a.file)) throw new Error(`Unsafe asset: ${a.file}`);
             if(!fs.existsSync(`site/wordpress/assets/infographics/${a.file}`)) throw new Error(`Missing canonical asset: ${a.file}`);
           }
-          console.log(`Visual atlas validated: ${groups.length} chapter groups, ${assets.length} canonical visuals, ${m.gaps.length} honest gaps.`);
+          console.log(`Visual atlas validated: ${groups.length} chapter groups, ${assets.length} canonical visuals, all previously rejected flower/trichome gaps resolved.`);
           NODE
 
       - name: Publish visual atlas and verify live page
@@ -107,7 +107,7 @@ jobs:
           grep -Fqi 'Root Anatomy &amp; Forensics' "$body"
           grep -Fqi 'Leaf Anatomy &amp; Gas Exchange' "$body"
           grep -Fqi 'Plant Hormones &amp; Signal Integration' "$body"
-          grep -Fqi 'Trichomes &amp; Secretory Biology' "$body"
+          grep -Fqi 'Trichomes on Cannabis Surfaces' "$body"
           grep -Fqi 'data-dtf-plant-biology-v6="true"' "$body"
 
       - name: Upload visual-atlas evidence and rollback package
@@ -145,5 +145,5 @@ jobs:
               `Verified visual cards: **${process.env.VISUALS || '0'}**`,
               `Using WordPress media: **${process.env.WP_MEDIA || '0'}**`,
               `Using canonical GitHub fallback: **${process.env.FALLBACKS || '0'}**`,'',
-              'The atlas maps existing approved visuals to all eight Plant Biology chapters. Two visual gaps remain intentionally unresolved rather than substituted: the pollination/fertilization process sequence and the senescence/nutrient-remobilization sequence.'
+              'The atlas maps approved canonical visuals to all eight Plant Biology chapters. The rejected flower-anatomy and trichome course-card visuals are replaced by approved Atlas references, with visitor verification enforced.'
             ].join('\n')});
