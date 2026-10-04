@@ -19,7 +19,7 @@ export async function ensureCanonicalLearnRoot({
 
   async function request(path,options={}){
     const method=String(options.method||'GET').toUpperCase();
-    const max=method==='GET'?6:3;
+    const max=method==='GET'?6:1;
     let last;
     for(let attempt=1;attempt<=max;attempt+=1){
       try{
