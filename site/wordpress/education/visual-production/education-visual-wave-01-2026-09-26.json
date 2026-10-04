@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "batchId": "education-visual-wave-01-2026-09-26",
+  "status": "review-candidate",
+  "policy": {
+    "rasterOnly": true,
+    "publicBeforeApproval": false,
+    "requiredChecks": [
+      "subjectAccuracy",
+      "scientificSources",
+      "altText",
+      "mobile",
+      "tablet",
+      "desktop"
+    ],
+    "note": "Generated masters exist outside the repository runtime. This registry establishes canonical filenames, course slots, scientific purpose, alt text, captions, and evidence boundaries before binary ingest."
+  },
+  "assets": [
+    {
+      "id": "THC-LIGHT-01",
+      "file": "THC-LIGHT-01_PPFD_DLI_Photoperiod_Full_Sheet_Infographic.png",
+      "curriculumId": "lighting-v6",
+      "route": "/learn/lighting/",
+      "slot": "lighting-01",
+      "role": "core-diagram",
+      "title": "PPFD, DLI & Photoperiod",
+      "teachingPurpose": "Separate source output, crop-plane photon density, accumulated daily photon dose, and delivery schedule; teach repeatable crop-plane measurement rather than single-point fixture claims.",
+      "placement": [
+        "lighting overview",
+        "PPFD/DLI lesson",
+        "measurement-method sidebar"
+      ],
+      "altText": "Educational infographic explaining PPF, PPFD and DLI, showing crop-plane light measurement under a fixture, the DLI equation for constant PPFD, and several mathematically equal daily-light schedules.",
+      "caption": "PPFD is an instantaneous crop-plane photon-density measurement; DLI integrates photosynthetic photons across the photoperiod. Equal DLI does not by itself establish equal biological response.",
+      "scientificNotes": [
+        "PPFD is expressed as micromoles of photosynthetic photons per square meter per second.",
+        "DLI is expressed as moles of photosynthetic photons per square meter per day.",
+        "For constant PPFD, DLI = PPFD × photoperiod(hours) × 0.0036.",
+        "Interpret PPFD/DLI with spectrum, leaf temperature, environment, crop stage, genetics, canopy geometry and water status."
+      ],
+      "sources": [
+        {
+          "title": "Indoor Lighting for Controlled-Environment Agriculture",
+          "publisher": "Michigan State University Extension",
+          "url": "https://www.canr.msu.edu/floriculture/uploads/files/Indoor%20lighting%20guide-mid.pdf"
+        },
+        {
+          "title": "Daily Light Integral Defined",
+          "publisher": "Michigan State University",
+          "url": "https://www.canr.msu.edu/uploads/resources/pdfs/dailylightintegraldefined.pdf"
+        }
+      ],
+      "masterState": "generated-local-awaiting-binary-ingest"
+    },
+    {
+      "id": "THC-WATER-01",
+      "file": "THC-WATER-01_pH_vs_Alkalinity_Buffering_Full_Sheet_Infographic.png",
+      "curriculumId": "water-root-zone-v6",
+      "route": "/learn/water-ph-ec/",
+      "slot": "water-root-zone-chemistry-01",
+      "role": "core-diagram",
+      "title": "pH vs Alkalinity: Why Buffering Matters",
+      "teachingPurpose": "Prevent the common error of treating water pH as a proxy for alkalinity and connect source-water buffering to repeated root-zone pH drift.",
+      "placement": [
+        "pH/alkalinity lesson",
+        "water-quality module",
+        "root-zone chemistry reference"
+      ],
+      "altText": "Educational infographic comparing pH with alkalinity, showing two waters with similar pH but different acid-neutralizing capacity and a flow from source water through fertilizer, media, roots and irrigation history to root-zone pH.",
+      "caption": "pH describes the current acid-base state; alkalinity describes acid-neutralizing capacity. A water pH measurement by itself does not establish alkalinity.",
+      "scientificNotes": [
+        "Alkalinity commonly reflects bicarbonate, carbonate and hydroxide contributions and is usually reported as calcium-carbonate equivalents.",
+        "High alkalinity can increase the amount of acid required to shift water pH and can contribute to growing-medium pH drift over repeated irrigation.",
+        "Hardness and alkalinity are different measurements.",
+        "Root-zone pH should be trended using a declared and consistent sampling method rather than inferred from reservoir pH."
+      ],
+      "sources": [
+        {
+          "title": "A Water Quality Toolkit for Greenhouse and Nursery Production",
+          "publisher": "Penn State Extension",
+          "url": "https://extension.psu.edu/a-water-quality-toolkit-for-greenhouse-and-nursery-production"
+        },
+        {
+          "title": "Water Quality: pH and Alkalinity",
+          "publisher": "UMass Extension",
+          "url": "https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/water-quality-ph-alkalinity"
+        }
+      ],
+      "masterState": "generated-local-awaiting-binary-ingest"
+    },
+    {
+      "id": "THC-EVID-04",
+      "file": "THC-EVID-04_Measurement_Quality_Uncertainty_Full_Sheet_Infographic.png",
+      "curriculumId": "evidence-measurement-v6",
+      "route": "/learn/research-methods/",
+      "slot": "evidence-measurement-04",
+      "role": "core-diagram",
+      "title": "Measurement Quality & Uncertainty",
+      "teachingPurpose": "Teach that accuracy, precision/repeatability, resolution and uncertainty are distinct; require enough metadata to reproduce and interpret a cultivation measurement.",
+      "placement": [
+        "measurement-quality lesson",
+        "diagnostic-methods lesson",
+        "recordkeeping reference"
+      ],
+      "altText": "Educational infographic showing four accuracy-and-precision target patterns, a measurement chain from true condition through sampling and instrument to interpretation, and a checklist of metadata required for reproducible readings.",
+      "caption": "A reported number is only interpretable when its method, unit, instrument state, sampling context and uncertainty are known.",
+      "scientificNotes": [
+        "Accuracy and precision are distinct concepts and should not be treated as synonyms.",
+        "Measurement uncertainty characterizes dispersion attributable to the measurand based on available information.",
+        "Display resolution or extra decimal places do not by themselves establish measurement accuracy.",
+        "Raw values, units, calibration state, sample identity, time, location and method should be preserved."
+      ],
+      "sources": [
+        {
+          "title": "NIST TN 1297 Appendix D1: Terminology",
+          "publisher": "NIST",
+          "url": "https://www.nist.gov/pml/nist-technical-note-1297/nist-tn-1297-appendix-d1-terminology"
+        },
+        {
+          "title": "Measurement Uncertainty",
+          "publisher": "NIST",
+          "url": "https://www.nist.gov/glossary-term/39291"
+        }
+      ],
+      "masterState": "generated-local-awaiting-binary-ingest"
+    }
+  ],
+  "nextWave": [
+    "THC-ENV-01 Sensor Placement, Dew Point & Canopy Microclimates",
+    "THC-WATER-02 EC, PPM/TDS & Irrigation Dryback Measurement",
+    "THC-IPM-01 Scouting Map → Differential Diagnosis → Action Threshold",
+    "THC-LIFE-01 Seed Vigor, Storage & Germination Testing",
+    "THC-HARV-17 Trichome Sampling & Microscope Technique"
+  ]
+}

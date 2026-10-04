@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "batchId": "education-visual-wave-01-2026-09-26",
+  "lessons": [
+    {
+      "curriculumId": "lighting-v6",
+      "topic": "PPFD, DLI and photoperiod",
+      "expandedExplanation": [
+        "PPFD is a rate: it describes how many photons in the conventional photosynthetically active waveband arrive at a square meter each second. Because crop geometry is spatially uneven, a single center reading can hide edge falloff, fixture overlap and differences caused by canopy height.",
+        "DLI is an accumulated dose across the day. Under constant PPFD, multiplying PPFD by photoperiod and 0.0036 converts micromoles per square meter per second into moles per square meter per day.",
+        "Equal DLI is a mathematical equivalence in delivered daily photon quantity, not proof of biological equivalence. Plants can respond differently when the same DLI is delivered using different instantaneous intensities, spectra, temperatures, carbon-dioxide concentrations, water status, stages or canopy structures."
+      ],
+      "commonErrors": [
+        "Calling fixture output PPF a crop-plane PPFD reading.",
+        "Measuring above the canopy rather than at the active crop plane.",
+        "Using one center measurement to describe a whole canopy.",
+        "Treating an equal DLI as evidence that two lighting schedules are biologically interchangeable."
+      ],
+      "appliedExercise": "Create a repeatable canopy grid, record PPFD at each coordinate with fixed sensor height/orientation, calculate summary statistics, then repeat after a documented fixture or canopy-height change."
+    },
+    {
+      "curriculumId": "water-root-zone-v6",
+      "topic": "pH, alkalinity and buffering",
+      "expandedExplanation": [
+        "Water pH describes the current acid-base state at the time of measurement. Alkalinity describes how strongly dissolved constituents can neutralize added acid and therefore how resistant the water is to a pH shift.",
+        "Two irrigation waters can have similar pH yet different alkalinity. The higher-alkalinity source generally requires more acid to produce the same pH shift and can exert a stronger cumulative effect on growing-medium pH.",
+        "Root-zone pH is an outcome of the whole system: source-water chemistry, fertilizer form, media buffering, root activity, irrigation volume/frequency, leaching and evaporation all contribute. The reservoir pH should therefore not be treated as a direct measurement of root-zone pH."
+      ],
+      "commonErrors": [
+        "Assuming high water pH automatically means high alkalinity.",
+        "Treating hardness and alkalinity as the same measurement.",
+        "Chasing small pH changes without considering meter resolution, calibration and sampling method.",
+        "Applying a universal root-zone pH interpretation across different extraction/sampling methods."
+      ],
+      "appliedExercise": "Compare source-water pH and alkalinity with a repeated root-zone pH series collected by one declared method. Annotate fertilizer changes and irrigation events before interpreting drift."
+    },
+    {
+      "curriculumId": "evidence-measurement-v6",
+      "topic": "measurement quality and uncertainty",
+      "expandedExplanation": [
+        "Accuracy describes agreement with an accepted reference or measurand, whereas precision concerns agreement among repeated measurements under specified conditions. A method can be repeatable yet biased.",
+        "Resolution describes how finely an instrument displays or distinguishes changes; it is not the same as accuracy. More displayed digits can create false confidence when calibration, method variability or sensor drift are larger than the last digit.",
+        "Measurement uncertainty communicates the dispersion reasonably attributable to the measurement result. For cultivation decisions, uncertainty can arise from the instrument, calibration, sampling position, timing, environmental variability and the method itself."
+      ],
+      "commonErrors": [
+        "Using accuracy and precision as synonyms.",
+        "Treating display resolution as proof of accuracy.",
+        "Deleting unexpected readings without preserving the original observation and reason for exclusion.",
+        "Comparing values collected by different methods as though the methods were interchangeable."
+      ],
+      "appliedExercise": "Choose one cultivation measurement and document instrument/model, calibration/reference check, unit, sample identity, location, time, method, raw readings and repeatability. Write a conclusion whose certainty matches the evidence."
+    }
+  ]
+}
