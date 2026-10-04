@@ -60,7 +60,7 @@ assert.equal(snapshot.visibleWords[0].word,'AB');
 assert.equal('start' in snapshot.visibleWords[0],false);
 assert.equal('end' in snapshot.visibleWords[0],false);
 assert.equal(api.selectCell(0,0),true);
-assert.deepEqual(getStart(),[0,0]);
+assert.deepEqual(Array.from(getStart()),[0,0]);
 assert.throws(()=>api.selectCell(9,9),/Unsupported Lost in the Terps cell/);
 assert.equal(api.hint(),true);
 snapshot=api.snapshot();
