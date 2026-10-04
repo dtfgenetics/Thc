@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root=process.cwd();
 const renderPng=process.argv.includes('--render-png');
@@ -73,7 +74,8 @@ ${textLines(guard,100,880,29,'guard')}
 }
 
 const lessons=readCanonicalEncyclopediaLessons(root).sort((a,b)=>Number(a.number)-Number(b.number));
-if(lessons.length!==420)throw new Error(`Expected 420 canonical lessons, found ${lessons.length}`);
+const registryState=loadEncyclopediaRegistry(root);
+if(lessons.length!==registryState.totalCount)throw new Error(`Expected ${registryState.totalCount} registered canonical lessons, found ${lessons.length}`);
 const items=[];
 let generated=0,reused=0;
 for(const lesson of lessons){
@@ -99,5 +101,5 @@ for(const lesson of lessons){
 }
 const map={schemaVersion:1,batch:'encyclopedia-all-visuals-v1',generatedAt:new Date().toISOString(),reviewState:'generated_candidates_pending_independent_science_accessibility_and_asset_qa',publicationEffect:'none_review_state_unchanged',lessonCount:items.length,reusedCanonicalRaster:reused,generatedCandidates:generated,items};
 fs.writeFileSync(mapPath,JSON.stringify(map,null,2)+'\n');
-console.log(`Encyclopedia teaching visuals: ${items.length}/420 mapped · ${reused} canonical raster reused · ${generated} generated raster candidate(s) · raster-only policy enforced · renderPng=${renderPng}`);
+console.log(`Encyclopedia teaching visuals: ${items.length}/${registryState.totalCount} mapped · ${reused} canonical raster reused · ${generated} generated raster candidate(s) · raster-only policy enforced · renderPng=${renderPng}`);
 console.log('Wrote '+path.relative(root,mapPath));
