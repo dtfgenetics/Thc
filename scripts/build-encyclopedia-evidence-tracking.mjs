@@ -36,6 +36,9 @@ const registry = { entries: registryState.entries };
 const sourceRegistry = fs.existsSync(sourceRegistryPath) ? readJson(sourceRegistryPath) : { sources: [] };
 const batches = readEvidenceBatches();
 const lessons = readCanonicalEncyclopediaLessons(root);
+const sourceQueuePath = path.join(root, 'data', 'encyclopedia-source-resolution-queue.json');
+const sourceQueue = fs.existsSync(sourceQueuePath) ? readJson(sourceQueuePath) : { references: [] };
+const sourceReferenceById = new Map(arr(sourceQueue.references).map(row => [row.referenceId, row]));
 
 const volumeSources = [];
 for (const volumeInfo of discoverEncyclopediaVolumes(root)) {
@@ -74,6 +77,7 @@ for (const batch of batches) {
       evidenceId: item.evidenceId,
       batchId: batch.batchId,
       sourceIds: arr(item.sourceIds),
+      sourceReferenceIds: arr(item.sourceReferenceIds),
       claimType: item.claimType,
       reviewState: item.reviewState
     });
@@ -95,7 +99,14 @@ function recordFor(entry) {
   const resolvedFromNotes = refs.map(ref => sourceById.has(ref) ? ref : sourceAliasToId.get(ref)).filter(Boolean);
   const claimEvidence = evidenceByLesson.get(entry.id) || [];
   const resolvedFromEvidence = claimEvidence.flatMap(item => arr(item.sourceIds)).filter(id => sourceById.has(id));
-  const authoritativeSourceIds = [...new Set([...resolvedFromNotes, ...resolvedFromEvidence])].sort();
+  const resolvedFromReferenceEvidence = claimEvidence.flatMap(item => arr(item.sourceReferenceIds)).flatMap(refId => {
+    const ref = sourceReferenceById.get(refId);
+    if (!ref || ref.traceabilityRequired === false || ref.traceable !== true) return [];
+    const out = [...arr(ref.resolvedAuthoritativeSourceIds)];
+    if (ref.volumeRegistryRecord?.id && /^https:\/\//.test(String(ref.volumeRegistryRecord?.location || ''))) out.push(ref.volumeRegistryRecord.id);
+    return out;
+  }).filter(id => sourceById.has(id));
+  const authoritativeSourceIds = [...new Set([...resolvedFromNotes, ...resolvedFromEvidence, ...resolvedFromReferenceEvidence])].sort();
   const unresolvedSourceRefs = refs.filter(ref => !sourceById.has(ref) && !sourceAliasToId.has(ref));
   const publicationAuthorized = lesson?.reviewControl?.publicationAuthorized ?? lesson?.publicationAuthorized ?? null;
   const evidenceStatus = claimEvidence.length
