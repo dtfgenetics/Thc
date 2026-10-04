@@ -28,6 +28,9 @@ if(/upsertPage\(\{slug:'encyclopedia'/.test(encyclopediaPublisher)) errors.push(
 if(/wp\(`\/pages\/\$\{encyclopedia\.id\}`/.test(topicOrganizer)) errors.push('topic organizer must not rewrite the searchable /learn/encyclopedia/ root');
 if(!encyclopediaPublisher.includes("rootOwner:'learning-center-publisher'")) errors.push('encyclopedia lesson publisher must report Learning Center ownership of the root');
 if(!topicOrganizer.includes("rootOwner:'learning-center-publisher'")) errors.push('topic organizer must report Learning Center ownership of the root');
+if(!generic.includes('new Set([429, 502, 503, 504])')) errors.push('generic WordPress publisher must retry transient 429/502/503/504 responses');
+if(!generic.includes('maxAttempts = Number(options.maxAttempts || 5)')) errors.push('generic WordPress publisher must keep bounded retry attempts');
+if(!generic.includes("response.headers.get('retry-after')")) errors.push('generic WordPress publisher must honor Retry-After when present');
 
 const academy=(overlay.legacyCompatibilityRoutes||[]).find(x=>x.prefix==='learn/academy');
 if(!academy) errors.push('/learn/academy/ must remain explicitly classified as legacy compatibility while staged');
