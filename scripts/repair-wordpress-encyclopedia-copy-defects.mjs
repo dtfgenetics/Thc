@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 import { writeFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { effectiveLessonAssessment } from './lib/encyclopedia-assessment-v2.mjs';
 
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const user=process.env.WP_API_USERNAME||'';
@@ -14,6 +16,18 @@ if(!user||!pass) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are requir
 const auth='Basic '+Buffer.from(`${user}:${pass}`).toString('base64');
 const malformedPublicCopy=/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i;
 const genericMisconceptionPlaceholder=/Correction:\s*See the (?:controlled )?lesson evidence and context\.?/i;
+const fingerprintOf=a=>createHash('sha256').update(JSON.stringify({
+  id:a.id,title:a.title,objective:a.objective,terms:a.terms,coreScience:a.coreScience,
+  cultivationRelevance:a.cultivationRelevance,measureAndRecord:a.measureAndRecord,
+  misconceptions:a.misconceptions,evidenceLimits:a.evidenceLimits,crossLinks:a.crossLinks,
+  sourceNotes:a.sourceNotes,assessment:effectiveLessonAssessment(a).prompts
+})).digest('hex').slice(0,24);
+const hasStructuredData=(html,id)=>String(html||'').includes('application/ld+json') &&
+  String(html||'').includes('"LearningResource"') &&
+  String(html||'').includes('"Article"') &&
+  String(html||'').includes('"BreadcrumbList"') &&
+  String(html||'').includes('"identifier":"'+id+'"');
+const liveFingerprint=html=>String(html||'').match(/data-thc-source-fingerprint=["']([0-9a-f]{24})["']/i)?.[1]||null;
 
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 async function wp(endpoint){
@@ -76,7 +90,7 @@ async function fetchPublic(slug){
         headers:{'Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache','User-Agent':'DTF-Encyclopedia-Copy-Repair/1.2'}
       });
       const body=await response.text();
-      return {status:response.status,text:decodeHtml(body)};
+      return {status:response.status,raw:body,text:decodeHtml(body)};
     }catch(error){
       lastError=error;
       if(attempt<3) await sleep(1000*attempt);
@@ -84,10 +98,18 @@ async function fetchPublic(slug){
   }
   return {status:0,text:'',error:lastError instanceof Error?lastError.message:String(lastError)};
 }
-const defectKinds=html=>{
+const copyDefectKinds=html=>{
   const kinds=[];
   if(malformedPublicCopy.test(html)) kinds.push('malformed-source-copy');
   if(genericMisconceptionPlaceholder.test(html)) kinds.push('generic-misconception-placeholder');
+  return kinds;
+};
+const parityDefectKinds=(raw,id,expectedFingerprint)=>{
+  const kinds=[];
+  if(!hasStructuredData(raw,id)) kinds.push('structured-data-missing');
+  const found=liveFingerprint(raw);
+  if(!found) kinds.push('source-fingerprint-missing');
+  else if(expectedFingerprint&&found!==expectedFingerprint) kinds.push('source-fingerprint-mismatch');
   return kinds;
 };
 
@@ -109,11 +131,19 @@ async function scanWorker(){
     if(index>=lessonPages.length) return;
     const page=lessonPages[index];
     const id=String(page.slug).toUpperCase();
-    const storedKinds=defectKinds(rendered(page.content));
+    const lesson=byId.get(id);
+    const expectedFingerprint=lesson?fingerprintOf(lesson):null;
+    const storedRaw=rendered(page.content);
+    const storedKinds=[
+      ...copyDefectKinds(storedRaw),
+      ...parityDefectKinds(storedRaw,id,expectedFingerprint)
+    ];
     const publicView=await fetchPublic(page.slug);
-    const renderedKinds=publicView.status===200?defectKinds(publicView.text):[];
+    const renderedKinds=publicView.status===200
+      ? [...copyDefectKinds(publicView.text),...parityDefectKinds(publicView.raw,id,expectedFingerprint)]
+      : [];
     const kinds=[...new Set([...storedKinds,...renderedKinds])];
-    scanResults[index]={page,id,storedKinds,publicView,renderedKinds,kinds};
+    scanResults[index]={page,id,expectedFingerprint,storedKinds,publicView,renderedKinds,kinds};
   }
 }
 await Promise.all(Array.from({length:scanConcurrency},()=>scanWorker()));
@@ -125,7 +155,7 @@ for(const row of scanResults){
   const lesson=byId.get(id);
   if(!lesson) throw new Error(`${id}: live defective page has no canonical lesson source.`);
   const canonicalBlob=JSON.stringify(lesson);
-  const canonicalKinds=defectKinds(canonicalBlob);
+  const canonicalKinds=copyDefectKinds(canonicalBlob);
   if(canonicalKinds.length) throw new Error(`${id}: canonical source still contains blocked copy defects: ${canonicalKinds.join(', ')}`);
   const control=lesson.reviewControl||{};
   const lessonPublicationAuthorized=control.publicationAuthorized ?? lesson.publicationAuthorized ?? false;
@@ -156,6 +186,9 @@ const report={
   defectsFound:candidates.length,
   runtimeOnlyDefects:candidates.filter(x=>x.runtimeOnly).length,
   storedContentDefects:candidates.filter(x=>x.storedKinds.length>0).length,
+  structuredDataMissing:candidates.filter(x=>x.kinds.includes('structured-data-missing')).length,
+  sourceFingerprintMissing:candidates.filter(x=>x.kinds.includes('source-fingerprint-missing')).length,
+  sourceFingerprintMismatch:candidates.filter(x=>x.kinds.includes('source-fingerprint-mismatch')).length,
   candidates
 };
 await writeFile('/tmp/encyclopedia-copy-repair-scan.json',JSON.stringify(report,null,2)+'\n','utf8');
