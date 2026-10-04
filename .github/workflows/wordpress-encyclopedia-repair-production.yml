@@ -37,6 +37,7 @@ jobs:
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       ENCYCLOPEDIA_TOPIC_FILE: configuration/encyclopedia-topics.json
       WP_API_RETRY_ATTEMPTS: 7
+      WP_WRITE_DELAY_MS: 150
     steps:
       - uses: actions/checkout@v4
         with:
