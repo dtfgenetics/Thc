@@ -15,6 +15,9 @@ const review=JSON.parse(fs.readFileSync(reviewPath,'utf8'));
 const reviewById=new Map((review.lessons||[]).map(x=>[x.lessonId,x]));
 const rows=[];
 const errors=[];
+const visualQueuePath=path.join(root,'content','encyclopedia','visual-production-queue-v1.json');
+const visualQueue=fs.existsSync(visualQueuePath)?JSON.parse(fs.readFileSync(visualQueuePath,'utf8')):{items:[]};
+const visualById=new Map((visualQueue.items||[]).map(x=>[x.lessonId,x]));
 
 for(const candidate of preflight.candidates||[]){
   const external=reviewById.get(candidate.lessonId);
@@ -23,18 +26,27 @@ for(const candidate of preflight.candidates||[]){
   const reviewerId=visualTask.reviewerId;
   const reviewedAt=visualTask.reviewedAt;
   const reviewNotes=visualTask.reviewNotes;
-  const reviewerEvidenceComplete=decision==='approved' && Boolean(reviewerId) && Boolean(reviewedAt) && Boolean(reviewNotes);
-  const eligible=Boolean(candidate.machinePreflightPassed) && reviewerEvidenceComplete;
-  if(decision==='approved'&&!reviewerEvidenceComplete) errors.push(`${candidate.lessonId}: approval is incomplete without reviewer identity, date, and notes`);
+  const reviewChecks=visualTask.reviewChecks||{};
+  const controlledChecksComplete=['scienceAccuracy','labelingAccuracy','misconceptionSafety','accessibilityQuality','provenanceRights','responsiveLegibility'].every(key=>reviewChecks[key]===true);
+  const reviewerEvidenceComplete=decision==='approved' && Boolean(reviewerId) && Boolean(reviewedAt) && Boolean(reviewNotes) && controlledChecksComplete;
+  const queueRow=visualById.get(candidate.lessonId)||{};
+  const assetPaths=Array.isArray(queueRow.canonicalAssetPaths)?queueRow.canonicalAssetPaths:[];
+  const expectedTarget=String(candidate.targetRepositoryPath||'');
+  const assetPresent=assetPaths.includes(expectedTarget) && fs.existsSync(path.join(root,expectedTarget));
+  const eligible=Boolean(candidate.machinePreflightPassed) && reviewerEvidenceComplete && assetPresent;
+  if(decision==='approved'&&!reviewerEvidenceComplete) errors.push(`${candidate.lessonId}: approval is incomplete without reviewer identity, date, notes, and all six controlled review checks`);
   rows.push({
     lessonId:candidate.lessonId,
     targetRepositoryPath:candidate.targetRepositoryPath,
     machinePreflightPassed:Boolean(candidate.machinePreflightPassed),
+    candidateAssetPresent:assetPresent,
+    candidateAssetPaths:assetPaths,
     independentVisualReview:{
       decision:decision??null,
       reviewerId:reviewerId??null,
       reviewedAt:reviewedAt??null,
       reviewNotes:reviewNotes??null,
+      reviewChecks,
       evidenceComplete:reviewerEvidenceComplete
     },
     promotionEligible:eligible,
@@ -46,10 +58,11 @@ const output={
   schemaVersion:'1.0.0',
   artifactId:'thc-encyclopedia-visual-promotion-manifest',
   generatedBy:'scripts/build-encyclopedia-visual-promotion-manifest.mjs',
-  boundary:'This manifest can identify externally approved visual assets but never writes public assets, never invents reviewer evidence, and never grants publication authorization.',
+  boundary:'This manifest can identify externally approved visual assets but never writes public assets, never invents reviewer evidence, and never grants publication authorization. Promotion eligibility also requires the exact target raster to exist in the canonical visual queue/repository.',
   summary:{
     candidateCount:rows.length,
     machinePreflightPassed:rows.filter(x=>x.machinePreflightPassed).length,
+    candidateAssetPresent:rows.filter(x=>x.candidateAssetPresent).length,
     externallyApprovedVisuals:rows.filter(x=>x.independentVisualReview.evidenceComplete).length,
     promotionEligible:rows.filter(x=>x.promotionEligible).length
   },
