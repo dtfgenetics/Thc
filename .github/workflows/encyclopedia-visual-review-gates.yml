@@ -55,6 +55,13 @@ jobs:
           node scripts/build-encyclopedia-visual-review-work-queue.mjs
           test -s data/encyclopedia-visual-review-work-queue.json
 
+      - name: Build evidence-mapping work queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-evidence-mapping-work-queue.mjs
+          test -s data/encyclopedia-evidence-mapping-work-queue.json
+
       - name: Assert no synthetic approval
         shell: bash
         run: |
@@ -82,5 +89,6 @@ jobs:
             data/encyclopedia-independent-review-manifest.json
             data/encyclopedia-visual-review-work-queue.json
             data/encyclopedia-claim-evidence-candidates.json
+            data/encyclopedia-evidence-mapping-work-queue.json
           if-no-files-found: error
           retention-days: 30
