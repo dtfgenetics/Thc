@@ -138,10 +138,27 @@ jobs:
           node scripts/orchestrator.mjs plan | tee "$RUNNER_TEMP/worker-plan.json"
 
       - name: Claim ready work
-        if: github.event_name == 'schedule' || inputs.mode == 'dispatch'
+        # Scheduled runs are observers/reconcilers only. A lease without an attached
+        # executor creates false progress and expires without implementation.
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'dispatch'
         run: |
           set -euo pipefail
           node scripts/orchestrator.mjs dispatch --apply=true | tee "$RUNNER_TEMP/worker-dispatch.json"
+
+      - name: Persist orchestration evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: worker-orchestrator-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/worker-reconcile-all.json
+            ${{ runner.temp }}/worker-reconcile.json
+            ${{ runner.temp }}/worker-audit.json
+            ${{ runner.temp }}/worker-plan.json
+            ${{ runner.temp }}/worker-dispatch.json
+            ${{ runner.temp }}/worker-check.json
+          if-no-files-found: ignore
+          retention-days: 30
 
       - name: Publish summary
         if: always()

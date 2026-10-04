@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict'
+import fs from 'node:fs'
 import { buildClaim, dependenciesSatisfied, dependencyBlockers, dependencyIssueNumber, isReady, planClaims, planMetadataFromIssue, resourceSetsOverlap, validateConfig } from './orchestrator/core.mjs'
 import { newJob, transitionJob, canTransition } from './orchestrator/state.mjs'
 import { createLease, heartbeatLease, isLeaseExpired, recoveryDisposition } from './orchestrator/leases.mjs'
@@ -608,3 +609,18 @@ const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: '
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
 console.log(JSON.stringify({ ok: true, tests: 149 }, null, 2))
+
+
+const orchestratorWorkflow = fs.readFileSync('.github/workflows/worker-orchestrator.yml', 'utf8')
+assert.match(
+  orchestratorWorkflow,
+  /name: Claim ready work\n\s+#(?:.|\n)*?if: github\.event_name == 'workflow_dispatch' && inputs\.mode == 'dispatch'/,
+  'scheduled orchestration must never lease work without an attached executor',
+)
+assert.doesNotMatch(
+  orchestratorWorkflow,
+  /name: Claim ready work\n\s+if: github\.event_name == 'schedule'/,
+  'schedule must remain observer/reconciler only',
+)
+assert.match(orchestratorWorkflow, /uses: actions\/upload-artifact@v4/, 'orchestrator reports must be persisted as workflow evidence')
+assert.match(orchestratorWorkflow, /retention-days: 30/, 'orchestrator evidence must have an explicit retention window')
