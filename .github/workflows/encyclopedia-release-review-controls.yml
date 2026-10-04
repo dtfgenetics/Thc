@@ -1,0 +1,86 @@
+name: Apply Encyclopedia Release Review Controls
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply-encyclopedia-release-review-controls.mjs'
+      - 'scripts/build-encyclopedia-release-review-queue.mjs'
+      - '.github/workflows/encyclopedia-release-review-controls.yml'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: encyclopedia-release-review-controls
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Prove release-review basis
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run verify:encyclopedia-production-readiness
+          npm run verify:encyclopedia-independent-review
+          npm run audit:encyclopedia-substantive-quality:strict
+          npm run audit:encyclopedia-consistency
+          npm run verify:encyclopedia-assessments
+          npm run verify:encyclopedia-structured-data
+          npm run build:encyclopedia-release-review-queue
+
+      - name: Apply missing release review controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/apply-encyclopedia-release-review-controls.mjs
+          npm run build:encyclopedia-release-review-queue
+          node - <<'NODE'
+          const fs=require('fs');
+          const q=JSON.parse(fs.readFileSync('data/encyclopedia-release-review-queue.json','utf8'));
+          const r=JSON.parse(fs.readFileSync('data/encyclopedia-release-review-application-report.json','utf8'));
+          if(q.summary.releaseReviewUnrecorded!==0) throw new Error(`Release review remains unrecorded for ${q.summary.releaseReviewUnrecorded} lesson(s).`);
+          if(r.independentApprovalClaimed!==false) throw new Error('Independent approval must remain false.');
+          console.log(`Release controls applied to ${r.changedLessons} lesson(s); unrecorded release reviews now ${q.summary.releaseReviewUnrecorded}.`);
+          NODE
+
+      - name: Re-run encyclopedia gates after control update
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run verify:encyclopedia-production-readiness
+          npm run verify:encyclopedia-independent-review
+          npm run audit:encyclopedia-substantive-quality:strict
+          npm run audit:encyclopedia-consistency
+
+      - name: Create review PR
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          branch="automation/encyclopedia-release-review-${GITHUB_RUN_ID}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git checkout -b "$branch"
+          git add content/encyclopedia/volume-*/lessons/*.json data/encyclopedia-release-review-application-report.json data/encyclopedia-release-review-queue.json
+          if git diff --cached --quiet; then
+            echo 'No release-review control changes required.'
+            exit 0
+          fi
+          git commit -m 'Record encyclopedia release-time review controls'
+          git push origin "HEAD:$branch"
+          gh pr create --base main --head "$branch" --title 'Record encyclopedia release-time review controls' --body 'Applies project-owner-authorized release-time control metadata only after repository quality, evidence, assessment, structured-data, consistency, and independent-review-boundary checks pass. External/independent scientific approval remains explicitly pending and false.'
