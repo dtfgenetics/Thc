@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root=process.cwd();
 const read=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
@@ -9,7 +10,8 @@ const arr=v=>Array.isArray(v)?v:[];
 const txt=v=>String(v??'').trim();
 const outPath=path.join(root,'data','encyclopedia-quality-scorecard.json');
 
-const registry=read('content/encyclopedia/current-controlled-registry.json');
+const registryState=loadEncyclopediaRegistry(root);
+const registry={entries:registryState.entries};
 const completion=read('data/encyclopedia-completion-scorecard.json');
 const evidence=read('data/encyclopedia-evidence-tracking.json');
 const sourceQueue=read('data/encyclopedia-source-resolution-queue.json');
@@ -21,7 +23,7 @@ const practical=fs.existsSync(path.join(root,'content','encyclopedia','downloads
   : {resources:[]};
 
 const lessons=readCanonicalEncyclopediaLessons(root);
-if(lessons.length!==420) throw new Error('Quality scorecard requires 420 canonical lessons; found '+lessons.length);
+if(lessons.length!==registryState.totalCount) throw new Error(`Quality scorecard requires ${registryState.totalCount} registered canonical lessons; found ${lessons.length}`);
 const canonicalById=new Map(lessons.map(x=>[x.id,x]));
 const mapById=rows=>new Map(arr(rows).map(x=>[x.id||x.lessonId,x]));
 const completionById=mapById(completion.lessons);
