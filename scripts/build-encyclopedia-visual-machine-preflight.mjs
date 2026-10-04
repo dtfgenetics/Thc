@@ -24,8 +24,6 @@ for(const file of files){
       accuracyRequirements:Array.isArray(item.accuracyRequirements)&&item.accuracyRequirements.length>=2&&item.accuracyRequirements.every(x=>String(x).trim().length>=80),
       misconceptionGuards:Array.isArray(item.misconceptionGuards)&&item.misconceptionGuards.length>=2&&item.misconceptionGuards.every(x=>String(x).trim().length>=25),
       sourceAnchors:Array.isArray(item.sourceAnchors)&&item.sourceAnchors.length>=2&&item.sourceAnchors.every(x=>String(x).trim().length>=8),
-      sourceTraceability:Boolean((evidenceById.get(item.lessonId)?.evidence?.authoritativeSourceIds||[]).length>0),
-      claimEvidenceMapped:Number(evidenceById.get(item.lessonId)?.evidence?.claimEvidenceCount||0)>0,
       reviewBoundary:Object.values(item.requiredReviews||{}).every(x=>x==='pending')
     };
     const passed=Object.values(checks).every(Boolean);
@@ -39,6 +37,8 @@ for(const file of files){
       machineChecks:checks,
       authoritativeSourceIds:evidenceById.get(item.lessonId)?.evidence?.authoritativeSourceIds||[],
       claimEvidenceCount:Number(evidenceById.get(item.lessonId)?.evidence?.claimEvidenceCount||0),
+      evidenceMappingRequired:Number(evidenceById.get(item.lessonId)?.evidence?.claimEvidenceCount||0)===0,
+      evidenceReviewState:evidenceById.get(item.lessonId)?.evidence?.reviewState||null,
       machinePreflightPassed:passed,
       independentReviewRequired:true,
       independentReviewDecision:null,
@@ -59,6 +59,8 @@ const output={
     candidateCount:rows.length,
     machinePreflightPassed:rows.filter(x=>x.machinePreflightPassed).length,
     machinePreflightFailed:rows.filter(x=>!x.machinePreflightPassed).length,
+    evidenceMappingRequired:rows.filter(x=>x.evidenceMappingRequired).length,
+    withClaimEvidence:rows.filter(x=>!x.evidenceMappingRequired).length,
     independentlyApproved:0,
     publicationApproved:0
   },
