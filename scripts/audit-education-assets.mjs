@@ -72,7 +72,14 @@ const liveSurfaceRoots=[
   path.join(root,'site','public-route-patch'),
   path.join(root,'site','wordpress','pages')
 ];
-const liveFiles=liveSurfaceRoots.flatMap(allFiles).filter(p=>/\.(?:html?|css|js|mjs|json)$/i.test(p)).filter(p=>{\n  const rp=rel(p);\n  if(/\/assets\/education\/infographics\/import-[^/]+\.json$/i.test(rp)) return false;\n  return true;\n});
+const liveFiles=liveSurfaceRoots
+  .flatMap(allFiles)
+  .filter(p=>/\.(?:html?|css|js|mjs|json)$/i.test(p))
+  .filter(p=>{
+    const rp=rel(p);
+    if(/\/assets\/education\/infographics\/import-[^/]+\.json$/i.test(rp)) return false;
+    return true;
+  });
 const referencePatternFor=stem=>new RegExp(`(?:src|href|srcset|url|background(?:-image)?|image|asset|thumbnail)[^\\n\\r]{0,240}${stem.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\.(?:png|jpe?g|webp|avif)`,'i');
 for(const file of liveFiles){
   const rp=rel(file);
