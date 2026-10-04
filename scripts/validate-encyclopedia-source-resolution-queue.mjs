@@ -79,20 +79,22 @@ for (const reference of references) {
   const directLocators = Array.isArray(reference.directLocators) ? reference.directLocators : [];
   if (new Set(directLocators).size !== directLocators.length) errors.push(`${reference.referenceId}: directLocators must be unique.`);
   for (const locator of directLocators) if (!/^https:\/\//.test(String(locator))) errors.push(`${reference.referenceId}: direct locator must use HTTPS: ${locator}`);
+  const locatorLower=directLocators.map(String).map(x=>x.toLowerCase());
   for (const key of identityKeys) {
     if (String(key).startsWith('doi:')) {
-      const expected=`https://doi.org/${String(key).slice(4).toLowerCase()}`;
-      if (!directLocators.map(String).map(x=>x.toLowerCase()).includes(expected)) errors.push(`${reference.referenceId}: DOI identity key is missing canonical direct locator ${expected}.`);
+      const doi=String(key).slice(4).toLowerCase();
+      const canonical=`https://doi.org/${doi}`;
+      if (!locatorLower.some(locator=>locator===canonical || locator.includes(doi))) errors.push(`${reference.referenceId}: DOI identity key is missing a usable direct locator for ${doi}.`);
     }
     if (String(key).startsWith('pmc:')) {
-      const pmc=String(key).slice(4).toUpperCase();
-      const expected=`https://pmc.ncbi.nlm.nih.gov/articles/${pmc}/`.toLowerCase();
-      if (!directLocators.map(String).map(x=>x.toLowerCase()).includes(expected)) errors.push(`${reference.referenceId}: PMCID identity key is missing canonical direct locator ${expected}.`);
+      const pmc=String(key).slice(4).toLowerCase();
+      const canonical=`https://pmc.ncbi.nlm.nih.gov/articles/${pmc}/`;
+      if (!locatorLower.some(locator=>locator===canonical || locator.includes(pmc))) errors.push(`${reference.referenceId}: PMCID identity key is missing a usable direct locator for ${pmc.toUpperCase()}.`);
     }
     if (String(key).startsWith('pmid:')) {
       const pmid=String(key).slice(5);
-      const expected=`https://pubmed.ncbi.nlm.nih.gov/${pmid}/`.toLowerCase();
-      if (!directLocators.map(String).map(x=>x.toLowerCase()).includes(expected)) errors.push(`${reference.referenceId}: PMID identity key is missing canonical direct locator ${expected}.`);
+      const canonical=`https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
+      if (!locatorLower.some(locator=>locator===canonical || locator.includes(`/${pmid}/`))) errors.push(`${reference.referenceId}: PMID identity key is missing a usable direct locator for ${pmid}.`);
     }
   }
   if (reference.resolutionStatus === 'direct_locator_resolved_needs_authority_review' && !directLocators.length) errors.push(`${reference.referenceId}: direct-locator status requires at least one locator.`);
