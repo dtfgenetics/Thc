@@ -16,6 +16,16 @@ const auth=Buffer.from(`${user}:${pass}`).toString('base64');
 const batch=JSON.parse(await readFile(input,'utf8'));
 const registryState=loadEncyclopediaRegistry(process.cwd());
 const registryById=new Map(registryState.entries.map(entry=>[entry.id,entry]));
+let publicationCeiling=420;
+try{
+  const currentBatch=JSON.parse(await readFile('site/wordpress/education/encyclopedia/current-production-batch.json','utf8'));
+  const publishedNumbers=(currentBatch.lessonFiles||[])
+    .map(file=>Number(String(file).match(/thc-enc-(\d{3,})\.json$/i)?.[1]||0))
+    .filter(Number.isFinite);
+  publicationCeiling=Math.max(420,...publishedNumbers);
+}catch{
+  // Keep the protected core ceiling if the current production pointer is unavailable.
+}
 if(!Array.isArray(batch.lessonFiles)||!batch.lessonFiles.length) throw new Error('Batch has no lessonFiles.');
 if(batch.publicationAuthorized===false||batch.status==='blocked_external_review'){
   throw new Error(`Batch ${batch.batch||input} is review-only and not authorized for publication.`);
@@ -175,7 +185,7 @@ const toolLinksHtml=(a)=>{
 const lessonNav=(a)=>{
   const n=Number(a.number||String(a.id||'').match(/(\d{3,})$/)?.[1]||0);
   const prev=n>1?`<a href="/learn/encyclopedia/thc-enc-${String(n-1).padStart(3,'0')}/">← Previous</a>`:'<span></span>';
-  const next=n<registryState.totalCount?`<a href="/learn/encyclopedia/thc-enc-${String(n+1).padStart(3,'0')}/">Next →</a>`:'<a href="/learn/encyclopedia/">Browse all topics →</a>';
+  const next=n<publicationCeiling?`<a href="/learn/encyclopedia/thc-enc-${String(n+1).padStart(3,'0')}/">Next →</a>`:'<a href="/learn/encyclopedia/">Browse all topics →</a>';
   return `<nav class="thc-lesson-nav" aria-label="Encyclopedia lesson navigation">${prev}${next}</nav>`;
 };
 const linkedCrossRefs=(values)=>`<ul class="thc-list">${values.map(value=>`<li>${esc(String(value)).replace(/THC-ENC-(\d{3,})/g,(_,n)=>`<a href="/learn/encyclopedia/thc-enc-${n}/">THC-ENC-${n}</a>`)}</li>`).join('')}</ul>`;
