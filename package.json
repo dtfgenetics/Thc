@@ -81,7 +81,7 @@
     "verify:shared-ui-standard": "node scripts/validate-shared-ui-standard.mjs",
     "verify:page-composition": "node scripts/validate-page-composition.mjs",
     "verify:thc-tool-suite": "node scripts/validate-canonical-tools-mirror.mjs",
-    "build:education-search": "npm run build:encyclopedia-discovery && node scripts/build-thc-education-search-index.mjs && node scripts/build-static-search-fallbacks.mjs",
+    "build:education-search": "npm run build:encyclopedia-discovery && node scripts/build-thc-education-search-index.mjs",
     "validate:education-search": "npm run build:encyclopedia-discovery && npm run build:education-search && node scripts/validate-thc-education-search.mjs",
     "validate:grow-doc-release-pin": "node scripts/validate-grow-doc-release-pin.mjs",
     "validate:growlens-release-contract": "node scripts/validate-growlens-release-contract.mjs",
