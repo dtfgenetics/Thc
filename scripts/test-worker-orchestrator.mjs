@@ -2,7 +2,7 @@
 
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
-import { buildClaim, dependenciesSatisfied, dependencyBlockers, dependencyIssueNumber, isReady, planClaims, planMetadataFromIssue, resourceSetsOverlap, validateConfig } from './orchestrator/core.mjs'
+import { buildClaim, claimReadiness, dependenciesSatisfied, dependencyBlockers, dependencyIssueNumber, isReady, planClaims, planMetadataFromIssue, priorityRank, resourceSetsOverlap, validateConfig } from './orchestrator/core.mjs'
 import { newJob, transitionJob, canTransition } from './orchestrator/state.mjs'
 import { createLease, heartbeatLease, isLeaseExpired, recoveryDisposition } from './orchestrator/leases.mjs'
 import { classifyReconciliation, reconciliationNeedsMutation } from './orchestrator/reconcile.mjs'
@@ -624,3 +624,33 @@ assert.doesNotMatch(
 )
 assert.match(orchestratorWorkflow, /uses: actions\/upload-artifact@v4/, 'orchestrator reports must be persisted as workflow evidence')
 assert.match(orchestratorWorkflow, /retention-days: 30/, 'orchestrator evidence must have an explicit retention window')
+
+
+const throughputConfig = {
+  ...config,
+  scheduling: { agingDaysPerPriorityBoost: 7, requireAcceptanceCriteria: true, requireVerificationProfile: true },
+}
+const oldP3 = issue(501, 'Old P3', ['worker:ready', 'priority:p3'], '2026-08-01T00:00:00Z')
+const newP1 = issue(502, 'New P1', ['worker:ready', 'priority:p1'], '2026-10-01T00:00:00Z')
+assert.equal(priorityRank(oldP3, throughputConfig, new Date('2026-10-04T00:00:00Z')), 0, 'old work must age upward to prevent starvation')
+assert.equal(priorityRank(newP1, throughputConfig, new Date('2026-10-04T00:00:00Z')), 1)
+
+const incompleteClaim = buildClaim(issue(503, 'Missing done contract', ['worker:ready']), throughputConfig)
+assert.deepEqual(claimReadiness(incompleteClaim, throughputConfig).reasons, ['missing-acceptance-criteria'])
+const completeIssue = {
+  ...issue(504, 'Executable work', ['worker:ready']),
+  body: '<!-- worker-plan:{"acceptanceCriteria":["tests pass"],"verificationProfile":"repo-control"} -->',
+}
+assert.equal(claimReadiness(buildClaim(completeIssue, throughputConfig), throughputConfig).ready, true)
+
+const completionStatus = buildOperatorStatus({
+  activeClaims: [
+    { issueNumber: 601, state: 'VERIFYING', active: true, executor: { executorId: 'a' }, productionTargets: [] },
+    { issueNumber: 602, state: 'INTEGRATION_READY', active: true, productionTargets: [] },
+    { issueNumber: 603, state: 'RUNNING', active: true, productionTargets: ['route:/learn/'] },
+  ],
+})
+assert.equal(completionStatus.summary.verifyingJobs, 1)
+assert.equal(completionStatus.summary.integrationReadyJobs, 1)
+assert.equal(completionStatus.summary.executorAttachedJobs, 1)
+assert.equal(completionStatus.summary.productionJobsAwaitingLiveProof, 1)

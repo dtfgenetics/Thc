@@ -93,5 +93,17 @@
     "reconcileBeforeDispatch": true
   },
   "maxScopedWorkersPerProject": 3,
-  "controlRepository": "dtfgenetics/Thc"
+  "controlRepository": "dtfgenetics/Thc",
+  "scheduling": {
+    "agingDaysPerPriorityBoost": 7,
+    "requireAcceptanceCriteria": true,
+    "requireVerificationProfile": true,
+    "preferExecutorReady": true
+  },
+  "completion": {
+    "requireExactHeadVerification": true,
+    "requirePullRequestForCodeChanges": true,
+    "requireMergeEvidence": true,
+    "requireLiveVerificationForProductionImpact": true
+  }
 }

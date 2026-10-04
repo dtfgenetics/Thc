@@ -80,6 +80,11 @@ export function buildOperatorStatus({
       claimedResources: Object.keys(resourceClaims).length,
       blockers: blockers.length,
       handedOffJobs: active.filter((job) => job.handoff).length,
+      verifyingJobs: active.filter((job) => job.state === 'VERIFYING').length,
+      integrationReadyJobs: active.filter((job) => job.state === 'INTEGRATION_READY').length,
+      doneJobs: active.filter((job) => job.state === 'DONE').length,
+      executorAttachedJobs: active.filter((job) => job.executor).length,
+      productionJobsAwaitingLiveProof: active.filter((job) => job.productionTargets.length > 0 && job.state !== 'DONE').length,
     },
     activeJobs: active,
     plannedJobs: plannedClaims.map((claim) => ({
