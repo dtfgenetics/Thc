@@ -152,7 +152,7 @@ function inspectPage(fetched,depth){
     }
   }
 
-  const h1=count(html,/<h1\b/gi);
+  const h1=count(rendered,/<h1\b/gi);
   if(h1===0) warnings.push('No H1 found');
   if(h1>1) issues.push(`Multiple H1 elements found (${h1}); production pages must expose one primary H1`);
 
