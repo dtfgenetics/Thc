@@ -72,6 +72,8 @@ if(!errors.length){
  }
  if(!publisher.includes("slug: 'search'")) errors.push('WordPress learning publisher no longer includes search route');
  if(!publisher.includes('/wp-json/dtf-learning/v1/index/search')||!publisher.includes('/wp-json/dtf-learning/v1/index/encyclopedia')||!publisher.includes('/wp-json/dtf-learning/v1/health')) errors.push('WordPress learning publisher missing MU-plugin search index publication contract');
+ if(!publisher.includes("data-static-fallback")||!publisher.includes("DTF_STATIC_ENCYCLOPEDIA_FALLBACK_START")||!publisher.includes("THC-ENC-420")) errors.push('WordPress learning publisher must fail closed when the live encyclopedia static fallback or completed publication floor disappears');
+ if(!publisher.includes("DTF_STATIC_SEARCH_FALLBACK_START")) errors.push('WordPress learning publisher must fail closed when the live education-search static fallback disappears');
  const wordpressRuntime=fs.readFileSync(files.wordpressRuntime,'utf8');
  const wordpressRuntimeBuilder=fs.readFileSync(files.wordpressRuntimeBuilder,'utf8');
  for(const marker of ['register_rest_route','wp_footer','data-dtf-learning-search-runtime="mu-v1"','current_user_can(\'manage_options\')']) if(!wordpressRuntime.includes(marker)) errors.push('WordPress learning search runtime missing '+marker);
