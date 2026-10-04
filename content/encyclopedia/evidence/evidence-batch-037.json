@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-037",
+  "createdAt": "2026-10-04",
+  "scope": "High-priority hemp/Cannabis evidence for seedling damping-off biology, differential diagnosis, and prevention, harvested from superseded PR #1772 onto the current registry.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Damping-off is treated as a syndrome with multiple possible causal organisms.",
+    "Visual symptoms do not provide species-level confirmation.",
+    "Prevention claims are separated from pesticide legality, label authorization, and organism-specific efficacy.",
+    "All mappings remain pending independent science review."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0458",
+      "lessonId": "THC-ENC-037",
+      "sourceIds": [
+        "ENC-AUTH-178",
+        "ENC-AUTH-179"
+      ],
+      "claimType": "damping-off-syndrome-differential-and-prevention",
+      "supportedClaim": "Hemp/Cannabis damping-off can involve multiple oomycete or fungal agents and may occur before or after emergence; prevention therefore emphasizes sanitation, drainage, clean propagation inputs, environmental management, and scouting while causal identification requires evidence beyond visual collapse alone.",
+      "sourceLocator": "Ocamb, PNW Plant Disease Management Handbook, Hemp - Damping-off (rev. March 2026); Punja (2021), PMID 33527549, DOI 10.1002/ps.6307.",
+      "applicability": "Supports the lesson's syndrome framing, pre/post-emergence distinction, and layered prevention/diagnostic workflow.",
+      "limitations": "Symptoms are not species-level confirmation. Pathogen prevalence, temperature response, product efficacy, and pesticide legality vary by organism, production system, and jurisdiction.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
