@@ -34,7 +34,8 @@ const required=[
   ['small-phone breakpoint','@media(max-width:380px)'],
   ['tablet breakpoint','@media(max-width:900px)'],
   ['horizontal table overflow','overflow-x:auto'],
-  ['print/offline reading support','@media print']
+  ['print/offline reading support','@media print'],
+  ['stable lesson visual anchor','<!-- THC-ENC-VISUAL-ANCHOR -->']
 ];
 for(const [label,needle] of required)if(!src.includes(needle))errors.push('renderer missing '+label);
 if(src.includes('fake visual')||src.includes('placeholder teaching visual'))errors.push('renderer must not emit fake visual placeholders');
