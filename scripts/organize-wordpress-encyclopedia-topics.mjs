@@ -24,12 +24,43 @@ const displayTitle=p=>clean(p.title?.rendered||p.title?.raw||'').replace(/^THC-E
 const excerpt=p=>clean(p.excerpt?.rendered||p.excerpt?.raw||'');
 const hasVisual=p=>/data-thc-lesson-visual-id=["']THC-ENC-\d{3}["']/i.test(String(p.content?.raw||p.content?.rendered||''));
 
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const transientStatuses=new Set([429,500,502,503,504]);
+const writeDelayMs=Math.max(0,Number(process.env.ENCYCLOPEDIA_TOPIC_WP_WRITE_DELAY_MS||100));
 async function request(endpoint,{method='GET',body}={}){
-  const res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{method,headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},body:body?JSON.stringify(body):undefined});
-  const text=await res.text(); let parsed;
-  try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
-  if(!res.ok) throw new Error(`${method} ${endpoint} failed ${res.status}: ${typeof parsed==='string'?parsed.slice(0,900):JSON.stringify(parsed).slice(0,900)}`);
-  return parsed;
+  const retrySafe=method==='GET'||(method==='POST'&&/^\/pages\/\d+$/.test(endpoint))||(method==='DELETE'&&/^\/pages\/\d+/.test(endpoint));
+  const maxAttempts=retrySafe?7:1;
+  let lastError=null;
+  for(let attempt=1;attempt<=maxAttempts;attempt+=1){
+    try{
+      const res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{
+        method,
+        headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},
+        body:body?JSON.stringify(body):undefined,
+        signal:AbortSignal.timeout(60_000)
+      });
+      const text=await res.text(); let parsed;
+      try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
+      if(res.ok){
+        if(method!=='GET'&&writeDelayMs) await sleep(writeDelayMs);
+        return parsed;
+      }
+      const message=`${method} ${endpoint} failed ${res.status}: ${typeof parsed==='string'?parsed.slice(0,900):JSON.stringify(parsed).slice(0,900)}`;
+      if(!retrySafe||!transientStatuses.has(res.status)||attempt===maxAttempts) throw new Error(message);
+      const retryAfter=Number(res.headers.get('retry-after')||0);
+      const delay=retryAfter>0?retryAfter*1000:Math.min(15_000,750*(2**(attempt-1)));
+      console.warn(`${message} · retrying attempt ${attempt+1}/${maxAttempts} after ${delay}ms`);
+      await sleep(delay);
+    }catch(error){
+      lastError=error;
+      const retryableNetwork=retrySafe&&(error?.name==='TimeoutError'||error?.name==='AbortError'||/fetch failed|ECONNRESET|ETIMEDOUT|socket/i.test(String(error?.message||error)));
+      if(!retryableNetwork||attempt===maxAttempts) throw error;
+      const delay=Math.min(15_000,750*(2**(attempt-1)));
+      console.warn(`${method} ${endpoint} network error: ${String(error?.message||error)} · retrying attempt ${attempt+1}/${maxAttempts} after ${delay}ms`);
+      await sleep(delay);
+    }
+  }
+  throw lastError||new Error(`${method} ${endpoint} exhausted retries`);
 }
 async function wp(endpoint,opts){return request(endpoint,opts);}
 async function findPage(slug,parent=null){
@@ -81,12 +112,35 @@ if(active.length<3) throw new Error(`Expected at least 3 active topic areas, fou
 
 const now=new Date().toISOString().replace(/[:.]/g,'-'); const backupDir=path.join(backupRoot,now); await mkdir(backupDir,{recursive:true});
 const backups=[]; const created=[]; const updated=[];
+async function createTopicPageWithRecovery(slug,payload){
+  let lastError=null;
+  for(let attempt=1;attempt<=5;attempt+=1){
+    try{
+      const page=await wp('/pages',{method:'POST',body:payload});
+      if(writeDelayMs) await sleep(writeDelayMs);
+      return page;
+    }catch(error){
+      lastError=error;
+      const recovered=await findPage(slug,encyclopedia.id).catch(()=>null);
+      if(recovered) return recovered;
+      if(attempt===5) throw error;
+      const delay=Math.min(12_000,1000*(2**(attempt-1)));
+      console.warn(`Topic page ${slug} create failed: ${String(error?.message||error)} · retrying after ${delay}ms`);
+      await sleep(delay);
+    }
+  }
+  throw lastError||new Error(`Unable to create topic page ${slug}`);
+}
 async function upsert({slug,title,content,excerptText}){
   const existing=await findPage(slug,encyclopedia.id);
   if(existing) backups.push({id:existing.id,slug:existing.slug,title:existing.title?.raw||existing.title?.rendered||'',content:existing.content?.raw||'',excerpt:existing.excerpt?.raw||'',status:existing.status});
   const payload={slug,title,status:'publish',parent:encyclopedia.id,content,excerpt:excerptText,comment_status:'closed'};
-  const page=existing?await wp(`/pages/${existing.id}`,{method:'POST',body:payload}):await wp('/pages',{method:'POST',body:payload});
-  if(!existing) created.push(page.id); updated.push({id:page.id,slug:page.slug,link:page.link}); return page;
+  const page=existing
+    ? await wp(`/pages/${existing.id}`,{method:'POST',body:payload})
+    : await createTopicPageWithRecovery(slug,payload);
+  if(!existing) created.push(page.id);
+  updated.push({id:page.id,slug:page.slug,link:page.link});
+  return page;
 }
 
 try{
