@@ -60,6 +60,7 @@ footer{padding:28px 0 42px;color:var(--muted)}.journal{margin-bottom:38px}.journ
 <button id="backupPhJson" type="button">Backup JSON</button>
 <button id="restorePhJson" type="button">Restore JSON</button>
 <button id="clearPhLog" type="button">Clear local log</button>
+<button id="printPhReport" type="button">Print / Save report</button>
 <input id="phCsvFile" type="file" accept=".csv,text/csv" hidden>
 <input id="phJsonFile" type="file" accept="application/json,.json" hidden>
 </div>
@@ -112,6 +113,7 @@ window.THCMeasurementJournal?.create({
  document.getElementById('savePhGrowLens').onclick=()=>{const r=current(),result=THC.growlens.addDiaryEntry({title:'pH measurement · '+r.context,notes:'pH '+Number(r.ph).toFixed(2)+(r.meter?'; meter '+r.meter:'')+(r.calibration?'; last calibration '+r.calibration:'')+(r.calibrationRefs?'; buffers '+r.calibrationRefs:'')+(r.tempC!==''?'; sample '+r.tempC+' °C':'')+(r.notes?'; '+r.notes:'')});status.textContent=result.ok?'Saved current pH measurement to GrowLens diary.':(result.reason||'GrowLens save failed.')};
  document.getElementById('backupPhJson').onclick=()=>THC.backupJson('thc-ph-measurements-backup.json','thc-ph-measurements',1,THC.load(key,[]));
  document.getElementById('restorePhJson').onclick=()=>file.click();
+ document.getElementById('printPhReport').onclick=()=>window.print();
  file.addEventListener('change',async()=>{try{const records=await THC.restoreJson(file.files?.[0],'thc-ph-measurements',1,r=>r&&Number.isFinite(Number(r.ph))&&Number(r.ph)>=0&&Number(r.ph)<=14,2000);if(THC.load(key,[]).length&&!confirm('Replace current pH journal with this JSON backup?'))return;THC.save(key,records);status.textContent='pH JSON backup restored. Reloading journal…';location.reload()}catch(error){status.textContent=error?.message||'Could not restore pH backup.'}finally{file.value=''}});
 })();
 </script>
