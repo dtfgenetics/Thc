@@ -75,6 +75,7 @@
     "games:qa:local": "node scripts/game-portfolio-browser-qa.mjs --local",
     "games:qa:live": "node scripts/game-portfolio-browser-qa.mjs --live",
     "verify:education-visual-system": "node scripts/validate-education-visual-system.mjs",
+    "audit:education-assets": "node scripts/audit-education-assets.mjs",
     "verify:learning-content-quality": "node scripts/validate-learning-content-quality.mjs",
     "verify:production-standards": "node scripts/validate-production-standards.mjs",
     "verify:shared-ui-standard": "node scripts/validate-shared-ui-standard.mjs",
