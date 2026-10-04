@@ -10,5 +10,8 @@ for(const [name,source] of [['atlas',atlas],['chapter visuals',chapters]]){
   assert.match(source,/pageBySlug\('outdoor',learnPage\.id\)/,`${name} must scope Outdoor to the canonical Learning parent`);
   assert.doesNotMatch(source,/pages\?slug=\$\{encodeURIComponent\(slug\)\}/,`${name} must not restore a site-wide slug query`);
 }
+assert.match(chapters,/pages\/\$\{pageRef\.id\}\?context=edit&dtf_chapter_read=/,'chapter visuals must read canonical content directly by resolved page ID');
+assert.match(chapters,/pages\/\$\{page\.id\}\?context=edit&dtf_chapter_verify=/,'chapter visuals must verify the write directly by canonical page ID');
+assert.match(chapters,/Number\(page\.parent\)!==Number\(learnPage\.id\)/,'chapter visuals must recheck canonical parent ownership');
 assert.ok((atlas.match(/data-dtf-learning-v4=/g)||[]).length>=3,'atlas must require the V4 owner marker before write, after write, and on the visitor surface');
 console.log('Outdoor publisher ownership contract tests passed.');
