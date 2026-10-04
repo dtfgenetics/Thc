@@ -88,7 +88,7 @@ jobs:
       - name: Resolve pinned canonical encyclopedia revision
         run: node scripts/resolve-encyclopedia-deployment-target.mjs --github-env
       - name: Verify pinned canonical source parity
-        run: npm run verify:encyclopedia-source-parity
+        run: node scripts/audit-encyclopedia-source-parity.mjs
       - name: Validate forward-only production pointer
         run: node scripts/validate-encyclopedia-production-pointer.mjs
       - name: Validate shared authoritative source bridge
