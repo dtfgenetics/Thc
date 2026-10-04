@@ -78,7 +78,7 @@ function encyclopediaFallbackHtml() {
   const cards = published.slice(0, 60).map((item) => `<article class="lesson" data-dtf-server-fallback="encyclopedia"><div class="lesson-top"><span class="id">${esc(item.id)}</span><span class="badge">Published</span></div><h3>${esc(item.title)}</h3><p>${esc(item.objective || ('Reference topic in ' + (item.topic || 'Plant Science') + '.'))}</p><div class="meta"><span>${esc(item.topic || '')}</span><span>${esc(item.primaryFormat || 'Reference')}</span></div><a href="${esc(item.route)}" aria-label="Open ${esc(item.id)} ${esc(item.title)}">Open lesson →</a></article>`).join('');
   const topicButtons = topics.map((topic) => `<button class="topic" type="button" data-part="${Number(topic.part)}" aria-pressed="false"><span class="topic-num">Part ${String(topic.part).padStart(2,'0')} · ${esc(topic.range?.[0] ?? '')}–${esc(topic.range?.[1] ?? '')}</span><h3>${esc(topic.title)}</h3><p>${esc(topic.description || '')}</p><div class="topic-meta">${Number(topic.publishedCount || 0)} published · ${Number(topic.count || 0)} registered</div></button>`).join('');
   const allLinks = published.map((item) => `<li><a href="${esc(item.route)}">${esc(item.id)} · ${esc(item.title)}</a></li>`).join('');
-  const noscript = `<noscript><section aria-labelledby="dtf-encyclopedia-noscript"><h2 id="dtf-encyclopedia-noscript">All published encyclopedia lessons</h2><p>JavaScript adds fuzzy search and filters. Every published lesson remains directly available here.</p><ol>${allLinks}</ol></section></noscript>`;
+  const fallbackIndex = `<details class="dtf-fallback-index" data-dtf-server-fallback="encyclopedia-index"><summary>All published encyclopedia lessons</summary><p>Use this direct index when search or JavaScript is unavailable. Every published lesson remains directly reachable.</p><ol>${allLinks}</ol></details>`;
   return {
     total: lessons.length,
     published: published.length,
@@ -86,7 +86,7 @@ function encyclopediaFallbackHtml() {
     status: `Showing 60 of ${published.length} published entries · ${lessons.length} total registered`,
     cards,
     topicButtons,
-    noscript,
+    fallbackIndex,
   };
 }
 
@@ -109,7 +109,7 @@ function sourceContent(html, slug) {
       .replace('Loading encyclopedia index…', fallback.status)
       .replace('<span data-subject-count>—</span>', `<span data-subject-count>${fallback.subjects}</span>`)
       .replace('<div class="topics" data-topics></div>', `<div class="topics" data-topics>${fallback.topicButtons}</div>`)
-      .replace('<div class="library" data-library aria-busy="true"></div>', `<div class="library" data-library aria-busy="false">${fallback.cards}</div>${fallback.noscript}`);
+      .replace('<div class="library" data-library aria-busy="true"></div>', `<div class="library" data-library aria-busy="false">${fallback.cards}</div>${fallback.fallbackIndex}`);
   }
   return `${style}\n<!-- DTF-PUBLIC-LEARNING-PAGE --><!-- DTF-SERVER-SEARCH-FALLBACK -->\n${main}`;
 }
