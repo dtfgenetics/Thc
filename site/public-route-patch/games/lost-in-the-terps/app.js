@@ -349,6 +349,190 @@ function showLoadError(error) {
   console.error(error);
 }
 
+// BEGIN LOST IN THE TERPS AGENT BRIDGE
+const LOST_TERPS_AGENT_VERSION = 'lost-in-the-terps-agent-bridge-v1';
+const LOST_TERPS_AGENT_MAX_EVENTS = 32;
+const LOST_TERPS_AGENT_STALL_MS = 8000;
+const lostTerpsAgentTelemetry = { actions: [], errors: [], lastProgressKey: '', lastProgressAt: 0, lastActionAt: 0 };
+
+function lostTerpsAgentNow() {
+  return typeof performance !== 'undefined' && typeof performance.now === 'function' ? performance.now() : Date.now();
+}
+function pushLostTerpsAgentEvent(list, event) {
+  list.push(Object.freeze(event));
+  if (list.length > LOST_TERPS_AGENT_MAX_EVENTS) list.splice(0, list.length - LOST_TERPS_AGENT_MAX_EVENTS);
+}
+function recordLostTerpsAgentAction(action, detail = null) {
+  const now = lostTerpsAgentNow();
+  lostTerpsAgentTelemetry.lastActionAt = now;
+  pushLostTerpsAgentEvent(lostTerpsAgentTelemetry.actions, { atMs: Math.round(now), action, detail });
+}
+function recordLostTerpsAgentError(kind, messageText, source = null) {
+  pushLostTerpsAgentEvent(lostTerpsAgentTelemetry.errors, {
+    atMs: Math.round(lostTerpsAgentNow()),
+    kind,
+    message: String(messageText || kind || 'unknown error').slice(0, 500),
+    source: source ? String(source).slice(0, 500) : null
+  });
+}
+function lostTerpsVisibleGrid() {
+  if (!puzzle) return [];
+  return Array.from({ length: puzzle.size }, (_, row) =>
+    Array.from({ length: puzzle.size }, (_, col) => {
+      const element = gridEl.querySelector(cellSelector([row, col]));
+      return {
+        row,
+        col,
+        letter: puzzle.grid[row][col],
+        selectedStart: Boolean(start && start[0] === row && start[1] === col),
+        found: Boolean(element?.classList.contains('found')),
+        hinted: Boolean(element?.classList.contains('hint')),
+        wrong: Boolean(element?.classList.contains('wrong'))
+      };
+    })
+  );
+}
+function observeLostTerpsAgentProgress() {
+  const progressKey = [
+    puzzle?.id || '',
+    missionToken,
+    found.size,
+    attempts,
+    hintsRemaining,
+    hintsUsed,
+    start ? start.join(',') : '',
+    complete.hidden ? 0 : 1,
+    pendingMissionId || '',
+    resetArmedUntil > Date.now() ? 1 : 0
+  ].join('|');
+  if (progressKey !== lostTerpsAgentTelemetry.lastProgressKey) {
+    lostTerpsAgentTelemetry.lastProgressKey = progressKey;
+    lostTerpsAgentTelemetry.lastProgressAt = lostTerpsAgentNow();
+  }
+}
+function lostTerpsAgentTelemetrySnapshot() {
+  observeLostTerpsAgentProgress();
+  const now = lostTerpsAgentNow();
+  const noProgressMs = lostTerpsAgentTelemetry.lastProgressAt ? Math.max(0, now - lostTerpsAgentTelemetry.lastProgressAt) : 0;
+  const sinceActionMs = lostTerpsAgentTelemetry.lastActionAt ? Math.max(0, now - lostTerpsAgentTelemetry.lastActionAt) : 0;
+  const actionPending = lostTerpsAgentTelemetry.lastActionAt > lostTerpsAgentTelemetry.lastProgressAt;
+  return {
+    errors: lostTerpsAgentTelemetry.errors.slice(),
+    recentActions: lostTerpsAgentTelemetry.actions.slice(),
+    noProgressMs: Math.round(noProgressMs),
+    sinceActionMs: Math.round(sinceActionMs),
+    stallSuspected: Boolean(actionPending && sinceActionMs >= LOST_TERPS_AGENT_STALL_MS && noProgressMs >= LOST_TERPS_AGENT_STALL_MS),
+    stallThresholdMs: LOST_TERPS_AGENT_STALL_MS
+  };
+}
+function lostTerpsAgentSnapshot() {
+  const completed = Boolean(puzzle && found.size === puzzle.words.length);
+  return {
+    version: LOST_TERPS_AGENT_VERSION,
+    ready: Boolean(data && puzzle),
+    mission: puzzle ? {
+      id: puzzle.id,
+      title: puzzle.title,
+      description: puzzle.description,
+      size: puzzle.size,
+      available: data.puzzles.map((item) => ({ id: item.id, title: item.title }))
+    } : null,
+    round: {
+      attempts,
+      hintsRemaining,
+      hintsUsed,
+      foundCount: found.size,
+      totalWords: puzzle?.words?.length || 0,
+      foundWords: [...found],
+      selectedStart: start ? { row: start[0], col: start[1] } : null,
+      completed,
+      resetArmed: resetArmedUntil > Date.now(),
+      pendingMissionId
+    },
+    visibleWords: puzzle ? puzzle.words.map((entry) => ({ word: entry.word, found: found.has(entry.word) })) : [],
+    grid: lostTerpsVisibleGrid(),
+    legalActions: completed
+      ? ['again','select-mission']
+      : ['select-cell','hint','reset','select-mission','clear-selection'],
+    telemetry: lostTerpsAgentTelemetrySnapshot()
+  };
+}
+function selectLostTerpsAgentCell(row, col) {
+  const r=Number(row), c=Number(col);
+  if (!Number.isInteger(r) || !Number.isInteger(c) || !puzzle || r < 0 || c < 0 || r >= puzzle.size || c >= puzzle.size) {
+    throw new Error(`Unsupported Lost in the Terps cell: ${row},${col}`);
+  }
+  if (found.size === puzzle.words.length) return false;
+  const button=gridEl.querySelector(cellSelector([r,c]));
+  if (!button) return false;
+  recordLostTerpsAgentAction('select-cell', { row:r, col:c });
+  button.click();
+  return true;
+}
+function selectLostTerpsAgentMission(id) {
+  const normalized=String(id || '');
+  if (!data?.puzzles?.some((item) => item.id === normalized)) throw new Error(`Unsupported Lost in the Terps mission: ${id}`);
+  const button=missions.querySelector(`button[data-id="${normalized}"]`);
+  if (!button) return false;
+  recordLostTerpsAgentAction('select-mission', normalized);
+  button.click();
+  return true;
+}
+function installLostTerpsAgentTelemetry() {
+  if (typeof window?.addEventListener !== 'function') return;
+  window.addEventListener('error', (event) => {
+    const target=event?.target;
+    const resource=target && target !== window && (target.currentSrc || target.src || target.href);
+    if (resource) recordLostTerpsAgentError('resource-error','Browser resource failed to load',resource);
+    else recordLostTerpsAgentError('runtime-error',event?.message || event?.error?.message || 'Browser runtime error',event?.filename || null);
+  }, true);
+  window.addEventListener('unhandledrejection', (event) => {
+    recordLostTerpsAgentError('unhandled-rejection',event?.reason?.message || event?.reason || 'Unhandled promise rejection');
+  });
+}
+function installLostTerpsAgentBridge() {
+  installLostTerpsAgentTelemetry();
+  const api=Object.freeze({
+    version: LOST_TERPS_AGENT_VERSION,
+    snapshot: lostTerpsAgentSnapshot,
+    selectCell: selectLostTerpsAgentCell,
+    selectMission: selectLostTerpsAgentMission,
+    hint: () => {
+      if (!puzzle || hintsRemaining <= 0 || found.size === puzzle.words.length) return false;
+      recordLostTerpsAgentAction('hint');
+      hintButton.click();
+      return true;
+    },
+    reset: () => {
+      if (!puzzle || found.size === puzzle.words.length) return false;
+      recordLostTerpsAgentAction('reset');
+      resetButton.click();
+      return true;
+    },
+    again: () => {
+      if (!puzzle || found.size !== puzzle.words.length) return false;
+      recordLostTerpsAgentAction('again');
+      againButton.click();
+      return true;
+    },
+    clearSelection: () => {
+      if (!start) return false;
+      recordLostTerpsAgentAction('clear-selection');
+      clearStart();
+      message.textContent='Selection cleared. Choose a starting letter.';
+      return true;
+    },
+    telemetry: lostTerpsAgentTelemetrySnapshot
+  });
+  Object.defineProperty(window,'__LOST_TERPS_AGENT__',{value:api,enumerable:false,configurable:false,writable:false});
+  Object.defineProperty(window,'__LOST_TERPS_GAME_STATE__',{get:lostTerpsAgentSnapshot,enumerable:false,configurable:false});
+  document.documentElement.dataset.lostTerpsAgentBridge=LOST_TERPS_AGENT_VERSION;
+  lostTerpsAgentTelemetry.lastProgressAt=lostTerpsAgentNow();
+  return api;
+}
+installLostTerpsAgentBridge();
+// END LOST IN THE TERPS AGENT BRIDGE
+
 resetButton.addEventListener('click', requestReset);
 againButton.addEventListener('click', () => select(puzzle.id));
 hintButton.addEventListener('click', useHint);

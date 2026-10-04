@@ -8,10 +8,13 @@
   "productionTarget": "https://dtfseeds.com",
   "releaseGates": {
     "rulesTested": true,
-    "browserTested": false,
+    "browserTested": true,
     "mobileTested": false,
     "accessibilityReviewed": false,
     "originalArtCleared": true,
-    "deploymentRegistered": true
-  }
+    "deploymentRegistered": true,
+    "autonomousPlaytestReady": true
+  },
+  "agentBridge": "window.__LOST_TERPS_AGENT__",
+  "agentBridgeTest": "games/lost-in-the-terps/test/agent-bridge.test.mjs"
 }
