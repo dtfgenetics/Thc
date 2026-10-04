@@ -1,0 +1,125 @@
+name: Repair THC Encyclopedia Missing Production Lessons
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/encyclopedia/repair-part01-missing.json'
+      - 'site/wordpress/education/encyclopedia/repair-part17-tail.json'
+      - 'site/wordpress/education/encyclopedia/repair-part19-full.json'
+      - 'site/wordpress/education/encyclopedia/repair-part20-full.json'
+      - 'content/encyclopedia/volume-01/lessons/thc-enc-001.json'
+      - 'content/encyclopedia/volume-01/lessons/thc-enc-002.json'
+      - 'content/encyclopedia/volume-01/lessons/thc-enc-005.json'
+      - 'content/encyclopedia/volume-17/lessons/thc-enc-33[6-9].json'
+      - 'content/encyclopedia/volume-17/lessons/thc-enc-340.json'
+      - '.github/workflows/wordpress-encyclopedia-repair-production.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-encyclopedia-production
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    name: Publish and verify 28 missing Encyclopedia lessons
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      ENCYCLOPEDIA_TOPIC_FILE: configuration/encyclopedia-topics.json
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate forward-only floor and repair manifests
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/validate-encyclopedia-production-pointer.mjs
+          for batch in             site/wordpress/education/encyclopedia/repair-part01-missing.json             site/wordpress/education/encyclopedia/repair-part17-tail.json             site/wordpress/education/encyclopedia/repair-part19-full.json             site/wordpress/education/encyclopedia/repair-part20-full.json
+          do
+            node scripts/validate-encyclopedia-release-control.mjs "$batch"
+          done
+          npm run verify:encyclopedia-content-control
+          npm run verify:encyclopedia-assessments
+          npm run audit:encyclopedia-substantive-quality
+
+      - name: Require protected WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ -n "${WP_API_USERNAME:-}" ]]
+          [[ -n "${WP_API_PASSWORD:-}" ]]
+
+      - name: Publish repair batches with isolated backups
+        shell: bash
+        run: |
+          set -euo pipefail
+          for batch in             site/wordpress/education/encyclopedia/repair-part01-missing.json             site/wordpress/education/encyclopedia/repair-part17-tail.json             site/wordpress/education/encyclopedia/repair-part19-full.json             site/wordpress/education/encyclopedia/repair-part20-full.json
+          do
+            name="$(basename "$batch" .json)"
+            echo "Publishing $name"
+            ENCYCLOPEDIA_BATCH_FILE="$batch" BACKUP_ROOT="/tmp/dtf-encyclopedia-repair/$name"               node scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
+          done
+
+      - name: Rebuild 21 topic hubs
+        shell: bash
+        run: |
+          set -euo pipefail
+          BACKUP_ROOT=/tmp/dtf-encyclopedia-repair-topics node scripts/organize-wordpress-encyclopedia-topics.mjs | tee "$RUNNER_TEMP/topics.json"
+          report="$(cat /tmp/dtf-encyclopedia-repair-topics/latest-backup-path.txt)/encyclopedia-topic-organization-report.json"
+          test -s "$report"
+          node - "$report" <<'NODE'
+          const r=require(process.argv[2]);
+          if(r.activeTopics.length!==21) throw new Error(`Expected 21 active topic hubs, found ${r.activeTopics.length}`);
+          if(r.articleCount!==420) throw new Error(`Expected 420 published encyclopedia articles, found ${r.articleCount}`);
+          console.log(`Topic organization verified: ${r.activeTopics.length} hubs, ${r.articleCount} articles`);
+          NODE
+
+      - name: Publish refreshed search indexes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-learning-search-indexes.mjs
+
+      - name: Visitor-verify all repaired lessons and full catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          index="$RUNNER_TEMP/encyclopedia-index.html"
+          curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 3             --header 'Cache-Control: no-cache, no-store, max-age=0'             --header 'Pragma: no-cache'             "$WP_SITE_URL/learn/encyclopedia/?repair_420=${GITHUB_RUN_ID}" -o "$index"
+
+          node - <<'NODE' > "$RUNNER_TEMP/repair-ids.txt"
+          const ids=[1,2,5,336,337,338,339,340,...Array.from({length:20},(_,i)=>361+i),...Array.from({length:20},(_,i)=>381+i)];
+          for(const n of ids) console.log(`THC-ENC-${String(n).padStart(3,'0')}`);
+          NODE
+
+          while read -r id; do
+            grep -Fqi -- "$id" "$index" || { echo "$id missing from public encyclopedia index" >&2; exit 1; }
+            slug="$(printf '%s' "$id" | tr '[:upper:]' '[:lower:]')"
+            body="$RUNNER_TEMP/$slug.html"
+            curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 3               --header 'Cache-Control: no-cache, no-store, max-age=0'               --header 'Pragma: no-cache'               "$WP_SITE_URL/learn/encyclopedia/$slug/?repair_420=${GITHUB_RUN_ID}" -o "$body"
+            grep -Fqi -- "$id" "$body"
+            grep -Fqi -- 'Educational reference' "$body"
+            grep -Fqi -- 'Terms to know' "$body"
+          done < "$RUNNER_TEMP/repair-ids.txt"
+
+          for hub in plant-structure-anatomy ipm-biosecurity outdoor-greenhouse breeding-conservation measurement-research; do
+            curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 3               "$WP_SITE_URL/learn/encyclopedia/$hub/?repair_420=${GITHUB_RUN_ID}" -o "$RUNNER_TEMP/$hub.html"
+            grep -Fqi -- "data-thc-topic=\"$hub\"" "$RUNNER_TEMP/$hub.html"
+          done
+
+          echo "Visitor verification passed for all 28 repaired lessons and 21-topic catalog."
