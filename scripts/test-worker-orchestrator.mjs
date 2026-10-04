@@ -724,3 +724,10 @@ const repairReady = { ...repairJob, state:'REPAIRING', repair:{ workerKind:'test
 assert.equal(executorDemand(repairReady,{now:new Date('2026-10-04T00:01:00Z')}).workerKind,'test-repair')
 assert.equal(executorDemand({...repairReady,repair:{...repairReady.repair,nextEligibleAt:'2026-10-04T01:00:00.000Z'}},{now:new Date('2026-10-04T00:01:00Z')}).ready,false)
 assert.equal(executorQueue([repairReady],{now:new Date('2026-10-04T00:01:00Z')}).length,1)
+
+const repairReady2 = { ...repairReady, jobId:'repair-2', createdAt:'2026-10-04T00:00:01.000Z' }
+const repairReady3 = { ...repairReady, jobId:'repair-3', createdAt:'2026-10-04T00:00:02.000Z' }
+assert.equal(executorQueue([repairReady,repairReady2,repairReady3],{now:new Date('2026-10-04T00:01:00Z')}).length,2)
+const activeRepair = { ...repairReady, jobId:'repair-active', executor:{status:'RUNNING'} }
+const capacityQueue = executorQueue([activeRepair,repairReady2,repairReady3],{now:new Date('2026-10-04T00:01:00Z')})
+assert.deepEqual(capacityQueue.map(({job})=>job.jobId),['repair-2'])
