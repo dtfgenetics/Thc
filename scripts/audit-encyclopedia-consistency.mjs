@@ -27,7 +27,8 @@ const measurementPatterns=[
     id:'ambiguous-ppm-scale',
     re:/\b\d+(?:\.\d+)?\s*ppm\b/i,
     clear:/\b(?:500|700)[ -]?scale\b|\bmg\/?l\b|\bNaCl equivalent\b|\bTDS scale\b/i,
-    note:'Numeric PPM/TDS should identify the conversion basis or use an unambiguous mass-concentration unit when appropriate.'
+    applies:text=>/\b(?:tds|ec|electrical conductivity|nutrient|feed|fertigation|runoff|solution|water|substrate|media)\b/i.test(text) && !/\b(?:co2|carbon dioxide|gas|air|occupational|niosh|osha|exposure|safety limit)\b/i.test(text),
+    note:'Numeric PPM/TDS in cultivation-solution context should identify the conversion basis or use an unambiguous mass-concentration unit when appropriate.'
   },
   {
     id:'ec-missing-unit',
@@ -67,7 +68,7 @@ for(const lesson of lessons){
   for(const [field,value] of fields){
     const text=clean(value);
     for(const rule of measurementPatterns){
-      if(rule.re.test(text)&&!rule.clear.test(text)){
+      if((!rule.applies||rule.applies(text))&&rule.re.test(text)&&!rule.clear.test(text)){
         findings.push({
           findingId:rule.id,
           severity:'review',
@@ -78,7 +79,10 @@ for(const lesson of lessons){
         });
       }
     }
-    if(/\b(?:always|never|universally|guarantees?|optimal|ideal)\b/i.test(text)&&/\b\d+(?:\.\d+)?\b/.test(text)){
+    const nonYearNumbers=(text.match(/\b\d+(?:\.\d+)?\b/g)||[]).filter(value=>!/^(?:19|20)\d{2}$/.test(value));
+    const negatedAbsolute=/\b(?:not universally|does not guarantee|do not guarantee|not guaranteed|not always|is not always|are not always)\b/i.test(text);
+    const intentionalMisconception=field.startsWith('misconceptions[');
+    if(!intentionalMisconception&&!negatedAbsolute&&/\b(?:always|never|universally|guarantees?|optimal|ideal)\b/i.test(text)&&nonYearNumbers.length){
       findings.push({
         findingId:'absolute-numerical-language',
         severity:'review',
