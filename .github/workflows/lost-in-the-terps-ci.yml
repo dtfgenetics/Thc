@@ -19,6 +19,8 @@ jobs:
         run: node games/lost-in-the-terps/scripts/validate-data.mjs
       - name: Test self-contained public runtime
         run: node games/lost-in-the-terps/test/public-runtime.test.mjs
+      - name: Test autonomous playtest bridge
+        run: node games/lost-in-the-terps/test/agent-bridge.test.mjs
       - name: Validate browser runtime syntax and route contract
         shell: bash
         run: |
