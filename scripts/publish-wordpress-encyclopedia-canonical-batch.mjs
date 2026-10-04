@@ -71,12 +71,39 @@ const workedExampleHtml=a=>{
   return `<details class="thc-example"><summary><strong>Worked example:</strong> ${esc(ex.title)}</summary><div class="thc-example-body"><p><strong>Scenario:</strong> ${esc(ex.scenario)}</p><h3>Reasoning path</h3>${list(ex.reasoningPath||[])}<h3>Evidence to collect</h3>${list(ex.evidenceToCollect||[])}<h3>Common weak answers</h3>${list(ex.weakAnswerPatterns||[])}<p><strong>Verification:</strong> ${esc(ex.verification)}</p><p><strong>Applicability boundary:</strong> ${esc(ex.boundary)}</p></div></details>`;
 };
 
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const transientStatuses=new Set([429,500,502,503,504]);
 async function request(endpoint,{method='GET',body}={}){
-  const res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{method,headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache'},body:body?JSON.stringify(body):undefined});
-  const text=await res.text(); let parsed;
-  try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
-  if(!res.ok) throw new Error(`${method} ${endpoint} failed ${res.status}: ${typeof parsed==='string'?parsed.slice(0,800):JSON.stringify(parsed).slice(0,800)}`);
-  return {data:parsed,headers:res.headers};
+  const retrySafe=method==='GET'||(method==='POST'&&/^\/pages\/\d+$/.test(endpoint));
+  const maxAttempts=retrySafe?7:1;
+  let lastError=null;
+  for(let attempt=1;attempt<=maxAttempts;attempt+=1){
+    try{
+      const res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{
+        method,
+        headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},
+        body:body?JSON.stringify(body):undefined,
+        signal:AbortSignal.timeout(60_000)
+      });
+      const text=await res.text(); let parsed;
+      try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
+      if(res.ok) return {data:parsed,headers:res.headers};
+      const message=`${method} ${endpoint} failed ${res.status}: ${typeof parsed==='string'?parsed.slice(0,800):JSON.stringify(parsed).slice(0,800)}`;
+      if(!retrySafe||!transientStatuses.has(res.status)||attempt===maxAttempts) throw new Error(message);
+      const retryAfter=Number(res.headers.get('retry-after')||0);
+      const delay=retryAfter>0?retryAfter*1000:Math.min(15_000,750*(2**(attempt-1)));
+      console.warn(`${message} · retrying attempt ${attempt+1}/${maxAttempts} after ${delay}ms`);
+      await sleep(delay);
+    }catch(error){
+      lastError=error;
+      const retryableNetwork=retrySafe && (error?.name==='TimeoutError'||error?.name==='AbortError'||/fetch failed|ECONNRESET|ETIMEDOUT|socket/i.test(String(error?.message||error)));
+      if(!retryableNetwork||attempt===maxAttempts) throw error;
+      const delay=Math.min(15_000,750*(2**(attempt-1)));
+      console.warn(`${method} ${endpoint} network error: ${String(error?.message||error)} · retrying attempt ${attempt+1}/${maxAttempts} after ${delay}ms`);
+      await sleep(delay);
+    }
+  }
+  throw lastError||new Error(`${method} ${endpoint} exhausted retries`);
 }
 async function wp(endpoint,opts){return (await request(endpoint,opts)).data;}
 async function findPage(slug,parent=null){
@@ -105,12 +132,36 @@ function preserveExistingLessonVisual(slug,existing,content){
   if(idx<0) return content;
   return String(content).slice(0,idx)+match[0]+'\n'+String(content).slice(idx);
 }
+const writeDelayMs=Math.max(0,Number(process.env.ENCYCLOPEDIA_WP_WRITE_DELAY_MS||100));
+async function createPageWithRecovery({slug,parent,payload}){
+  let lastError=null;
+  for(let attempt=1;attempt<=5;attempt+=1){
+    try{
+      const created=await wp('/pages',{method:'POST',body:payload});
+      if(writeDelayMs) await sleep(writeDelayMs);
+      return created;
+    }catch(error){
+      lastError=error;
+      const recovered=await findPage(slug,parent).catch(()=>null);
+      if(recovered) return recovered;
+      if(attempt===5) throw error;
+      const delay=Math.min(12_000,1000*(2**(attempt-1)));
+      console.warn(`POST /pages create for ${slug} failed: ${String(error?.message||error)} · retrying after ${delay}ms`);
+      await sleep(delay);
+    }
+  }
+  throw lastError||new Error(`Unable to create page ${slug}`);
+}
 async function upsertPage({slug,title,parent,content,excerpt=''}){
   const existing=await findPage(slug,parent);
   if(existing) backups.push(existing);
   content=preserveExistingLessonVisual(slug,existing,content);
   const payload={slug,title,status:'publish',parent,content,excerpt,comment_status:'closed'};
-  return existing?wp(`/pages/${existing.id}`,{method:'POST',body:payload}):wp('/pages',{method:'POST',body:payload});
+  const page=existing
+    ? await wp(`/pages/${existing.id}`,{method:'POST',body:payload})
+    : await createPageWithRecovery({slug,parent,payload});
+  if(existing&&writeDelayMs) await sleep(writeDelayMs);
+  return page;
 }
 
 const toolLinksFor=(a)=>{
