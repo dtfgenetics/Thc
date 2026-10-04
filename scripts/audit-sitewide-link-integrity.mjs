@@ -1,5 +1,6 @@
 import { setDefaultResultOrder } from 'node:dns';
 import { writeFile } from 'node:fs/promises';
+import { stripNonRenderedMarkup } from './lib/html-audit-markup.mjs';
 
 setDefaultResultOrder('ipv4first');
 
@@ -74,7 +75,7 @@ while(queue.length&&pages.length<MAX_PAGES){
     const item=batch[i];const page=fetched[i];
     const html=page.body||'';
     const isHtml=page.contentType.toLowerCase().includes('text/html')||/^\s*<!doctype html|^\s*<html\b/i.test(html);
-    const links=page.status===200&&isHtml?linksFrom(html,page.finalUrl):[];
+    const links=page.status===200&&isHtml?linksFrom(stripNonRenderedMarkup(html),page.finalUrl):[];
     const issues=[];
     if(page.error) issues.push(`Fetch failed: ${page.error}`);
     else if(page.status!==200) issues.push(`HTTP ${page.status}`);

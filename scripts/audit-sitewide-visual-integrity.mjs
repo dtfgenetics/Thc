@@ -1,5 +1,6 @@
 import { setDefaultResultOrder } from 'node:dns';
 import { readFile, writeFile } from 'node:fs/promises';
+import { stripNonRenderedMarkup } from './lib/html-audit-markup.mjs';
 
 setDefaultResultOrder('ipv4first');
 
@@ -117,6 +118,7 @@ async function fetchHtml(path){
 function inspectPage(fetched,depth){
   const issues=[];const warnings=[];
   const html=fetched.body||'';
+  const rendered=stripNonRenderedMarkup(html);
   const base=fetched.finalUrl||new URL(fetched.path,`${BASE_URL}/`).href;
   if(fetched.error) issues.push(`Fetch failed: ${fetched.error}`);
   if(!fetched.error&&fetched.status!==200) issues.push(`HTTP ${fetched.status}; expected 200`);
@@ -150,20 +152,20 @@ function inspectPage(fetched,depth){
     }
   }
 
-  const h1=count(html,/<h1\b/gi);
+  const h1=count(rendered,/<h1\b/gi);
   if(h1===0) warnings.push('No H1 found');
   if(h1>1) issues.push(`Multiple H1 elements found (${h1}); production pages must expose one primary H1`);
 
-  const dups=duplicateIds(html);
+  const dups=duplicateIds(rendered);
   if(dups.length) issues.push(`Duplicate HTML ids: ${dups.slice(0,8).map(item=>`${item.id}×${item.count}`).join(', ')}${dups.length>8?'…':''}`);
 
-  const images=extractImages(html,base);
+  const images=extractImages(rendered,base);
   const missingAlt=images.filter(image=>image.alt===null);
   if(missingAlt.length) issues.push(`${missingAlt.length} image(s) missing an alt attribute`);
   const emptySrc=images.filter(image=>!image.src);
   if(emptySrc.length) issues.push(`${emptySrc.length} image(s) have no usable src/data-src`);
 
-  const links=extractLinks(html,base);
+  const links=extractLinks(rendered,base);
   return {path:fetched.path,depth,status:fetched.status,ok:fetched.ok,contentType:fetched.contentType,finalUrl:fetched.finalUrl,durationMs:fetched.durationMs,error:fetched.error,issues,warnings,links,images,passed:issues.length===0};
 }
 
