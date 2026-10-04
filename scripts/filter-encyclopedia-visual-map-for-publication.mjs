@@ -12,8 +12,42 @@ const authorizedIds=new Set((manifest.lessonFiles||[]).map(file=>{
   if(!match) throw new Error(`Invalid encyclopedia lesson path in manifest: ${file}`);
   return `THC-ENC-${match[1]}`;
 }));
-const items=(fullMap.items||[]).filter(item=>authorizedIds.has(item.id));
-if(items.length!==authorizedIds.size) throw new Error(`Visual map mismatch: expected ${authorizedIds.size} authorized lessons, found ${items.length} mapped visuals.`);
-const output={...fullMap,batch:'encyclopedia-authorized-visuals-v1',fullLessonCount:(fullMap.items||[]).length,publicationAuthorizedLessonCount:items.length,heldLessonCount:Number(manifest.heldLessonCount||0),reviewState:'generated_candidates_pending_independent_science_accessibility_and_asset_qa',items};
+
+const allAuthorized=(fullMap.items||[]).filter(item=>authorizedIds.has(item.id));
+const publishable=allAuthorized.filter(item=>
+  item?.assetKind==='existing-canonical-raster' &&
+  typeof item?.assetPath==='string' &&
+  /\.(?:png|jpe?g|webp)$/i.test(item.assetPath)
+);
+
+for(const item of publishable){
+  const assetPath=`site/wordpress/assets/infographics/${item.assetPath}`;
+  if(!fs.existsSync(assetPath)) throw new Error(`${item.id}: mapped canonical raster does not exist: ${assetPath}`);
+}
+
+const heldGenerated=allAuthorized.filter(item=>item?.assetKind==='generated-raster-review-pending');
+const heldMissing=allAuthorized.filter(item=>!item?.assetPath||item?.assetKind==='raster-artwork-needed');
+const unsupported=allAuthorized.filter(item=>
+  !['existing-canonical-raster','generated-raster-review-pending','raster-artwork-needed'].includes(String(item?.assetKind||''))
+);
+if(unsupported.length) throw new Error(`Unsupported encyclopedia visual assetKind values: ${unsupported.map(item=>`${item.id}:${item.assetKind}`).join(', ')}`);
+
+const output={
+  schemaVersion:1,
+  batch:'encyclopedia-authorized-approved-raster-visuals-v2',
+  sourceBatch:fullMap.batch||null,
+  generatedAt:new Date().toISOString(),
+  fullLessonCount:(fullMap.items||[]).length,
+  publicationAuthorizedLessonCount:allAuthorized.length,
+  publishableApprovedRasterCount:publishable.length,
+  heldGeneratedReviewPendingCount:heldGenerated.length,
+  heldMissingArtworkCount:heldMissing.length,
+  heldLessonCount:Number(manifest.heldLessonCount||0),
+  reviewState:'approved-existing-canonical-raster-only',
+  publicationRule:'Only existing canonical raster assets are eligible for production attachment. Generated review-pending candidates and missing artwork remain held until independently reviewed and promoted to canonical raster.',
+  items:publishable
+};
+
+if(!publishable.length) throw new Error('No approved existing canonical raster encyclopedia visuals are available for publication.');
 fs.writeFileSync(outPath,JSON.stringify(output,null,2)+'\n');
-console.log(`Publishable encyclopedia visual map: ${items.length} authorized lesson(s); ${output.heldLessonCount} held.`);
+console.log(`Publishable encyclopedia visual map: ${publishable.length} approved canonical raster(s); ${heldGenerated.length} generated candidate(s) held; ${heldMissing.length} missing artwork item(s) held.`);

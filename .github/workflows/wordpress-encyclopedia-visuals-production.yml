@@ -1,4 +1,4 @@
-name: Publish THC Encyclopedia Visuals to WordPress Production
+name: Publish Approved THC Encyclopedia Visuals to WordPress Production
 
 on:
   workflow_run:
@@ -32,7 +32,7 @@ permissions:
 
 jobs:
   publish:
-    name: Publish and verify full encyclopedia lesson visuals
+    name: Publish and verify approved encyclopedia lesson visuals
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -54,17 +54,10 @@ jobs:
         with:
           ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
-      - name: Setup Node and SVG rasterizer
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-
-      - name: Install SVG rasterizer
-        shell: bash
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y librsvg2-bin
 
       - name: Build full canonical publication manifest
         shell: bash
@@ -100,14 +93,14 @@ jobs:
           set -euo pipefail
           node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-wordpress-encyclopedia-full-live.mjs
 
-      - name: Generate full controlled visual set
+      - name: Build controlled visual inventory and approved publication subset
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/build-encyclopedia-teaching-visuals.mjs --render-png
-          node scripts/filter-encyclopedia-visual-map-for-publication.mjs
+          node scripts/build-encyclopedia-teaching-visuals.mjs
           npm run build:encyclopedia-visual-queue
           node scripts/validate-encyclopedia-visual-production-queue.mjs
+          node scripts/filter-encyclopedia-visual-map-for-publication.mjs
 
       - name: Validate credentials, publisher, map, and canonical assets
         id: validate
@@ -120,16 +113,19 @@ jobs:
           node - <<'NODE'
           const fs=require('fs');
           const map=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_VISUAL_MAP,'utf8'));
-          if(map.schemaVersion!==1 || map.batch!=='encyclopedia-authorized-visuals-v1' || !Array.isArray(map.items) || !map.items.length) throw new Error('Unexpected authorized encyclopedia visual map.');
+          if(map.schemaVersion!==1 || map.batch!=='encyclopedia-authorized-approved-raster-visuals-v2' || !Array.isArray(map.items) || !map.items.length) throw new Error('Unexpected approved encyclopedia visual map.');
           const manifest=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_FULL_BATCH_FILE,'utf8'));
-          const expected=manifest.lessonFiles.map(file=>'THC-ENC-'+String(file.match(/thc-enc-(\\d{3,})\\.json$/i)?.[1]||''));
+          const authorized=new Set(manifest.lessonFiles.map(file=>'THC-ENC-'+String(file.match(/thc-enc-(\\d{3,})\\.json$/i)?.[1]||'')));
           const ids=map.items.map(x=>x.id);
-          if(new Set(ids).size!==ids.length || ids.length!==expected.length || expected.some(id=>!ids.includes(id))) throw new Error('Authorized visual map does not match the publication manifest.');
+          if(new Set(ids).size!==ids.length) throw new Error('Approved visual map contains duplicate lesson IDs.');
+          if(ids.some(id=>!authorized.has(id))) throw new Error('Approved visual map contains a lesson that is not publication-authorized.');
+          if(map.publishableApprovedRasterCount!==ids.length) throw new Error('Approved visual-map count does not match items.');
           for(const item of map.items){
+            if(item.assetKind!=='existing-canonical-raster') throw new Error(`${item.id}: non-canonical visual reached the production map.`);
             const p=`site/wordpress/assets/infographics/${item.assetPath}`;
             if(!fs.existsSync(p)) throw new Error(`Missing canonical infographic asset: ${p}`);
           }
-          console.log(`Validated ${map.items.length} publication-authorized lesson-to-visual mappings and assets.`);
+          console.log(`Validated ${map.items.length} approved canonical lesson-to-visual mappings; review-pending generated candidates remain held.`);
           NODE
 
       - name: Attach existing WordPress media to encyclopedia lessons
@@ -156,8 +152,9 @@ jobs:
           const r=require(process.argv[2]);
           for(const x of r.updated) console.log([x.id,x.mediaSlug,x.mediaSourceUrl].join('\t'));
           NODE
-          expected="${{ steps.canonical_sync.outputs.expected }}"
+          expected="$(node -p "require('./' + process.env.ENCYCLOPEDIA_VISUAL_MAP).items.length")"
           test -n "$expected"
+          test "$expected" -gt 0
           test "$(wc -l < "$RUNNER_TEMP/visuals.tsv")" -eq "$expected"
 
           while IFS=$'\t' read -r id media_slug media_url; do
