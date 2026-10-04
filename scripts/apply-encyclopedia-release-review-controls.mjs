@@ -10,9 +10,14 @@ if(owner.publicationAuthorized!==true||owner.authorizedBy!=='project_owner') thr
 const lessons=readCanonicalEncyclopediaLessons(root);
 let changed=0;
 const changedIds=[];
+const outOfScope=[];
+const scopeFrom=Number(String(owner.scope?.from||'THC-ENC-001').match(/\d+/)?.[0]||1);
+const scopeTo=Number(String(owner.scope?.to||'THC-ENC-420').match(/\d+/)?.[0]||420);
 for(const lesson of lessons){
   const file=path.join(root,lesson.__path);
   const data=JSON.parse(fs.readFileSync(file,'utf8'));
+  const lessonNumber=Number(data.number);
+  if(lessonNumber<scopeFrom||lessonNumber>scopeTo){ outOfScope.push(data.id); continue; }
   const control=data.reviewControl||{};
   const already=String(control.releaseTimeReview||'').startsWith(owner.eligibility?.requireReleaseTimeReviewPrefix||'completed_');
   const held=control.safetyHold===true||data.safetyHold===true;
@@ -35,6 +40,7 @@ const report={
   authorizationId:owner.authorizationId,
   changedLessons:changed,
   changedIds,
+  outOfScopeLessons:outOfScope,
   independentApprovalClaimed:false,
   basis:[
     '420-lesson canonical source validation passed',
