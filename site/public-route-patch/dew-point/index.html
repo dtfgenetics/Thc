@@ -10,7 +10,7 @@ import {collectCultivationToolResult} from '/assets/thc-cultivation-data-ui-v1.m
 const THC=window.THC,$=id=>document.getElementById(id);
 const dewOut=$('dewOut'),dewRows=$('dewRows'),air=$('air'),rh=$('rh'),surface=$('surface'),surfaceName=$('surfaceName'),tempUnit=$('tempUnit'),airUnitLabel=$('airUnitLabel'),surfaceUnitLabel=$('surfaceUnitLabel');
 const loadEnv=$('loadEnv'),saveDew=$('saveDew'),saveDewGrowLens=$('saveDewGrowLens'),exportDew=$('exportDew'),clearDew=$('clearDew'),backupDew=$('backupDew'),restoreDew=$('restoreDew'),printDew=$('printDew');
-const key='thc-dew-point-history-v1';let history=THC.load(key,[]);
+const key='thc-dew-point-history-v1';let history=[];
 const toC=v=>tempUnit.value==='f'?fahrenheitToCelsius(v):v;
 const fromC=v=>tempUnit.value==='f'?celsiusToFahrenheit(v):v;
 const unit=()=>tempUnit.value==='f'?'°F':'°C';
@@ -28,6 +28,14 @@ function render(){
   saveDew.disabled=false;saveDewGrowLens.disabled=false;
   const risk=x.margin<=0?'Condensation physically possible now':x.margin<2?'Close to dew point':'Surface above dew point';
   dewOut.innerHTML='<strong>'+THC.fmt(fromC(x.d),1)+' '+unit()+' dew point</strong><br>Surface margin '+THC.fmt(tempUnit.value==='f'?x.margin*9/5:x.margin,1)+' '+unit()+' · '+risk+'.<br><span class="muted">Canonical stored values remain in °C so records stay compatible with the rest of the tool suite.</span>';
+}
+function normalizeDewRecord(x){
+  if(!x||typeof x!=='object'||typeof x.at!=='string'||!Number.isFinite(Date.parse(x.at)))return null;
+  const t=Number(x.t),h=Number(x.h),s=Number(x.s);
+  if(!Number.isFinite(t)||t<-273.15||!Number.isFinite(s)||s<-273.15||!Number.isFinite(h)||h<1||h>100)return null;
+  let d;try{d=dewPoint(t,h)}catch{return null}
+  const margin=s-d;if(!Number.isFinite(d)||!Number.isFinite(margin))return null;
+  return{...x,t,h,s,d,margin,surfaceName:String(x.surfaceName||'Unspecified surface').slice(0,120),at:String(x.at)}
 }
 function draw(){
   dewRows.innerHTML=history.slice(-30).reverse().map(x=>'<tr><td>'+new Date(x.at).toLocaleString()+'</td><td>'+THC.esc(x.surfaceName)+'</td><td>'+THC.fmt(x.t,1)+' °C</td><td>'+THC.fmt(x.h,0)+'%</td><td>'+THC.fmt(x.s,1)+' °C</td><td>'+THC.fmt(x.d,1)+' °C</td><td>'+THC.fmt(x.margin,1)+' °C</td></tr>').join('');
@@ -53,8 +61,8 @@ loadEnv.onclick=()=>{
 };
 saveDew.onclick=()=>{
   const x=values();if(!x.valid)return;
-  const at=new Date().toISOString();history.push({...x,context:THC.context.get(),at});history=history.slice(-500);THC.save(key,history);
-  collectCultivationToolResult({toolId:'dew-point',type:'tool-result',observedAt:at,metrics:{temperatureC:x.t,humidityPercent:x.h,leafTemperatureC:/leaf|canopy/i.test(x.surfaceName)?x.s:null,dewPointC:x.d},values:{surfaceName:x.surfaceName,surfaceTemperatureC:x.s,condensationMarginC:x.margin},estimated:false,tags:['dew-point','condensation']});draw();
+  const at=new Date().toISOString(),record=normalizeDewRecord({...x,context:THC.context.get(),at});if(!record)return;history.push(record);history=history.slice(-500);if(!THC.save(key,history)){history.pop();dewOut.insertAdjacentHTML('beforeend','<p class="muted">Browser storage is unavailable. Export or print the check instead.</p>');return}
+  collectCultivationToolResult({toolId:'dew-point',type:'tool-result',observedAt:at,metrics:{temperatureC:record.t,humidityPercent:record.h,leafTemperatureC:/leaf|canopy/i.test(record.surfaceName)?record.s:null,dewPointC:record.d},values:{surfaceName:record.surfaceName,surfaceTemperatureC:record.s,condensationMarginC:record.margin},estimated:false,tags:['dew-point','condensation']});draw();
 };
 saveDewGrowLens.onclick=()=>{
   const x=values();if(!x.valid)return;
@@ -64,6 +72,6 @@ saveDewGrowLens.onclick=()=>{
 exportDew.onclick=()=>THC.csv('dew-point-checks.csv',csvTable(['timestamp','surface','air_c','rh_percent','surface_c','dew_point_c','margin_c'],history,x=>[x.at,x.surfaceName,x.t,x.h,x.s,x.d,x.margin]));
 clearDew.onclick=()=>{if(!history.length){dewOut.insertAdjacentHTML('beforeend','<p class="muted">No saved dew-point checks to clear.</p>');return}if(!confirm('Clear all saved dew-point checks on this device?'))return;history=[];THC.save(key,history);draw();dewOut.insertAdjacentHTML('beforeend','<p class="muted">Saved dew-point history cleared.</p>')};
 backupDew.onclick=()=>THC.backupJson('thc-dew-point-history-backup.json','thc-dew-point-history',1,history);
-restoreDew.addEventListener('change',async e=>{try{const records=await THC.restoreJson(e.target.files?.[0],'thc-dew-point-history',1,x=>x&&typeof x.at==='string'&&Number.isFinite(Number(x.d)),500);if(history.length&&!confirm('Replace current dew-point history with this backup?'))return;history=records;THC.save(key,history);draw();dewOut.insertAdjacentHTML('beforeend','<p class="muted">Dew-point backup restored.</p>')}catch(error){dewOut.insertAdjacentHTML('beforeend','<p class="muted">'+THC.esc(error?.message||'Could not restore backup.')+'</p>')}e.target.value=''});
-printDew.onclick=()=>window.print();render();draw();
+restoreDew.addEventListener('change',async e=>{try{const records=await THC.restoreJson(e.target.files?.[0],'thc-dew-point-history',1,x=>normalizeDewRecord(x)!==null,500),normalized=records.map(normalizeDewRecord).filter(Boolean);if(!normalized.length)throw new Error('Backup contains no valid dew-point checks.');if(history.length&&!confirm('Replace current dew-point history with this backup?'))return;if(!THC.save(key,normalized))throw new Error('Browser storage is unavailable.');history=normalized;draw();dewOut.insertAdjacentHTML('beforeend','<p class="muted">Dew-point backup restored with dew point and margin recalculated from stored air, RH and surface temperature.</p>')}catch(error){dewOut.insertAdjacentHTML('beforeend','<p class="muted">'+THC.esc(error?.message||'Could not restore backup.')+'</p>')}e.target.value=''});
+printDew.onclick=()=>window.print();history=(Array.isArray(THC.load(key,[]))?THC.load(key,[]):[]).map(normalizeDewRecord).filter(Boolean);render();draw();
 </script></body></html>
