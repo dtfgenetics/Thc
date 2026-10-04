@@ -112,6 +112,8 @@
     "build:encyclopedia-visual-queue": "node scripts/build-encyclopedia-visual-production-queue.mjs",
     "build:encyclopedia-visual-batches": "node scripts/build-encyclopedia-visual-production-batches.mjs",
     "verify:encyclopedia-visual-batches": "npm run build:encyclopedia-visual-batches && node scripts/validate-encyclopedia-visual-production-batches.mjs",
+    "build:encyclopedia-visual-preflight": "node scripts/build-encyclopedia-visual-machine-preflight.mjs",
+    "build:encyclopedia-visual-promotion": "node scripts/build-encyclopedia-visual-promotion-manifest.mjs",
     "verify:encyclopedia-visual-queue": "npm run build:encyclopedia-teaching-visuals && npm run build:encyclopedia-visual-queue && node scripts/validate-encyclopedia-visual-production-queue.mjs",
     "build:encyclopedia-source-queue": "node scripts/build-encyclopedia-source-resolution-queue.mjs",
     "verify:encyclopedia-source-queue": "npm run build:encyclopedia-source-queue && node scripts/validate-encyclopedia-source-resolution-queue.mjs",
