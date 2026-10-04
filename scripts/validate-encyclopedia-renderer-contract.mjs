@@ -20,7 +20,7 @@ const required=[
   ['mobile breakpoint','@media(max-width:640px)'],
   ['previous lesson behavior','← Previous'],
   ['next lesson behavior','Next →'],
-  ['canonical live fingerprint','data-thc-canonical-fingerprint'],
+  ['canonical live fingerprint','data-thc-source-fingerprint'],
   ['structured-data renderer','encyclopediaStructuredDataHtml']
 ];
 for(const [label,needle] of required)if(!src.includes(needle))errors.push('renderer missing '+label);
