@@ -11,9 +11,10 @@ const indexPath=path.join(root,'apps/growlens-web/index.html');
 const readmePath=path.join(root,'apps/growlens-web/README.md');
 const packagePath=path.join(root,'package.json');
 const liveAcceptancePath=path.join(root,'.github/workflows/growlens-live-acceptance.yml');
+const privateAuditPath=path.join(root,'scripts/growlens-private-data-audit.php');
 
 const fail=(message)=>{console.error('GrowLens release contract validation failed:',message);process.exitCode=1;};
-for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath,indexPath,readmePath,packagePath,liveAcceptancePath]){
+for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath,indexPath,readmePath,packagePath,liveAcceptancePath,privateAuditPath]){
   if(!fs.existsSync(file))fail(`Required file missing: ${path.relative(root,file)}`);
 }
 if(process.exitCode)process.exit();
@@ -89,6 +90,19 @@ for(const token of [
   'RUN-DESTRUCTIVE-ACCEPTANCE'
 ]){
   if(!liveAcceptance.includes(token))fail(`GrowLens live acceptance workflow is missing current gate: ${token}`);
+}
+
+const privateAudit=fs.readFileSync(privateAuditPath,'utf8');
+for(const token of [
+  '$collectionsBySchema',
+  'irrigationRecords',
+  'feedingRecords',
+  'reservoirRecords',
+  'harvestRecords',
+  'observationOutcomes',
+  '$stateCollections = $collectionsBySchema[$schemaVersion]'
+]){
+  if(!privateAudit.includes(token))fail(`GrowLens private-data audit is missing schema-v2 compatibility: ${token}`);
 }
 
 const suite=fs.readFileSync(suitePath,'utf8');
