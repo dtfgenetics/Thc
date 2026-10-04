@@ -20,6 +20,7 @@ on:
       - site/wordpress/education/**
       - content/encyclopedia/**
       - site/wordpress/assets/infographics/**
+      - site/wordpress/visual-quality-policy.json
       - site/wordpress/pages/gallery.html
       - .github/workflows/dtfseeds-education-assets.yml
   push:
@@ -40,6 +41,7 @@ on:
       - site/wordpress/education/**
       - content/encyclopedia/**
       - site/wordpress/assets/infographics/**
+      - site/wordpress/visual-quality-policy.json
       - site/wordpress/pages/gallery.html
       - .github/workflows/dtfseeds-education-assets.yml
 
