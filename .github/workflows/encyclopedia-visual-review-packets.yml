@@ -11,6 +11,7 @@ on:
       - 'scripts/build-encyclopedia-visual-review-packets.mjs'
       - 'scripts/validate-encyclopedia-visual-review-packets.mjs'
       - 'scripts/import-encyclopedia-visual-review-decisions.mjs'
+      - 'scripts/build-encyclopedia-visual-review-ledger.mjs'
       - '.github/workflows/encyclopedia-visual-review-packets.yml'
 
 permissions:
@@ -42,6 +43,7 @@ jobs:
           set -euo pipefail
           node scripts/build-encyclopedia-visual-review-packets.mjs
           node scripts/validate-encyclopedia-visual-review-packets.mjs
+          node scripts/build-encyclopedia-visual-review-ledger.mjs
           node scripts/import-encyclopedia-visual-review-decisions.mjs
           node scripts/build-encyclopedia-visual-promotion-manifest.mjs
           test -s review/encyclopedia-visuals/index.json
@@ -54,6 +56,7 @@ jobs:
           path: |
             review/encyclopedia-visuals
             data/encyclopedia-independent-review-manifest.json
+            data/encyclopedia-visual-review-ledger.json
             data/encyclopedia-visual-promotion-manifest.json
           if-no-files-found: error
           retention-days: 30
