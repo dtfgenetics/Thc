@@ -13,16 +13,21 @@ const readiness=read('data/encyclopedia-production-readiness.json');
 const evidence=read('data/encyclopedia-evidence-tracking.json');
 const rationales=read('data/encyclopedia-assessment-rationale-package.json');
 const visuals=read('content/encyclopedia/visual-production-queue-v1.json');
+const visualReviewLedger=fs.existsSync(path.join(root,'data','encyclopedia-visual-review-ledger.json'))
+  ? read('data/encyclopedia-visual-review-ledger.json')
+  : {lessons:[]};
 
 const byId=rows=>new Map(arr(rows).map(row=>[row.id||row.lessonId,row]));
 const evidenceById=byId(evidence.lessons);
 const rationaleById=byId(rationales.lessons);
 const visualById=byId(visuals.items);
+const visualReviewById=byId(visualReviewLedger.lessons);
 
 const rows=arr(readiness.lessons).map(row=>{
   const e=evidenceById.get(row.id)||{};
   const r=rationaleById.get(row.id)||{};
   const v=visualById.get(row.id)||{};
+  const vr=visualReviewById.get(row.id)||{};
   const evidenceCount=Number(e?.evidence?.claimEvidenceCount||0);
   const visualCandidates=arr(v.canonicalAssetPaths);
   return {
@@ -65,10 +70,13 @@ const rows=arr(readiness.lessons).map(row=>{
         accessibilityReview:v.accessibilityReview||null,
         assetQaStatus:v.assetQaStatus||null,
         requestedDecision:visualCandidates.length?'science_accessibility_rights_and_asset_qa':'produce_asset_then_review',
-        reviewerDecision:null,
-        reviewerId:null,
-        reviewedAt:null,
-        reviewNotes:null
+        reviewerDecision:vr.decision??null,
+        reviewerId:vr.reviewerId??null,
+        reviewerName:vr.reviewerName??null,
+        reviewedAt:vr.reviewedAt??null,
+        reviewNotes:vr.reviewNotes??null,
+        reviewChecks:vr.checks??null,
+        reviewSourcePacket:vr.sourcePacket??null
       },
       publication:{
         currentlyAuthorized:Boolean(row.publication?.authorized),
@@ -136,6 +144,8 @@ const summary={
   visualProductionNeeded:rows.filter(x=>x.reviewTasks.teachingVisual.candidateCount===0).length,
   publicationCurrentlyAuthorized:rows.filter(x=>x.reviewTasks.publication.currentlyAuthorized).length,
   generatedReviewerDecisions:0,
+  importedVisualReviewerDecisions:rows.filter(x=>Boolean(x.reviewTasks.teachingVisual.reviewerDecision)).length,
+  importedVisualApprovals:rows.filter(x=>x.reviewTasks.teachingVisual.reviewerDecision==='approved').length,
   reviewBatchSize,
   reviewBatchCount:reviewBatches.length
 };
@@ -145,7 +155,7 @@ const output={
   artifactId:'thc-encyclopedia-independent-review-manifest',
   generatedBy:'scripts/build-encyclopedia-independent-review-manifest.mjs',
   scope:`Reviewer handoff for all ${registryState.totalCount} registered THC-ENC lessons. This artifact enumerates review work but never makes reviewer decisions.`, 
-  reviewBoundary:'Generated content may prepare evidence, rationale, visual, accessibility, rights, QA, and release-review tasks. Independent reviewer identity, decision, date, and notes must come from an external review action and must never be synthesized by this builder.',
+  reviewBoundary:'Generated content may prepare evidence, rationale, visual, accessibility, rights, QA, and release-review tasks. Independent reviewer identity, decision, date, and notes must come from an external review action and must never be synthesized by this builder. Validated external visual-review decisions may be projected from data/encyclopedia-visual-review-ledger.json.',
   summary,
   reviewBatches,
   lessons:rows
