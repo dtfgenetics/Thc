@@ -124,6 +124,13 @@ jobs:
           report="$dir/woocommerce-archive-style-report.json"
           echo "template_parts=$(node -p "require(process.argv[1]).templateParts.length" "$report")" >> "$GITHUB_OUTPUT"
 
+      - name: Purge Hostinger LiteSpeed cache after WordPress mutations
+        id: cache_purge
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/flush-hostinger-litespeed-mcp.mjs
+
       - name: Verify DTF cannabis-leaf site icon through WordPress REST
         id: icon
         shell: bash
@@ -310,6 +317,7 @@ jobs:
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
           COMMERCE_VISUAL_OUTCOME: ${{ steps.commerce_visual.outcome }}
           SHOP_ARCHIVE_OUTCOME: ${{ steps.shop_archive.outcome }}
+          CACHE_PURGE_OUTCOME: ${{ steps.cache_purge.outcome }}
           OWNED_ROUTES_OUTCOME: ${{ steps.owned_routes.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
           SITE_ICON: ${{ steps.icon.outputs.site_icon }}
@@ -326,6 +334,7 @@ jobs:
               `Ownership-preserving page reconciliation: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
               `Commerce presentation + URL brand state: **${process.env.COMMERCE_VISUAL_OUTCOME || 'not-run'}**`,
               `WooCommerce Shop archive styling: **${process.env.SHOP_ARCHIVE_OUTCOME || 'not-run'}**`,
+              `Hostinger/LiteSpeed cache purge: **${process.env.CACHE_PURGE_OUTCOME || 'not-run'}**`,
               `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
               `Learning-owned Home/Learn hash preservation: **${process.env.OWNED_ROUTES_OUTCOME || 'not-run'}**`,
               `Live owned-surface verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
