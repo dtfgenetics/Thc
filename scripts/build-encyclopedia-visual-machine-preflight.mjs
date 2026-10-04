@@ -8,7 +8,9 @@ const outPath=path.join(root,'data','encyclopedia-visual-machine-preflight.json'
 const files=fs.readdirSync(batchDir).filter(n=>/^batch-\d{3}\.json$/i.test(n)).sort();
 const rows=[];
 const errors=[];
-const sourceRefPattern=/(doi\s*:|https?:\/\/|\b(?:19|20)\d{2}\b|\bV\d{1,2}-SRC-\d{3}\b|\bTHC\b.*source)/i;
+const evidencePath=path.join(root,'data','encyclopedia-evidence-tracking.json');
+const evidenceData=fs.existsSync(evidencePath)?JSON.parse(fs.readFileSync(evidencePath,'utf8')):{lessons:[]};
+const evidenceById=new Map((evidenceData.lessons||[]).map(x=>[x.id,x]));
 
 for(const file of files){
   const batch=JSON.parse(fs.readFileSync(path.join(batchDir,file),'utf8'));
@@ -22,7 +24,8 @@ for(const file of files){
       accuracyRequirements:Array.isArray(item.accuracyRequirements)&&item.accuracyRequirements.length>=2&&item.accuracyRequirements.every(x=>String(x).trim().length>=80),
       misconceptionGuards:Array.isArray(item.misconceptionGuards)&&item.misconceptionGuards.length>=2&&item.misconceptionGuards.every(x=>String(x).trim().length>=25),
       sourceAnchors:Array.isArray(item.sourceAnchors)&&item.sourceAnchors.length>=2&&item.sourceAnchors.every(x=>String(x).trim().length>=8),
-      sourceTraceabilityHeuristic:Array.isArray(item.sourceAnchors)&&item.sourceAnchors.every(x=>sourceRefPattern.test(String(x))),
+      sourceTraceability:Boolean((evidenceById.get(item.lessonId)?.evidence?.authoritativeSourceIds||[]).length>0),
+      claimEvidenceMapped:Number(evidenceById.get(item.lessonId)?.evidence?.claimEvidenceCount||0)>0,
       reviewBoundary:Object.values(item.requiredReviews||{}).every(x=>x==='pending')
     };
     const passed=Object.values(checks).every(Boolean);
@@ -34,6 +37,8 @@ for(const file of files){
       visualFamily:item.visualFamily,
       targetRepositoryPath:item.targetRepositoryPath,
       machineChecks:checks,
+      authoritativeSourceIds:evidenceById.get(item.lessonId)?.evidence?.authoritativeSourceIds||[],
+      claimEvidenceCount:Number(evidenceById.get(item.lessonId)?.evidence?.claimEvidenceCount||0),
       machinePreflightPassed:passed,
       independentReviewRequired:true,
       independentReviewDecision:null,
