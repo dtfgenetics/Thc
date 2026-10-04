@@ -119,7 +119,7 @@ export function validateJob(job) {
   if (!Array.isArray(job.allowedPaths)) throw new Error('allowedPaths must be an array')
   if (!Array.isArray(job.dependencies)) throw new Error('dependencies must be an array')
   if (!Array.isArray(job.acceptanceCriteria)) throw new Error('acceptanceCriteria must be an array')
-  const acceptance = inspectAcceptanceContract(job.acceptanceCriteria, { productionImpact: job.productionImpact })
+  const acceptance = inspectAcceptanceContract(job.acceptanceCriteria)
   if (!acceptance.ok) throw new Error(`invalid acceptance contract: ${acceptance.reasons.join(', ')}`)
   if (!Array.isArray(job.productionTargets)) throw new Error('productionTargets must be an array')
   if (!['local', 'external-executor'].includes(job.dispatchMode || 'local')) throw new Error('dispatchMode must be local or external-executor')
