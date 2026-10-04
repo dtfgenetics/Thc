@@ -4,7 +4,7 @@ description: High-throughput DTF research, repair, integration and production-re
 compatibility: Designed for DTF Genetics repositories with GitHub access. Uses current repository registries and subsystem skills instead of embedding mutable ownership maps.
 metadata:
   author: dtfgenetics
-  version: "2.3.0"
+  version: "3.0.0"
 ---
 
 # DTF Research Repair Controller
@@ -103,6 +103,8 @@ In `dtfgenetics/Thc`, the existing system-orchestrator epic/job lifecycle is aut
 The portable `assets/campaign.schema.json` is an interchange/fallback contract only. Never create a parallel campaign database or scheduler when the authoritative epic/job control plane is available.
 
 Before creating campaign jobs, inspect existing epic/job issues and PRs for the same outcome. Materialize only missing bounded work.
+
+Optimize for verified DONE throughput, not audit count, commits, or PR count. A job is executable only when it has acceptance criteria and a deterministic verification profile; production-impact work also requires release/live-proof requirements before DONE. Age waiting work upward over time so lower-priority jobs cannot starve indefinitely. Operator status must expose the completion conveyor (VERIFYING, INTEGRATION_READY, executor-attached, and production-awaiting-live-proof counts).
 
 Scheduled GitHub orchestration is reconciliation/inspection only unless a real executor is attached. Never create a lease merely to make a scheduled run look active. Explicit dispatch must hand work to an executor that can heartbeat, implement, verify and hand off the job; otherwise leave it READY. Preserve scheduled audit/plan/reconciliation outputs as workflow evidence.
 
