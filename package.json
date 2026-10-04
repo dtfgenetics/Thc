@@ -203,7 +203,6 @@
     "verify:encyclopedia-copy-quality": "node scripts/validate-encyclopedia-copy-quality.mjs",
     "build:encyclopedia-independent-review": "node scripts/build-encyclopedia-independent-review-manifest.mjs",
     "verify:encyclopedia-independent-review": "npm run build:encyclopedia-independent-review && node scripts/validate-encyclopedia-independent-review-manifest.mjs",
-    "build:encyclopedia-teaching-visuals": "node scripts/build-encyclopedia-teaching-visuals.mjs",
-    "verify:encyclopedia-source-parity": "node scripts/audit-encyclopedia-source-parity.mjs"
+    "build:encyclopedia-teaching-visuals": "node scripts/build-encyclopedia-teaching-visuals.mjs"
   }
 }
