@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "batch": "repair-part01-missing",
+  "status": "owner_authorized_external_review_pending",
+  "publicationAuthorized": true,
+  "validationGate": "repair-v1",
+  "source": {
+    "controlledCatalogueVersion": "Master Content Map v1.1",
+    "version": "Part 1 missing canonical lessons repair",
+    "publicationAuthorization": "Project owner authorized completion/publication on 2026-10-03; independent specialist approval remains separate.",
+    "releaseTimeReview": "Canonical identity/content/release boundaries reviewed.",
+    "note": "Publishes previously missing public lessons THC-ENC-001, 002, and 005 without moving the production cutoff backward."
+  },
+  "lessonFiles": [
+    "content/encyclopedia/volume-01/lessons/thc-enc-001.json",
+    "content/encyclopedia/volume-01/lessons/thc-enc-002.json",
+    "content/encyclopedia/volume-01/lessons/thc-enc-005.json"
+  ]
+}
