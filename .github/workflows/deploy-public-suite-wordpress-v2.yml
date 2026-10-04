@@ -200,6 +200,7 @@ jobs:
             assets/thc-tool-suite-v1.js
             assets/thc-tool-suite-v1.css
             assets/thc-cultivation-math-v1.mjs
+            assets/thc-history-core-v1.mjs
             assets/thc-light-lab-math-v1.mjs
             assets/breeder-pedigree-graph-v1.js
             assets/vendor/cytoscape-3.34.3.min.js
@@ -286,6 +287,7 @@ jobs:
                   'assets/thc-tool-suite-v1.js',
                   'assets/thc-tool-suite-v1.css',
                   'assets/thc-cultivation-math-v1.mjs',
+                  'assets/thc-history-core-v1.mjs',
                   'assets/thc-light-lab-math-v1.mjs',
                   'assets/breeder-pedigree-graph-v1.js',
                   'assets/vendor/cytoscape-3.34.3.min.js',
@@ -415,6 +417,7 @@ jobs:
           check 'https://dtfseeds.com/terpene-atlas/' 'Variability across 79 inflorescences'
           check 'https://dtfseeds.com/ph-meter/' 'pH Meter'
           check 'https://dtfseeds.com/tds-meter/' 'TDS / EC Meter'
+          check 'https://dtfseeds.com/assets/thc-history-core-v1.mjs' 'export function csvTable'
           check 'https://dtfseeds.com/vpd-chart/' 'VPD Chart'
           check 'https://dtfseeds.com/ppfd-chart/' 'THC Light Lab'
           check 'https://dtfseeds.com/tools/' 'Plant Atlas'
