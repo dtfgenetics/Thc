@@ -77,8 +77,12 @@ if(!errors.length){
  for(const marker of ['register_rest_route','wp_footer','data-dtf-learning-search-runtime="mu-v1"','current_user_can(\'manage_options\')']) if(!wordpressRuntime.includes(marker)) errors.push('WordPress learning search runtime missing '+marker);
  if(!wordpressRuntimeBuilder.includes('build-wordpress-learning-search-runtime')&&!wordpressRuntimeBuilder.includes('dtf-learning-search')) errors.push('WordPress learning search runtime builder contract missing');
  if(!encyclopediaPage.includes('data-q')||!encyclopediaPage.includes('data-topics')||!encyclopediaPage.includes('encyclopedia-v1.mjs')) errors.push('encyclopedia page missing searchable library UI');
+ if(!encyclopediaPage.includes('Search naturally.')||!encyclopediaPage.includes('data-reset-all')||!encyclopediaPage.includes('data-stat-subjects')||!encyclopediaPage.includes('data-subject-count')) errors.push('encyclopedia hub missing plain-language search guidance or dynamic 420+ summary controls');
+ if(/All 420 topics|<b>21<\/b><span>subject areas/.test(encyclopediaPage)) errors.push('encyclopedia hub must not hard-code the expandable lesson or subject totals');
  if(!encyclopediaRuntime.includes("Fuse from '/assets/vendor/fuse-7.1.0.min.mjs'")||!encyclopediaRuntime.includes('activePart')) errors.push('encyclopedia runtime missing fuzzy search/topic filtering');
  if(!encyclopediaRuntime.includes("name:'aliases'")||!encyclopediaRuntime.includes('history.replaceState')) errors.push('encyclopedia runtime missing alias/deep-link contract');
+ if(!encyclopediaRuntime.includes('Math.max(1000,payload.lessons.length)')||!encyclopediaRuntime.includes('aria-pressed')||!encyclopediaRuntime.includes('resetFilters')) errors.push('encyclopedia runtime missing expandable search limit, accessible topic state, or unified filter reset');
+ if(encyclopediaRuntime.includes("q.addEventListener('input',()=>{activePart=null")) errors.push('encyclopedia search must preserve an explicitly selected subject while typing');
  if(!Array.isArray(encyclopediaIndex.lessons)||encyclopediaIndex.lessons.length<420) errors.push('encyclopedia discovery index must contain at least the 420 controlled entries');
  if(!Array.isArray(encyclopediaIndex.topics)||encyclopediaIndex.topics.length<21) errors.push('encyclopedia discovery index must contain at least the 21 controlled base topics');
  if(Number(encyclopediaIndex.schemaVersion)<3) errors.push('encyclopedia discovery index must use evidence-aware search schema v3+');
