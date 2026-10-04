@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   workflow_run:
     workflows:
-      - Publish THC Encyclopedia Visuals to WordPress Production
+      - Publish Approved THC Encyclopedia Visuals to WordPress Production
     types: [completed]
   push:
     branches: [main]
