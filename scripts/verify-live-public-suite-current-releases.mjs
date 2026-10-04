@@ -59,10 +59,37 @@ const routes = [
   },
   {
     path: '/applied-learning/',
-    markers: ['THC Applied Learning Lab','Development Preview'],
+    markers: [
+      'THC Applied Learning Lab',
+      'Development Preview',
+      '9ce4c11da8f7749775e2b886d57c303ea6723a61'
+    ],
     assets: [
-      { path: 'app.js', markers: ['SOURCE_SHA','data.json','ppfd*hours*3600/1_000_000'] },
-      { path: 'data.json', markers: ['ALGRAPH-ACADEMY-SEED-001','ALMEAS-SENSOR-PLACEMENT-001','ALCALC-DLI-001','ALDIFF-YELLOWING-001'] }
+      {
+        path: 'app.js',
+        markers: [
+          "SOURCE_SHA='9ce4c11da8f7749775e2b886d57c303ea6723a61'",
+          'data.json',
+          'ppfd*hours*3600/1_000_000',
+          'systems-tool-select'
+        ]
+      },
+      {
+        path: 'data.json',
+        markers: [
+          '"sourceSha": "9ce4c11da8f7749775e2b886d57c303ea6723a61"',
+          'ALGRAPH-ACADEMY-SEED-001',
+          'ALMEAS-SENSOR-PLACEMENT-001',
+          'ALCALC-DLI-001',
+          'ALDIFF-YELLOWING-001',
+          'ALTOOL-GROW-ROOM-BLUEPRINT-001',
+          'ALTOOL-CALIBRATION-BENCH-001',
+          'ALTOOL-PLANT-TIMELINE-ATLAS-001',
+          'ALTOOL-GROWER-FLIGHT-RECORDER-001',
+          'ALTOOL-CROP-INCIDENT-REPORT-001',
+          'ALTOOL-CAUSE-CHAIN-001'
+        ]
+      }
     ]
   },
   { path: '/games/weedopolis/', markers: ['Weedopolis'] },
