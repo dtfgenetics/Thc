@@ -3,7 +3,7 @@
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { transitionJob, validateJob } from './orchestrator/state.mjs'
-import { exactHeadMatches, inspectAllowedPaths, inspectCheckRollup } from './orchestrator/verification.mjs'
+import { classifyVerificationFailure, exactHeadMatches, inspectAllowedPaths, inspectCheckRollup } from './orchestrator/verification.mjs'
 
 const MARKER_RE = /<!-- worker-orchestrator:(\{.*?\}) -->/s
 
@@ -171,6 +171,7 @@ try {
     reason: inspection.reason,
     pathGate: inspection.pathGate || null,
     checks: inspection.checkGate?.checks || [],
+    failure: inspection.ok ? null : classifyVerificationFailure(inspection),
     job,
   }, null, 2))
   process.exit(inspection.ok ? 0 : 1)

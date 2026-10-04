@@ -33,7 +33,7 @@ State labels:
 
 ## Claim behavior
 
-The scheduled workflow runs every 15 minutes. A claim is fail-closed:
+The scheduled workflow runs every 15 minutes in reconciliation/audit/plan mode only. It does **not** claim work without a real executor. Explicit `workflow_dispatch` with `mode=dispatch` is the mutation path. A claim is fail-closed:
 
 1. Re-read the issue and confirm it is still open, ready, and unclaimed.
 2. Create a deterministic single-purpose managed branch from the exact current `main` SHA.
@@ -81,9 +81,14 @@ A worker that receives a claim should:
 5. Open a PR to `main` referencing the issue.
 6. Use `node scripts/studio.mjs integrate <pr>` for integration preflight.
 7. Merge only when current-head checks and CI pass.
-8. Mark the issue `worker:done` and close it only after integration is confirmed.
+8. Run the verified integration conveyor after merge; it requires the merged PR head to equal the exact verified SHA.
+9. Non-production jobs advance to `DONE`; production-impact jobs advance to `PRODUCTION_READY` for release/live QA.
 
 Production publication remains owned by the existing cumulative production gateway and live verification process.
+
+## Typed acceptance and repair classification
+
+Acceptance criteria now support validated typed objects while legacy string criteria remain compatible during migration. Initial typed criteria include `check`, `path-exists`, `json-path`, and `production-live`. Verification failures are classified into actionable repair classes such as test/build failure, head drift, scope violation, pending checks, and missing verification. These classifications identify the retry policy and repair-worker kind without weakening exact-head gates.
 
 ## What this first version does not do
 

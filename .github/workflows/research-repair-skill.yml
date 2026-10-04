@@ -10,6 +10,11 @@ on:
       - '.github/workflows/worker-orchestrator.yml'
       - 'scripts/test-worker-orchestrator.mjs'
       - 'scripts/orchestrator-integrate.mjs'
+      - 'scripts/orchestrator/acceptance.mjs'
+      - 'scripts/orchestrator/verification.mjs'
+      - 'scripts/orchestrator-check.mjs'
+      - 'scripts/orchestrator/state.mjs'
+      - 'docs/GITHUB_WORKER_ORCHESTRATOR.md'
   merge_group:
   push:
     branches: [main]

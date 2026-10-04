@@ -65,3 +65,19 @@ export function inspectAllowedPaths(changedPaths = [], allowedPaths = []) {
     violations,
   }
 }
+
+
+export function classifyVerificationFailure({ reason, checkGate, pathGate } = {}) {
+  if (reason === 'head-sha-mismatch') return { class: 'head-drift', retryPolicy: 'merge-conflict', repairWorker: 'repo-maintenance', automatic: true }
+  if (reason === 'changed-files-outside-allowed-paths' || pathGate?.violations?.length) return { class: 'scope-violation', retryPolicy: 'credential-or-policy', repairWorker: null, automatic: false }
+  if (reason === 'checks-pending') return { class: 'checks-pending', retryPolicy: 'transient-infrastructure', repairWorker: null, automatic: true }
+  if (reason === 'no-checks-reported') return { class: 'missing-verification', retryPolicy: 'credential-or-policy', repairWorker: null, automatic: false }
+  if (reason === 'checks-failing' || checkGate?.failing?.length) return {
+    class: 'test-or-build',
+    retryPolicy: 'test-or-build',
+    repairWorker: 'test-repair',
+    automatic: true,
+    failingChecks: (checkGate?.failing || []).map((check) => check.name),
+  }
+  return { class: 'unknown-verification-failure', retryPolicy: 'implementation', repairWorker: 'test-repair', automatic: false }
+}
