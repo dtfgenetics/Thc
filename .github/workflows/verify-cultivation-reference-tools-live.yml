@@ -29,10 +29,28 @@ jobs:
       - name: Validate THC integration mirror
         run: node scripts/validate-canonical-tools-mirror.mjs
 
-      - name: Clone canonical Tools repository
-        run: git clone --depth 1 https://github.com/dtfgenetics/Tools.git /tmp/tools
+      - name: Read pinned canonical Tools revision
+        id: tools_pin
+        shell: bash
+        run: |
+          set -euo pipefail
+          tools_sha="$(sed -n 's/^commit=//p' site/public-route-patch/assets/release-source-revisions/tools.txt)"
+          [[ "$tools_sha" =~ ^[0-9a-f]{40}$ ]] || { echo "Invalid pinned Tools SHA: $tools_sha" >&2; exit 1; }
+          echo "sha=$tools_sha" >> "$GITHUB_OUTPUT"
 
-      - name: Require current canonical Tools mirror
+      - name: Checkout pinned canonical Tools repository
+        shell: bash
+        env:
+          TOOLS_SHA: ${{ steps.tools_pin.outputs.sha }}
+        run: |
+          set -euo pipefail
+          git init /tmp/tools
+          git -C /tmp/tools remote add origin https://github.com/dtfgenetics/Tools.git
+          git -C /tmp/tools fetch --depth 1 origin "$TOOLS_SHA"
+          git -C /tmp/tools checkout --detach FETCH_HEAD
+          test "$(git -C /tmp/tools rev-parse HEAD)" = "$TOOLS_SHA"
+
+      - name: Require pinned canonical Tools mirror
         run: node scripts/validate-canonical-tools-mirror.mjs /tmp/tools
 
       - name: Verify visitor-facing canonical tool routes
