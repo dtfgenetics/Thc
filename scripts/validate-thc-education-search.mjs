@@ -83,6 +83,12 @@ if(!errors.length){
  if(!searchPage.includes('DTF_STATIC_SEARCH_FALLBACK_START')||!searchPage.includes('data-static-fallback')) errors.push('education search page missing static crawlable fallback');
  if(!encyclopediaPage.includes('DTF_STATIC_ENCYCLOPEDIA_FALLBACK_START')||!encyclopediaPage.includes('data-static-fallback')) errors.push('encyclopedia page missing static crawlable fallback');
  const publishedRows=(encyclopediaIndex.lessons||[]).filter(x=>x.status==='published');
+ for(const row of publishedRows){
+   const match=String(row.id||'').match(/^THC-ENC-(\\d{3,})$/);
+   const expected=match?'/learn/encyclopedia/thc-enc-'+match[1]+'/':null;
+   if(!expected||row.route!==expected) errors.push((row.id||'<missing-id>')+': published encyclopedia route must be '+(expected||'<valid permanent-ID route>')+' not '+(row.route||'<missing>'));
+ }
+ if(/href="\/encyclopedia\//.test(encyclopediaPage)) errors.push('static encyclopedia directory contains legacy /encyclopedia/ lesson links');
  const missingStaticRoutes=publishedRows.filter(row=>!encyclopediaPage.includes('href="'+row.route+'"'));
  if(missingStaticRoutes.length) errors.push('static encyclopedia directory missing '+missingStaticRoutes.length+' published lesson routes; first '+missingStaticRoutes.slice(0,3).map(x=>x.id).join(', '));
  if(!fallbackBuilder.includes('Static education fallbacks built')) errors.push('static education fallback builder contract missing');
