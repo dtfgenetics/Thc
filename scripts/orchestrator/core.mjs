@@ -109,10 +109,23 @@ export function workerKindFromIssue(issue, config) {
   return 'code'
 }
 
-export function priorityRank(issue, config) {
+export function priorityRank(issue, config, now = new Date()) {
   const labels = new Set((issue.labels || []).map(labelName))
   const index = (config.priorities || []).findIndex((label) => labels.has(label))
-  return index === -1 ? (config.priorities || []).length : index
+  const baseRank = index === -1 ? (config.priorities || []).length : index
+  const agingDays = Number(config.scheduling?.agingDaysPerPriorityBoost || 0)
+  if (!agingDays || !issue.created_at) return baseRank
+  const ageMs = Math.max(0, new Date(now).getTime() - new Date(issue.created_at).getTime())
+  const boosts = Math.floor(ageMs / (agingDays * 86_400_000))
+  return Math.max(0, baseRank - boosts)
+}
+
+export function claimReadiness(claim, config) {
+  const reasons = []
+  if (config.scheduling?.requireAcceptanceCriteria && claim.acceptanceCriteria.length === 0) reasons.push('missing-acceptance-criteria')
+  if (config.scheduling?.requireVerificationProfile && !claim.verificationProfile) reasons.push('missing-verification-profile')
+  if (claim.externalRepository && !claim.dispatchable) reasons.push('external-executor-required')
+  return { ready: reasons.length === 0, reasons }
 }
 
 export function buildClaim(issue, config) {
@@ -225,6 +238,7 @@ export function planClaims(issues, activeClaims, config, satisfiedDependencies =
 
   for (const claim of candidates) {
     if (selected.length >= available) break
+    if (!claimReadiness(claim, config).ready) continue
 
     if (!dependenciesSatisfied(claim.dependencies, satisfiedDependencies)) continue
 
