@@ -12,7 +12,7 @@ The encyclopedia has two layers:
 3. Put extension material in Part/Volume 22 or higher. Do not place extension lessons inside protected Parts 1–21.
 4. Create the canonical lesson file under `content/encyclopedia/volume-XX/lessons/thc-enc-NNN.json`.
 5. Add or update that volume's `manifest.json`. The catalog builder discovers volume directories automatically.
-6. Add the topic to `configuration/encyclopedia-topics.json`, or provide `topicTitle` and `topicSlug` on each extension registry entry.
+6. Add the extension part to `configuration/encyclopedia-topics.json`. This is required so search facets and WordPress subject hubs use the same taxonomy.
 7. Add grower-language aliases to `configuration/encyclopedia-search-language.json` when useful.
 8. Run the normal encyclopedia builders and validators.
 
@@ -31,13 +31,11 @@ The global THC education search then consumes the encyclopedia discovery index a
   "part": 22,
   "title": "Example New Topic",
   "primaryFormat": "Science lesson",
-  "teachingVisual": "Concept diagram",
-  "topicTitle": "Advanced Plant Science",
-  "topicSlug": "advanced-plant-science"
+  "teachingVisual": "Concept diagram"
 }
 ```
 
-If Part 22 is defined in `configuration/encyclopedia-topics.json`, `topicTitle` and `topicSlug` may be omitted from individual entries.
+Part 22 must also be defined in `configuration/encyclopedia-topics.json` with a non-overlapping contiguous range, title, slug, and description.
 
 ## Invariants
 
