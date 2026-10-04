@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DTF Research Repair Campaign",
+  "type": "object",
+  "required": ["campaignId","outcome","completionCriteria","jobs","nextExecutableAction"],
+  "properties": {
+    "campaignId": {"type":"string"},
+    "outcome": {"type":"string"},
+    "status": {"enum":["planned","active","blocked","verifying","complete"]},
+    "completionCriteria": {"type":"array","items":{"type":"string"},"minItems":1},
+    "epics": {"type":"array","items":{"type":"string"}},
+    "jobs": {"type":"array","items":{"type":"string"}},
+    "dependencies": {"type":"array","items":{"type":"string"}},
+    "lastAdvancedAt": {"type":["string","null"],"format":"date-time"},
+    "nextExecutableAction": {"type":"string"}
+  },
+  "additionalProperties": true
+}

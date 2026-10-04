@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DTF Research Repair Work Record",
+  "type": "object",
+  "required": ["issueId", "owner", "resource", "acceptanceCriteria", "nextExecutableAction"],
+  "properties": {
+    "issueId": {"type":"string"},
+    "campaignId": {"type":["string","null"]},
+    "owner": {"type":"string"},
+    "resource": {"type":"string"},
+    "path": {"type":["string","null"]},
+    "evidence": {"type":"array","items":{"type":"string"}},
+    "reproduction": {"type":["string","null"]},
+    "priority": {"type":"number"},
+    "confidence": {"type":"number","minimum":0,"maximum":1},
+    "acceptanceCriteria": {"type":"array","items":{"type":"string"},"minItems":1},
+    "dependencies": {"type":"array","items":{"type":"string"}},
+    "branch": {"type":["string","null"]},
+    "pr": {"type":["integer","null"]},
+    "headSha": {"type":["string","null"]},
+    "tests": {"type":"array","items":{"type":"string"}},
+    "releaseState": {"type":["string","null"]},
+    "liveState": {"type":["string","null"]},
+    "lastInspectedAt": {"type":["string","null"],"format":"date-time"},
+    "inspectionCount": {"type":"integer","minimum":0},
+    "consecutiveNoopInspections": {"type":"integer","minimum":0},
+    "lastRepairAt": {"type":["string","null"],"format":"date-time"},
+    "lastLiveVerificationAt": {"type":["string","null"],"format":"date-time"},
+    "nextEligibleInspectionAt": {"type":["string","null"],"format":"date-time"},
+    "nextExecutableAction": {"type":"string"}
+  },
+  "additionalProperties": true
+}
