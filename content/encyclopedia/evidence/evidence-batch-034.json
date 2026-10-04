@@ -1,0 +1,135 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-034",
+  "createdAt": "2026-10-04",
+  "scope": "Conservative candidate claim-evidence mappings for lessons that previously had no claim-level evidence record but had at least one recognized traceable source ID.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Generated mappings are candidates for independent science review, not approval.",
+    "A source ID is included only when it is already recognized by the controlled source-resolution system.",
+    "The first objective/core-science claim is used as a review target; reviewers must confirm support, scope, applicability, and limitations.",
+    "No lesson publication or visual approval state is changed by this batch."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0329",
+      "lessonId": "THC-ENC-058",
+      "sourceIds": [
+        "ENC-AUTH-171"
+      ],
+      "claimType": "candidate-objective",
+      "supportedClaim": "Candidate review mapping: Compare hydroponic root environments by water delivery, oxygenation, buffering, failure modes, and monitoring needs.",
+      "sourceLocator": "https://doi.org/10.3389/fpls.2021.764103.; https://doi.org/10.1002/ps.6307.",
+      "applicability": "Candidate claim-to-source mapping prepared from the controlled source-resolution queue. Independent science review must confirm whether the cited source actually supports the scoped claim.",
+      "limitations": "This generated mapping is not scientific approval, does not assert that the source fully supports the claim, and does not authorize publication. Scope, methods, population/genotype, treatment conditions, and transferability must be checked by an independent reviewer.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0330",
+      "lessonId": "THC-ENC-096",
+      "sourceIds": [
+        "ENC-AUTH-099"
+      ],
+      "claimType": "candidate-objective",
+      "supportedClaim": "Candidate review mapping: Separate warm growth conditions from heat stress and evaluate leaf energy balance, root-zone temperature, and recovery before assigning setpoints.",
+      "sourceLocator": "Resolved source registry IDs: ENC-AUTH-099",
+      "applicability": "Candidate claim-to-source mapping prepared from the controlled source-resolution queue. Independent science review must confirm whether the cited source actually supports the scoped claim.",
+      "limitations": "This generated mapping is not scientific approval, does not assert that the source fully supports the claim, and does not authorize publication. Scope, methods, population/genotype, treatment conditions, and transferability must be checked by an independent reviewer.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0331",
+      "lessonId": "THC-ENC-109",
+      "sourceIds": [
+        "ENC-AUTH-099"
+      ],
+      "claimType": "candidate-objective",
+      "supportedClaim": "Candidate review mapping: Interpret leaf light-response curves without treating a short-term single-leaf measurement as a whole-crop yield curve.",
+      "sourceLocator": "Resolved source registry IDs: ENC-AUTH-099",
+      "applicability": "Candidate claim-to-source mapping prepared from the controlled source-resolution queue. Independent science review must confirm whether the cited source actually supports the scoped claim.",
+      "limitations": "This generated mapping is not scientific approval, does not assert that the source fully supports the claim, and does not authorize publication. Scope, methods, population/genotype, treatment conditions, and transferability must be checked by an independent reviewer.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0332",
+      "lessonId": "THC-ENC-110",
+      "sourceIds": [
+        "ENC-AUTH-099"
+      ],
+      "claimType": "candidate-objective",
+      "supportedClaim": "Candidate review mapping: Define compensation and saturation operationally and explain why both depend on method, tissue, acclimation, and environment.",
+      "sourceLocator": "Resolved source registry IDs: ENC-AUTH-099",
+      "applicability": "Candidate claim-to-source mapping prepared from the controlled source-resolution queue. Independent science review must confirm whether the cited source actually supports the scoped claim.",
+      "limitations": "This generated mapping is not scientific approval, does not assert that the source fully supports the claim, and does not authorize publication. Scope, methods, population/genotype, treatment conditions, and transferability must be checked by an independent reviewer.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0333",
+      "lessonId": "THC-ENC-142",
+      "sourceIds": [
+        "ENC-AUTH-076"
+      ],
+      "claimType": "candidate-objective",
+      "supportedClaim": "Candidate review mapping: Trace chromosome segregation and recombination from a diploid parent to genetically variable haploid gametes and offspring.",
+      "sourceLocator": "Resolved source registry IDs: ENC-AUTH-076",
+      "applicability": "Candidate claim-to-source mapping prepared from the controlled source-resolution queue. Independent science review must confirm whether the cited source actually supports the scoped claim.",
+      "limitations": "This generated mapping is not scientific approval, does not assert that the source fully supports the claim, and does not authorize publication. Scope, methods, population/genotype, treatment conditions, and transferability must be checked by an independent reviewer.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0334",
+      "lessonId": "THC-ENC-143",
+      "sourceIds": [
+        "ENC-AUTH-076"
+      ],
+      "claimType": "candidate-objective",
+      "supportedClaim": "Candidate review mapping: Use segregation ratios as testable models while recognizing linkage, incomplete penetrance, multiple loci, structural variation, and measurement error.",
+      "sourceLocator": "Resolved source registry IDs: ENC-AUTH-076",
+      "applicability": "Candidate claim-to-source mapping prepared from the controlled source-resolution queue. Independent science review must confirm whether the cited source actually supports the scoped claim.",
+      "limitations": "This generated mapping is not scientific approval, does not assert that the source fully supports the claim, and does not authorize publication. Scope, methods, population/genotype, treatment conditions, and transferability must be checked by an independent reviewer.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0335",
+      "lessonId": "THC-ENC-146",
+      "sourceIds": [
+        "ENC-AUTH-132"
+      ],
+      "claimType": "candidate-objective",
+      "supportedClaim": "Candidate review mapping: Separate inherited genotype from the phenotype expressed at a particular stage, place, treatment, and sampling method.",
+      "sourceLocator": "Resolved source registry IDs: ENC-AUTH-132",
+      "applicability": "Candidate claim-to-source mapping prepared from the controlled source-resolution queue. Independent science review must confirm whether the cited source actually supports the scoped claim.",
+      "limitations": "This generated mapping is not scientific approval, does not assert that the source fully supports the claim, and does not authorize publication. Scope, methods, population/genotype, treatment conditions, and transferability must be checked by an independent reviewer.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0336",
+      "lessonId": "THC-ENC-148",
+      "sourceIds": [
+        "ENC-AUTH-076"
+      ],
+      "claimType": "candidate-objective",
+      "supportedClaim": "Candidate review mapping: Describe the chromosome-scale cannabis genome while accounting for assembly differences, repeat content, structural variation, and reference bias.",
+      "sourceLocator": "Resolved source registry IDs: ENC-AUTH-076",
+      "applicability": "Candidate claim-to-source mapping prepared from the controlled source-resolution queue. Independent science review must confirm whether the cited source actually supports the scoped claim.",
+      "limitations": "This generated mapping is not scientific approval, does not assert that the source fully supports the claim, and does not authorize publication. Scope, methods, population/genotype, treatment conditions, and transferability must be checked by an independent reviewer.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0337",
+      "lessonId": "THC-ENC-152",
+      "sourceIds": [
+        "ENC-AUTH-076"
+      ],
+      "claimType": "candidate-objective",
+      "supportedClaim": "Candidate review mapping: Connect cannabinoid-acid synthase genotype and expression to chemical potential while accounting for linked paralogs, pseudogenes, and pathway limits.",
+      "sourceLocator": "Resolved source registry IDs: ENC-AUTH-076",
+      "applicability": "Candidate claim-to-source mapping prepared from the controlled source-resolution queue. Independent science review must confirm whether the cited source actually supports the scoped claim.",
+      "limitations": "This generated mapping is not scientific approval, does not assert that the source fully supports the claim, and does not authorize publication. Scope, methods, population/genotype, treatment conditions, and transferability must be checked by an independent reviewer.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
