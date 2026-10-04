@@ -71,6 +71,8 @@ if(!errors.length){
    if(!index.documents.some(x=>x.route===required)) errors.push(`search index missing ${required}`);
  }
  if(!publisher.includes("slug: 'search'")) errors.push('WordPress learning publisher no longer includes search route');
+ if(!publisher.includes('DTF-SERVER-SEARCH-FALLBACK')||!publisher.includes('searchFallbackHtml')||!publisher.includes('encyclopediaFallbackHtml')) errors.push('WordPress learning publisher missing server-rendered search fallback contract');
+ if(!publisher.includes('All published encyclopedia lessons')||!publisher.includes('data-dtf-server-fallback="encyclopedia"')) errors.push('WordPress encyclopedia publisher missing no-JS/crawlable lesson fallback');
  if(!publisher.includes('/wp-json/dtf-learning/v1/index/search')||!publisher.includes('/wp-json/dtf-learning/v1/index/encyclopedia')||!publisher.includes('/wp-json/dtf-learning/v1/health')) errors.push('WordPress learning publisher missing MU-plugin search index publication contract');
  const wordpressRuntime=fs.readFileSync(files.wordpressRuntime,'utf8');
  const wordpressRuntimeBuilder=fs.readFileSync(files.wordpressRuntimeBuilder,'utf8');
