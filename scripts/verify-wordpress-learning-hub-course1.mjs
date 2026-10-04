@@ -213,13 +213,13 @@ const final = await pageBySlug('final-course-test', course.id);
 const finalContent = verifyPage(final, {
   label: 'Course 1 final course test',
   minLength: 700,
-  required: ['Graded assessment:', 'answers and rationales are not exposed', '60-minute timed attempt', 'Open this graded final in the Academy', 'dtf-learning-hub-course1-layout-v4'],
+  required: ['Graded assessment:', 'answers and rationales are not exposed', '60-minute timed attempt', 'production learner portal is not yet deployed', 'dtf-learning-hub-course1-layout-v4'],
   questionCount: 0
 });
 must(!finalContent.includes('Check answer and rationale'), 'Course 1 summative final must not expose self-check answer panels.');
 must(!/<strong>Answer:<\/strong>/i.test(finalContent), 'Course 1 summative final must not expose its answer key.');
-must(finalContent.includes('course=COURSE-LH-TECH1-001'), 'Course 1 summative final must deep-link to its own Academy course.');
-must(finalContent.includes('view=final'), 'Course 1 summative final deep link must target the graded-final view.');
+must(!finalContent.includes('/learn/academy/'), 'Course 1 summative final must not link to the retired Academy compatibility route.');
+must(finalContent.includes('Return to Courses'), 'Course 1 summative final must provide a safe navigation fallback while the production assessment portal is pending.');
 verified.push({ type: 'final-test', id: final.id, slug: 'final-course-test', securedQuestionCount: expectedFinalCount });
 
 const sourceScopedItemCount = publicQuestionCount + expectedFinalCount;
@@ -243,7 +243,7 @@ console.log(JSON.stringify({
   securedFinalItems: expectedFinalCount,
   moduleItemCounts: local.modules.map((module) => ({ module: module.number, assessmentId: module.assessment, items: canonical.counts.get(module.assessment) })),
   finalItemCount: expectedFinalCount,
-  finalDeliveryMode: 'authenticated-graded-runtime',
+  finalDeliveryMode: 'authenticated-graded-runtime-pending-production-portal',
   guidedUi: true,
   responsiveLayout: 'v4',
   pageIds: verified.map(({ type, number, id, slug, questionCount }) => ({ type, ...(number ? { number } : {}), id, slug, ...(questionCount ? { questionCount } : {}) })),
