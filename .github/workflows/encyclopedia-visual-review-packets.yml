@@ -10,6 +10,7 @@ on:
       - 'content/encyclopedia/visual-production-batches/**'
       - 'scripts/build-encyclopedia-visual-review-packets.mjs'
       - 'scripts/validate-encyclopedia-visual-review-packets.mjs'
+      - 'scripts/import-encyclopedia-visual-review-decisions.mjs'
       - '.github/workflows/encyclopedia-visual-review-packets.yml'
 
 permissions:
@@ -41,12 +42,18 @@ jobs:
           set -euo pipefail
           node scripts/build-encyclopedia-visual-review-packets.mjs
           node scripts/validate-encyclopedia-visual-review-packets.mjs
+          node scripts/import-encyclopedia-visual-review-decisions.mjs
+          node scripts/build-encyclopedia-visual-promotion-manifest.mjs
           test -s review/encyclopedia-visuals/index.json
+          test -s data/encyclopedia-visual-promotion-manifest.json
 
       - name: Upload reviewer packets
         uses: actions/upload-artifact@v4
         with:
           name: encyclopedia-visual-reviewer-packets-${{ github.run_id }}
-          path: review/encyclopedia-visuals
+          path: |
+            review/encyclopedia-visuals
+            data/encyclopedia-independent-review-manifest.json
+            data/encyclopedia-visual-promotion-manifest.json
           if-no-files-found: error
           retention-days: 30
