@@ -70,13 +70,13 @@ jobs:
           name="$(basename "$batch" .json)"
           echo "Publishing $name"
           ENCYCLOPEDIA_BATCH_FILE="$batch" BACKUP_ROOT="/tmp/dtf-encyclopedia-repair/$name" \
-            node scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
+            node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
 
       - name: Rebuild 21 topic hubs
         shell: bash
         run: |
           set -euo pipefail
-          BACKUP_ROOT=/tmp/dtf-encyclopedia-repair-topics node scripts/organize-wordpress-encyclopedia-topics.mjs | tee "$RUNNER_TEMP/topics.json"
+          BACKUP_ROOT=/tmp/dtf-encyclopedia-repair-topics node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/organize-wordpress-encyclopedia-topics.mjs | tee "$RUNNER_TEMP/topics.json"
           report="$(cat /tmp/dtf-encyclopedia-repair-topics/latest-backup-path.txt)/encyclopedia-topic-organization-report.json"
           test -s "$report"
           node - "$report" <<'NODE'
@@ -90,7 +90,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/publish-wordpress-learning-search-indexes.mjs
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-learning-search-indexes.mjs
 
       - name: Visitor-verify all repaired lessons and full catalog
         shell: bash
