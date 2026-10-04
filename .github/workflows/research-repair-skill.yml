@@ -1,0 +1,27 @@
+name: Research Repair Skill
+
+on:
+  pull_request:
+    paths:
+      - '.agents/skills/dtf-research-repair/**'
+      - '.github/workflows/research-repair-skill.yml'
+  merge_group:
+  push:
+    branches: [main]
+    paths:
+      - '.agents/skills/dtf-research-repair/**'
+      - '.github/workflows/research-repair-skill.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Validate research-repair controller
+        run: node .agents/skills/dtf-research-repair/scripts/self-test.mjs
