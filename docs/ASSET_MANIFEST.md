@@ -1,5 +1,8 @@
 # Asset Manifest
 
+> **Historical planning document — not current release state.** For current High Land acceptance evidence, use `docs/high-land-acceptance-checklist.md`, the canonical game tests, and current CI. Do not treat old placeholder/missing-asset statements below as current production facts.
+
+
 This file tracks every visual and audio asset needed for the game.
 
 ## Current status
