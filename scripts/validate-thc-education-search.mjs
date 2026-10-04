@@ -82,6 +82,7 @@ if(!errors.length){
  if(!encyclopediaRuntime.includes("Fuse from '/assets/vendor/fuse-7.1.0.min.mjs'")||!encyclopediaRuntime.includes('activePart')) errors.push('encyclopedia runtime missing fuzzy search/topic filtering');
  if(!encyclopediaRuntime.includes("name:'aliases'")||!encyclopediaRuntime.includes('history.replaceState')) errors.push('encyclopedia runtime missing alias/deep-link contract');
  if(!encyclopediaRuntime.includes('Math.max(1000,payload.lessons.length)')||!encyclopediaRuntime.includes('aria-pressed')||!encyclopediaRuntime.includes('resetFilters')) errors.push('encyclopedia runtime missing expandable search limit, accessible topic state, or unified filter reset');
+ if(!encyclopediaRuntime.includes('PAGE_SIZE=60')||!encyclopediaRuntime.includes('data-load-more')) errors.push('encyclopedia runtime missing progressive result rendering for large 420+ catalogs');
  if(encyclopediaRuntime.includes("q.addEventListener('input',()=>{activePart=null")) errors.push('encyclopedia search must preserve an explicitly selected subject while typing');
  if(!Array.isArray(encyclopediaIndex.lessons)||encyclopediaIndex.lessons.length<420) errors.push('encyclopedia discovery index must contain at least the 420 controlled entries');
  if(!Array.isArray(encyclopediaIndex.topics)||encyclopediaIndex.topics.length<21) errors.push('encyclopedia discovery index must contain at least the 21 controlled base topics');
