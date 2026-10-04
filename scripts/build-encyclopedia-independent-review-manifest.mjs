@@ -84,6 +84,28 @@ const rows=arr(readiness.lessons).map(row=>{
   };
 });
 
+const reviewBatchSize=20;
+const reviewBatches=[];
+for(let start=0;start<rows.length;start+=reviewBatchSize){
+  const batchRows=rows.slice(start,start+reviewBatchSize);
+  const batchNumber=Math.floor(start/reviewBatchSize)+1;
+  reviewBatches.push({
+    batchId:`ENC-REVIEW-BATCH-${String(batchNumber).padStart(2,'0')}`,
+    lessonRange:`${batchRows[0]?.lessonId || ''}..${batchRows.at(-1)?.lessonId || ''}`,
+    lessonCount:batchRows.length,
+    lessonIds:batchRows.map(row=>row.lessonId),
+    evidenceMapped:batchRows.filter(row=>row.reviewTasks.claimEvidence.mapped).length,
+    evidenceNeedsMapping:batchRows.filter(row=>!row.reviewTasks.claimEvidence.mapped).length,
+    visualCandidatesPresent:batchRows.filter(row=>row.reviewTasks.teachingVisual.candidateCount>0).length,
+    visualProductionNeeded:batchRows.filter(row=>row.reviewTasks.teachingVisual.candidateCount===0).length,
+    rationaleReviewTasks:batchRows.length,
+    reviewerDecision:null,
+    reviewerId:null,
+    reviewedAt:null,
+    reviewNotes:null
+  });
+}
+
 const summary={
   lessonCount:rows.length,
   evidenceMapped:rows.filter(x=>x.reviewTasks.claimEvidence.mapped).length,
@@ -93,7 +115,9 @@ const summary={
   visualCandidatesPresent:rows.filter(x=>x.reviewTasks.teachingVisual.candidateCount>0).length,
   visualProductionNeeded:rows.filter(x=>x.reviewTasks.teachingVisual.candidateCount===0).length,
   publicationCurrentlyAuthorized:rows.filter(x=>x.reviewTasks.publication.currentlyAuthorized).length,
-  generatedReviewerDecisions:0
+  generatedReviewerDecisions:0,
+  reviewBatchSize,
+  reviewBatchCount:reviewBatches.length
 };
 
 const output={
@@ -103,6 +127,7 @@ const output={
   scope:`Reviewer handoff for all ${registryState.totalCount} registered THC-ENC lessons. This artifact enumerates review work but never makes reviewer decisions.`, 
   reviewBoundary:'Generated content may prepare evidence, rationale, visual, accessibility, rights, QA, and release-review tasks. Independent reviewer identity, decision, date, and notes must come from an external review action and must never be synthesized by this builder.',
   summary,
+  reviewBatches,
   lessons:rows
 };
 
