@@ -24,22 +24,53 @@ const displayTitle=p=>clean(p.title?.rendered||p.title?.raw||'').replace(/^THC-E
 const excerpt=p=>clean(p.excerpt?.rendered||p.excerpt?.raw||'');
 const hasVisual=p=>/data-thc-lesson-visual-id=["']THC-ENC-\d{3}["']/i.test(String(p.content?.raw||p.content?.rendered||''));
 
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const maxAttempts=Math.max(1,Number(process.env.WP_API_RETRY_ATTEMPTS||6));
+const retryableStatus=status=>status===408||status===425||status===429||status>=500;
+const retryDelayMs=(attempt,retryAfter)=>{
+  const seconds=Number(retryAfter||0);
+  if(Number.isFinite(seconds)&&seconds>0) return Math.min(60000,seconds*1000);
+  return Math.min(30000,1500*(2**(attempt-1)));
+};
+const canRetry=(endpoint,method)=>method==='GET'||(method==='POST'&&/^\/pages\/\d+(?:\?|$)/.test(endpoint));
 async function request(endpoint,{method='GET',body}={}){
-  const res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{method,headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},body:body?JSON.stringify(body):undefined});
-  const text=await res.text(); let parsed;
-  try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
-  if(!res.ok) throw new Error(`${method} ${endpoint} failed ${res.status}: ${typeof parsed==='string'?parsed.slice(0,900):JSON.stringify(parsed).slice(0,900)}`);
-  return parsed;
+  const attempts=canRetry(endpoint,method)?maxAttempts:1;
+  for(let attempt=1;attempt<=attempts;attempt++){
+    let res;
+    try{
+      res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{
+        method,
+        headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},
+        body:body?JSON.stringify(body):undefined,
+        signal:AbortSignal.timeout(60_000)
+      });
+    }catch(error){
+      if(attempt===attempts) throw new Error(`${method} ${endpoint} network failure after ${attempt} attempt(s): ${error?.message||error}`);
+      const delay=retryDelayMs(attempt);
+      console.warn(`${method} ${endpoint} network failure on attempt ${attempt}/${attempts}; retrying in ${delay}ms: ${error?.message||error}`);
+      await sleep(delay);
+      continue;
+    }
+    const text=await res.text(); let parsed;
+    try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
+    if(res.ok) return parsed;
+    const detail=typeof parsed==='string'?parsed.slice(0,900):JSON.stringify(parsed).slice(0,900);
+    if(!retryableStatus(res.status)||attempt===attempts) throw new Error(`${method} ${endpoint} failed ${res.status} after ${attempt} attempt(s): ${detail}`);
+    const delay=retryDelayMs(attempt,res.headers.get('retry-after'));
+    console.warn(`${method} ${endpoint} returned retryable ${res.status} on attempt ${attempt}/${attempts}; retrying in ${delay}ms`);
+    await sleep(delay);
+  }
+  throw new Error(`${method} ${endpoint} exhausted retry loop unexpectedly`);
 }
 async function wp(endpoint,opts){return request(endpoint,opts);}
 async function findPage(slug,parent=null){
-  const rows=await wp(`/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=100`);
+  const rows=await wp(`/pages?slug=${encodeURIComponent(slug)}&context=edit&status=publish&per_page=100`);
   return (rows||[]).find(x=>parent===null||Number(x.parent)===Number(parent))||null;
 }
 async function allChildren(parent){
   const out=[];
   for(let page=1;;page++){
-    const rows=await wp(`/pages?parent=${parent}&context=edit&per_page=100&page=${page}&orderby=slug&order=asc`);
+    const rows=await wp(`/pages?parent=${parent}&context=edit&status=publish&per_page=100&page=${page}&orderby=slug&order=asc`);
     out.push(...rows);
     if(rows.length<100) break;
   }
@@ -85,8 +116,22 @@ async function upsert({slug,title,content,excerptText}){
   const existing=await findPage(slug,encyclopedia.id);
   if(existing) backups.push({id:existing.id,slug:existing.slug,title:existing.title?.raw||existing.title?.rendered||'',content:existing.content?.raw||'',excerpt:existing.excerpt?.raw||'',status:existing.status});
   const payload={slug,title,status:'publish',parent:encyclopedia.id,content,excerpt:excerptText,comment_status:'closed'};
-  const page=existing?await wp(`/pages/${existing.id}`,{method:'POST',body:payload}):await wp('/pages',{method:'POST',body:payload});
-  if(!existing) created.push(page.id); updated.push({id:page.id,slug:page.slug,link:page.link}); return page;
+  let page;
+  if(existing){
+    page=await wp(`/pages/${existing.id}`,{method:'POST',body:payload});
+  }else{
+    try{
+      page=await wp('/pages',{method:'POST',body:payload});
+    }catch(error){
+      const recovered=await findPage(slug,encyclopedia.id);
+      if(!recovered) throw error;
+      console.warn(`Recovered ${slug} after ambiguous create response using published slug/parent lookup.`);
+      page=recovered;
+    }
+  }
+  if(!existing) created.push(page.id);
+  updated.push({id:page.id,slug:page.slug,link:page.link});
+  return page;
 }
 
 try{
