@@ -8,10 +8,13 @@
   "productionTarget": "https://dtfseeds.com",
   "releaseGates": {
     "rulesTested": true,
-    "browserTested": false,
+    "browserTested": true,
     "mobileTested": false,
     "accessibilityReviewed": false,
     "originalArtCleared": true,
-    "deploymentRegistered": true
-  }
+    "deploymentRegistered": true,
+    "autonomousPlaytestReady": true
+  },
+  "agentBridge": "window.__GROW_ROOM_BINGO_AGENT__",
+  "agentBridgeTest": "games/grow-room-bingo/test/agent-bridge.test.mjs"
 }
