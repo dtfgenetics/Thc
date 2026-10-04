@@ -1,0 +1,623 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": [
+    "data/game-registry-v2.json",
+    "configuration/game-qa/game-profiles.json"
+  ],
+  "policy": {
+    "ordering": "Lowest estimated implementation effort first, then production/release proximity, then canonical game id.",
+    "noCheating": "Agent state must not expose hidden answer keys, unrevealed card identities, server secrets, or bypass-only state.",
+    "promotion": "Do not mark a game agent-ready until structured state, legal actions, telemetry/stall detection, executable agent tests, and game-specific release gates all pass."
+  },
+  "summary": {
+    "totalGames": 30,
+    "agentReady": 3,
+    "remaining": 27
+  },
+  "nextRecommended": [
+    "lost-in-the-terps",
+    "grow-room-bingo",
+    "grower-conversations",
+    "high-lines",
+    "mystery-strain"
+  ],
+  "items": [
+    {
+      "gameId": "lost-in-the-terps",
+      "title": "Lost in the Terps",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 1,
+      "releasePriority": 0,
+      "gameplayProfile": "casual-puzzle",
+      "rendererProfile": "dom",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/lost-in-the-terps"
+      ],
+      "publicRoute": "/games/lost-in-the-terps/",
+      "verificationCommands": [
+        "node games/lost-in-the-terps/scripts/validate-data.mjs && node games/lost-in-the-terps/test/public-runtime.test.mjs && node --check site/public-route-patch/games/lost-in-the-terps/app.js && node --check site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 1
+    },
+    {
+      "gameId": "grow-room-bingo",
+      "title": "Grow Room Bingo / Bongwater Bingo",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 2,
+      "releasePriority": 0,
+      "gameplayProfile": "casual-puzzle",
+      "rendererProfile": "dom",
+      "networkProfile": "share-code",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/grow-room-bingo"
+      ],
+      "publicRoute": "/games/grow-room-bingo/",
+      "verificationCommands": [
+        "node games/grow-room-bingo/scripts/validate-data.mjs && node games/grow-room-bingo/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-bingo/app.js && node --check site/public-route-patch/games/grow-room-bingo/keyboard-nav.js"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 2
+    },
+    {
+      "gameId": "grower-conversations",
+      "title": "Grow Room Confessions",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 2,
+      "releasePriority": 0,
+      "gameplayProfile": "party-social",
+      "rendererProfile": "dom",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/grower-conversations"
+      ],
+      "publicRoute": "/games/grower-conversations/",
+      "verificationCommands": [
+        "node games/grower-conversations/scripts/validate-prompt-bank.mjs && node games/grower-conversations/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grower-conversations/app.js && cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 3
+    },
+    {
+      "gameId": "high-lines",
+      "title": "High Lines",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 2,
+      "releasePriority": 0,
+      "gameplayProfile": "casual-puzzle",
+      "rendererProfile": "svg-dom",
+      "networkProfile": "share-code",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/high-lines"
+      ],
+      "publicRoute": "/games/high-lines/",
+      "verificationCommands": [
+        "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node games/high-lines/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/runtime.mjs && cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 4
+    },
+    {
+      "gameId": "mystery-strain",
+      "title": "Mystery Strain",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 2,
+      "releasePriority": 0,
+      "gameplayProfile": "casual-puzzle",
+      "rendererProfile": "dom",
+      "networkProfile": "share-code",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/mystery-strain"
+      ],
+      "publicRoute": "/games/mystery-strain/",
+      "verificationCommands": [
+        "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node games/mystery-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/runtime.mjs && cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 5
+    },
+    {
+      "gameId": "trichome-trials",
+      "title": "Trichome Trials",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 2,
+      "releasePriority": 0,
+      "gameplayProfile": "party-social",
+      "rendererProfile": "dom",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/trichome-trials"
+      ],
+      "publicRoute": "/games/trichome-trials/",
+      "verificationCommands": [
+        "node games/trichome-trials/scripts/validate-data.mjs && node games/trichome-trials/test/engine.test.mjs && node games/trichome-trials/test/public-runtime.test.mjs && node --check site/public-route-patch/games/trichome-trials/app.js && node --check site/public-route-patch/games/trichome-trials/runtime.mjs && cmp games/trichome-trials/src/engine.mjs site/public-route-patch/games/trichome-trials/engine.mjs"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 6
+    },
+    {
+      "gameId": "who-took-it",
+      "title": "Who Took It?",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 2,
+      "releasePriority": 0,
+      "gameplayProfile": "party-social",
+      "rendererProfile": "dom",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Thc-guess-who",
+      "sourcePaths": [
+        "03_digital-game"
+      ],
+      "publicRoute": "/games/who-took-it/",
+      "verificationCommands": [
+        "npm run check"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 7
+    },
+    {
+      "gameId": "root-cause",
+      "title": "Root Cause",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 2,
+      "releasePriority": 1,
+      "gameplayProfile": "casual-puzzle",
+      "rendererProfile": "dom",
+      "networkProfile": "share-code",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/root-cause"
+      ],
+      "publicRoute": "/games/root-cause/",
+      "verificationCommands": [
+        "node games/root-cause/scripts/validate-data.mjs",
+        "node games/root-cause/test/engine.test.mjs",
+        "node games/root-cause/test/public-runtime.test.mjs"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 8
+    },
+    {
+      "gameId": "crossword",
+      "title": "THC Daily Crossword",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 3,
+      "releasePriority": 0,
+      "gameplayProfile": "daily-puzzle",
+      "rendererProfile": "dom",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Thc-crossword-",
+      "sourcePaths": [
+        "src",
+        "content",
+        "public/puzzles"
+      ],
+      "publicRoute": "/games/crossword/",
+      "verificationCommands": [
+        "npm test && npm run verify && npm run build"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 9
+    },
+    {
+      "gameId": "grow-room-defense",
+      "title": "Grow Room Defense",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 3,
+      "releasePriority": 0,
+      "gameplayProfile": "arcade-action",
+      "rendererProfile": "dom",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/grow-room-defense"
+      ],
+      "publicRoute": "/games/grow-room-defense/",
+      "verificationCommands": [
+        "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node games/grow-room-defense/test/public-runtime.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/runtime.mjs && cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 10
+    },
+    {
+      "gameId": "harvest-hustle",
+      "title": "Harvest Hustle",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 3,
+      "releasePriority": 0,
+      "gameplayProfile": "arcade-action",
+      "rendererProfile": "dom",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/harvest-hustle"
+      ],
+      "publicRoute": "/games/harvest-hustle/",
+      "verificationCommands": [
+        "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node games/harvest-hustle/test/public-runtime.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/runtime.mjs && cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 11
+    },
+    {
+      "gameId": "pheno-draft",
+      "title": "Pheno Draft",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 3,
+      "releasePriority": 0,
+      "gameplayProfile": "card-strategy",
+      "rendererProfile": "dom",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/pheno-draft"
+      ],
+      "publicRoute": "/games/pheno-draft/",
+      "verificationCommands": [
+        "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node games/pheno-draft/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/runtime.mjs && cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 12
+    },
+    {
+      "gameId": "strain-showdown",
+      "title": "Strain Showdown",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 3,
+      "releasePriority": 0,
+      "gameplayProfile": "card-strategy",
+      "rendererProfile": "dom",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/strain-showdown"
+      ],
+      "publicRoute": "/games/strain-showdown/",
+      "verificationCommands": [
+        "node games/strain-showdown/scripts/validate-roster.mjs && node games/strain-showdown/test/engine.test.mjs && node games/strain-showdown/scripts/simulate-balance.mjs --seeds=32 --assert-balanced && node games/strain-showdown/scripts/validate-browser-build.mjs"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 13
+    },
+    {
+      "gameId": "high-life",
+      "title": "High Life: From Bagseed to Legacy",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 4,
+      "releasePriority": 0,
+      "gameplayProfile": "board-simulation",
+      "rendererProfile": "dom",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/high-life"
+      ],
+      "publicRoute": "/games/high-life/",
+      "verificationCommands": [
+        "node games/high-life/test/engine.test.mjs && node games/high-life/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-life/app.js && cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs && cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 14
+    },
+    {
+      "gameId": "spin-the-strain",
+      "title": "Spin the Strain",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 4,
+      "releasePriority": 0,
+      "gameplayProfile": "party-social",
+      "rendererProfile": "hybrid",
+      "networkProfile": "share-code",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/spin-the-strain"
+      ],
+      "publicRoute": "/games/spin-the-strain/",
+      "verificationCommands": [
+        "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node games/spin-the-strain/test/public-runtime.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/runtime.mjs && cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 15
+    },
+    {
+      "gameId": "terpocalypse",
+      "title": "Terpocalypse: Grow Room From Hell",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 4,
+      "releasePriority": 0,
+      "gameplayProfile": "arcade-action",
+      "rendererProfile": "canvas2d",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Terpocalapse",
+      "sourcePaths": [
+        "prototypes/web-fps"
+      ],
+      "publicRoute": "/games/terpocalypse/",
+      "verificationCommands": [
+        "node games/terpocalypse-integration/validate.mjs && node games/terpocalypse/test/public-runtime.test.mjs && node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js && node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 16
+    },
+    {
+      "gameId": "thc-rpg",
+      "title": "THC RPG — The First Seed",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 4,
+      "releasePriority": 0,
+      "gameplayProfile": "campaign-rpg",
+      "rendererProfile": "dom",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Thc-rpg",
+      "sourcePaths": [
+        "src",
+        "public"
+      ],
+      "publicRoute": "/games/thc-rpg/",
+      "verificationCommands": [
+        "npm test",
+        "npm run validate:ui",
+        "npm run build",
+        "npm run validate:release"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 17
+    },
+    {
+      "gameId": "seed-ascent",
+      "title": "Seed Man: Seed Ascent",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 4,
+      "releasePriority": 2,
+      "gameplayProfile": "arcade-action",
+      "rendererProfile": "canvas2d",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Dtf420",
+      "sourcePaths": [
+        "app/games/seed-ascent",
+        "public/seed-ascent.html",
+        "public/seed-ascent"
+      ],
+      "publicRoute": "/games/seed-ascent",
+      "verificationCommands": [
+        "npm run verify:seed-ascent",
+        "npm run verify:seed-ascent-animations",
+        "npm run typecheck"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 18
+    },
+    {
+      "gameId": "weedopolis",
+      "title": "Weedopolis: Strain City Edition",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 5,
+      "releasePriority": 0,
+      "gameplayProfile": "board-simulation",
+      "rendererProfile": "hybrid",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Weedopolis-strain-Edition",
+      "sourcePaths": [
+        "src",
+        "digital",
+        "data"
+      ],
+      "publicRoute": "/games/weedopolis/",
+      "verificationCommands": [
+        "npm run validate && npm run check:preview && npm run build:preview"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 19
+    },
+    {
+      "gameId": "ganjumanji",
+      "title": "Ganjumanji: The Lost Grower's Temple",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 6,
+      "releasePriority": 0,
+      "gameplayProfile": "campaign-rpg",
+      "rendererProfile": "phaser",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
+      "sourcePaths": [
+        "src",
+        "public"
+      ],
+      "publicRoute": "/games/ganjumanji/",
+      "verificationCommands": [
+        "npm test",
+        "npm run validate:ui",
+        "npm run build",
+        "npm run validate:release"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 20
+    },
+    {
+      "gameId": "phenoquest",
+      "title": "PhenoQuest: The Living Seed Vault",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 7,
+      "releasePriority": 0,
+      "gameplayProfile": "campaign-rpg",
+      "rendererProfile": "threejs",
+      "networkProfile": "local",
+      "canonicalRepository": "dtfgenetics/Catching-phenos",
+      "sourcePaths": [
+        "src",
+        "data",
+        "public/games/phenoquest"
+      ],
+      "publicRoute": "/games/phenoquest/",
+      "verificationCommands": [
+        "canonical repo: npm run check (includes self-contained production build)"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 21
+    },
+    {
+      "gameId": "bud-or-bluff",
+      "title": "Bud or Bluff",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 9,
+      "releasePriority": 0,
+      "gameplayProfile": "turn-multiplayer",
+      "rendererProfile": "dom",
+      "networkProfile": "turn-authoritative",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/bud-or-bluff"
+      ],
+      "publicRoute": "/games/bud-or-bluff/",
+      "verificationCommands": [
+        "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node games/bud-or-bluff/test/keyboard-v1.test.mjs && node games/bud-or-bluff/test/visual-state-v3.test.mjs && node games/bud-or-bluff/test/online-lobby.test.mjs && node games/bud-or-bluff/test/online-lobby-v2.test.mjs"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 22
+    },
+    {
+      "gameId": "high-land",
+      "title": "High Land: The Sweet Escape",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 9,
+      "releasePriority": 0,
+      "gameplayProfile": "board-simulation",
+      "rendererProfile": "hybrid",
+      "networkProfile": "turn-authoritative",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "apps/high-land-web"
+      ],
+      "publicRoute": "/games/high-land/",
+      "verificationCommands": [
+        "npm run test:high-land && npm run build:high-land"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 23
+    },
+    {
+      "gameId": "protect-the-plants",
+      "title": "Burn Buds",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 9,
+      "releasePriority": 0,
+      "gameplayProfile": "turn-multiplayer",
+      "rendererProfile": "dom",
+      "networkProfile": "request-response-authoritative",
+      "canonicalRepository": "dtfgenetics/Thc",
+      "sourcePaths": [
+        "games/protect-the-plants"
+      ],
+      "publicRoute": "/games/protect-the-plants/",
+      "verificationCommands": [
+        "node games/protect-the-plants/test/burn-buds-branding.test.mjs && node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs && node games/protect-the-plants/test/api-copy-contract.test.mjs && node games/protect-the-plants/test/runtime-sync-v1.test.mjs && node games/protect-the-plants/test/v2-extras-sync.test.mjs && node games/protect-the-plants/test/native-targeting-source.test.mjs && node games/protect-the-plants/test/gamefeel-v1.test.mjs && php -l site/public-route-patch/games/protect-the-plants/api.php && php -l site/public-route-patch/games/protect-the-plants/presence.php"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 24
+    },
+    {
+      "gameId": "kush-kings",
+      "title": "Kush Kings Chess",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 11,
+      "releasePriority": 2,
+      "gameplayProfile": "turn-multiplayer",
+      "rendererProfile": "react-dom",
+      "networkProfile": "turn-authoritative",
+      "canonicalRepository": "dtfgenetics/Thc-chess-git",
+      "sourcePaths": [
+        "client",
+        "server"
+      ],
+      "publicRoute": "/games/kush-kings-chess/",
+      "verificationCommands": [
+        "pnpm test:production-runtime",
+        "pnpm lint",
+        "pnpm live:check"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 25
+    },
+    {
+      "gameId": "stoner-duck-race",
+      "title": "Quack & Bake: Stoner Duck Race",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 11,
+      "releasePriority": 2,
+      "gameplayProfile": "realtime-multiplayer",
+      "rendererProfile": "phaser",
+      "networkProfile": "optional-realtime",
+      "canonicalRepository": "dtfgenetics/Dtf420",
+      "sourcePaths": [
+        "app/games/stoner-duck-race",
+        "game/stoner-duck-race"
+      ],
+      "publicRoute": "/games/stoner-duck-race",
+      "verificationCommands": [
+        "npm run verify:stoner-duck-race",
+        "npm run typecheck"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 26
+    },
+    {
+      "gameId": "thc-u-know",
+      "title": "THC U Know",
+      "currentProfile": "planned",
+      "nextTarget": "observable",
+      "estimatedEffortScore": 11,
+      "releasePriority": 2,
+      "gameplayProfile": "turn-multiplayer",
+      "rendererProfile": "react-dom",
+      "networkProfile": "turn-authoritative",
+      "canonicalRepository": "dtfgenetics/thc-u-know-card-game-",
+      "sourcePaths": [
+        "apps/web",
+        "apps/server",
+        "packages/shared"
+      ],
+      "publicRoute": "/games/thc-u-know/",
+      "verificationCommands": [
+        "pnpm test",
+        "pnpm test:production-runtime",
+        "pnpm lint",
+        "pnpm live:check"
+      ],
+      "recommendedWork": "Expose a versioned read-only structured state snapshot without hidden answer/card/authority data.",
+      "rank": 27
+    }
+  ]
+}
