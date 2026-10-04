@@ -68,6 +68,9 @@ jobs:
       - name: Run GrowLens private image storage smoke test
         run: php apps/growlens-web/tests/php-image-storage-smoke.php
 
+      - name: Run GrowLens private-data tools smoke test
+        run: php apps/growlens-web/tests/php-private-data-tools-smoke.php
+
       - name: Run GrowLens unit tests
         run: npm run test:growlens
 
