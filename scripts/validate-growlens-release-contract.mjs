@@ -51,9 +51,6 @@ if(scripts['test:e2e:growlens'])fail('GrowLens must not advertise an undefined o
 
 const readme=fs.readFileSync(readmePath,'utf8');
 for(const token of [
-  'actions/checkout@v7',
-  'actions/setup-node@v7',
-  "node-version: '24'",
   'npm run test:growlens',
   'npm run test:growlens:live-client',
   'npm run build:growlens',
@@ -67,6 +64,10 @@ if(/Playwright desktop\/mobile tests/i.test(readme))fail('GrowLens README still 
 
 const ci=fs.readFileSync(ciPath,'utf8');
 for(const token of [
+  'actions/checkout@v7',
+  'actions/setup-node@v7',
+  "node-version: '24'",
+  'actions/upload-artifact@v7',
   'npm run test:growlens',
   'npm run test:growlens:live-client',
   'npm run build:growlens',
@@ -81,6 +82,7 @@ for(const token of [
   'actions/checkout@v7',
   'actions/setup-node@v7',
   "node-version: '24'",
+  'actions/upload-artifact@v7',
   'npm run test:growlens:live-client',
   'npm run test:live:growlens',
   'RUN-DESTRUCTIVE-ACCEPTANCE'
