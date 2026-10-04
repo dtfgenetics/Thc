@@ -20,6 +20,7 @@ on:
       - 'site/wordpress/education/encyclopedia-deployment-target.json'
       - 'scripts/resolve-encyclopedia-deployment-target.mjs'
       - 'scripts/validate-encyclopedia-source-pin.mjs'
+      - 'scripts/audit-encyclopedia-source-parity.mjs'
       - 'site/public-route-patch/learn/search/**'
       - 'site/wordpress/education/encyclopedia/**'
       - 'scripts/build-wordpress-learning-search-runtime.mjs'
@@ -59,6 +60,7 @@ on:
       - 'site/wordpress/education/encyclopedia-deployment-target.json'
       - 'scripts/resolve-encyclopedia-deployment-target.mjs'
       - 'scripts/validate-encyclopedia-source-pin.mjs'
+      - 'scripts/audit-encyclopedia-source-parity.mjs'
       - 'scripts/*encyclopedia*.mjs'
       - 'scripts/lib/encyclopedia-*.mjs'
       - 'scripts/*evidence*.mjs'
@@ -83,6 +85,17 @@ jobs:
           node-version: '22'
       - name: Validate canonical encyclopedia source pin
         run: npm run verify:encyclopedia-source-pin
+      - name: Resolve pinned canonical encyclopedia revision
+        run: node scripts/resolve-encyclopedia-deployment-target.mjs --github-env
+      - name: Checkout pinned canonical encyclopedia source
+        uses: actions/checkout@v4
+        with:
+          repository: dtfgenetics/thc-grow-hub
+          ref: ${{ env.THC_ENCYCLOPEDIA_SOURCE_SHA }}
+          path: .canonical/thc-grow-hub
+          persist-credentials: false
+      - name: Verify pinned canonical source parity
+        run: npm run verify:encyclopedia-source-parity -- --canonical-root .canonical/thc-grow-hub
       - name: Validate forward-only production pointer
         run: node scripts/validate-encyclopedia-production-pointer.mjs
       - name: Validate shared authoritative source bridge
