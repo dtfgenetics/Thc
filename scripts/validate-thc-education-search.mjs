@@ -81,9 +81,9 @@ if(!errors.length){
  const packageJson=JSON.parse(fs.readFileSync('package.json','utf8'));
  if(!searchPage.includes('DTF_STATIC_SEARCH_FALLBACK_START')||!searchPage.includes('data-static-fallback')) errors.push('education search page missing static crawlable fallback');
  if(!encyclopediaPage.includes('DTF_STATIC_ENCYCLOPEDIA_FALLBACK_START')||!encyclopediaPage.includes('data-static-fallback')) errors.push('encyclopedia page missing static crawlable fallback');
- const publishedStaticLinks=(encyclopediaPage.match(/\/learn\/encyclopedia\/thc-enc-\d{3,}\//g)||[]).length;
- const publishedIndexCount=(encyclopediaIndex.lessons||[]).filter(x=>x.status==='published').length;
- if(publishedStaticLinks<publishedIndexCount) errors.push('static encyclopedia directory does not expose every published lesson link: '+publishedStaticLinks+'/'+publishedIndexCount);
+ const publishedRows=(encyclopediaIndex.lessons||[]).filter(x=>x.status==='published');
+ const missingStaticRoutes=publishedRows.filter(row=>!encyclopediaPage.includes('href="'+row.route+'"'));
+ if(missingStaticRoutes.length) errors.push('static encyclopedia directory missing '+missingStaticRoutes.length+' published lesson routes; first '+missingStaticRoutes.slice(0,3).map(x=>x.id).join(', '));
  if(!fallbackBuilder.includes('Static education fallbacks built')) errors.push('static education fallback builder contract missing');
  if(!String(packageJson.scripts?.['build:education-search']||'').includes('build-static-search-fallbacks.mjs')) errors.push('education search build no longer materializes static fallbacks');
  if(!encyclopediaPage.includes('data-q')||!encyclopediaPage.includes('data-topics')||!encyclopediaPage.includes('encyclopedia-v1.mjs')) errors.push('encyclopedia page missing searchable library UI');
