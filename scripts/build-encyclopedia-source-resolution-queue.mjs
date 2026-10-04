@@ -13,6 +13,28 @@ const lessons = readCanonicalEncyclopediaLessons(root);
 const normalize = value => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const sourceText = note => typeof note === 'string' ? note.trim() : String(note?.title || note?.id || note?.sourceId || '').trim();
 
+function normalizeLocator(url) {
+  return String(url || '').trim()
+    .replace(/[?#].*$/,'')
+    .replace(/\/$/,'')
+    .toLowerCase();
+}
+
+function identityKeysFromText(value) {
+  const text = String(value || '');
+  const keys = new Set();
+  for (const match of text.matchAll(/10\.\d{4,9}\/[-._;()/:A-Z0-9]+/gi)) {
+    keys.add('doi:'+match[0].toLowerCase().replace(/[.,;:]+$/g,''));
+  }
+  for (const match of text.matchAll(/\b(PMC\d{5,})\b/gi)) keys.add('pmc:'+match[1].toUpperCase());
+  for (const match of text.matchAll(/\bPMID\s*[:.]?\s*(\d{6,9})\b/gi)) keys.add('pmid:'+match[1]);
+  for (const match of text.matchAll(/https:\/\/[^\s<>"')\]]+/gi)) {
+    const cleaned = normalizeLocator(match[0].replace(/[.,;:]+$/g,''));
+    if (cleaned) keys.add('url:'+cleaned);
+  }
+  return [...keys];
+}
+
 function extractDirectLocators(reference) {
   const value = String(reference || '');
   const locators = new Set();
@@ -38,9 +60,19 @@ function extractDirectLocators(reference) {
 }
 
 const authorityByAlias = new Map();
+const authorityByIdentity = new Map();
+function addAuthorityIdentity(key,id){
+  if(!key) return;
+  if(!authorityByIdentity.has(key)) authorityByIdentity.set(key,new Set());
+  authorityByIdentity.get(key).add(id);
+}
 for (const source of authorities) {
   authorityByAlias.set(source.id, source.id);
   for (const alias of source.aliases || []) authorityByAlias.set(alias, source.id);
+  if(source.doi) addAuthorityIdentity('doi:'+String(source.doi).toLowerCase(),source.id);
+  if(source.pmcid) addAuthorityIdentity('pmc:'+String(source.pmcid).toUpperCase(),source.id);
+  if(source.pmid) addAuthorityIdentity('pmid:'+String(source.pmid),source.id);
+  if(source.url) addAuthorityIdentity('url:'+normalizeLocator(source.url),source.id);
 }
 
 const volumeSourceById = new Map();
@@ -51,13 +83,18 @@ for (let part = 1; part <= 21; part += 1) {
 }
 
 function authorityMatches(reference) {
+  const matches = new Set();
   const direct = authorityByAlias.get(reference);
-  if (direct) return [direct];
+  if (direct) matches.add(direct);
+  for(const key of identityKeysFromText(reference)){
+    for(const id of authorityByIdentity.get(key)||[]) matches.add(id);
+  }
   const normalizedReference = normalize(reference);
-  return authorities.filter(source => {
+  for(const source of authorities){
     const tokens = [source.title, source.pmcid, source.doi, source.url].filter(Boolean).map(normalize).filter(token => token.length >= 8);
-    return tokens.some(token => normalizedReference.includes(token) || token.includes(normalizedReference));
-  }).map(source => source.id);
+    if(tokens.some(token => normalizedReference.includes(token) || token.includes(normalizedReference))) matches.add(source.id);
+  }
+  return [...matches].sort();
 }
 
 function citationLooksTraceable(reference) {
@@ -137,6 +174,10 @@ const references = [...usage.entries()].sort(([a], [b]) => a.localeCompare(b)).m
     traceable: trace.traceable,
     resolvedAuthoritativeSourceIds: authorityIds,
     directLocators: trace.directLocators || [],
+    sourceIdentityKeys: [...new Set([
+      ...identityKeysFromText(reference),
+      ...(trace.directLocators||[]).flatMap(identityKeysFromText)
+    ])].sort(),
     volumeRegistryRecord: volumeSource ? {
       id: volumeSource.id,
       title: volumeSource.title,
@@ -149,6 +190,30 @@ const references = [...usage.entries()].sort(([a], [b]) => a.localeCompare(b)).m
     publicationEffect: 'none'
   };
 });
+
+const identityGroups = new Map();
+for(const row of references){
+  for(const key of row.sourceIdentityKeys||[]){
+    if(!identityGroups.has(key)) identityGroups.set(key,[]);
+    identityGroups.get(key).push(row.referenceId);
+  }
+}
+const duplicateGroups = [...identityGroups.entries()]
+  .filter(([,ids])=>new Set(ids).size>1)
+  .map(([identityKey,ids],index)=>({
+    duplicateGroupId:`ENC-SRC-DUP-${String(index+1).padStart(4,'0')}`,
+    identityKey,
+    referenceIds:[...new Set(ids)].sort()
+  }));
+const duplicateGroupByReference = new Map();
+for(const group of duplicateGroups){
+  for(const id of group.referenceIds){
+    if(!duplicateGroupByReference.has(id)) duplicateGroupByReference.set(id,[]);
+    duplicateGroupByReference.get(id).push(group.duplicateGroupId);
+  }
+}
+for(const row of references) row.duplicateGroupIds=duplicateGroupByReference.get(row.referenceId)||[];
+
 const referenceIdByRaw = new Map(references.map(row => [row.rawReference, row.referenceId]));
 const lessonRows = lessons.map(lesson => {
   const refs=(lesson.sourceNotes||[]).map(sourceText).filter(Boolean);
@@ -201,11 +266,14 @@ const output = {
     citationTraceableNeedsAuthorityReview: countStatus('citation_traceable_needs_authority_review'),
     citationTextNeedsResolution: countStatus('citation_text_needs_resolution'),
     controlNotesExcludedFromEvidenceTraceability: countStatus('control_note_resolved_not_evidence_source'),
+    duplicateIdentityGroups: duplicateGroups.length,
+    referencesInDuplicateGroups: references.filter(row=>(row.duplicateGroupIds||[]).length>0).length,
     lessonsWithAllSourcesTraceable: lessonRows.filter(row => row.resolutionState !== 'source_resolution_incomplete').length,
     lessonsNeedingSourceResolution: lessonRows.filter(row => row.resolutionState === 'source_resolution_incomplete').length,
     approved: 0
   },
   authoritativeSourceRegistry: relativePath(root, authorityPath),
+  duplicateGroups,
   references,
   lessons: lessonRows
 };
