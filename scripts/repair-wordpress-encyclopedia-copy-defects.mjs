@@ -8,6 +8,7 @@ const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const user=process.env.WP_API_USERNAME||'';
 const pass=process.env.WP_API_PASSWORD||'';
 const backupRoot=process.env.BACKUP_ROOT||'/tmp/dtf-encyclopedia-copy-repair';
+const ownerAuthorization=JSON.parse(await (await import('node:fs/promises')).readFile('content/encyclopedia/review/owner-publication-authorization-2026-10-03.json','utf8'));
 if(!user||!pass) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required.');
 
 const auth='Basic '+Buffer.from(`${user}:${pass}`).toString('base64');
@@ -98,35 +99,60 @@ if(!encyclopedia) throw new Error('Canonical /learn/encyclopedia/ WordPress page
 const children=await allChildren(encyclopedia.id);
 const canonical=readCanonicalEncyclopediaLessons(process.cwd());
 const byId=new Map(canonical.map(lesson=>[lesson.id,lesson]));
-const candidates=[];
+const lessonPages=children.filter(page=>/^thc-enc-\d{3}$/.test(page.slug||''));
+const scanConcurrency=Math.max(1,Math.min(24,Number(process.env.ENC_COPY_REPAIR_CONCURRENCY||8)));
+const scanResults=new Array(lessonPages.length);
+let scanNext=0;
+async function scanWorker(){
+  while(true){
+    const index=scanNext++;
+    if(index>=lessonPages.length) return;
+    const page=lessonPages[index];
+    const id=String(page.slug).toUpperCase();
+    const storedKinds=defectKinds(rendered(page.content));
+    const publicView=await fetchPublic(page.slug);
+    const renderedKinds=publicView.status===200?defectKinds(publicView.text):[];
+    const kinds=[...new Set([...storedKinds,...renderedKinds])];
+    scanResults[index]={page,id,storedKinds,publicView,renderedKinds,kinds};
+  }
+}
+await Promise.all(Array.from({length:scanConcurrency},()=>scanWorker()));
 
-for(const page of children){
-  if(!/^thc-enc-\d{3}$/.test(page.slug||'')) continue;
-  const id=String(page.slug).toUpperCase();
-  const storedKinds=defectKinds(rendered(page.content));
-  const publicView=await fetchPublic(page.slug);
-  const renderedKinds=publicView.status===200?defectKinds(publicView.text):[];
-  const kinds=[...new Set([...storedKinds,...renderedKinds])];
+const candidates=[];
+for(const row of scanResults){
+  const {page,id,storedKinds,publicView,renderedKinds,kinds}=row;
   if(!kinds.length) continue;
   const lesson=byId.get(id);
   if(!lesson) throw new Error(`${id}: live defective page has no canonical lesson source.`);
   const canonicalBlob=JSON.stringify(lesson);
   const canonicalKinds=defectKinds(canonicalBlob);
   if(canonicalKinds.length) throw new Error(`${id}: canonical source still contains blocked copy defects: ${canonicalKinds.join(', ')}`);
-  if(lesson.reviewControl?.publicationAuthorized===false || lesson.publicationAuthorized===false){
-    throw new Error(`${id}: live copy is defective but canonical publication authorization is false; refusing to republish automatically.`);
+  const control=lesson.reviewControl||{};
+  const lessonPublicationAuthorized=control.publicationAuthorized ?? lesson.publicationAuthorized ?? false;
+  const ownerOverrideEligible=
+    ownerAuthorization.publicationAuthorized===true &&
+    ownerAuthorization.independentApproval===false &&
+    ownerAuthorization.authorizedBy==='project_owner' &&
+    String(control.releaseTimeReview||'').startsWith(ownerAuthorization.eligibility?.requireReleaseTimeReviewPrefix||'completed_') &&
+    control.independentApproval!==true &&
+    control.safetyHold!==true &&
+    lesson.safetyHold!==true;
+  if(lessonPublicationAuthorized!==true && !ownerOverrideEligible){
+    throw new Error(`${id}: live copy is defective but neither canonical nor eligible owner publication authorization permits automatic republish.`);
   }
   candidates.push({
     id,pageId:page.id,slug:page.slug,kinds,
     storedKinds,renderedKinds,
     publicStatus:publicView.status,
     runtimeOnly:storedKinds.length===0&&renderedKinds.length>0,
-    sourceFile:lesson.__path
+    sourceFile:lesson.__path,
+    ownerOverride:lessonPublicationAuthorized!==true&&ownerOverrideEligible
   });
 }
 
 const report={
-  scannedPublishedLessons:children.filter(p=>/^thc-enc-\d{3}$/.test(p.slug||'')).length,
+  scannedPublishedLessons:lessonPages.length,
+  scanConcurrency,
   defectsFound:candidates.length,
   runtimeOnlyDefects:candidates.filter(x=>x.runtimeOnly).length,
   storedContentDefects:candidates.filter(x=>x.storedKinds.length>0).length,
@@ -152,6 +178,9 @@ await writeFile(manifestPath,JSON.stringify({
     publicationAuthorization:'Republish only already-live lessons whose current canonical source is publication-eligible and free of blocked copy defects.',
     note:'Generated automatically from live WordPress defect scan; no new lesson authorization is created.'
   },
+  ownerPublicationOverride:candidates.some(x=>x.ownerOverride),
+  ownerPublicationAuthorizationId:ownerAuthorization.authorizationId,
+  ownerOverrideLessonIds:candidates.filter(x=>x.ownerOverride).map(x=>x.id),
   lessonFiles:candidates.map(x=>x.sourceFile)
 },null,2)+'\n','utf8');
 
