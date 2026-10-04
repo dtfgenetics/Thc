@@ -19,6 +19,8 @@ if(!errors.length){
   if(target.id!=='encyclopedia-production-target-v1') errors.push('deployment target id mismatch');
   if(target.sourceRepository!=='dtfgenetics/thc-grow-hub') errors.push('deployment target sourceRepository mismatch');
   if(!/^[0-9a-f]{40}$/.test(target.sourceSha||'')) errors.push('deployment target must use a full lowercase 40-character SHA');
+  if(target.sourceRegistryPath!=='content/encyclopedia/current-controlled-registry.json') errors.push('deployment target sourceRegistryPath mismatch');
+  if(!/^[0-9a-f]{40}$/.test(target.sourceRegistryBlobSha||'')) errors.push('deployment target sourceRegistryBlobSha must be a full lowercase Git blob SHA');
   if(target.integrationRepository!=='dtfgenetics/Thc') errors.push('integrationRepository mismatch');
   if(target.integrationMode!=='controlled-publication-integration') errors.push('integrationMode mismatch');
 
