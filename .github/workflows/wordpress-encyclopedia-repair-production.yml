@@ -21,8 +21,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-encyclopedia-production
-  # Repair runs are idempotent and retry-hardened; a newer repair supersedes an older stuck repair.
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   repair:
@@ -36,7 +35,6 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       ENCYCLOPEDIA_TOPIC_FILE: configuration/encyclopedia-topics.json
-      WP_API_RETRY_ATTEMPTS: 7
     steps:
       - uses: actions/checkout@v4
         with:
