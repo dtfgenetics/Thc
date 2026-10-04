@@ -328,6 +328,46 @@ function renderModes() {
   }
 }
 
+// BEGIN GROW ROOM BINGO AGENT BRIDGE
+const BINGO_AGENT_VERSION='grow-room-bingo-agent-bridge-v1';
+const BINGO_AGENT_MAX_EVENTS=32;
+const BINGO_AGENT_STALL_MS=8000;
+const bingoAgentTelemetry={actions:[],errors:[],lastProgressKey:'',lastProgressAt:0,lastActionAt:0};
+function bingoAgentNow(){return typeof performance!=='undefined'&&typeof performance.now==='function'?performance.now():Date.now();}
+function pushBingoAgentEvent(list,event){list.push(Object.freeze(event));if(list.length>BINGO_AGENT_MAX_EVENTS)list.splice(0,list.length-BINGO_AGENT_MAX_EVENTS);}
+function recordBingoAgentAction(action,detail=null){const now=bingoAgentNow();bingoAgentTelemetry.lastActionAt=now;pushBingoAgentEvent(bingoAgentTelemetry.actions,{atMs:Math.round(now),action,detail});}
+function recordBingoAgentError(kind,messageText,source=null){pushBingoAgentEvent(bingoAgentTelemetry.errors,{atMs:Math.round(bingoAgentNow()),kind,message:String(messageText||kind||'unknown error').slice(0,500),source:source?String(source).slice(0,500):null});}
+function observeBingoAgentProgress(){const key=[mode,code,[...marked].sort((a,b)=>a-b).join(','),wins().length,clearArmedUntil>Date.now()?1:0].join('|');if(key!==bingoAgentTelemetry.lastProgressKey){bingoAgentTelemetry.lastProgressKey=key;bingoAgentTelemetry.lastProgressAt=bingoAgentNow();}}
+function bingoAgentTelemetrySnapshot(){observeBingoAgentProgress();const now=bingoAgentNow();const noProgressMs=bingoAgentTelemetry.lastProgressAt?Math.max(0,now-bingoAgentTelemetry.lastProgressAt):0;const sinceActionMs=bingoAgentTelemetry.lastActionAt?Math.max(0,now-bingoAgentTelemetry.lastActionAt):0;const actionPending=bingoAgentTelemetry.lastActionAt>bingoAgentTelemetry.lastProgressAt;return{errors:bingoAgentTelemetry.errors.slice(),recentActions:bingoAgentTelemetry.actions.slice(),noProgressMs:Math.round(noProgressMs),sinceActionMs:Math.round(sinceActionMs),stallSuspected:Boolean(actionPending&&sinceActionMs>=BINGO_AGENT_STALL_MS&&noProgressMs>=BINGO_AGENT_STALL_MS),stallThresholdMs:BINGO_AGENT_STALL_MS};}
+function bingoAgentSnapshot(){
+  const buttons=[...board.querySelectorAll('.cell')];
+  const completed=wins();
+  return{
+    version:BINGO_AGENT_VERSION,
+    ready:Boolean(data&&code&&cells.length===24),
+    mode:{id:mode,available:data?.modes?.map(item=>({id:item.id,title:item.title}))||[]},
+    card:{code,markedCount:marked.size,lineCount:completed.length,bestLineCount:readBest(),clearArmed:clearArmedUntil>Date.now(),cells:buttons.map((button,index)=>({index,text:button.textContent,marked:marked.has(index),free:index===12,line:button.classList.contains('line'),disabled:Boolean(button.disabled)}))},
+    legalActions:['toggle-cell','select-mode','load-code','new-card','clear-marks'],
+    telemetry:bingoAgentTelemetrySnapshot()
+  };
+}
+function toggleBingoAgentCell(index){const normalized=Number(index);if(!Number.isInteger(normalized)||normalized<0||normalized>=25)throw new Error(`Unsupported Bingo cell index: ${index}`);if(normalized===12)return false;const button=[...board.querySelectorAll('.cell')][normalized];if(!button||button.disabled)return false;recordBingoAgentAction('toggle-cell',normalized);button.click();return true;}
+function selectBingoAgentMode(id){const normalized=String(id||'');if(!data?.modes?.some(item=>item.id===normalized))throw new Error(`Unsupported Bingo mode: ${id}`);const button=[...modesEl.querySelectorAll('button')].find(candidate=>candidate.dataset.mode===normalized);if(!button)return false;recordBingoAgentAction('select-mode',normalized);button.click();return true;}
+function loadBingoAgentCode(value){const normalized=normalizeCardCode(value);if(!isValidCardCode(normalized))throw new Error(`Unsupported Bingo card code: ${value}`);recordBingoAgentAction('load-code',normalized);codeInput.value=normalized;const loaded=loadCard(normalized);return Boolean(loaded);}
+function installBingoAgentTelemetry(){if(typeof window?.addEventListener!=='function')return;window.addEventListener('error',event=>{const target=event?.target;const resource=target&&target!==window&&(target.currentSrc||target.src||target.href);if(resource)recordBingoAgentError('resource-error','Browser resource failed to load',resource);else recordBingoAgentError('runtime-error',event?.message||event?.error?.message||'Browser runtime error',event?.filename||null);},true);window.addEventListener('unhandledrejection',event=>recordBingoAgentError('unhandled-rejection',event?.reason?.message||event?.reason||'Unhandled promise rejection'));}
+function installBingoAgentBridge(){installBingoAgentTelemetry();const api=Object.freeze({
+ version:BINGO_AGENT_VERSION,
+ snapshot:bingoAgentSnapshot,
+ toggleCell:toggleBingoAgentCell,
+ selectMode:selectBingoAgentMode,
+ loadCode:loadBingoAgentCode,
+ newCard:()=>{recordBingoAgentAction('new-card');newButton.click();return true;},
+ clearMarks:()=>{if(marked.size<=1)return false;recordBingoAgentAction('clear-marks');clearButton.click();return true;},
+ telemetry:bingoAgentTelemetrySnapshot
+});Object.defineProperty(window,'__GROW_ROOM_BINGO_AGENT__',{value:api,enumerable:false,configurable:false,writable:false});Object.defineProperty(window,'__GROW_ROOM_BINGO_GAME_STATE__',{get:bingoAgentSnapshot,enumerable:false,configurable:false});document.documentElement.dataset.growRoomBingoAgentBridge=BINGO_AGENT_VERSION;bingoAgentTelemetry.lastProgressAt=bingoAgentNow();return api;}
+installBingoAgentBridge();
+// END GROW ROOM BINGO AGENT BRIDGE
+
 newButton.addEventListener('click', () => loadCard(randomCode()));
 document.querySelector('#load').addEventListener('click', loadEnteredCode);
 clearButton.addEventListener('click', clearMarks);

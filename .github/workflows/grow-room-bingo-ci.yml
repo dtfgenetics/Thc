@@ -21,6 +21,8 @@ jobs:
         run: node games/grow-room-bingo/test/card-code.test.mjs
       - name: Test self-contained public runtime contract
         run: node games/grow-room-bingo/test/public-runtime.test.mjs
+      - name: Test autonomous playtest bridge
+        run: node games/grow-room-bingo/test/agent-bridge.test.mjs
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/grow-room-bingo/app.js
