@@ -1,0 +1,51 @@
+name: Build Encyclopedia Visual Reviewer Packets
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'content/encyclopedia/evidence/**'
+      - 'content/encyclopedia/visual-production-batches/**'
+      - 'scripts/build-encyclopedia-visual-review-packets.mjs'
+      - 'scripts/validate-encyclopedia-visual-review-packets.mjs'
+      - '.github/workflows/encyclopedia-visual-review-packets.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build review prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run verify:encyclopedia-production-readiness
+          npm run verify:encyclopedia-independent-review
+          node scripts/build-encyclopedia-visual-machine-preflight.mjs
+          node scripts/build-encyclopedia-visual-promotion-manifest.mjs
+
+      - name: Build reviewer packets
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-visual-review-packets.mjs
+          node scripts/validate-encyclopedia-visual-review-packets.mjs
+          test -s review/encyclopedia-visuals/index.json
+
+      - name: Upload reviewer packets
+        uses: actions/upload-artifact@v4
+        with:
+          name: encyclopedia-visual-reviewer-packets-${{ github.run_id }}
+          path: review/encyclopedia-visuals
+          if-no-files-found: error
+          retention-days: 30
