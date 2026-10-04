@@ -11,6 +11,8 @@ if(target.schemaVersion!==1) fail('schemaVersion must equal 1.');
 if(target.id!=='encyclopedia-production-target-v1') fail('unexpected id.');
 if(target.sourceRepository!=='dtfgenetics/thc-grow-hub') fail('unexpected sourceRepository.');
 if(!/^[0-9a-f]{40}$/.test(String(target.sourceSha||''))) fail('sourceSha must be a full lowercase 40-character Git SHA.');
+if(target.sourceRegistryPath!=='content/encyclopedia/current-controlled-registry.json') fail('unexpected sourceRegistryPath.');
+if(!/^[0-9a-f]{40}$/.test(String(target.sourceRegistryBlobSha||''))) fail('sourceRegistryBlobSha must be a full lowercase 40-character Git blob SHA.');
 if(target.integrationRepository!=='dtfgenetics/Thc') fail('unexpected integrationRepository.');
 if(target.integrationMode!=='controlled-publication-integration') fail('unexpected integrationMode.');
 
@@ -18,6 +20,8 @@ const result={
   targetPath,
   sourceRepository:target.sourceRepository,
   sourceSha:target.sourceSha,
+  sourceRegistryPath:target.sourceRegistryPath,
+  sourceRegistryBlobSha:target.sourceRegistryBlobSha,
   lane:target.lane||null,
   integrationRepository:target.integrationRepository,
   integrationMode:target.integrationMode,
