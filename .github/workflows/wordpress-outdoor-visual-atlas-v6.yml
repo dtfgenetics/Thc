@@ -9,6 +9,8 @@ on:
       - 'site/wordpress/education/outdoor-v6-chapter-visuals-v1.json'
       - 'scripts/publish-wordpress-outdoor-visuals-v6.mjs'
       - 'scripts/publish-wordpress-outdoor-chapter-visuals-v1.mjs'
+      - 'scripts/wordpress-learning-page-query.mjs'
+      - 'scripts/test-outdoor-publisher-owner-contract.mjs'
       - 'scripts/fix-harvest-outdoor-v6-owner-markers.mjs'
       - 'scripts/publish-wordpress-harvest-outdoor-v6-final.mjs'
       - '.github/workflows/wordpress-outdoor-visual-atlas-v6.yml'
@@ -66,6 +68,8 @@ jobs:
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/publish-wordpress-outdoor-visuals-v6.mjs
           node --check scripts/publish-wordpress-outdoor-chapter-visuals-v1.mjs
+          node scripts/test-wordpress-learning-page-query.mjs
+          node scripts/test-outdoor-publisher-owner-contract.mjs
           node --check scripts/fix-harvest-outdoor-v6-owner-markers.mjs
           node --check scripts/enhance-wordpress-learning-v4.mjs
           node --check scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
