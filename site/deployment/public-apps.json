@@ -123,7 +123,7 @@
       "runtime": "static",
       "status": "ready-to-package",
       "build": "test -s site/public-route-patch/tds-meter/index.html",
-      "notes": "Interactive EC/TDS conversion reference supporting 500 and 700 ppm conventions.",
+      "notes": "Production-hardened EC/TDS reference supporting 500, 640, 650 and 700 display conventions, mS/cm↔µS/cm value-preserving unit switching, scale identification without false pass/fail confidence, source-water delta, calibration context, temperature-aware measurement guidance, browser journal, CSV/JSON round-trip, GrowLens handoff and live sensor adapter.",
       "mirrorPath": "site/public-route-patch/tds-meter",
       "canonicalRepository": "dtfgenetics/Tools",
       "integrationRepository": "dtfgenetics/Thc"
