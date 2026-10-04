@@ -70,8 +70,11 @@ function renderPopulation(){
   const body=$('[data-population-body]');
   const count=$('[data-population-count]');
   const profileCount=$('[data-profile-count]');
+  const profileLabel=$('[data-profile-count-label]');
+  const profiles=state.profiles?.profiles||[];
   if(count)count.textContent=data.analytes.length;
-  if(profileCount)profileCount.textContent=(state.profiles?.profiles||[]).length;
+  if(profileCount)profileCount.textContent=profiles.length?String(profiles.length):'—';
+  if(profileLabel)profileLabel.textContent=profiles.length?'verified individual sample profiles loaded':'row-level profiles unavailable in current source';
   const byId=new Map(state.catalog.compounds.map(x=>[x.id,x]));
   const sorted=[...data.analytes].sort((a,b)=>b.meanPpm-a.meanPpm);
   if(body)body.innerHTML=sorted.map(row=>{
