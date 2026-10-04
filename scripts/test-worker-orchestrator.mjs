@@ -14,6 +14,7 @@ import { epicSummary, materializeJobPlan, topologicalJobOrder, validateEpicManif
 import { inspectContractScope, validateAgentContract, verificationProfileFromContract } from './orchestrator/repo-contract.mjs'
 import { inspectAcceptanceContract, normalizeAcceptanceCriterion } from './orchestrator/acceptance.mjs'
 import { classifyVerificationFailure } from './orchestrator/verification.mjs'
+import { applyRepairPlan, planRepair } from './orchestrator/repair.mjs'
 import { buildOperatorStatus } from './orchestrator/operator-status.mjs'
 
 const config = validateConfig({
@@ -684,3 +685,23 @@ assert.deepEqual(
 )
 assert.equal(classifyVerificationFailure({ reason: 'head-sha-mismatch' }).repairWorker, 'repo-maintenance')
 assert.equal(classifyVerificationFailure({ reason: 'changed-files-outside-allowed-paths' }).automatic, false)
+
+
+const retryConfig = JSON.parse(fs.readFileSync('configuration/orchestrator/retry-policies.json', 'utf8'))
+const repairJob = newJob({ jobId:'repair-1', title:'repair me', state:'VERIFYING', acceptanceCriteria:['tests pass'], retryPolicy:'implementation' })
+const testFailure = classifyVerificationFailure({ reason:'checks-failing', checkGate:{ failing:[{name:'unit'}] } })
+const repairPlan = planRepair(repairJob, testFailure, retryConfig, { now:new Date('2026-10-04T00:00:00Z') })
+assert.equal(repairPlan.action, 'REPAIR')
+assert.equal(repairPlan.repairWorker, 'test-repair')
+assert.equal(repairPlan.attempt, 1)
+assert.equal(repairPlan.nextEligibleAt, '2026-10-04T00:05:00.000Z')
+assert.equal(applyRepairPlan(repairJob, testFailure, repairPlan, { now:'2026-10-04T00:00:00.000Z' }).state, 'REPAIRING')
+
+const policyFailure = classifyVerificationFailure({ reason:'changed-files-outside-allowed-paths' })
+const blockPlan = planRepair(repairJob, policyFailure, retryConfig)
+assert.equal(blockPlan.action, 'BLOCK')
+assert.equal(blockPlan.state, 'BLOCKED')
+
+const exhausted = { ...repairJob, attempt:3 }
+const exhaustedPlan = planRepair(exhausted, testFailure, retryConfig)
+assert.equal(exhaustedPlan.state, 'QUARANTINED')
