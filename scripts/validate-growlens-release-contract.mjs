@@ -13,9 +13,10 @@ const packagePath=path.join(root,'package.json');
 const liveAcceptancePath=path.join(root,'.github/workflows/growlens-live-acceptance.yml');
 const privateAuditPath=path.join(root,'scripts/growlens-private-data-audit.php');
 const privateBackupWorkflowPath=path.join(root,'.github/workflows/growlens-private-data-backup.yml');
+const privateBackupDocsPath=path.join(root,'docs/GROWLENS_PRIVATE_DATA_BACKUP.md');
 
 const fail=(message)=>{console.error('GrowLens release contract validation failed:',message);process.exitCode=1;};
-for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath,indexPath,readmePath,packagePath,liveAcceptancePath,privateAuditPath,privateBackupWorkflowPath]){
+for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath,indexPath,readmePath,packagePath,liveAcceptancePath,privateAuditPath,privateBackupWorkflowPath,privateBackupDocsPath]){
   if(!fs.existsSync(file))fail(`Required file missing: ${path.relative(root,file)}`);
 }
 if(process.exitCode)process.exit();
@@ -118,6 +119,19 @@ for(const token of [
   'retention-days: 90'
 ]){
   if(!privateBackupWorkflow.includes(token))fail(`GrowLens private backup workflow is missing release control: ${token}`);
+}
+
+const privateBackupDocs=fs.readFileSync(privateBackupDocsPath,'utf8');
+for(const token of [
+  'schema versions 1 and 2',
+  'irrigation',
+  'feeding',
+  'reservoir',
+  'harvest',
+  'first successful production run',
+  'Do not add a schedule before'
+]){
+  if(!privateBackupDocs.includes(token))fail(`GrowLens private backup runbook is stale: ${token}`);
 }
 
 const suite=fs.readFileSync(suitePath,'utf8');
