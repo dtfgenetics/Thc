@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "registryId": "thc-encyclopedia-extension-registry",
+  "purpose": "Append-only registry for THC Encyclopedia material beyond the protected THC-ENC-001 through THC-ENC-420 core.",
+  "rules": [
+    "THC-ENC-001 through THC-ENC-420 remain protected by the controlled core registry.",
+    "New encyclopedia lessons start at THC-ENC-421 and use monotonically increasing permanent IDs.",
+    "Each extension entry must have a unique number, part, title, primaryFormat, and teachingVisual.",
+    "Adding an entry here does not publish it; a matching canonical lesson source and publication batch are still required.",
+    "Search and validation consume the core and extension registries together."
+  ],
+  "entries": []
+}

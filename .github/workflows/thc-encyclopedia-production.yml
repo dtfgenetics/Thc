@@ -103,8 +103,6 @@ jobs:
         run: npm run verify:encyclopedia-production-queues
       - name: Build claim-evidence candidate ledger
         run: npm run verify:encyclopedia-claim-evidence-candidates
-      - name: Build unmapped evidence review packets
-        run: npm run verify:encyclopedia-unmapped-evidence-review-packets
       - name: Build unified production readiness
         run: npm run build:encyclopedia-production-readiness
       - name: Validate unified production readiness
@@ -162,7 +160,6 @@ jobs:
             data/encyclopedia-source-resolution-queue.json
             data/encyclopedia-source-freshness.json
             data/encyclopedia-claim-evidence-candidates.json
-            data/encyclopedia-unmapped-evidence-review-packets.json
             data/encyclopedia-production-readiness.json
             data/encyclopedia-independent-review-manifest.json
             content/encyclopedia/visual-production-queue-v1.json

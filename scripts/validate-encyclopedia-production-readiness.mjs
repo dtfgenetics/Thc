@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const file='data/encyclopedia-production-readiness.json';
 if(!fs.existsSync(file)){
@@ -7,15 +8,16 @@ if(!fs.existsSync(file)){
   process.exit(1);
 }
 const data=JSON.parse(fs.readFileSync(file,'utf8'));
+const registryState=loadEncyclopediaRegistry(process.cwd());
 const rows=Array.isArray(data.lessons)?data.lessons:[];
 const errors=[];
 const queue=Array.isArray(data.workQueue)?data.workQueue:[];
 
-if(rows.length!==420) errors.push('Expected 420 lessons; found '+rows.length);
+if(rows.length!==registryState.totalCount) errors.push(`Expected ${registryState.totalCount} lessons; found ${rows.length}`);
 const seen=new Set();
 for(let i=0;i<rows.length;i++){
   const row=rows[i];
-  const expected='THC-ENC-'+String(i+1).padStart(3,'0');
+  const expected=registryState.entries[i]?.id;
   if(row.id!==expected) errors.push('Row '+(i+1)+' expected '+expected+'; found '+(row.id||'(missing)'));
   if(seen.has(row.id)) errors.push('Duplicate lesson '+row.id);
   seen.add(row.id);
@@ -48,4 +50,4 @@ if(errors.length){
   process.exit(1);
 }
 
-console.log('Encyclopedia production readiness PASS: 420 unique controlled lessons; course separation preserved'+(strict?' · strict release-ready gate passed':'')+'.');
+console.log(`Encyclopedia production readiness PASS: ${registryState.totalCount} unique registered lessons; course separation preserved${strict?' · strict release-ready gate passed':''}.`);

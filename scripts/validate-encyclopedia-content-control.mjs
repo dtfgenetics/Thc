@@ -3,13 +3,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { effectiveLessonAssessment } from './lib/encyclopedia-assessment-v2.mjs';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { CORE_ENCYCLOPEDIA_LESSON_COUNT, loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root=process.cwd();
 const strictQuality=process.argv.includes('--strict-quality');
 const strictAssessment=process.argv.includes('--strict-assessment');
-const registryPath=path.join(root,'content/encyclopedia/current-controlled-registry.json');
-const registry=JSON.parse(fs.readFileSync(registryPath,'utf8'));
-const expected=new Map((registry.entries||[]).map(e=>[e.id,e]));
+const registryState=loadEncyclopediaRegistry(root);
+const registry={entries:registryState.entries};
+const expected=new Map(registryState.entries.map(e=>[e.id,e]));
 const lessons=[];
 const errors=[];
 const warnings=[];
@@ -23,8 +24,8 @@ for(const lesson of canonicalLessons){
   lessons.push({...lesson,__path:lesson.__path,__volume:Number(lesson.__part)});
 }
 
-assert((registry.entries||[]).length===420,`Controlled registry must contain 420 entries; found ${registry.entries?.length||0}`);
-assert(lessons.length===420,`Repository must resolve to exactly 420 lessons; found ${lessons.length}`);
+assert(registryState.coreCount===CORE_ENCYCLOPEDIA_LESSON_COUNT,`Protected core registry must contain ${CORE_ENCYCLOPEDIA_LESSON_COUNT} entries; found ${registryState.coreCount}`);
+assert(lessons.length===registryState.totalCount,`Repository must resolve every registered lesson; found ${lessons.length}/${registryState.totalCount}`);
 
 const seen=new Set();
 const routes=new Set();
@@ -37,7 +38,7 @@ const terms=(lesson)=>arr(lesson.terms).length||arr(lesson.termsToKnow).length;
 
 for(const lesson of lessons){
   const id=lesson.id;
-  assert(/^THC-ENC-\d{3}$/.test(String(id||'')),`${lesson.__path}: invalid lesson id ${id||'(missing)'}`);
+  assert(/^THC-ENC-\d{3,}$/.test(String(id||'')),`${lesson.__path}: invalid lesson id ${id||'(missing)'}`);
   assert(!seen.has(id),`Duplicate lesson id ${id}`);
   seen.add(id);
   const current=expected.get(id);
@@ -109,8 +110,8 @@ if(errors.length){
   process.exit(1);
 }
 
-console.log(`Encyclopedia content-control PASS: ${lessons.length}/420 controlled lessons resolve with unique IDs and current controlled titles.`);
-console.log(`Assessment coverage: ${420-assessmentMissing.length}/420 lessons have at least 3 effective lesson-specific knowledge checks (stored or generated); ${assessmentMissing.length} remain.`);
+console.log(`Encyclopedia content-control PASS: ${lessons.length}/${registryState.totalCount} registered lessons resolve with unique IDs and current titles (${registryState.coreCount} protected core + ${registryState.extensionCount} extension).`);
+console.log(`Assessment coverage: ${registryState.totalCount-assessmentMissing.length}/${registryState.totalCount} lessons have at least 3 effective lesson-specific knowledge checks (stored or generated); ${assessmentMissing.length} remain.`);
 console.log(`Quality findings: ${qualityIssues.length} non-identity issue(s)${strictQuality?' (strict)':' (reported as warnings)'}.`);
 if(warnings.length){
   console.warn(`Warnings (${warnings.length}):`);

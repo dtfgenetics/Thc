@@ -59,10 +59,10 @@ const routes = [
   },
   {
     path: '/applied-learning/',
-    markers: ['THC Applied Learning Lab','Development Preview'],
+    markers: ['THC Applied Learning Lab','Development Preview','dcb6733082c2caf31502112f952c254feeca1e5f'],
     assets: [
       { path: 'app.js', markers: ['SOURCE_SHA','data.json','ppfd*hours*3600/1_000_000'] },
-      { path: 'data.json', markers: ['ALGRAPH-ACADEMY-SEED-001','ALMEAS-SENSOR-PLACEMENT-001','ALCALC-DLI-001','ALDIFF-YELLOWING-001'] }
+      { path: 'data.json', markers: ['ALGRAPH-ACADEMY-SEED-001','ALMEAS-SENSOR-PLACEMENT-001','ALCALC-DLI-001','ALDIFF-YELLOWING-001','dcb6733082c2caf31502112f952c254feeca1e5f'] }
     ]
   },
   { path: '/games/weedopolis/', markers: ['Weedopolis'] },

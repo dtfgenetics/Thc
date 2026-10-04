@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root = process.cwd();
 const queuePath = path.join(root, 'content', 'encyclopedia', 'visual-production-queue-v1.json');
@@ -9,10 +10,11 @@ const errors = [];
 if (!fs.existsSync(queuePath)) errors.push('Visual production queue is missing.');
 const queue = errors.length ? { items: [] } : JSON.parse(fs.readFileSync(queuePath, 'utf8'));
 const canonical = readCanonicalEncyclopediaLessons(root);
+const registryState = loadEncyclopediaRegistry(root);
 const canonicalIds = new Set(canonical.map(lesson => lesson.id));
 const items = Array.isArray(queue.items) ? queue.items : [];
 
-if (items.length !== 420) errors.push(`Expected 420 visual briefs; found ${items.length}.`);
+if (items.length !== registryState.totalCount) errors.push(`Expected ${registryState.totalCount} visual briefs; found ${items.length}.`);
 if (new Set(items.map(item => item.lessonId)).size !== items.length) errors.push('Visual briefs must have unique lesson IDs.');
 for (const item of items) {
   if (!canonicalIds.has(item.lessonId)) errors.push(`${item.lessonId}: no canonical lesson.`);
@@ -51,4 +53,4 @@ if (errors.length) {
   errors.slice(0, 80).forEach(error => console.error(` - ${error}`));
   process.exit(1);
 }
-console.log(`Encyclopedia visual queue PASS: 420/420 lessons have raster-only controlled briefs; ${items.filter(item=>item.productionStatus==='raster_artwork_produced_review_pending').length} produced raster assets remain review-pending and no artwork is misclassified as approved.`);
+console.log(`Encyclopedia visual queue PASS: ${items.length}/${registryState.totalCount} lessons have raster-only controlled briefs; ${items.filter(item=>item.productionStatus==='raster_artwork_produced_review_pending').length} produced raster assets remain review-pending and no artwork is misclassified as approved.`);

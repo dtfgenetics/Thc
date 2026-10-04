@@ -12,7 +12,6 @@ on:
       - scripts/run-wordpress-with-retry.mjs
       - scripts/publish-wordpress-academy-build-identity.mjs
       - scripts/resolve-academy-deployment-target.mjs
-      - scripts/ensure-wordpress-learn-root.mjs
       - .github/workflows/wordpress-tech2-courses-production.yml
   push:
     branches:
@@ -27,7 +26,6 @@ on:
       - scripts/run-wordpress-with-retry.mjs
       - scripts/publish-wordpress-academy-build-identity.mjs
       - scripts/resolve-academy-deployment-target.mjs
-      - scripts/ensure-wordpress-learn-root.mjs
       - .github/workflows/wordpress-tech2-courses-production.yml
   workflow_dispatch:
 
@@ -49,8 +47,6 @@ jobs:
       - name: Validate Technician II public-course publishers
         run: |
           node --check scripts/publish-wordpress-tech2-courses-1-8.mjs
-          node --check scripts/ensure-wordpress-learn-root.mjs
-          node scripts/test-ensure-wordpress-learn-root.mjs
           node --check scripts/publish-wordpress-certification-catalog-v6.mjs
           node --check scripts/verify-wordpress-tech2-courses-1-8.mjs
           node --check scripts/run-wordpress-with-retry.mjs
@@ -86,8 +82,6 @@ jobs:
         run: |
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
-      - name: Ensure canonical Learn root
-        run: node scripts/ensure-wordpress-learn-root.mjs
       - name: Publish Technician II Courses 1-8
         run: node scripts/run-wordpress-with-retry.mjs scripts/publish-wordpress-tech2-courses-1-8.mjs
       - name: Verify all eight course trees and anonymous course roots

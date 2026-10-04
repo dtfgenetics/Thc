@@ -111,9 +111,8 @@ for (const entry of config.courses) {
     must(finalHtml.includes('Graded assessment:'), `${entry.id}: course assessment is not routed to the authenticated graded runtime.`);
     must(!finalHtml.includes('Check answer and rationale'), `${entry.id}: summative assessment exposes self-check answer panels.`);
     must(!/<strong>Answer:<\/strong>/i.test(finalHtml), `${entry.id}: summative assessment exposes answer-key content.`);
-    must(finalHtml.includes('production learner portal is not yet deployed'), `${entry.id}: summative assessment must state the production portal boundary.`);
-    must(!finalHtml.includes('/learn/academy/'), `${entry.id}: summative assessment must not link to the retired Academy compatibility route.`);
-    must(finalHtml.includes('Return to Courses'), `${entry.id}: summative assessment must provide a safe navigation fallback.`);
+    must(finalHtml.includes(`course=${entry.id}`), `${entry.id}: summative assessment must deep-link to its own Academy course.`);
+    must(finalHtml.includes('view=final'), `${entry.id}: summative assessment deep link must target the graded-final view.`);
   }
 
   verified.push({ courseId: entry.id, route: rootRoute, rootPageId: root.id, lessons: lessonIds.length, anonymousRoot: true, anonymousLessons: lessonIds.length, sourceRef, governedAssetReferencesVerified: expectedAssets });

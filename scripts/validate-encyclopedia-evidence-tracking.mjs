@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { discoverEncyclopediaVolumes, readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root = process.cwd();
 const encRoot = path.join(root, 'content', 'encyclopedia');
@@ -16,34 +18,6 @@ const rel = file => path.relative(root, file).replaceAll(path.sep, '/');
 const encId = number => `THC-ENC-${String(number).padStart(3, '0')}`;
 const fail = message => errors.push(message);
 const warn = message => warnings.push(message);
-
-function readCanonicalLessons() {
-  const lessons = [];
-  for (let volumeNumber = 1; volumeNumber <= 21; volumeNumber += 1) {
-    const volume = String(volumeNumber).padStart(2, '0');
-    const volumeDir = path.join(encRoot, `volume-${volume}`);
-    const lessonsDir = path.join(volumeDir, 'lessons');
-    let foundIndividual = false;
-
-    if (fs.existsSync(lessonsDir)) {
-      for (const name of fs.readdirSync(lessonsDir).filter(file => /^thc-enc-\d{3}\.json$/.test(file)).sort()) {
-        const file = path.join(lessonsDir, name);
-        const lesson = readJson(file);
-        lessons.push({ ...lesson, __path: rel(file), __volume: volumeNumber });
-        foundIndividual = true;
-      }
-    }
-
-    if (foundIndividual) continue;
-    if (!fs.existsSync(volumeDir)) continue;
-    for (const name of fs.readdirSync(volumeDir).filter(file => /^draft-lessons-\d+-\d+\.json$/.test(file)).sort()) {
-      const file = path.join(volumeDir, name);
-      const pack = readJson(file);
-      for (const lesson of arr(pack.lessons)) lessons.push({ ...lesson, __path: rel(file), __volume: volumeNumber });
-    }
-  }
-  return lessons;
-}
 
 function readEvidenceBatches() {
   if (!fs.existsSync(evidenceRoot)) return [];
@@ -81,19 +55,20 @@ function assertNoApprovalMutation(value, location) {
 if (!fs.existsSync(sourceRegistryPath)) fail(`Missing authoritative source registry: ${rel(sourceRegistryPath)}`);
 if (!fs.existsSync(trackingPath)) fail(`Missing generated evidence tracking artifact: ${rel(trackingPath)}`);
 
-const registry = readJson(path.join(encRoot, 'current-controlled-registry.json'));
-const lessons = readCanonicalLessons();
+const registryState = loadEncyclopediaRegistry(root);
+const registry = { entries: registryState.entries };
+const lessons = readCanonicalEncyclopediaLessons(root);
 const lessonById = new Map(lessons.map(lesson => [lesson.id, lesson]));
-const expectedById = new Map(arr(registry.entries).map(entry => [entry.id, entry]));
+const expectedById = new Map(registryState.entries.map(entry => [entry.id, entry]));
 const sourceRegistry = fs.existsSync(sourceRegistryPath) ? readJson(sourceRegistryPath) : { sources: [] };
 const tracking = fs.existsSync(trackingPath) ? readJson(trackingPath) : { lessons: [] };
 const batches = readEvidenceBatches();
 
-if (arr(registry.entries).length !== 420) fail(`Controlled registry must contain 420 entries; found ${arr(registry.entries).length}`);
-if (lessons.length !== 420) fail(`Canonical lesson resolver must find 420 lessons; found ${lessons.length}`);
+if (registryState.coreCount !== 420) fail(`Protected core registry must contain 420 entries; found ${registryState.coreCount}`);
+if (lessons.length !== registryState.totalCount) fail(`Canonical lesson resolver must find ${registryState.totalCount} registered lessons; found ${lessons.length}`);
 if (tracking.schemaVersion !== '1.0.0') fail('Evidence tracking schemaVersion must be 1.0.0');
 if (tracking.artifactId !== 'thc-encyclopedia-evidence-tracking') fail('Evidence tracking artifactId mismatch');
-if (arr(tracking.lessons).length !== 420) fail(`Evidence tracking must contain 420 lessons; found ${arr(tracking.lessons).length}`);
+if (arr(tracking.lessons).length !== registryState.totalCount) fail(`Evidence tracking must contain ${registryState.totalCount} lessons; found ${arr(tracking.lessons).length}`);
 
 const sourceIds = new Set();
 for (const source of arr(sourceRegistry.sources)) {
@@ -107,9 +82,9 @@ for (const source of arr(sourceRegistry.sources)) {
 }
 
 
-for (let volumeNumber = 1; volumeNumber <= 21; volumeNumber += 1) {
-  const volume = String(volumeNumber).padStart(2, '0');
-  const registerPath = path.join(encRoot, `volume-${volume}`, 'source-register.json');
+for (const volumeInfo of discoverEncyclopediaVolumes(root)) {
+  const volumeNumber = volumeInfo.number;
+  const registerPath = path.join(encRoot, volumeInfo.name, 'source-register.json');
   if (!fs.existsSync(registerPath)) continue;
   const register = readJson(registerPath);
   for (const source of arr(register.sources)) {
@@ -158,7 +133,7 @@ for (const batch of batches) {
 const seenTracking = new Set();
 for (let index = 0; index < arr(tracking.lessons).length; index += 1) {
   const row = tracking.lessons[index];
-  const expectedId = encId(index + 1);
+  const expectedId = registryState.entries[index]?.id;
   const expected = expectedById.get(expectedId);
   if (row.id !== expectedId) fail(`Tracking row ${index + 1}: expected ${expectedId}, found ${row.id || '(missing)'}`);
   if (seenTracking.has(row.id)) fail(`Duplicate tracking row ${row.id}`);
@@ -206,7 +181,7 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Encyclopedia evidence tracking PASS: ${arr(tracking.lessons).length}/420 lessons tracked, ${sourceIds.size} authoritative sources, ${evidenceIds.size} claim-evidence records.`);
+console.log(`Encyclopedia evidence tracking PASS: ${arr(tracking.lessons).length}/${registryState.totalCount} lessons tracked, ${sourceIds.size} authoritative sources, ${evidenceIds.size} claim-evidence records.`);
 if (warnings.length) {
   console.warn(`Warnings (${warnings.length}):`);
   for (const warning of warnings) console.warn(` - ${warning}`);

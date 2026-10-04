@@ -9,68 +9,46 @@ const backupRoot=process.env.BACKUP_ROOT||'/tmp/dtf-encyclopedia-topics';
 if(!user||!pass) throw new Error('Missing WordPress API credentials.');
 const auth=Buffer.from(`${user}:${pass}`).toString('base64');
 const config=JSON.parse(await readFile(topicFile,'utf8'));
-if(config?.schemaVersion!==1||!Array.isArray(config.topics)||config.topics.length!==21) throw new Error('Topic map must contain 21 schemaVersion 1 topics.');
+if(config?.schemaVersion!==1||!Array.isArray(config.topics)||config.topics.length<21) throw new Error('Topic map must contain the protected 21-topic core and may append extension topics.');
 
+let previousEnd=0;
 for(let i=0;i<config.topics.length;i++){
   const topic=config.topics[i];
-  const expectedStart=i*20+1, expectedEnd=(i+1)*20;
-  if(topic.part!==i+1||!topic.slug||!topic.title||topic.range?.[0]!==expectedStart||topic.range?.[1]!==expectedEnd) throw new Error(`Invalid topic map at part ${i+1}.`);
+  if(topic.part!==i+1||!topic.slug||!topic.title||!Array.isArray(topic.range)||topic.range.length!==2) throw new Error(`Invalid topic map at part ${i+1}.`);
+  const [start,end]=topic.range.map(Number);
+  if(!Number.isInteger(start)||!Number.isInteger(end)||start<1||end<start) throw new Error(`Invalid lesson range for part ${topic.part}.`);
+  if(i<21){
+    const expectedStart=i*20+1, expectedEnd=(i+1)*20;
+    if(start!==expectedStart||end!==expectedEnd) throw new Error(`Protected core range changed at part ${topic.part}.`);
+  }else if(start!==previousEnd+1){
+    throw new Error(`Extension part ${topic.part} must start at ${previousEnd+1}; found ${start}.`);
+  }
+  previousEnd=end;
 }
 
 const esc=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const clean=s=>String(s??'').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&#8211;/g,'–').replace(/&#8212;/g,'—').replace(/&amp;/g,'&').replace(/\s+/g,' ').trim();
-const lessonNumber=slug=>Number(String(slug).match(/^thc-enc-(\d{3})$/)?.[1]||0);
-const displayTitle=p=>clean(p.title?.rendered||p.title?.raw||'').replace(/^THC-ENC-\d{3}\s*[—–-]\s*/i,'');
+const lessonNumber=slug=>Number(String(slug).match(/^thc-enc-(\d{3,})$/)?.[1]||0);
+const displayTitle=p=>clean(p.title?.rendered||p.title?.raw||'').replace(/^THC-ENC-\d{3,}\s*[—–-]\s*/i,'');
 const excerpt=p=>clean(p.excerpt?.rendered||p.excerpt?.raw||'');
-const hasVisual=p=>/data-thc-lesson-visual-id=["']THC-ENC-\d{3}["']/i.test(String(p.content?.raw||p.content?.rendered||''));
+const hasVisual=p=>/data-thc-lesson-visual-id=["']THC-ENC-\d{3,}["']/i.test(String(p.content?.raw||p.content?.rendered||''));
 
-const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-const maxAttempts=Math.max(1,Number(process.env.WP_API_RETRY_ATTEMPTS||6));
-const retryableStatus=status=>status===408||status===425||status===429||status>=500;
-const retryDelayMs=(attempt,retryAfter)=>{
-  const seconds=Number(retryAfter||0);
-  if(Number.isFinite(seconds)&&seconds>0) return Math.min(60000,seconds*1000);
-  return Math.min(30000,1500*(2**(attempt-1)));
-};
-const canRetry=(endpoint,method)=>method==='GET'||(method==='POST'&&/^\/pages\/\d+(?:\?|$)/.test(endpoint));
 async function request(endpoint,{method='GET',body}={}){
-  const attempts=canRetry(endpoint,method)?maxAttempts:1;
-  for(let attempt=1;attempt<=attempts;attempt++){
-    let res;
-    try{
-      res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{
-        method,
-        headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},
-        body:body?JSON.stringify(body):undefined,
-        signal:AbortSignal.timeout(60_000)
-      });
-    }catch(error){
-      if(attempt===attempts) throw new Error(`${method} ${endpoint} network failure after ${attempt} attempt(s): ${error?.message||error}`);
-      const delay=retryDelayMs(attempt);
-      console.warn(`${method} ${endpoint} network failure on attempt ${attempt}/${attempts}; retrying in ${delay}ms: ${error?.message||error}`);
-      await sleep(delay);
-      continue;
-    }
-    const text=await res.text(); let parsed;
-    try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
-    if(res.ok) return parsed;
-    const detail=typeof parsed==='string'?parsed.slice(0,900):JSON.stringify(parsed).slice(0,900);
-    if(!retryableStatus(res.status)||attempt===attempts) throw new Error(`${method} ${endpoint} failed ${res.status} after ${attempt} attempt(s): ${detail}`);
-    const delay=retryDelayMs(attempt,res.headers.get('retry-after'));
-    console.warn(`${method} ${endpoint} returned retryable ${res.status} on attempt ${attempt}/${attempts}; retrying in ${delay}ms`);
-    await sleep(delay);
-  }
-  throw new Error(`${method} ${endpoint} exhausted retry loop unexpectedly`);
+  const res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{method,headers:{Authorization:`Basic ${auth}`,'Content-Type':'application/json','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},body:body?JSON.stringify(body):undefined});
+  const text=await res.text(); let parsed;
+  try{parsed=text?JSON.parse(text):null;}catch{parsed=text;}
+  if(!res.ok) throw new Error(`${method} ${endpoint} failed ${res.status}: ${typeof parsed==='string'?parsed.slice(0,900):JSON.stringify(parsed).slice(0,900)}`);
+  return parsed;
 }
 async function wp(endpoint,opts){return request(endpoint,opts);}
 async function findPage(slug,parent=null){
-  const rows=await wp(`/pages?slug=${encodeURIComponent(slug)}&context=edit&status=publish&per_page=100`);
+  const rows=await wp(`/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=100`);
   return (rows||[]).find(x=>parent===null||Number(x.parent)===Number(parent))||null;
 }
 async function allChildren(parent){
   const out=[];
   for(let page=1;;page++){
-    const rows=await wp(`/pages?parent=${parent}&context=edit&status=publish&per_page=100&page=${page}&orderby=slug&order=asc`);
+    const rows=await wp(`/pages?parent=${parent}&context=edit&per_page=100&page=${page}&orderby=slug&order=asc`);
     out.push(...rows);
     if(rows.length<100) break;
   }
@@ -90,18 +68,10 @@ function hubHtml(topic,articles){
   const cards=articles.map(p=>articleCard(p,topic)).join('');
   return `${css}<main class="thc-topics" data-thc-topic="${esc(topic.slug)}"><section class="thc-topic-hero"><div class="thc-wrap"><div class="thc-kicker">THC Plant Science · Topic Library</div><h1>${esc(topic.title)}</h1><p>${esc(topic.description)}</p><div class="thc-actions"><a class="thc-btn" href="/learn/encyclopedia/">All encyclopedia topics</a><a class="thc-btn alt" href="/learn/infographics/">Search infographics</a></div></div></section><section class="thc-section"><div class="thc-wrap"><div class="thc-section-head"><div><div class="thc-count">${articles.length}</div><h2>Published lessons</h2></div><p>These pages are organized here by subject. The permanent THC-ENC IDs remain stable behind the scenes even when a clearer display title is used.</p></div><label for="thc-topic-search"><strong>Search this topic</strong></label><input id="thc-topic-search" class="thc-search" type="search" placeholder="Search ${esc(topic.title)}…"><div id="thc-topic-grid" class="thc-topic-grid">${cards}</div></div></section><section class="thc-footerbar"><div class="thc-wrap">Continue through the <a href="/learn/encyclopedia/">full encyclopedia</a>, <a href="/learn/infographics/">visual library</a>, or <a href="/learn/">Learning Center</a>.</div></section></main><script>(()=>{const q=document.getElementById('thc-topic-search'),cards=[...document.querySelectorAll('#thc-topic-grid .thc-article-card')];if(!q)return;q.addEventListener('input',()=>{const s=q.value.trim().toLowerCase();cards.forEach(c=>c.hidden=!!s&&!c.dataset.search.includes(s));});})();</script>`;
 }
-function indexHtml(active,future,articlesByTopic){
-  const topicCards=active.map(topic=>{const rows=articlesByTopic.get(topic.slug)||[];const visuals=rows.filter(hasVisual).length;return `<article class="thc-topic-card"><div class="thc-meta"><span class="thc-pill">${rows.length} published</span>${visuals?`<span class="thc-pill visual">${visuals} with infographic</span>`:''}</div><h3>${esc(topic.title)}</h3><p>${esc(topic.description)}</p><a class="thc-btn alt" href="/learn/encyclopedia/${esc(topic.slug)}/">Explore topic →</a></article>`;}).join('');
-  const articleBlocks=active.map(topic=>{const rows=articlesByTopic.get(topic.slug)||[];return `<section class="thc-topic-block" data-topic-search="${esc(topic.title.toLowerCase())}"><div class="thc-section-head"><div><div class="thc-kicker" style="color:#2b7a45">${rows.length} published lessons</div><h2>${esc(topic.title)}</h2></div><a class="thc-topic-link" href="/learn/encyclopedia/${esc(topic.slug)}/">Open topic hub →</a></div><div class="thc-topic-grid">${rows.map(p=>articleCard(p,topic)).join('')}</div></section>`;}).join('');
-  const futurePills=future.map(t=>`<span>${esc(t.title)}</span>`).join('');
-  const total=[...articlesByTopic.values()].reduce((n,rows)=>n+rows.length,0);
-  return `${css}<main class="thc-topics" data-thc-encyclopedia-topic-index="1"><section class="thc-topic-hero"><div class="thc-wrap"><div class="thc-kicker">Teaching Healthy Cultivation</div><h1>Cannabis Plant Science Encyclopedia</h1><p>Browse the encyclopedia by subject first, then search individual lessons. Display titles can evolve for clarity while permanent THC-ENC IDs keep every article, visual, reference, and future course link stable.</p><div class="thc-actions"><a class="thc-btn" href="#browse-by-topic">Browse by topic</a><a class="thc-btn alt" href="/learn/infographics/">Search infographics</a><a class="thc-btn alt" href="/learn/">Learning Center</a></div></div></section><section id="browse-by-topic" class="thc-section alt"><div class="thc-wrap"><div class="thc-section-head"><div><div class="thc-count">${total}</div><h2>Published lessons, organized by topic</h2></div><p>Start with the area you are trying to understand. Each topic hub combines companion literature and qualifying visuals without turning the article into an image-only page.</p></div><div class="thc-topic-grid">${topicCards}</div></div></section><section class="thc-section"><div class="thc-wrap"><label for="thc-ency-topic-search"><strong>Search all published encyclopedia lessons</strong></label><input id="thc-ency-topic-search" class="thc-search" type="search" placeholder="Search roots, germination, media, anatomy, THC-ENC ID…">${articleBlocks}</div></section><section class="thc-section alt"><div class="thc-wrap"><div class="thc-section-head"><h2>Encyclopedia roadmap</h2><p>The controlled architecture contains 21 subject areas and 420 permanent lesson IDs. Additional topics appear here as their literature passes the publication lane.</p></div><div class="thc-roadmap">${futurePills}</div></div></section><section class="thc-footerbar"><div class="thc-wrap">Use the <a href="/learn/infographics/">searchable infographic library</a> for visual support, or return to the <a href="/learn/">THC Learning Center</a>.</div></section></main><script>(()=>{const q=document.getElementById('thc-ency-topic-search'),cards=[...document.querySelectorAll('.thc-article-card')],blocks=[...document.querySelectorAll('.thc-topic-block')];if(!q)return;q.addEventListener('input',()=>{const s=q.value.trim().toLowerCase();cards.forEach(c=>c.hidden=!!s&&!c.dataset.search.includes(s));blocks.forEach(b=>b.hidden=!!s&&![...b.querySelectorAll('.thc-article-card')].some(c=>!c.hidden));});})();</script>`;
-}
-
 const learn=await findPage('learn'); if(!learn) throw new Error('Canonical /learn/ page not found.');
 const encyclopedia=await findPage('encyclopedia',learn.id); if(!encyclopedia) throw new Error('Canonical /learn/encyclopedia/ page not found.');
 const children=await allChildren(encyclopedia.id);
-const articles=children.filter(p=>/^thc-enc-\d{3}$/.test(p.slug)).sort((a,b)=>lessonNumber(a.slug)-lessonNumber(b.slug));
+const articles=children.filter(p=>/^thc-enc-\d{3,}$/.test(p.slug)).sort((a,b)=>lessonNumber(a.slug)-lessonNumber(b.slug));
 if(articles.length<57) throw new Error(`Expected at least 57 published encyclopedia lessons, found ${articles.length}.`);
 
 const articlesByTopic=new Map();
@@ -116,29 +86,15 @@ async function upsert({slug,title,content,excerptText}){
   const existing=await findPage(slug,encyclopedia.id);
   if(existing) backups.push({id:existing.id,slug:existing.slug,title:existing.title?.raw||existing.title?.rendered||'',content:existing.content?.raw||'',excerpt:existing.excerpt?.raw||'',status:existing.status});
   const payload={slug,title,status:'publish',parent:encyclopedia.id,content,excerpt:excerptText,comment_status:'closed'};
-  let page;
-  if(existing){
-    page=await wp(`/pages/${existing.id}`,{method:'POST',body:payload});
-  }else{
-    try{
-      page=await wp('/pages',{method:'POST',body:payload});
-    }catch(error){
-      const recovered=await findPage(slug,encyclopedia.id);
-      if(!recovered) throw error;
-      console.warn(`Recovered ${slug} after ambiguous create response using published slug/parent lookup.`);
-      page=recovered;
-    }
-  }
-  if(!existing) created.push(page.id);
-  updated.push({id:page.id,slug:page.slug,link:page.link});
-  return page;
+  const page=existing?await wp(`/pages/${existing.id}`,{method:'POST',body:payload}):await wp('/pages',{method:'POST',body:payload});
+  if(!existing) created.push(page.id); updated.push({id:page.id,slug:page.slug,link:page.link}); return page;
 }
 
 try{
+  // The Learning Center publisher is the sole owner of /learn/encyclopedia/.
+  // This organizer owns only subject-hub children so it cannot overwrite the
+  // searchable 420+ root experience after a lesson/topic publication run.
   for(const topic of active){await upsert({slug:topic.slug,title:topic.title,content:hubHtml(topic,articlesByTopic.get(topic.slug)),excerptText:`Browse published THC encyclopedia lessons for ${topic.title}.`});}
-  backups.push({id:encyclopedia.id,slug:encyclopedia.slug,title:encyclopedia.title?.raw||encyclopedia.title?.rendered||'',content:encyclopedia.content?.raw||'',excerpt:encyclopedia.excerpt?.raw||'',status:encyclopedia.status});
-  await wp(`/pages/${encyclopedia.id}`,{method:'POST',body:{title:'Cannabis Plant Science Encyclopedia',status:'publish',content:indexHtml(active,future,articlesByTopic),excerpt:`Browse ${articles.length} published THC plant-science lessons by topic.`,comment_status:'closed'}});
-  updated.push({id:encyclopedia.id,slug:'encyclopedia',link:encyclopedia.link});
 }catch(error){
   for(const b of [...backups].reverse()){
     try{await wp(`/pages/${b.id}`,{method:'POST',body:{title:b.title,content:b.content,excerpt:b.excerpt,status:b.status}});}catch{}
@@ -150,7 +106,7 @@ try{
 }
 
 await writeFile(path.join(backupDir,'pre-write-pages.json'),JSON.stringify(backups,null,2));
-const report={articleCount:articles.length,activeTopics:active.map(t=>({part:t.part,slug:t.slug,title:t.title,lessonCount:articlesByTopic.get(t.slug).length,visualCount:articlesByTopic.get(t.slug).filter(hasVisual).length})),futureTopics:future.map(t=>({part:t.part,slug:t.slug,title:t.title})),updated,created,backupDir,generatedAt:new Date().toISOString()};
+const report={articleCount:articles.length,rootOwner:'learning-center-publisher',rootPreserved:true,activeTopics:active.map(t=>({part:t.part,slug:t.slug,title:t.title,lessonCount:articlesByTopic.get(t.slug).length,visualCount:articlesByTopic.get(t.slug).filter(hasVisual).length})),futureTopics:future.map(t=>({part:t.part,slug:t.slug,title:t.title})),updated,created,backupDir,generatedAt:new Date().toISOString()};
 await writeFile(path.join(backupDir,'encyclopedia-topic-organization-report.json'),JSON.stringify(report,null,2));
 await writeFile(path.join(backupRoot,'latest-backup-path.txt'),backupDir+'\n');
 console.log(JSON.stringify(report,null,2));

@@ -2,24 +2,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { buildLessonAnswerRationalesV1 } from './lib/encyclopedia-assessment-v2.mjs';
+import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
-const root=process.cwd(), enc=path.join(root,'content','encyclopedia');
-const lessons=[];
-for(let vol=1;vol<=17;vol++){
-  const dir=path.join(enc,`volume-${String(vol).padStart(2,'0')}`,'lessons');
-  for(const name of fs.readdirSync(dir).filter(n=>/^thc-enc-\d{3}\.json$/.test(n)).sort()){
-    lessons.push(JSON.parse(fs.readFileSync(path.join(dir,name),'utf8')));
-  }
-}
-for(let vol=18;vol<=21;vol++){
-  const dir=path.join(enc,`volume-${String(vol).padStart(2,'0')}`);
-  for(const name of fs.readdirSync(dir).filter(n=>/^draft-lessons-\d{3}-\d{3}\.json$/.test(n)).sort()){
-    const pack=JSON.parse(fs.readFileSync(path.join(dir,name),'utf8'));
-    lessons.push(...(pack.lessons||[]));
-  }
-}
+const root=process.cwd();
+const lessons=readCanonicalEncyclopediaLessons(root);
+const registryState=loadEncyclopediaRegistry(root);
 const errors=[], seen=new Set();
-if(lessons.length!==420) errors.push(`Expected 420 lessons; found ${lessons.length}`);
+if(lessons.length!==registryState.totalCount) errors.push(`Expected ${registryState.totalCount} registered lessons; found ${lessons.length}`);
 for(const lesson of lessons){
   const r=buildLessonAnswerRationalesV1(lesson);
   if(!r.lessonId||seen.has(r.lessonId)) errors.push(`Invalid/duplicate rationale lesson id: ${r.lessonId}`);
@@ -39,4 +29,4 @@ if(errors.length){
  errors.slice(0,200).forEach(e=>console.error(' - '+e));
  process.exit(1);
 }
-console.log('Encyclopedia answer rationales PASS: 420/420 lessons have three source-grounded learner-facing explanation sets.');
+console.log(`Encyclopedia answer rationales PASS: ${lessons.length}/${registryState.totalCount} lessons have three source-grounded learner-facing explanation sets.`);

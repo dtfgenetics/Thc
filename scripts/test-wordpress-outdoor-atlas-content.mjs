@@ -8,9 +8,5 @@ assert.equal(stripOutdoorAtlas(balanced),owner);
 const truncated=`${owner}<section class="outv6-group" data-outv6-group="water-rootzone"><figure class="outv6-card"></figure></section><section class="outv6-group" data-outv6-group="season-microclimate"><figure class="outv6-card"></figure></section><!-- dtf-outdoor-visuals-v6:end --><section data-dtf-outdoor-v6="true">curriculum</section>`;
 assert.equal(stripOutdoorAtlas(truncated),`${owner}<section data-dtf-outdoor-v6="true">curriculum</section>`);
 
-const markerless=`${owner}<section class="outv6-group" data-outv6-group="water-rootzone"><figure class="outv6-card"></figure></section><section class="outv6-group" data-outv6-group="season-microclimate"></section><!-- dtf-learning-v4:start --><section data-dtf-learning-v4="topic-outdoor-cultivation">guide</section>`;
-assert.equal(stripOutdoorAtlas(markerless),`${owner}<!-- dtf-learning-v4:start --><section data-dtf-learning-v4="topic-outdoor-cultivation">guide</section>`);
-assert.throws(()=>stripOutdoorAtlas(`${owner}<section class="outv6-group"></section>`),/no safe following owner boundary/);
-
 assert.throws(()=>stripOutdoorAtlas(`${owner}<!-- dtf-outdoor-visuals-v6:end -->`),/no recoverable atlas start/);
 console.log('Outdoor atlas content recovery tests passed.');

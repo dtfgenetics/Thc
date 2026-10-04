@@ -4,6 +4,8 @@ import fs from 'node:fs';
 const overlay=JSON.parse(fs.readFileSync('site/deployment/dtf420-static-overlay.json','utf8'));
 const generic=fs.readFileSync('scripts/publish-wordpress-learning-center-pages.mjs','utf8');
 const expansion=fs.readFileSync('scripts/publish-wordpress-learning-center-expansion-v1.mjs','utf8');
+const encyclopediaPublisher=fs.readFileSync('scripts/publish-wordpress-encyclopedia-canonical-batch.mjs','utf8');
+const topicOrganizer=fs.readFileSync('scripts/organize-wordpress-encyclopedia-topics.mjs','utf8');
 const errors=[];
 
 const slugs=(source)=>[...source.matchAll(/\{\s*slug:\s*'([^']+)'/g)].map(m=>m[1]);
@@ -22,6 +24,10 @@ for(const slug of expansionSlugs){
 if(overlayLearn.has('search')) errors.push('/learn/search/ must remain WordPress-owned and outside Dtf420 overlay');
 if(!genericSlugs.has('search')) errors.push('/learn/search/ must remain in generic WordPress learning publisher');
 if(!genericSlugs.has('encyclopedia')) errors.push('/learn/encyclopedia/ must remain in generic WordPress learning publisher');
+if(/upsertPage\(\{slug:'encyclopedia'/.test(encyclopediaPublisher)) errors.push('canonical lesson publisher must not rewrite the searchable /learn/encyclopedia/ root');
+if(/wp\(`\/pages\/\$\{encyclopedia\.id\}`/.test(topicOrganizer)) errors.push('topic organizer must not rewrite the searchable /learn/encyclopedia/ root');
+if(!encyclopediaPublisher.includes("rootOwner:'learning-center-publisher'")) errors.push('encyclopedia lesson publisher must report Learning Center ownership of the root');
+if(!topicOrganizer.includes("rootOwner:'learning-center-publisher'")) errors.push('topic organizer must report Learning Center ownership of the root');
 
 const academy=(overlay.legacyCompatibilityRoutes||[]).find(x=>x.prefix==='learn/academy');
 if(!academy) errors.push('/learn/academy/ must remain explicitly classified as legacy compatibility while staged');

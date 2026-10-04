@@ -2,16 +2,18 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root=process.cwd();
 const ownerAuthorizationPath=path.join(root,'content','encyclopedia','review','owner-publication-authorization-2026-10-03.json');
 const ownerAuthorization=JSON.parse(fs.readFileSync(ownerAuthorizationPath,'utf8'));
 const outPath=process.env.ENCYCLOPEDIA_FULL_BATCH_FILE||path.join(root,'site','wordpress','education','encyclopedia','full-420-production-batch.generated.json');
+const registryState=loadEncyclopediaRegistry(root);
 const lessons=readCanonicalEncyclopediaLessons(root).sort((a,b)=>Number(a.number)-Number(b.number));
-if(lessons.length!==420) throw new Error(`Expected 420 canonical lessons; found ${lessons.length}.`);
+if(lessons.length!==registryState.totalCount) throw new Error(`Expected ${registryState.totalCount} registered canonical lessons; found ${lessons.length}.`);
 const ids=lessons.map(x=>x.id);
-const expected=Array.from({length:420},(_,i)=>`THC-ENC-${String(i+1).padStart(3,'0')}`);
-if(new Set(ids).size!==420||expected.some((id,i)=>ids[i]!==id)) throw new Error('Canonical lesson set must be ordered THC-ENC-001 through THC-ENC-420.');
+const expected=registryState.entries.slice().sort((a,b)=>Number(a.number)-Number(b.number)).map(entry=>entry.id);
+if(new Set(ids).size!==registryState.totalCount||expected.some((id,i)=>ids[i]!==id)) throw new Error('Canonical lesson set must match the ordered combined core + extension registry.');
 const authorizedLessons=[];
 const heldLessons=[];
 const ownerOverrideLessonIds=[];
@@ -40,7 +42,7 @@ if(!authorizedLessons.length) throw new Error('No encyclopedia lessons are curre
 if(ownerOverrideLessonIds.length && ownerAuthorization.authorizedBy!=='project_owner') throw new Error('Owner override requires project_owner authorization.');
 const output={
   schemaVersion:1,
-  batch:'full-420-canonical-sync',
+  batch:`full-${registryState.totalCount}-canonical-sync`,
   status:'owner_authorized_external_review_pending',
   publicationAuthorized:true,
   ownerPublicationOverride:true,
@@ -61,5 +63,5 @@ const output={
 };
 fs.mkdirSync(path.dirname(outPath),{recursive:true});
 fs.writeFileSync(outPath,JSON.stringify(output,null,2)+'\n');
-console.log(`Encyclopedia publication manifest: ${output.lessonFiles.length}/420 publishable lessons · ${output.ownerOverrideLessonCount} owner-authorized override(s) · ${output.heldLessonCount} held`);
+console.log(`Encyclopedia publication manifest: ${output.lessonFiles.length}/${registryState.totalCount} publishable lessons · ${output.ownerOverrideLessonCount} owner-authorized override(s) · ${output.heldLessonCount} held`);
 console.log(path.relative(root,outPath));

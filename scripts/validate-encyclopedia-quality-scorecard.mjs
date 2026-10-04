@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const file='data/encyclopedia-quality-scorecard.json';
 if(!fs.existsSync(file)){
@@ -7,19 +8,20 @@ if(!fs.existsSync(file)){
   process.exit(1);
 }
 const data=JSON.parse(fs.readFileSync(file,'utf8'));
+const registryState=loadEncyclopediaRegistry(process.cwd());
 const rows=Array.isArray(data.lessons)?data.lessons:[];
 const queue=Array.isArray(data.repairQueue)?data.repairQueue:[];
 const errors=[];
 
 if(data.artifactId!=='thc-encyclopedia-quality-scorecard') errors.push('artifactId mismatch');
-if(rows.length!==420) errors.push('Expected 420 lessons; found '+rows.length);
-if(queue.length!==420) errors.push('Expected 420 repair queue rows; found '+queue.length);
+if(rows.length!==registryState.totalCount) errors.push(`Expected ${registryState.totalCount} lessons; found ${rows.length}`);
+if(queue.length!==registryState.totalCount) errors.push(`Expected ${registryState.totalCount} repair queue rows; found ${queue.length}`);
 if(new Set(rows.map(x=>x.id)).size!==rows.length) errors.push('Lesson IDs must be unique');
 if(new Set(queue.map(x=>x.lessonId)).size!==queue.length) errors.push('Repair queue IDs must be unique');
 
 for(let i=0;i<rows.length;i++){
   const row=rows[i];
-  const expected='THC-ENC-'+String(i+1).padStart(3,'0');
+  const expected=registryState.entries[i]?.id;
   if(row.id!==expected) errors.push('Row '+(i+1)+' expected '+expected+'; found '+(row.id||'(missing)'));
   if(!Number.isFinite(row.score)||row.score<0||row.score>100) errors.push(row.id+': invalid score');
   if(!Array.isArray(row.dimensions)||row.dimensions.length!==8) errors.push(row.id+': expected 8 quality dimensions');
@@ -51,4 +53,4 @@ if(errors.length){
   for(const error of errors.slice(0,100)) console.error(' - '+error);
   process.exit(1);
 }
-console.log('Encyclopedia quality scorecard PASS: 420 lessons ranked without synthesizing review or publication approval.');
+console.log(`Encyclopedia quality scorecard PASS: ${registryState.totalCount} lessons ranked without synthesizing review or publication approval.`);

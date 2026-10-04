@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const file='data/encyclopedia-independent-review-manifest.json';
 if(!fs.existsSync(file)){
@@ -7,14 +8,15 @@ if(!fs.existsSync(file)){
   process.exit(1);
 }
 const data=JSON.parse(fs.readFileSync(file,'utf8'));
+const registryState=loadEncyclopediaRegistry(process.cwd());
 const rows=Array.isArray(data.lessons)?data.lessons:[];
 const errors=[];
-if(rows.length!==420) errors.push('Expected 420 review rows; found '+rows.length);
+if(rows.length!==registryState.totalCount) errors.push(`Expected ${registryState.totalCount} review rows; found ${rows.length}`);
 if(new Set(rows.map(x=>x.lessonId)).size!==rows.length) errors.push('Review rows must have unique lesson IDs.');
 
 for(let i=0;i<rows.length;i++){
   const row=rows[i];
-  const expected='THC-ENC-'+String(i+1).padStart(3,'0');
+  const expected=registryState.entries[i]?.id;
   if(row.lessonId!==expected) errors.push('Row '+(i+1)+' expected '+expected+'; found '+(row.lessonId||'(missing)'));
   for(const [name,task] of Object.entries(row.reviewTasks||{})){
     if(task.reviewerDecision!==null||task.reviewerId!==null||task.reviewedAt!==null||task.reviewNotes!==null){
@@ -37,4 +39,4 @@ if(errors.length){
   for(const error of errors.slice(0,160)) console.error(' - '+error);
   process.exit(1);
 }
-console.log('Independent-review manifest PASS: 420 lessons enumerated; no reviewer decisions were synthesized.');
+console.log(`Independent-review manifest PASS: ${registryState.totalCount} lessons enumerated; no reviewer decisions were synthesized.`);

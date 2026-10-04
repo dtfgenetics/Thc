@@ -20,11 +20,11 @@ const required=[
   ['mobile breakpoint','@media(max-width:640px)'],
   ['previous lesson behavior','← Previous'],
   ['next lesson behavior','Next →'],
-  ['canonical live fingerprint','data-thc-source-fingerprint']
+  ['canonical live fingerprint','data-thc-source-fingerprint'],
+  ['structured-data renderer','encyclopediaStructuredDataHtml']
 ];
 for(const [label,needle] of required)if(!src.includes(needle))errors.push('renderer missing '+label);
 if(src.includes('fake visual')||src.includes('placeholder teaching visual'))errors.push('renderer must not emit fake visual placeholders');
-if(src.includes('application/ld+json')||src.includes('encyclopediaStructuredDataHtml'))errors.push('renderer must not embed JSON-LD scripts in sanitizable WordPress post content');
 if(errors.length){
   console.error('Encyclopedia renderer validation failed:');
   errors.forEach(e=>console.error(' - '+e));

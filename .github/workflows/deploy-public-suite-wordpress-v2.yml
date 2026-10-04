@@ -415,7 +415,7 @@ jobs:
           check 'https://dtfseeds.com/terpene-atlas/' 'Variability across 79 inflorescences'
           check 'https://dtfseeds.com/ph-meter/' 'pH Meter'
           check 'https://dtfseeds.com/tds-meter/' 'TDS / EC Meter'
-          check 'https://dtfseeds.com/vpd-chart/' 'Leaf temperature method'
+          check 'https://dtfseeds.com/vpd-chart/' 'VPD Chart'
           check 'https://dtfseeds.com/ppfd-chart/' 'THC Light Lab'
           check 'https://dtfseeds.com/tools/' 'Plant Atlas'
           check 'https://dtfseeds.com/tools/' 'Terpene Atlas'
@@ -425,6 +425,7 @@ jobs:
           check 'https://dtfseeds.com/growlens/' 'GrowLens'
           check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
           check 'https://dtfseeds.com/applied-learning/' 'Applied Learning Lab'
+          check 'https://dtfseeds.com/applied-learning/' 'dcb6733082c2caf31502112f952c254feeca1e5f'
 
       - name: Verify external release candidate games live
         shell: bash
