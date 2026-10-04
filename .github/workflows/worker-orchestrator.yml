@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'plan, dispatch, audit, reconcile, reconcile all, or exact-head check'
+        description: 'plan, dispatch, audit, reconcile, reconcile all, exact-head check, or integrate merged work'
         required: true
         default: plan
         type: choice
@@ -15,6 +15,7 @@ on:
           - reconcile
           - reconcile-all
           - check
+          - integrate
       issue:
         description: 'Issue number for reconcile/check modes'
         required: false
@@ -61,6 +62,7 @@ jobs:
           node --check scripts/orchestrator-audit.mjs
           node --check scripts/orchestrator-executor.mjs
           node --check scripts/orchestrator-check.mjs
+          node --check scripts/orchestrator-integrate.mjs
           node --check scripts/orchestrator/core.mjs
           node --check scripts/orchestrator/resources.mjs
           node --check scripts/orchestrator/repositories.mjs
@@ -125,6 +127,20 @@ jobs:
           node scripts/orchestrator-check.mjs "${args[@]}" | tee "$RUNNER_TEMP/worker-check.json"
 
 
+      - name: Record verified merge and advance completion conveyor
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'integrate'
+        run: |
+          set -euo pipefail
+          if [[ -z "${{ inputs.issue }}" ]]; then
+            echo 'issue input is required for integrate mode' >&2
+            exit 2
+          fi
+          args=(--issue="${{ inputs.issue }}")
+          if [[ "${{ inputs.apply }}" == "true" ]]; then
+            args+=(--apply=true)
+          fi
+          node scripts/orchestrator-integrate.mjs "${args[@]}" | tee "$RUNNER_TEMP/worker-integrate.json"
+
       - name: Audit durable job and branch state
         if: github.event_name == 'schedule' || inputs.mode == 'audit'
         run: |
@@ -157,6 +173,7 @@ jobs:
             ${{ runner.temp }}/worker-plan.json
             ${{ runner.temp }}/worker-dispatch.json
             ${{ runner.temp }}/worker-check.json
+            ${{ runner.temp }}/worker-integrate.json
           if-no-files-found: ignore
           retention-days: 30
 
@@ -238,6 +255,13 @@ jobs:
             echo '```json' >> "$GITHUB_STEP_SUMMARY"
             cat "$RUNNER_TEMP/worker-reconcile.json" >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [[ -s "$RUNNER_TEMP/worker-integrate.json" ]]; then
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '### Integration conveyor' >> "$GITHUB_STEP_SUMMARY"
+            echo '\`\`\`json' >> "$GITHUB_STEP_SUMMARY"
+            cat "$RUNNER_TEMP/worker-integrate.json" >> "$GITHUB_STEP_SUMMARY"
+            echo '\`\`\`' >> "$GITHUB_STEP_SUMMARY"
           fi
           if [[ -s "$RUNNER_TEMP/worker-check.json" ]]; then
             echo '' >> "$GITHUB_STEP_SUMMARY"
