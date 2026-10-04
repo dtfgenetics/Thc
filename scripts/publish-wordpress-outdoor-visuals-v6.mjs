@@ -1,6 +1,7 @@
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
+import { buildWordPressPageQuery, requireSingleWordPressPage } from './wordpress-learning-page-query.mjs';
 
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const user=process.env.WP_API_USERNAME||'';
@@ -32,7 +33,10 @@ async function request(path,options={}){
   }
   throw last;
 }
-async function pageBySlug(slug){const rows=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=10`);if(!Array.isArray(rows)||rows.length!==1) throw new Error(`${slug}: expected one page, found ${Array.isArray(rows)?rows.length:'invalid'}.`);return rows[0];}
+async function pageBySlug(slug,parentId=null){
+  const rows=await request(buildWordPressPageQuery(slug,{parentId,perPage:10}));
+  return requireSingleWordPressPage(rows,{slug,parentId});
+}
 
 const map=JSON.parse(await readFile(mapPath,'utf8'));
 if(map?.schemaVersion!==1||map?.curriculumId!=='outdoor-v6'||map?.route!=='/learn/outdoor/') throw new Error('Invalid Outdoor V6 visual map.');
@@ -88,10 +92,12 @@ function atlas(){
 </style><section class="outv6" data-dtf-outdoor-visuals-v6="true"><div class="outv6-wrap"><div class="outv6-intro"><div><p class="outv6-kicker">Outdoor cultivation visual atlas</p><h2>Use site, weather and plant evidence—not outdoor folklore.</h2><p>The Outdoor V6 curriculum is paired with approved supporting plant-science visuals already in the publication library. Eleven purpose-built Outdoor graphics remain explicitly queued for original production and QA; unrelated stock or generic cannabis imagery is not substituted.</p></div><div class="outv6-summary">12 approved supporting visuals · 8 chapter groups · 11 queued originals</div></div>${groups}<section class="outv6-gaps"><p class="outv6-kicker">Purpose-built Outdoor artwork queue</p><h3>Eleven diagrams remain intentionally open.</h3><p>These THC-OUT assets already have evidence-aware production briefs. They remain artwork-needed until scientific, visual, label/spelling and page-placement QA are complete.</p><div class="outv6-gap-grid">${gaps}</div></section></div></section><!-- dtf-outdoor-visuals-v6:end -->`;
 }
 
-const page=await pageBySlug('outdoor');
+const learnPage=await pageBySlug('learn');
+const page=await pageBySlug('outdoor',learnPage.id);
 const before=rendered(page.content);
 if(!before.includes('data-dtf-outdoor-v6="true"')) throw new Error('Outdoor V6 curriculum is not live; refusing to publish the visual atlas onto an older page.');
 if(!before.includes('data-dtf-topic="outdoor-cultivation"')) throw new Error('Outdoor page lost its canonical V3 topic owner marker.');
+if(!before.includes('data-dtf-learning-v4="topic-outdoor-cultivation"')) throw new Error('Outdoor page lost its canonical V4 learning owner marker.');
 const clean=before.replace(/<!-- dtf-outdoor-visuals-v6:start -->[\s\S]*?<!-- dtf-outdoor-visuals-v6:end -->/g,'').trim();
 const next=`${clean}\n${atlas()}`;
 await writeFile(join(backupDir,'before.json'),`${JSON.stringify(page,null,2)}\n`);
@@ -99,12 +105,12 @@ await writeFile(join(backupDir,'next.html'),next);
 let wrote=false;
 try{
   if(apply){await request(`/wp-json/wp/v2/pages/${page.id}`,{method:'POST',body:JSON.stringify({content:next,status:'publish'})});wrote=true;}
-  const edit=rendered((await pageBySlug('outdoor')).content);
+  const edit=rendered((await pageBySlug('outdoor',learnPage.id)).content);
   if(!edit.includes('data-dtf-outdoor-visuals-v6="true"')) throw new Error('Edit-context Outdoor visual atlas marker missing.');
   if((edit.match(/class="outv6-card"/g)||[]).length!==12) throw new Error('Edit-context visual count is not 12.');
   if((edit.match(/data-outv6-group=/g)||[]).length!==8) throw new Error('Edit-context visual chapter count is not 8.');
   if((edit.match(/class="outv6-gap"/g)||[]).length!==11) throw new Error('Edit-context Outdoor gap count is not 11.');
-  if(!edit.includes('data-dtf-outdoor-v6="true"')||!edit.includes('data-dtf-topic="outdoor-cultivation"')) throw new Error('Edit-context Outdoor owner markers were lost.');
+  if(!edit.includes('data-dtf-outdoor-v6="true"')||!edit.includes('data-dtf-topic="outdoor-cultivation"')||!edit.includes('data-dtf-learning-v4="topic-outdoor-cultivation"')) throw new Error('Edit-context Outdoor owner markers were lost.');
   const atlasHtml=edit.match(/<!-- dtf-outdoor-visuals-v6:start -->[\s\S]*?<!-- dtf-outdoor-visuals-v6:end -->/)?.[0]||'';
   if(/draft|quarantine|superseded|legacy|qa[-_ ]?required/i.test(atlasHtml)) throw new Error('Unsafe visual label found in published Outdoor atlas.');
 
@@ -118,7 +124,7 @@ try{
   if((visitor.match(/class="outv6-card"/g)||[]).length!==12) throw new Error('Visitor Outdoor visual count is not 12.');
   if((visitor.match(/data-outv6-group=/g)||[]).length!==8) throw new Error('Visitor Outdoor chapter count is not 8.');
   if((visitor.match(/class="outv6-gap"/g)||[]).length!==11) throw new Error('Visitor Outdoor gap count is not 11.');
-  if(!visitor.includes('data-dtf-outdoor-v6="true"')) throw new Error('Visitor page lost Outdoor V6 curriculum marker.');
+  if(!visitor.includes('data-dtf-outdoor-v6="true"')||!visitor.includes('data-dtf-topic="outdoor-cultivation"')||!visitor.includes('data-dtf-learning-v4="topic-outdoor-cultivation"')) throw new Error('Visitor page lost canonical Outdoor owner markers.');
 
   const report={generatedAt:new Date().toISOString(),apply,pageId:page.id,route:'/learn/outdoor/',visuals:12,groups:8,wordpressMedia:resolved.filter(x=>x.source==='wordpress').length,canonicalFallbacks:resolved.filter(x=>x.source!=='wordpress').length,unresolvedGaps:map.gaps.map(g=>g.id),visitorVerified:true,backupDir};
   await writeFile(join(backupRoot,'report.json'),`${JSON.stringify(report,null,2)}\n`);
