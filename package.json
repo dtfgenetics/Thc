@@ -116,6 +116,7 @@
     "build:encyclopedia-visual-promotion": "node scripts/build-encyclopedia-visual-promotion-manifest.mjs",
     "build:encyclopedia-visual-review-queue": "node scripts/build-encyclopedia-visual-review-work-queue.mjs",
     "build:encyclopedia-evidence-mapping-work-queue": "node scripts/build-encyclopedia-evidence-mapping-work-queue.mjs",
+    "build:encyclopedia-release-review-queue": "node scripts/build-encyclopedia-release-review-queue.mjs",
     "verify:encyclopedia-visual-queue": "npm run build:encyclopedia-teaching-visuals && npm run build:encyclopedia-visual-queue && node scripts/validate-encyclopedia-visual-production-queue.mjs",
     "build:encyclopedia-source-queue": "node scripts/build-encyclopedia-source-resolution-queue.mjs",
     "verify:encyclopedia-source-queue": "npm run build:encyclopedia-source-queue && node scripts/validate-encyclopedia-source-resolution-queue.mjs",
