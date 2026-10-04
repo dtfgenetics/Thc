@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons, readJson, relativePath } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root = process.cwd();
 const encyclopediaRoot = path.join(root, 'content', 'encyclopedia');
@@ -10,6 +11,7 @@ const authorityPath = path.join(encyclopediaRoot, 'evidence', 'authoritative-sou
 const authorityRegistry = readJson(authorityPath);
 const authorities = authorityRegistry.sources || [];
 const lessons = readCanonicalEncyclopediaLessons(root);
+const registryState = loadEncyclopediaRegistry(root);
 const normalize = value => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const sourceText = note => typeof note === 'string' ? note.trim() : String(note?.title || note?.id || note?.sourceId || '').trim();
 
@@ -253,7 +255,7 @@ const output = {
   schemaVersion: '1.0.0',
   artifactId: 'thc-encyclopedia-source-resolution-queue',
   generatedBy: 'scripts/build-encyclopedia-source-resolution-queue.mjs',
-  scope: 'All source-note references used by the 420 controlled THC-ENC lessons.',
+  scope: `All source-note references used by the ${registryState.totalCount} registered THC-ENC lessons.`, 
   releaseRule: 'Resolution links are candidate evidence controls. They do not prove a lesson claim or authorize publication.',
   summary: {
     lessonCount: lessonRows.length,
@@ -279,5 +281,5 @@ const output = {
 };
 
 fs.writeFileSync(outPath, `${JSON.stringify(output, null, 2)}\n`);
-console.log(`Encyclopedia source queue: ${lessonRows.length}/420 lessons · ${references.length} unique references · ${output.summary.authoritativeRegistryResolved} centrally resolved`);
+console.log(`Encyclopedia source queue: ${lessonRows.length}/${registryState.totalCount} lessons · ${references.length} unique references · ${output.summary.authoritativeRegistryResolved} centrally resolved`);
 console.log(`Wrote ${relativePath(root, outPath)}`);
