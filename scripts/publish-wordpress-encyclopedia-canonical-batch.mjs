@@ -26,12 +26,21 @@ function assertPublicationCopyClean(lesson){
   if(badMisconception) throw new Error(`${lesson.id} contains placeholder misconception copy and cannot be published.`);
 }
 
+const ownerOverrideIds=new Set(Array.isArray(batch.ownerOverrideLessonIds)?batch.ownerOverrideLessonIds:[]);
+if(ownerOverrideIds.size && batch.ownerPublicationOverride!==true) throw new Error('Owner override lesson IDs require ownerPublicationOverride=true.');
+
 const lessons=[];
 for(const file of batch.lessonFiles){
   const lesson=JSON.parse(await readFile(file,'utf8'));
   if(!/^THC-ENC-\d{3}$/.test(lesson.id)) throw new Error(`Invalid lesson ID in ${file}`);
   if(!lesson.title||!lesson.objective||!Array.isArray(lesson.coreScience)||lesson.coreScience.length<2) throw new Error(`Incomplete canonical lesson ${lesson.id}`);
-  if(lesson.reviewControl?.publicationAuthorized===false){
+  const ownerOverride=ownerOverrideIds.has(lesson.id);
+  if(ownerOverride){
+    if(!String(lesson.reviewControl?.releaseTimeReview||'').startsWith('completed_')) throw new Error(`${lesson.id}: owner publication override requires completed releaseTimeReview`);
+    if(lesson.reviewControl?.independentApproval===true) throw new Error(`${lesson.id}: owner publication override cannot stand in for independent approval`);
+    if(lesson.reviewControl?.safetyHold===true||lesson.safetyHold===true) throw new Error(`${lesson.id}: explicit safety hold cannot be overridden`);
+  }
+  if(lesson.reviewControl?.publicationAuthorized===false && !ownerOverride){
     throw new Error(`${lesson.id} is blocked from publication by reviewControl.publicationAuthorized=false`);
   }
   assertPublicationCopyClean(lesson);
