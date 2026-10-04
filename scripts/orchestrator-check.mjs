@@ -2,6 +2,7 @@
 
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
+import { applyRepairPlan, planRepair } from './orchestrator/repair.mjs'
 import { transitionJob, validateJob } from './orchestrator/state.mjs'
 import { classifyVerificationFailure, exactHeadMatches, inspectAllowedPaths, inspectCheckRollup } from './orchestrator/verification.mjs'
 
@@ -123,8 +124,16 @@ function inspect(repo, issueNumber, profilePath) {
   }
 }
 
-function apply(repo, inspection) {
-  if (!inspection.ok) throw new Error(`Verification gate is not passing: ${inspection.reason}`)
+function apply(repo, inspection, retryPath = 'configuration/orchestrator/retry-policies.json') {
+  if (!inspection.ok) {
+    const retryConfig = JSON.parse(readFileSync(retryPath, 'utf8'))
+    const failure = classifyVerificationFailure(inspection)
+    const plan = planRepair(inspection.job, failure, retryConfig)
+    const next = applyRepairPlan(inspection.job, failure, plan)
+    const body = replaceMarker(inspection.issue.body, next)
+    capture(['issue', 'edit', String(inspection.issue.number), '--repo', repo, '--body', body])
+    return next
+  }
   const now = new Date().toISOString()
   const prepared = {
     ...inspection.job,
@@ -158,7 +167,7 @@ if (!Number.isInteger(issueNumber) || issueNumber <= 0) {
 try {
   const inspection = inspect(repo, issueNumber, options.profiles || 'configuration/orchestrator/verification-profiles.json')
   const applyChanges = options.apply === 'true'
-  const job = applyChanges ? apply(repo, inspection) : inspection.job
+  const job = applyChanges ? apply(repo, inspection, options.retries || 'configuration/orchestrator/retry-policies.json') : inspection.job
   console.log(JSON.stringify({
     ok: inspection.ok,
     repo,
@@ -174,7 +183,7 @@ try {
     failure: inspection.ok ? null : classifyVerificationFailure(inspection),
     job,
   }, null, 2))
-  process.exit(inspection.ok ? 0 : 1)
+  process.exit(applyChanges ? 0 : (inspection.ok ? 0 : 1))
 } catch (error) {
   console.error(JSON.stringify({ ok: false, repo, issueNumber, error: error.message }, null, 2))
   process.exit(1)
