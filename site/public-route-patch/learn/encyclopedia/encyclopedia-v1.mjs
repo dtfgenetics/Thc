@@ -11,12 +11,16 @@ const title=document.querySelector('[data-library-title]');
 const visibleStat=document.querySelector('[data-stat-visible]');
 const publishedStat=document.querySelector('[data-stat-published]');
 const totalStat=document.querySelector('[data-stat-total]');
+const subjectStat=document.querySelector('[data-stat-subjects]');
+const subjectCount=document.querySelector('[data-subject-count]');
+const resetAll=document.querySelector('[data-reset-all]');
 
 let payload={topics:[],lessons:[]};
 let fuse=null;
 let activeStatus='all';
 let activeFormat='all';
 let activePart=null;
+let lastResultCount=0;
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const normalize=v=>String(v??'').trim().toLowerCase();
@@ -36,19 +40,19 @@ function setPressed(host,button){[...host.querySelectorAll('button')].forEach(x=
 
 function filtered(){
  const query=q.value.trim();
- let rows=query&&fuse?fuse.search(query,{limit:420}).map(x=>x.item):payload.lessons.slice();
+ let rows=query&&fuse?fuse.search(query,{limit:Math.max(1000,payload.lessons.length)}).map(x=>x.item):payload.lessons.slice();
  if(activePart)rows=rows.filter(x=>x.part===activePart);
  if(activeStatus!=='all')rows=rows.filter(x=>x.status===activeStatus);
  if(activeFormat!=='all')rows=rows.filter(x=>normalize(x.primaryFormat)===normalize(activeFormat));
  return rows;
 }
 function renderTopics(){
- topicsHost.innerHTML=payload.topics.map(t=>'<button class="topic" type="button" data-part="'+t.part+'"><span class="topic-num">Part '+String(t.part).padStart(2,'0')+' · '+t.range[0]+'–'+t.range[1]+'</span><h3>'+esc(t.title)+'</h3><p>'+esc(t.description)+'</p><div class="topic-meta">'+t.publishedCount+' published · '+t.count+' catalogued</div></button>').join('');
+ topicsHost.innerHTML=payload.topics.map(t=>'<button class="topic" type="button" data-part="'+t.part+'" aria-pressed="'+String(activePart===Number(t.part))+'"><span class="topic-num">Part '+String(t.part).padStart(2,'0')+' · '+t.range[0]+'–'+t.range[1]+'</span><h3>'+esc(t.title)+'</h3><p>'+esc(t.description)+'</p><div class="topic-meta">'+t.publishedCount+' published · '+t.count+' registered</div></button>').join('');
  for(const button of topicsHost.querySelectorAll('[data-part]')){
   button.addEventListener('click',()=>{
    const part=Number(button.dataset.part);
    activePart=activePart===part?null:part;
-   syncUrl();render();
+   renderTopics();syncUrl();render();
    document.querySelector('[data-library-title]')?.scrollIntoView({behavior:'smooth',block:'start'});
   });
  }
@@ -62,7 +66,11 @@ function renderFormats(){
 }
 function render(){
  const rows=filtered();
+ lastResultCount=rows.length;
  visibleStat.textContent=String(rows.length);
+ library.setAttribute('aria-busy','false');
+ clear.disabled=!q.value.trim()&&activePart===null&&activeStatus==='all'&&activeFormat==='all';
+ if(resetAll)resetAll.hidden=clear.disabled;
  const topic=activePart?payload.topics.find(x=>x.part===activePart):null;
  title.textContent=topic?topic.title:(q.value.trim()?'Search results':`All ${payload.lessons.length} topics`);
  const parts=[];
@@ -70,10 +78,10 @@ function render(){
  if(topic)parts.push(topic.title);
  if(activeStatus!=='all')parts.push(activeStatus==='published'?'published only':'in review only');
  if(activeFormat!=='all')parts.push(activeFormat);
- statusText.textContent=rows.length+' entr'+(rows.length===1?'y':'ies')+(parts.length?' · '+parts.join(' · '):'');
+ statusText.textContent='Showing '+rows.length+' of '+payload.lessons.length+' entr'+(payload.lessons.length===1?'y':'ies')+(parts.length?' · '+parts.join(' · '):'');
  library.innerHTML=rows.length?rows.map(item=>{
   const published=item.status==='published';
-  const summary=item.objective||item.topic;
+  const summary=item.objective||('Reference topic in '+item.topic+'.');
   const match=q.value.trim()?explainSearchMatch(item,q.value.trim()):null;
   const why=match?'<p class="match-reason"><strong>Why this matched:</strong> '+esc(match.label)+' · '+esc(match.snippet)+'</p>':'';
   const ev=item.evidence||{};
@@ -81,14 +89,21 @@ function render(){
   const evidence=published&&Number(ev.claimCount||0)>0
    ?'<p class="evidence-note"><strong>Evidence mapped:</strong> '+Number(ev.claimCount)+' claim'+(Number(ev.claimCount)===1?'':'s')+(sourceTitles.length?' · '+sourceTitles.slice(0,2).map(esc).join(' · '):'')+'</p>'
    :'';
-  return '<article class="lesson"><div class="lesson-top"><span class="id">'+esc(item.id)+'</span><span class="badge '+(published?'':'review')+'">'+(published?'Published':'In review')+'</span></div><h3>'+esc(item.title)+'</h3><p>'+esc(summary)+'</p>'+why+evidence+'<div class="meta"><span>'+esc(item.topic)+'</span><span>'+esc(item.primaryFormat)+'</span>'+(item.teachingVisual?'<span>'+esc(item.teachingVisual)+'</span>':'')+'</div>'+(published?'<a href="'+esc(item.route)+'">Open lesson →</a>':'<span class="disabled">Catalogued · full lesson not yet released</span>')+'</article>'
- }).join(''):'<div class="empty"><strong>No matching encyclopedia entry.</strong><p>Try a broader scientific term, clear a filter, or browse one of the 21 subject areas.</p></div>';
+  return '<article class="lesson"><div class="lesson-top"><span class="id">'+esc(item.id)+'</span><span class="badge '+(published?'':'review')+'">'+(published?'Published':'In review')+'</span></div><h3>'+esc(item.title)+'</h3><p>'+esc(summary)+'</p>'+why+evidence+'<div class="meta"><span>'+esc(item.topic)+'</span><span>'+esc(item.primaryFormat)+'</span>'+(item.teachingVisual?'<span>'+esc(item.teachingVisual)+'</span>':'')+'</div>'+(published?'<a href="'+esc(item.route)+'" aria-label="Open '+esc(item.id)+' '+esc(item.title)+'">Open lesson →</a>':'<span class="disabled">Registered · full lesson not yet released</span>')+'</article>'
+ }).join(''):'<div class="empty"><strong>No matching encyclopedia entry.</strong><p>Try a broader term, remove one of the filters, or search by symptom, scientific term, measurement, pest, process, or lesson ID.</p><button type="button" data-empty-reset>Show all encyclopedia entries</button></div>';
+ const emptyReset=library.querySelector('[data-empty-reset]');if(emptyReset)emptyReset.addEventListener('click',resetFilters);
 }
 document.querySelector('[data-status-filters]').addEventListener('click',e=>{
  const b=e.target.closest('[data-status]');if(!b)return;activeStatus=b.dataset.status;setPressed(e.currentTarget,b);syncUrl();render();
 });
-q.addEventListener('input',()=>{activePart=null;syncUrl();render()});
-clear.addEventListener('click',()=>{q.value='';activePart=null;activeStatus='all';activeFormat='all';const statusAll=document.querySelector('[data-status="all"]');if(statusAll)setPressed(document.querySelector('[data-status-filters]'),statusAll);renderFormats();syncUrl();render();q.focus()});
+q.addEventListener('input',()=>{syncUrl();render()});
+function resetFilters(){
+ q.value='';activePart=null;activeStatus='all';activeFormat='all';
+ const statusAll=document.querySelector('[data-status="all"]');if(statusAll)setPressed(document.querySelector('[data-status-filters]'),statusAll);
+ renderFormats();renderTopics();syncUrl();render();q.focus();
+}
+clear.addEventListener('click',resetFilters);
+if(resetAll)resetAll.addEventListener('click',resetFilters);
 
 const params=new URLSearchParams(location.search);const requested=params.get('lesson');const requestedQuery=params.get('q');const requestedTopic=Number(params.get('topic'));const requestedStatus=params.get('status');const requestedFormat=params.get('format');
 const loadIndex=window.__THC_ENCYCLOPEDIA_INDEX__?Promise.resolve(window.__THC_ENCYCLOPEDIA_INDEX__):fetch('./encyclopedia-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Index failed to load');return r.json()});
@@ -96,6 +111,8 @@ loadIndex.then(data=>{
  payload=data;
  totalStat.textContent=String(payload.lessons.length);
  publishedStat.textContent=String(payload.lessons.filter(x=>x.status==='published').length);
+ subjectStat.textContent=String(payload.topics.length);
+ subjectCount.textContent=String(payload.topics.length);
  fuse=new Fuse(payload.lessons,{
  includeScore:true,
  shouldSort:true,
@@ -126,7 +143,8 @@ loadIndex.then(data=>{
  if(Number.isInteger(requestedTopic)&&payload.topics.some(x=>Number(x.part)===requestedTopic))activePart=requestedTopic;
  if(['published','catalogued-review'].includes(requestedStatus))activeStatus=requestedStatus;
  if(requestedFormat&&payload.lessons.some(x=>normalize(x.primaryFormat)===normalize(requestedFormat)))activeFormat=requestedFormat;
+ renderTopics();
  const statusButton=document.querySelector('[data-status="'+activeStatus+'"]');if(statusButton)setPressed(document.querySelector('[data-status-filters]'),statusButton);
  const formatButton=[...formatHost.querySelectorAll('[data-format]')].find(x=>normalize(x.dataset.format)===normalize(activeFormat));if(formatButton)setPressed(formatHost,formatButton);
  render();
-}).catch(error=>{console.error('[THC encyclopedia]',error);statusText.textContent='The encyclopedia index could not load.';library.innerHTML='<div class="empty"><strong>Encyclopedia index unavailable.</strong><p>Use the Learning Center while this index is restored.</p></div>'});
+}).catch(error=>{console.error('[THC encyclopedia]',error);library.setAttribute('aria-busy','false');statusText.textContent='The encyclopedia index could not load.';library.innerHTML='<div class="empty"><strong>Encyclopedia index unavailable.</strong><p>Use the Learning Center while this index is restored.</p></div>'});
