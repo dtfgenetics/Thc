@@ -4,7 +4,7 @@ description: High-throughput DTF research, repair, integration and production-re
 compatibility: Designed for DTF Genetics repositories with GitHub access. Uses current repository registries and subsystem skills instead of embedding mutable ownership maps.
 metadata:
   author: dtfgenetics
-  version: "2.1.0"
+  version: "2.1.1"
 ---
 
 # DTF Research Repair Controller
