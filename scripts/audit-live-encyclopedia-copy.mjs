@@ -3,21 +3,22 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 import { effectiveLessonAssessment } from './lib/encyclopedia-assessment-v2.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const BASE_URL=(process.env.DTF_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
-const REGISTRY='content/encyclopedia/current-controlled-registry.json';
 const OUT='live-encyclopedia-copy-audit.json';
 const CONCURRENCY=Math.max(1,Math.min(24,Number(process.env.ENC_LIVE_AUDIT_CONCURRENCY||6)));
 const TIMEOUT=Math.max(5000,Number(process.env.ENC_LIVE_AUDIT_TIMEOUT_MS||25000));
 const ATTEMPTS=Math.max(1,Math.min(5,Number(process.env.ENC_LIVE_AUDIT_ATTEMPTS||3)));
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 
-const registry=JSON.parse(await readFile(REGISTRY,'utf8'));
-const entries=Array.isArray(registry.entries)?registry.entries:[];
+const registryState=loadEncyclopediaRegistry(process.cwd());
+const entries=registryState.entries;
 const canonical=readCanonicalEncyclopediaLessons(process.cwd());
 const canonicalById=new Map(canonical.map(lesson=>[lesson.id,lesson]));
 const fingerprintOf=a=>createHash('sha256').update(JSON.stringify({id:a.id,title:a.title,objective:a.objective,terms:a.terms,coreScience:a.coreScience,cultivationRelevance:a.cultivationRelevance,measureAndRecord:a.measureAndRecord,misconceptions:a.misconceptions,evidenceLimits:a.evidenceLimits,crossLinks:a.crossLinks,sourceNotes:a.sourceNotes,assessment:effectiveLessonAssessment(a).prompts})).digest('hex').slice(0,24);
-if(entries.length!==420) throw new Error(`Expected 420 controlled encyclopedia entries; found ${entries.length}`);
+if(registryState.coreCount!==420) throw new Error(`Expected protected 420-entry core; found ${registryState.coreCount}`);
+if(canonical.length!==registryState.totalCount) throw new Error(`Expected ${registryState.totalCount} registered canonical lessons; found ${canonical.length}`);
 
 const defects=[
   {id:'malformed-source-label',re:/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i},
