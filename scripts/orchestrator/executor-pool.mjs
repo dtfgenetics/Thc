@@ -1,12 +1,12 @@
 import { loadWorkerRegistry, workerSpec } from './executor.mjs'
 
-export function executorDemand(job,{workerConfig=loadWorkerRegistry()}={}) {
+export function executorDemand(job,{workerConfig=loadWorkerRegistry(),now=new Date()}={}) {
   const requested = job.state === 'REPAIRING' ? (job.repair?.workerKind || job.workerKind) : job.workerKind
   if(!requested) return {ready:false,reasons:['missing-worker-kind']}
   const spec=workerSpec(requested,workerConfig)
   const reasons=[]
   if(!['LEASED','REPAIRING'].includes(job.state)) reasons.push('state-not-executor-ready')
-  if(job.state==='REPAIRING' && job.repair?.nextEligibleAt && new Date(job.repair.nextEligibleAt)>new Date()) reasons.push('repair-backoff-active')
+  if(job.state==='REPAIRING' && job.repair?.nextEligibleAt && new Date(job.repair.nextEligibleAt)>now) reasons.push('repair-backoff-active')
   if(spec.productionAccess) reasons.push('production-worker-requires-release-conveyor')
   return {ready:reasons.length===0,workerKind:requested,class:spec.class,capabilities:spec.capabilities||[],reasons}
 }
