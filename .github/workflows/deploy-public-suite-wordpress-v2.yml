@@ -425,7 +425,8 @@ jobs:
           check 'https://dtfseeds.com/growlens/' 'GrowLens'
           check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
           check 'https://dtfseeds.com/applied-learning/' 'Applied Learning Lab'
-          check 'https://dtfseeds.com/applied-learning/' 'dcb6733082c2caf31502112f952c254feeca1e5f'
+          applied_learning_sha="$(node -e "const fs=require('fs');const x=JSON.parse(fs.readFileSync('site/public-route-patch/applied-learning/data.json','utf8'));process.stdout.write(x.sourceSha)")"
+          check 'https://dtfseeds.com/applied-learning/' "$applied_learning_sha"
 
       - name: Verify external release candidate games live
         shell: bash
