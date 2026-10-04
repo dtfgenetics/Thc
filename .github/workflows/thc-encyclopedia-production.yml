@@ -91,6 +91,8 @@ jobs:
         run: npm run build:encyclopedia-scorecard
       - name: Validate encyclopedia research pipeline
         run: npm run verify:encyclopedia-research-pipeline
+      - name: Rebuild source-resolution queue for evidence references
+        run: npm run build:encyclopedia-source-queue
       - name: Build evidence tracking
         run: npm run build:encyclopedia-evidence
       - name: Build evidence priority queue
