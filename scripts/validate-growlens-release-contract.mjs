@@ -8,9 +8,12 @@ const suitePath=path.join(root,'.github/workflows/build-dtfseeds-public-suite.ym
 const swPath=path.join(root,'apps/growlens-web/public/sw.js');
 const pwaTestPath=path.join(root,'apps/growlens-web/src/pwaHealth.test.ts');
 const indexPath=path.join(root,'apps/growlens-web/index.html');
+const readmePath=path.join(root,'apps/growlens-web/README.md');
+const packagePath=path.join(root,'package.json');
+const liveAcceptancePath=path.join(root,'.github/workflows/growlens-live-acceptance.yml');
 
 const fail=(message)=>{console.error('GrowLens release contract validation failed:',message);process.exitCode=1;};
-for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath,indexPath]){
+for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath,indexPath,readmePath,packagePath,liveAcceptancePath]){
   if(!fs.existsSync(file))fail(`Required file missing: ${path.relative(root,file)}`);
 }
 if(process.exitCode)process.exit();
@@ -39,6 +42,29 @@ for(const token of [
 }
 if((indexHtml.match(/class="static-card"/g)||[]).length<4)fail('GrowLens static fallback must expose at least four workflow cards.');
 
+const packageJson=JSON.parse(fs.readFileSync(packagePath,'utf8'));
+const scripts=packageJson.scripts||{};
+for(const command of ['test:growlens','test:growlens:live-client','test:live:growlens','build:growlens','verify:growlens']){
+  if(!scripts[command])fail(`package.json is missing GrowLens command: ${command}`);
+}
+if(scripts['test:e2e:growlens'])fail('GrowLens must not advertise an undefined or duplicate local E2E lane; use the deterministic acceptance-client selftest plus guarded live acceptance.');
+
+const readme=fs.readFileSync(readmePath,'utf8');
+for(const token of [
+  'actions/checkout@v7',
+  'actions/setup-node@v7',
+  "node-version: '24'",
+  'npm run test:growlens',
+  'npm run test:growlens:live-client',
+  'npm run build:growlens',
+  'PHP backend smoke tests',
+  'guarded live acceptance'
+]){
+  if(!readme.includes(token))fail(`GrowLens README is missing current verification guidance: ${token}`);
+}
+if(readme.includes('test:e2e:growlens'))fail('GrowLens README references undefined test:e2e:growlens.');
+if(/Playwright desktop\/mobile tests/i.test(readme))fail('GrowLens README still claims a Playwright suite that is not part of the current release contract.');
+
 const ci=fs.readFileSync(ciPath,'utf8');
 for(const token of [
   'npm run test:growlens',
@@ -48,6 +74,18 @@ for(const token of [
   'npm run validate:terpene-atlas'
 ]){
   if(!ci.includes(token))fail(`GrowLens CI is missing canonical gate: ${token}`);
+}
+
+const liveAcceptance=fs.readFileSync(liveAcceptancePath,'utf8');
+for(const token of [
+  'actions/checkout@v7',
+  'actions/setup-node@v7',
+  "node-version: '24'",
+  'npm run test:growlens:live-client',
+  'npm run test:live:growlens',
+  'RUN-DESTRUCTIVE-ACCEPTANCE'
+]){
+  if(!liveAcceptance.includes(token))fail(`GrowLens live acceptance workflow is missing current gate: ${token}`);
 }
 
 const suite=fs.readFileSync(suitePath,'utf8');
