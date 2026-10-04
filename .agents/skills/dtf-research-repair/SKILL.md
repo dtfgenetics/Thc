@@ -4,7 +4,7 @@ description: High-throughput DTF research, repair, integration and production-re
 compatibility: Designed for DTF Genetics repositories with GitHub access. Uses current repository registries and subsystem skills instead of embedding mutable ownership maps.
 metadata:
   author: dtfgenetics
-  version: "3.2.0"
+  version: "3.3.0"
 ---
 
 # DTF Research Repair Controller
@@ -104,7 +104,7 @@ The portable `assets/campaign.schema.json` is an interchange/fallback contract o
 
 Before creating campaign jobs, inspect existing epic/job issues and PRs for the same outcome. Materialize only missing bounded work.
 
-Optimize for verified DONE throughput, not audit count, commits, or PR count. Prefer typed, machine-checkable acceptance criteria for new jobs; preserve legacy string criteria only for migration compatibility. When exact-head verification fails, classify the failure before retrying: deterministic test/build failures route to test-repair, head drift to repo-maintenance, policy/scope violations block rather than loop, and pending infrastructure waits under bounded retry policy. A job is executable only when it has acceptance criteria and a deterministic verification profile; production-impact work also requires release/live-proof requirements before DONE. Age waiting work upward over time so lower-priority jobs cannot starve indefinitely. After exact-head verification, do not leave approved work stranded at INTEGRATION_READY. Confirm the merged PR's head SHA exactly matches the verified SHA, record merge commit evidence, then advance non-production work to DONE or production-impact work to PRODUCTION_READY. Never infer a merge from a closed PR or branch disappearance.
+Optimize for verified DONE throughput, not audit count, commits, or PR count. Prefer typed, machine-checkable acceptance criteria for new jobs; preserve legacy string criteria only for migration compatibility. When exact-head verification fails, classify the failure and apply the configured bounded repair plan before retrying. Persist the attempt count, repair worker, retry policy, backoff eligibility, and failure evidence. Exhausted automatic repairs must quarantine rather than loop forever; policy/scope failures block immediately. Classification rules remain: deterministic test/build failures route to test-repair, head drift to repo-maintenance, policy/scope violations block rather than loop, and pending infrastructure waits under bounded retry policy. A job is executable only when it has acceptance criteria and a deterministic verification profile; production-impact work also requires release/live-proof requirements before DONE. Age waiting work upward over time so lower-priority jobs cannot starve indefinitely. After exact-head verification, do not leave approved work stranded at INTEGRATION_READY. Confirm the merged PR's head SHA exactly matches the verified SHA, record merge commit evidence, then advance non-production work to DONE or production-impact work to PRODUCTION_READY. Never infer a merge from a closed PR or branch disappearance.
 
 Operator status must expose the completion conveyor (VERIFYING, INTEGRATION_READY, executor-attached, and production-awaiting-live-proof counts).
 
