@@ -40,15 +40,32 @@ $addWarning = static function (string $code, string $message) use (&$warnings, $
     $addFinding($warnings, $code, $message);
 };
 
-$expectedCollections = [
-    'spaces',
-    'cycles',
-    'plants',
-    'diary',
-    'tasks',
-    'readings',
-    'calibrationProfiles',
-    'observations'
+$collectionsBySchema = [
+    1 => [
+        'spaces',
+        'cycles',
+        'plants',
+        'diary',
+        'tasks',
+        'readings',
+        'calibrationProfiles',
+        'observations'
+    ],
+    2 => [
+        'spaces',
+        'cycles',
+        'plants',
+        'diary',
+        'tasks',
+        'readings',
+        'calibrationProfiles',
+        'observations',
+        'irrigationRecords',
+        'feedingRecords',
+        'reservoirRecords',
+        'harvestRecords',
+        'observationOutcomes'
+    ]
 ];
 
 $validId = static fn($value): bool => is_string($value)
@@ -335,12 +352,14 @@ try {
             $addError('data.updatedAt', 'Grow data contains an invalid updated timestamp: ' . $basename);
         }
         $state = $data['state'] ?? null;
-        if (!is_array($state) || ($state['schemaVersion'] ?? null) !== 1) {
-            $addError('data.state', 'Grow data contains an invalid state root: ' . $basename);
+        $schemaVersion = is_array($state) ? ($state['schemaVersion'] ?? null) : null;
+        if (!is_int($schemaVersion) || !isset($collectionsBySchema[$schemaVersion])) {
+            $addError('data.state', 'Grow data contains an unsupported state schema: ' . $basename);
             continue;
         }
+        $stateCollections = $collectionsBySchema[$schemaVersion];
         $stateIds[$userId] = [];
-        foreach ($expectedCollections as $collection) {
+        foreach ($stateCollections as $collection) {
             $records = $state[$collection] ?? null;
             if (!is_array($records) || !array_is_list($records) || count($records) > 10000) {
                 $addError('data.collection', 'Grow state contains an invalid collection ' . $collection . ': ' . $basename);
@@ -421,7 +440,7 @@ try {
             'revision' => is_int($revision) ? $revision : -1,
             'recordCount' => array_sum(array_map(
                 static fn(string $collection): int => is_array($state[$collection] ?? null) ? count($state[$collection]) : 0,
-                $expectedCollections
+                $stateCollections
             ))
         ];
     }
