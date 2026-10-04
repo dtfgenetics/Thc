@@ -1,0 +1,4 @@
+# Shared DTF runtime modules must use a JavaScript MIME type for strict ES-module loading.
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+</IfModule>

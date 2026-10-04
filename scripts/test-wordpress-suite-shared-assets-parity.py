@@ -40,6 +40,10 @@ def literal_collection(path: Path, name: str) -> list[str]:
 package_allowed = literal_collection(PACKAGE, "allowed")
 bridge_shared = literal_collection(BRIDGE, "SHARED_EXACT_FILES")
 
+mime_policy = ASSET_ROOT / ".htaccess"
+if not mime_policy.is_file() or "AddType application/javascript .js .mjs" not in mime_policy.read_text():
+    raise SystemExit("shared assets MIME policy must serve .js and .mjs as application/javascript")
+
 package_exact = {
     path
     for path in package_allowed
