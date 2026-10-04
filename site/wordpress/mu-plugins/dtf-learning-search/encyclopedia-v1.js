@@ -21,6 +21,8 @@ let activeStatus='all';
 let activeFormat='all';
 let activePart=null;
 let lastResultCount=0;
+const PAGE_SIZE=60;
+let renderLimit=PAGE_SIZE;
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const normalize=v=>String(v??'').trim().toLowerCase();
@@ -51,7 +53,7 @@ function renderTopics(){
  for(const button of topicsHost.querySelectorAll('[data-part]')){
   button.addEventListener('click',()=>{
    const part=Number(button.dataset.part);
-   activePart=activePart===part?null:part;
+   activePart=activePart===part?null:part;renderLimit=PAGE_SIZE;
    renderTopics();syncUrl();render();
    document.querySelector('[data-library-title]')?.scrollIntoView({behavior:'smooth',block:'start'});
   });
@@ -61,11 +63,12 @@ function renderFormats(){
  const formats=[...new Set(payload.lessons.map(x=>x.primaryFormat).filter(Boolean))].sort();
  formatHost.innerHTML='<button class="chip" type="button" data-format="all" aria-pressed="true">All formats</button>'+formats.map(x=>'<button class="chip" type="button" data-format="'+esc(x)+'" aria-pressed="false">'+esc(x)+'</button>').join('');
  for(const button of formatHost.querySelectorAll('[data-format]')){
-  button.addEventListener('click',()=>{activeFormat=button.dataset.format;setPressed(formatHost,button);syncUrl();render()});
+  button.addEventListener('click',()=>{activeFormat=button.dataset.format;renderLimit=PAGE_SIZE;setPressed(formatHost,button);syncUrl();render()});
  }
 }
 function render(){
  const rows=filtered();
+ const visibleRows=rows.slice(0,renderLimit);
  lastResultCount=rows.length;
  visibleStat.textContent=String(rows.length);
  library.setAttribute('aria-busy','false');
@@ -78,8 +81,8 @@ function render(){
  if(topic)parts.push(topic.title);
  if(activeStatus!=='all')parts.push(activeStatus==='published'?'published only':'in review only');
  if(activeFormat!=='all')parts.push(activeFormat);
- statusText.textContent='Showing '+rows.length+' of '+payload.lessons.length+' entr'+(payload.lessons.length===1?'y':'ies')+(parts.length?' · '+parts.join(' · '):'');
- library.innerHTML=rows.length?rows.map(item=>{
+ statusText.textContent='Showing '+visibleRows.length+' of '+rows.length+' matching entr'+(rows.length===1?'y':'ies')+' · '+payload.lessons.length+' total'+(parts.length?' · '+parts.join(' · '):'');
+ library.innerHTML=rows.length?visibleRows.map(item=>{
   const published=item.status==='published';
   const summary=item.objective||('Reference topic in '+item.topic+'.');
   const match=q.value.trim()?explainSearchMatch(item,q.value.trim()):null;
@@ -90,15 +93,16 @@ function render(){
    ?'<p class="evidence-note"><strong>Evidence mapped:</strong> '+Number(ev.claimCount)+' claim'+(Number(ev.claimCount)===1?'':'s')+(sourceTitles.length?' · '+sourceTitles.slice(0,2).map(esc).join(' · '):'')+'</p>'
    :'';
   return '<article class="lesson"><div class="lesson-top"><span class="id">'+esc(item.id)+'</span><span class="badge '+(published?'':'review')+'">'+(published?'Published':'In review')+'</span></div><h3>'+esc(item.title)+'</h3><p>'+esc(summary)+'</p>'+why+evidence+'<div class="meta"><span>'+esc(item.topic)+'</span><span>'+esc(item.primaryFormat)+'</span>'+(item.teachingVisual?'<span>'+esc(item.teachingVisual)+'</span>':'')+'</div>'+(published?'<a href="'+esc(item.route)+'" aria-label="Open '+esc(item.id)+' '+esc(item.title)+'">Open lesson →</a>':'<span class="disabled">Registered · full lesson not yet released</span>')+'</article>'
- }).join(''):'<div class="empty"><strong>No matching encyclopedia entry.</strong><p>Try a broader term, remove one of the filters, or search by symptom, scientific term, measurement, pest, process, or lesson ID.</p><button type="button" data-empty-reset>Show all encyclopedia entries</button></div>';
+ }).join('')+(rows.length>visibleRows.length?'<div class="more-results"><button type="button" data-load-more>Show '+Math.min(PAGE_SIZE,rows.length-visibleRows.length)+' more</button></div>':''):'<div class="empty"><strong>No matching encyclopedia entry.</strong><p>Try a broader term, remove one of the filters, or search by symptom, scientific term, measurement, pest, process, or lesson ID.</p><button type="button" data-empty-reset>Show all encyclopedia entries</button></div>';
  const emptyReset=library.querySelector('[data-empty-reset]');if(emptyReset)emptyReset.addEventListener('click',resetFilters);
+ const loadMore=library.querySelector('[data-load-more]');if(loadMore)loadMore.addEventListener('click',()=>{renderLimit+=PAGE_SIZE;render();});
 }
 document.querySelector('[data-status-filters]').addEventListener('click',e=>{
- const b=e.target.closest('[data-status]');if(!b)return;activeStatus=b.dataset.status;setPressed(e.currentTarget,b);syncUrl();render();
+ const b=e.target.closest('[data-status]');if(!b)return;activeStatus=b.dataset.status;renderLimit=PAGE_SIZE;setPressed(e.currentTarget,b);syncUrl();render();
 });
-q.addEventListener('input',()=>{syncUrl();render()});
+q.addEventListener('input',()=>{renderLimit=PAGE_SIZE;syncUrl();render()});
 function resetFilters(){
- q.value='';activePart=null;activeStatus='all';activeFormat='all';
+ q.value='';activePart=null;activeStatus='all';activeFormat='all';renderLimit=PAGE_SIZE;
  const statusAll=document.querySelector('[data-status="all"]');if(statusAll)setPressed(document.querySelector('[data-status-filters]'),statusAll);
  renderFormats();renderTopics();syncUrl();render();q.focus();
 }
