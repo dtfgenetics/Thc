@@ -18,9 +18,6 @@ const canonical=readCanonicalEncyclopediaLessons(process.cwd());
 const canonicalById=new Map(canonical.map(lesson=>[lesson.id,lesson]));
 const fingerprintOf=a=>createHash('sha256').update(JSON.stringify({id:a.id,title:a.title,objective:a.objective,terms:a.terms,coreScience:a.coreScience,cultivationRelevance:a.cultivationRelevance,measureAndRecord:a.measureAndRecord,misconceptions:a.misconceptions,evidenceLimits:a.evidenceLimits,crossLinks:a.crossLinks,sourceNotes:a.sourceNotes,assessment:effectiveLessonAssessment(a).prompts})).digest('hex').slice(0,24);
 if(entries.length!==420) throw new Error(`Expected 420 controlled encyclopedia entries; found ${entries.length}`);
-const canonicalLessons=readCanonicalEncyclopediaLessons(process.cwd());
-const canonicalById=new Map(canonicalLessons.map(lesson=>[lesson.id,lesson]));
-if(canonicalLessons.length!==420) throw new Error(`Expected 420 canonical encyclopedia lessons; found ${canonicalLessons.length}`);
 
 const defects=[
   {id:'malformed-source-label',re:/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i},
@@ -61,6 +58,13 @@ async function fetchRoute(id){
       const text=decodeHtml(body);
       const fingerprintMatch=body.match(/data-thc-source-fingerprint=["']([0-9a-f]{24})["']/i);
       const liveFingerprint=fingerprintMatch?.[1]||null;
+      const structuredDataPassed=response.status!==200 || (
+        body.includes('application/ld+json') &&
+        body.includes('"LearningResource"') &&
+        body.includes('"Article"') &&
+        body.includes('"BreadcrumbList"') &&
+        body.includes('"identifier":"'+id+'"')
+      );
       const matched=defects.filter(d=>d.re.test(text));
       const found=matched.map(d=>d.id);
       if(response.status===200&&expectedFingerprint&&liveFingerprint!==expectedFingerprint) found.push(liveFingerprint?'source-fingerprint-mismatch':'source-fingerprint-missing');
@@ -72,7 +76,7 @@ async function fetchRoute(id){
         return {id:d.id,snippet:index>=0?text.slice(snippetStart,snippetEnd):null};
       });
       if(response.status===200||response.status===404){
-        return {id,url,status:response.status,live:response.status===200,expectedFingerprint,liveFingerprint,fingerprintMatch:response.status===200?liveFingerprint===expectedFingerprint:null,defects:found,defectSnippets,attempts:attempt,passed:response.status===404||response.status===200&&found.length===0};
+        return {id,url,status:response.status,live:response.status===200,expectedFingerprint,liveFingerprint,fingerprintMatch:response.status===200?liveFingerprint===expectedFingerprint:null,structuredDataPassed,defects:found,defectSnippets,attempts:attempt,passed:response.status===404||response.status===200&&found.length===0&&structuredDataPassed};
       }
       lastError=`HTTP ${response.status}`;
     }catch(error){
@@ -104,8 +108,8 @@ const report={
   livePages:live.length,
   unpublished404:results.filter(r=>r.status===404).length,
   failures:failures.length,
-  fingerprintVerified:results.filter(r=>r.live&&r.fingerprintPassed).length,
-  fingerprintMissingOrMismatched:results.filter(r=>r.live&&!r.fingerprintPassed).length,
+  fingerprintVerified:results.filter(r=>r.live&&r.fingerprintMatch===true).length,
+  fingerprintMissingOrMismatched:results.filter(r=>r.live&&r.fingerprintMatch!==true).length,
   structuredDataVerified:results.filter(r=>r.live&&r.structuredDataPassed).length,
   structuredDataMissingOrInvalid:results.filter(r=>r.live&&!r.structuredDataPassed).length,
   defectCounts:{...Object.fromEntries(defects.map(d=>[d.id,failures.filter(r=>r.defects.includes(d.id)).length])),sourceFingerprintMissing:failures.filter(r=>r.defects.includes('source-fingerprint-missing')).length,sourceFingerprintMismatch:failures.filter(r=>r.defects.includes('source-fingerprint-mismatch')).length},
