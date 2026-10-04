@@ -2,30 +2,18 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { effectiveLessonAssessment } from './lib/encyclopedia-assessment-v2.mjs';
+import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root=process.cwd();
 const encRoot=path.join(root,'content','encyclopedia');
 const errors=[];
-const lessons=[];
+const lessons=readCanonicalEncyclopediaLessons(root);
+const registryState=loadEncyclopediaRegistry(root);
 const promptOwners=new Map();
 const normalize=s=>String(s||'').toLowerCase().replace(/\s+/g,' ').trim();
 
-for(let vol=1;vol<=17;vol++){
-  const dir=path.join(encRoot,`volume-${String(vol).padStart(2,'0')}`,'lessons');
-  for(const name of fs.readdirSync(dir).filter(n=>/^thc-enc-\d{3}\.json$/.test(n)).sort()){
-    const lesson=JSON.parse(fs.readFileSync(path.join(dir,name),'utf8'));
-    lessons.push({vol,file:name,...lesson});
-  }
-}
-for(let vol=18;vol<=21;vol++){
-  const dir=path.join(encRoot,`volume-${String(vol).padStart(2,'0')}`);
-  for(const name of fs.readdirSync(dir).filter(n=>/^draft-lessons-\d{3}-\d{3}\.json$/.test(n)).sort()){
-    const pack=JSON.parse(fs.readFileSync(path.join(dir,name),'utf8'));
-    for(const lesson of pack.lessons||[]) lessons.push({vol,file:name,...lesson});
-  }
-}
-
-if(lessons.length!==420) errors.push(`Expected 420 encyclopedia lessons; found ${lessons.length}`);
+if(lessons.length!==registryState.totalCount) errors.push(`Expected ${registryState.totalCount} registered encyclopedia lessons; found ${lessons.length}`);
 
 for(const lesson of lessons){
   const id=lesson.id||`V${lesson.vol}:${lesson.number}`;
@@ -66,4 +54,4 @@ if(errors.length){
   for(const e of errors.slice(0,200)) console.error(' - '+e);
   process.exit(1);
 }
-console.log(`Encyclopedia assessment PASS: ${lessons.length}/420 lessons have unique effective v2 reasoning, misconception, and applied-verification checks.`);
+console.log(`Encyclopedia assessment PASS: ${lessons.length}/${registryState.totalCount} lessons have unique effective v2 reasoning, misconception, and applied-verification checks.`);
