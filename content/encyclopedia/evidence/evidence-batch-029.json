@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-029",
+  "createdAt": "2026-10-04",
+  "scope": "High-priority foundational evidence for meristem/apical dominance, seed dormancy, transplant hardening, and root developmental zones.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "General model-plant and horticultural sources establish mechanisms and observation frameworks, not cannabis-specific quantitative targets.",
+    "Cannabis-specific dormancy class, pruning response, root-zone dimensions, hardening duration, and yield effects require direct evidence before being stated as universal.",
+    "Developmental terms must preserve distinctions among meristematic division, elongation, differentiation, axillary bud activation, and environmental acclimation.",
+    "All mappings remain pending independent science review and do not alter publication or independent-approval state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0311",
+      "lessonId": "THC-ENC-013",
+      "sourceIds": [
+        "ENC-AUTH-157"
+      ],
+      "claimType": "apical-dominance-developmental-framework",
+      "supportedClaim": "Apical dominance is a regulated developmental relationship in which the shoot apex and long-distance signaling influence axillary bud outgrowth; auxin acts within a broader network rather than as a simple one-signal switch.",
+      "sourceLocator": "Leyser (2005), PMID 16026983, DOI 10.1016/j.gde.2005.06.010.",
+      "applicability": "Supports the lesson's distinction between meristems, axillary buds and apical dominance and provides a mechanistic framework for explaining why removing an apex can alter branching.",
+      "limitations": "The review is general plant developmental biology. It does not establish cannabis-specific topping schedules, branch counts, architecture targets or yield outcomes.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0312",
+      "lessonId": "THC-ENC-025",
+      "sourceIds": [
+        "ENC-AUTH-158"
+      ],
+      "claimType": "seed-dormancy-and-germination-variability",
+      "supportedClaim": "Seed dormancy and germination are dynamic states controlled by genotype, seed history and environmental signals, with ABA/GA balance and after-ripening among the mechanisms that can change germination behavior.",
+      "sourceLocator": "Finch-Savage and Leubner-Metzger (2006), PMID 16866955, DOI 10.1111/j.1469-8137.2006.01787.x.",
+      "applicability": "Supports explaining why seed lots can respond differently and why non-germination cannot automatically be assigned to one cause.",
+      "limitations": "The review spans seed plants and model systems; it does not prove a universal Cannabis dormancy class, after-ripening interval, stratification need or germination treatment.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0313",
+      "lessonId": "THC-ENC-039",
+      "sourceIds": [
+        "ENC-AUTH-159"
+      ],
+      "claimType": "hardening-off-acclimation-framework",
+      "supportedClaim": "Hardening-off is a gradual acclimation process before transplanting that exposes transplants progressively to outdoor light, wind, temperature and water-demand conditions rather than shifting abruptly from protected growth to field conditions.",
+      "sourceLocator": "Cornell Cooperative Extension, Hardening Transplants.",
+      "applicability": "Supports the lesson's readiness-versus-acclimation distinction and its use of gradual environmental transition as a transplant-risk control.",
+      "limitations": "Cornell's guidance is general horticulture, not a cannabis trial. It does not establish cannabis-specific duration, irradiance steps, temperature limits or transplant timing.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0314",
+      "lessonId": "THC-ENC-041",
+      "sourceIds": [
+        "ENC-AUTH-160"
+      ],
+      "claimType": "root-meristem-developmental-zones",
+      "supportedClaim": "Root development is organized around an apical meristem and stem-cell niche followed by coordinated cell division, elongation and differentiation, providing a developmental basis for distinguishing root-tip zones rather than treating the root as uniform tissue.",
+      "sourceLocator": "Petricka, Winter, and Benfey (2012), PMID 22404466, DOI 10.1146/annurev-arplant-042811-105501.",
+      "applicability": "Supports the lesson's root-tip anatomy and developmental-zone framework and the interpretation that injury location can affect different developmental processes.",
+      "limitations": "The source centers on Arabidopsis and general root developmental mechanisms; it does not establish Cannabis-specific gene regulation, root-zone lengths, growth rates or stress thresholds.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
