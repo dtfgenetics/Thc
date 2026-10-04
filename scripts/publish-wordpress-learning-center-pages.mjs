@@ -34,24 +34,49 @@ const routes = [
   { slug: 'propagation', title: 'Genetics, Crop Planning, Mother Stock, Cloning, and Propagation' },
 ];
 
+const transientStatuses = new Set([429, 502, 503, 504]);
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function request(path, options = {}) {
-  const response = await fetch(`${siteUrl}${path}`, {
-    ...options,
-    headers: {
-      ...headers,
-      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-      ...(options.headers || {}),
-    },
-    redirect: 'follow',
-    signal: AbortSignal.timeout(60_000),
-  });
-  const text = await response.text();
-  let body = null;
-  try { body = text ? JSON.parse(text) : null; } catch { body = text; }
-  if (!response.ok) {
-    throw new Error(`${options.method || 'GET'} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 500) : JSON.stringify(body).slice(0, 500)}`);
+  const method = options.method || 'GET';
+  const maxAttempts = Number(options.maxAttempts || 5);
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const response = await fetch(`${siteUrl}${path}`, {
+        ...options,
+        headers: {
+          ...headers,
+          ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+          ...(options.headers || {}),
+        },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(60_000),
+      });
+      const text = await response.text();
+      let body = null;
+      try { body = text ? JSON.parse(text) : null; } catch { body = text; }
+
+      if (response.ok) return body;
+
+      const message = `${method} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 500) : JSON.stringify(body).slice(0, 500)}`;
+      lastError = new Error(message);
+      if (!transientStatuses.has(response.status) || attempt === maxAttempts) throw lastError;
+      const retryAfter = Number(response.headers.get('retry-after') || 0);
+      const delayMs = retryAfter > 0 ? Math.min(retryAfter * 1000, 30_000) : Math.min(2000 * (2 ** (attempt - 1)), 16_000);
+      console.warn(`Transient WordPress response ${response.status} for ${method} ${path}; retrying attempt ${attempt + 1}/${maxAttempts} after ${delayMs}ms.`);
+      await sleep(delayMs);
+    } catch (error) {
+      lastError = error;
+      const retryableNetworkError = error?.name === 'TimeoutError' || error?.name === 'AbortError' || error instanceof TypeError;
+      if (!retryableNetworkError || attempt === maxAttempts) throw error;
+      const delayMs = Math.min(2000 * (2 ** (attempt - 1)), 16_000);
+      console.warn(`Transient WordPress network error for ${method} ${path}; retrying attempt ${attempt + 1}/${maxAttempts} after ${delayMs}ms: ${error.message}`);
+      await sleep(delayMs);
+    }
   }
-  return body;
+  throw lastError || new Error(`${method} ${path} failed after ${maxAttempts} attempts`);
 }
 
 function extract(html, pattern, label) {
