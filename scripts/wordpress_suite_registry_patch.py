@@ -36,6 +36,7 @@ SHARED_EXACT_FILES = (
     "assets/thc-tool-suite-v1.js",
     "assets/thc-tool-suite-v1.css",
     "assets/thc-cultivation-math-v1.mjs",
+    "assets/thc-history-core-v1.mjs",
     "assets/thc-light-lab-math-v1.mjs",
     "assets/breeder-pedigree-graph-v1.js",
     "assets/vendor/cytoscape-3.34.3.min.js",
