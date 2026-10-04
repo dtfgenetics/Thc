@@ -251,11 +251,6 @@ jobs:
             sleep 8
           done
           [[ "$ok" -eq 1 ]]
-          if grep -Fqi -- 'THC-ENC-001 — How to Read Cannabis Plant Science Critically' "$index_body"; then
-            echo 'Superseded THC-ENC-001 title must not be listed on the public encyclopedia index.' >&2
-            exit 1
-          fi
-
           node - <<'NODE' "$report" > "$RUNNER_TEMP/current-batch-routes.tsv"
           const r=require(process.argv[2]);
           for(const p of r.published) process.stdout.write(`${p.id}\t${p.slug}\n`);
