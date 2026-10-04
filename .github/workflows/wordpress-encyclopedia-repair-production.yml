@@ -1,4 +1,5 @@
 name: Repair THC Encyclopedia Missing Production Lessons
+# Final single-pass live reconciliation trigger; safe to rerun because page updates are idempotent.
 
 on:
   workflow_dispatch:
