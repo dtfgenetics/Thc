@@ -13,6 +13,30 @@ const lessons = readCanonicalEncyclopediaLessons(root);
 const normalize = value => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const sourceText = note => typeof note === 'string' ? note.trim() : String(note?.title || note?.id || note?.sourceId || '').trim();
 
+function extractDirectLocators(reference) {
+  const value = String(reference || '');
+  const locators = new Set();
+
+  for (const match of value.matchAll(/https:\/\/[^\s<>"')\]]+/gi)) {
+    const cleaned = match[0].replace(/[.,;:]+$/g, '');
+    if (cleaned) locators.add(cleaned);
+  }
+
+  for (const match of value.matchAll(/(?:doi\s*[:.]?\s*|https?:\/\/doi\.org\/)(10\.\d{4,9}\/[-._;()/:A-Z0-9]+)/gi)) {
+    locators.add(`https://doi.org/${match[1]}`);
+  }
+
+  for (const match of value.matchAll(/\b(PMC\d{5,})\b/gi)) {
+    locators.add(`https://pmc.ncbi.nlm.nih.gov/articles/${match[1].toUpperCase()}/`);
+  }
+
+  for (const match of value.matchAll(/\bPMID\s*[:.]?\s*(\d{6,9})\b/gi)) {
+    locators.add(`https://pubmed.ncbi.nlm.nih.gov/${match[1]}/`);
+  }
+
+  return [...locators];
+}
+
 const authorityByAlias = new Map();
 for (const source of authorities) {
   authorityByAlias.set(source.id, source.id);
@@ -66,16 +90,18 @@ function isControlOrContextNote(reference, volumeSource=null) {
 
 function referenceTraceability(reference) {
   const authorityIds=authorityMatches(reference);
-  if(authorityIds.length) return {traceable:true,traceabilityRequired:true,authorityIds,kind:'central-authority'};
+  const directLocators=extractDirectLocators(reference);
+  if(authorityIds.length) return {traceable:true,traceabilityRequired:true,authorityIds,directLocators,kind:'central-authority'};
   const volumeSource=volumeSourceById.get(reference)||null;
   if(volumeSource?.location && /^https:\/\//.test(volumeSource.location)) {
-    return {traceable:true,traceabilityRequired:true,authorityIds:[],kind:'volume-register-external'};
+    return {traceable:true,traceabilityRequired:true,authorityIds:[],directLocators:[volumeSource.location],kind:'volume-register-external'};
   }
   if(isControlOrContextNote(reference,volumeSource)) {
-    return {traceable:false,traceabilityRequired:false,authorityIds:[],kind:'control-context-note'};
+    return {traceable:false,traceabilityRequired:false,authorityIds:[],directLocators:[],kind:'control-context-note'};
   }
-  if(citationLooksTraceable(reference)) return {traceable:true,traceabilityRequired:true,authorityIds:[],kind:'bibliographic-citation'};
-  return {traceable:false,traceabilityRequired:true,authorityIds:[],kind:volumeSource?'volume-register-placeholder':'unresolved'};
+  if(directLocators.length) return {traceable:true,traceabilityRequired:true,authorityIds:[],directLocators,kind:'direct-locator-citation'};
+  if(citationLooksTraceable(reference)) return {traceable:true,traceabilityRequired:true,authorityIds:[],directLocators:[],kind:'bibliographic-citation'};
+  return {traceable:false,traceabilityRequired:true,authorityIds:[],directLocators:[],kind:volumeSource?'volume-register-placeholder':'unresolved'};
 }
 
 const usage = new Map();
@@ -97,6 +123,7 @@ const references = [...usage.entries()].sort(([a], [b]) => a.localeCompare(b)).m
   else if(authorityIds.length) status='authoritative_registry_resolved_needs_claim_review';
   else if(volumeSource?.location && /^https:\/\//.test(volumeSource.location)) status='volume_registry_resolved_needs_authority_review';
   else if(/^V\d{2}-SRC-\d{3}$/.test(reference) && !volumeSource) status='missing_volume_register_entry_needs_resolution';
+  else if((trace.directLocators||[]).length) status='direct_locator_resolved_needs_authority_review';
   else if(trace.traceable) status='citation_traceable_needs_authority_review';
   else if(volumeSource) status='volume_registry_placeholder_needs_exact_source';
   else status='citation_text_needs_resolution';
@@ -109,6 +136,7 @@ const references = [...usage.entries()].sort(([a], [b]) => a.localeCompare(b)).m
     traceabilityRequired: trace.traceabilityRequired,
     traceable: trace.traceable,
     resolvedAuthoritativeSourceIds: authorityIds,
+    directLocators: trace.directLocators || [],
     volumeRegistryRecord: volumeSource ? {
       id: volumeSource.id,
       title: volumeSource.title,
@@ -169,6 +197,7 @@ const output = {
     volumeRegistryResolved: countStatus('volume_registry_resolved_needs_authority_review'),
     volumeRegistryPlaceholders: countStatus('volume_registry_placeholder_needs_exact_source'),
     missingVolumeRegisterEntries: countStatus('missing_volume_register_entry_needs_resolution'),
+    directLocatorResolvedNeedsAuthorityReview: countStatus('direct_locator_resolved_needs_authority_review'),
     citationTraceableNeedsAuthorityReview: countStatus('citation_traceable_needs_authority_review'),
     citationTextNeedsResolution: countStatus('citation_text_needs_resolution'),
     controlNotesExcludedFromEvidenceTraceability: countStatus('control_note_resolved_not_evidence_source'),
