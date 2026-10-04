@@ -12,6 +12,8 @@ import { buildExecutionPacket, buildHandoffPacket, claimExecutor, executorHandof
 import { resolveCanonicalRepository } from './orchestrator/repositories.mjs'
 import { epicSummary, materializeJobPlan, topologicalJobOrder, validateEpicManifest } from './orchestrator/epics.mjs'
 import { inspectContractScope, validateAgentContract, verificationProfileFromContract } from './orchestrator/repo-contract.mjs'
+import { inspectAcceptanceContract, normalizeAcceptanceCriterion } from './orchestrator/acceptance.mjs'
+import { classifyVerificationFailure } from './orchestrator/verification.mjs'
 import { buildOperatorStatus } from './orchestrator/operator-status.mjs'
 
 const config = validateConfig({
@@ -668,3 +670,17 @@ const workflowWithIntegration = fs.readFileSync('.github/workflows/worker-orches
 assert.match(workflowWithIntegration, /- integrate/)
 assert.match(workflowWithIntegration, /scripts\/orchestrator-integrate\.mjs/)
 assert.match(workflowWithIntegration, /worker-integrate\.json/)
+
+
+assert.equal(normalizeAcceptanceCriterion('tests pass').legacy, true)
+assert.deepEqual(normalizeAcceptanceCriterion({ type: 'path-exists', path: 'scripts/orchestrator.mjs' }), { type: 'path-exists', path: 'scripts/orchestrator.mjs', legacy: false })
+assert.equal(inspectAcceptanceContract([{ type: 'check', description: 'CI green' }]).ok, true)
+assert.throws(() => normalizeAcceptanceCriterion({ type: 'path-exists' }), /requires path/)
+assert.equal(inspectAcceptanceContract([], {}).ok, false)
+
+assert.deepEqual(
+  classifyVerificationFailure({ reason: 'checks-failing', checkGate: { failing: [{ name: 'unit' }] } }),
+  { class: 'test-or-build', retryPolicy: 'test-or-build', repairWorker: 'test-repair', automatic: true, failingChecks: ['unit'] },
+)
+assert.equal(classifyVerificationFailure({ reason: 'head-sha-mismatch' }).repairWorker, 'repo-maintenance')
+assert.equal(classifyVerificationFailure({ reason: 'changed-files-outside-allowed-paths' }).automatic, false)
