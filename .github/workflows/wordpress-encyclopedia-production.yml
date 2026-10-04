@@ -249,7 +249,11 @@ jobs:
             --header 'Pragma: no-cache' \
             "$WP_SITE_URL/learn/encyclopedia/?dtf_encyclopedia=${GITHUB_RUN_ID}" \
             --output "$index_body"
-          grep -Fqi -- 'Cannabis Plant Science Encyclopedia' "$index_body"
+          if ! grep -Fqi -- 'data-dtf-learning-search-surface="encyclopedia"' "$index_body"; then
+            echo 'Encyclopedia root loaded but the controlled learning-search runtime marker is missing.' >&2
+            head -c 4000 "$index_body" >&2 || true
+            exit 1
+          fi
 
           catalog_json="$RUNNER_TEMP/encyclopedia-runtime-index.json"
           curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 3 \
