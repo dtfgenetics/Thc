@@ -28,13 +28,14 @@ jobs:
   repair:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 90
     environment: production
     env:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       BACKUP_ROOT: /tmp/dtf-encyclopedia-copy-repair
+      WP_PUBLISH_CONCURRENCY: '4'
     steps:
       - uses: actions/checkout@v4
         with:
