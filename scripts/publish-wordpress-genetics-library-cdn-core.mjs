@@ -266,7 +266,7 @@ function linePageHtml(line, mediaList) {
   return `<div data-dtf-genetics-line="${esc(line.slug)}" style="background:#f4f8f4;color:#173522">
 <section style="max-width:1180px;margin:auto;padding:52px 22px 30px">
   <p style="color:#2d7d48;font-weight:900;text-transform:uppercase">DTF Genetics · line profile</p>
-  <h1 style="font-size:clamp(2.5rem,6vw,4.8rem);margin:0 0 16px">${esc(line.name)}</h1>
+  <h2 style="font-size:clamp(2.5rem,6vw,4.8rem);margin:0 0 16px">${esc(line.name)}</h2>
   <p style="font-size:1.1rem;line-height:1.8;color:#46604e">${esc(line.summary)}</p>
 </section>
 <section style="max-width:1180px;margin:auto;padding:8px 22px 52px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px">${gallery}</section>
@@ -359,7 +359,7 @@ const blueMango = prepared.find(({ line }) => line.id === 'blue-mango');
 
 const seedsHtml = `<div data-dtf-genetics-library="2026" data-dtf-genetics-structure="release-first-v2" style="background:#f4f8f4;color:#173522">
 <section style="max-width:1240px;margin:auto;padding:58px 22px 38px;display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:38px;align-items:center">
-  <div><p style="color:#2d7d48;font-weight:900;text-transform:uppercase">DTF Genetics · documented breeding library</p><h1 style="font-size:clamp(2.6rem,6vw,5rem);margin:0 0 20px">From breeding notes to current releases.</h1><p style="font-size:1.13rem;line-height:1.8;color:#46604e">Start with the breeding projects that have current store listings, then open the full library when you want to explore the broader DTF Genetics catalog. Every profile preserves reviewed strain-card art, generation context, documented lineage where available, and clearly labeled unknowns.</p><p>${button('#current-genetics', 'Current release projects')}${button('#genetics-library', 'Full breeding library', false)}${button('/shop/', 'Shop current releases', false)}</p></div>
+  <div><p style="color:#2d7d48;font-weight:900;text-transform:uppercase">DTF Genetics · documented breeding library</p><h2 style="font-size:clamp(2.6rem,6vw,5rem);margin:0 0 20px">From breeding notes to current releases.</h2><p style="font-size:1.13rem;line-height:1.8;color:#46604e">Start with the breeding projects that have current store listings, then open the full library when you want to explore the broader DTF Genetics catalog. Every profile preserves reviewed strain-card art, generation context, documented lineage where available, and clearly labeled unknowns.</p><p>${button('#current-genetics', 'Current release projects')}${button('#genetics-library', 'Full breeding library', false)}${button('/shop/', 'Shop current releases', false)}</p></div>
   <div>${image(blueMango?.mediaList?.[0], blueMango?.line?.releaseCards?.[0]?.altText || 'Blue Mango strain card', true)}</div>
 </section>
 <section id="current-genetics" class="dtf-genetics-current" style="max-width:1240px;margin:auto;padding:18px 22px 72px">
