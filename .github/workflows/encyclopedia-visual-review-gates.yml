@@ -31,6 +31,7 @@ jobs:
         run: |
           set -euo pipefail
           npm run verify:encyclopedia-production-readiness
+          npm run verify:encyclopedia-claim-evidence-candidates
           npm run verify:encyclopedia-independent-review
 
       - name: Build objective visual machine preflight
@@ -47,6 +48,13 @@ jobs:
           node scripts/build-encyclopedia-visual-promotion-manifest.mjs
           test -s data/encyclopedia-visual-promotion-manifest.json
 
+      - name: Build prioritized visual review work queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-visual-review-work-queue.mjs
+          test -s data/encyclopedia-visual-review-work-queue.json
+
       - name: Assert no synthetic approval
         shell: bash
         run: |
@@ -59,7 +67,9 @@ jobs:
           if(pre.summary.candidateCount!==index.artworkNeededCount) throw new Error(`Expected ${index.artworkNeededCount} visual candidates; found ${pre.summary.candidateCount}`);
           if(pre.summary.machinePreflightFailed!==0) throw new Error(`Machine preflight failures remain: ${pre.summary.machinePreflightFailed}`);
           if((promo.items||[]).some(x=>x.independentVisualReview?.decision && !x.independentVisualReview?.reviewerId)) throw new Error('Reviewer decision without reviewer identity detected.');
-          console.log(`Machine-ready: ${pre.summary.machinePreflightPassed}/${pre.summary.candidateCount}; externally approved: ${promo.summary.externallyApprovedVisuals}; promotion eligible: ${promo.summary.promotionEligible}.`);
+          const queue=JSON.parse(fs.readFileSync('data/encyclopedia-visual-review-work-queue.json','utf8'));
+          if(queue.summary.machinePreflightPassed!==pre.summary.candidateCount) throw new Error(`Expected every candidate to pass machine visual preflight; ${queue.summary.machinePreflightPassed}/${pre.summary.candidateCount} passed.`);
+          console.log(`Machine-ready: ${pre.summary.machinePreflightPassed}/${pre.summary.candidateCount}; evidence mapping required: ${queue.summary.evidenceMappingRequired}; awaiting independent visual review: ${queue.summary.awaitingIndependentVisualReview}; promotion eligible: ${promo.summary.promotionEligible}.`);
           NODE
 
       - name: Upload review gate evidence
@@ -70,5 +80,7 @@ jobs:
             data/encyclopedia-visual-machine-preflight.json
             data/encyclopedia-visual-promotion-manifest.json
             data/encyclopedia-independent-review-manifest.json
+            data/encyclopedia-visual-review-work-queue.json
+            data/encyclopedia-claim-evidence-candidates.json
           if-no-files-found: error
           retention-days: 30
