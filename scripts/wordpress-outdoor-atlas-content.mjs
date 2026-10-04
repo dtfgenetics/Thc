@@ -11,7 +11,7 @@ export function stripOutdoorAtlas(html){
   clean=clean.replace(/<!-- dtf-outdoor-visuals-v6:start -->[\s\S]*?<!-- dtf-outdoor-visuals-v6:end -->/g,'');
   while(clean.includes(END)){
     const end=clean.indexOf(END);
-    const candidates=FALLBACK_STARTS.map(marker=>clean.lastIndexOf(marker,end)).filter(index=>index>=0);
+    const candidates=FALLBACK_STARTS.map(marker=>clean.indexOf(marker)).filter(index=>index>=0&&index<end);
     if(candidates.length===0) throw new Error('Truncated Outdoor atlas closing marker has no recoverable atlas start.');
     clean=`${clean.slice(0,Math.min(...candidates))}${clean.slice(end+END.length)}`;
   }
