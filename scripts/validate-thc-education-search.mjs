@@ -81,7 +81,7 @@ if(!errors.length){
  const packageJson=JSON.parse(fs.readFileSync('package.json','utf8'));
  if(!searchPage.includes('DTF_STATIC_SEARCH_FALLBACK_START')||!searchPage.includes('data-static-fallback')) errors.push('education search page missing static crawlable fallback');
  if(!encyclopediaPage.includes('DTF_STATIC_ENCYCLOPEDIA_FALLBACK_START')||!encyclopediaPage.includes('data-static-fallback')) errors.push('encyclopedia page missing static crawlable fallback');
- const publishedStaticLinks=(encyclopediaPage.match(/\\/learn\\/encyclopedia\\/thc-enc-\\d{3,}\\//g)||[]).length;
+ const publishedStaticLinks=(encyclopediaPage.match(/\/learn\/encyclopedia\/thc-enc-\d{3,}\//g)||[]).length;
  const publishedIndexCount=(encyclopediaIndex.lessons||[]).filter(x=>x.status==='published').length;
  if(publishedStaticLinks<publishedIndexCount) errors.push('static encyclopedia directory does not expose every published lesson link: '+publishedStaticLinks+'/'+publishedIndexCount);
  if(!fallbackBuilder.includes('Static education fallbacks built')) errors.push('static education fallback builder contract missing');
