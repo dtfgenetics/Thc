@@ -24,10 +24,10 @@ let puzzle=puzzleA;
 let start=null;
 let found=new Set();
 let attempts=0,hintsRemaining=3,hintsUsed=0,missionToken=1,pendingMissionId=null,resetArmedUntil=0;
-const cellSelector=([r,c])=>`[data-r="${r}"][data-c="${c}"]`;
+const cellSelector=([r,c])=>'[data-r="'+r+'"][data-c="'+c+'"]';
 const cells=new Map();
-for(let r=0;r<2;r++)for(let c=0;c<2;c++){const key=`${r},${c}`;cells.set(key,{classList:makeClassList(),click(){start=[r,c];}});}
-const gridEl={querySelector(sel){const m=sel.match(/data-r="(\d+)"\]\[data-c="(\d+)"/);return m?cells.get(`${m[1]},${m[2]}`):null;}};
+for(let r=0;r<2;r++)for(let c=0;c<2;c++){const key=String(r)+','+String(c);cells.set(key,{classList:makeClassList(),click(){start=[r,c];}});}
+const gridEl={querySelector(sel){const m=sel.match(/data-r="(\\d+)"\\]\\[data-c="(\\d+)"/);return m?cells.get(String(m[1])+','+String(m[2])):null;}};
 const missionButtons=[
   {dataset:{id:'a'},click(){puzzle=puzzleA;found=new Set();}},
   {dataset:{id:'b'},click(){puzzle=puzzleB;found=new Set();}}
