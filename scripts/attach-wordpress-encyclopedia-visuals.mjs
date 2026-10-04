@@ -101,6 +101,7 @@ async function uploadCanonicalMedia(item,identity){
     description
   }});
   if(!String(updated?.source_url||'').includes('/wp-content/uploads/')) throw new Error(`${item.id}: uploaded media source URL is not a WordPress upload URL.`);
+  if(writeDelayMs>0) await sleep(writeDelayMs);
   return updated;
 }
 async function getAll(endpoint){
