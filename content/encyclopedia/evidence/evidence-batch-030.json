@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-030",
+  "createdAt": "2026-10-04",
+  "scope": "High-priority evidence for seedling light acclimation, root-zone disease diagnostics, stomatal gas exchange, and cytokinin signaling.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "General plant mechanisms support explanation but do not create Cannabis-specific numeric targets.",
+    "Disease syndromes remain differentials until causal evidence is adequate; environmental predisposition is not itself pathogen identification.",
+    "Gas-exchange variables must be interpreted with measurement conditions and leaf/canopy context.",
+    "Tissue-culture hormone responses remain genotype, tissue, medium and protocol dependent.",
+    "All mappings remain pending independent science review."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0315",
+      "lessonId": "THC-ENC-034",
+      "sourceIds": [
+        "ENC-AUTH-161"
+      ],
+      "claimType": "photoacclimation-and-excess-light-mechanism",
+      "supportedClaim": "Plants use regulated photoprotective energy dissipation when absorbed light exceeds immediate photosynthetic use, providing a mechanistic basis for gradual light acclimation and for distinguishing acclimation from photodamage.",
+      "sourceLocator": "Ruban (2016), PMID 26864015, DOI 10.1104/pp.15.01935.",
+      "applicability": "Supports measured, progressive seedling light changes and observation of morphology/temperature rather than copying mature-canopy light settings.",
+      "limitations": "General plant photoprotection evidence does not define a universal Cannabis seedling PPFD, DLI, ramp rate or injury threshold.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0316",
+      "lessonId": "THC-ENC-049",
+      "sourceIds": [
+        "ENC-AUTH-162",
+        "ENC-AUTH-151"
+      ],
+      "claimType": "root-disease-differential-and-predisposition",
+      "supportedClaim": "Root/crown decline should be approached as a syndrome with multiple possible biotic and abiotic causes; field or root-zone pattern, environment, representative sampling and diagnostic confirmation are needed to separate pathogens from predisposing conditions.",
+      "sourceLocator": "Cornell University Plant Disease Diagnostic Clinic; Cornell Hemp, Abiotic vs. biotic issues in hemp fields (2024).",
+      "applicability": "Supports the lesson's pathogen-versus-predisposition distinction and structured case/sample workflow.",
+      "limitations": "Diagnostic guidance does not establish Cannabis pathogen prevalence, pathogenicity of an isolate, pesticide choice, or a universal root-zone threshold.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0317",
+      "lessonId": "THC-ENC-068",
+      "sourceIds": [
+        "ENC-AUTH-163"
+      ],
+      "claimType": "stomatal-dynamics-gas-exchange",
+      "supportedClaim": "Stomatal aperture and response dynamics couple CO2 entry with transpirational water loss, so assimilation, stomatal conductance and water-use metrics should be interpreted together and under recorded environmental conditions.",
+      "sourceLocator": "Lawson and Blatt (2014), PMID 25060834, PMCID PMC4149717, DOI 10.1104/pp.114.237107.",
+      "applicability": "Supports the lesson's coupled interpretation of gas-exchange variables and requirement to record chamber and environmental context.",
+      "limitations": "The review is general plant physiology and does not establish Cannabis-specific stomatal conductance, VPD, CO2 or irrigation targets.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0318",
+      "lessonId": "THC-ENC-074",
+      "sourceIds": [
+        "ENC-AUTH-164"
+      ],
+      "claimType": "cytokinin-signaling-and-development",
+      "supportedClaim": "Cytokinins participate in regulated developmental networks affecting cell division, shoot development, nutrient signaling and interactions with other hormone pathways; response therefore depends on tissue and signaling context rather than cytokinin concentration alone.",
+      "sourceLocator": "Kieber and Schaller (2018), PMID 29343697, DOI 10.1242/dev.149344.",
+      "applicability": "Supports the lesson's cytokinin/crosstalk framework and its warning against interpreting shoot multiplication as a simple one-hormone response.",
+      "limitations": "Model-plant signaling evidence does not validate Cannabis micropropagation concentrations, genotype-independent organogenesis, pathogen freedom or genetic stability.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
