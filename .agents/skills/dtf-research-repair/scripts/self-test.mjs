@@ -61,6 +61,8 @@ assert.match(skill,/do not leave approved work stranded at INTEGRATION_READY/);
 assert.match(skill,/typed, machine-checkable acceptance criteria/);
 assert.match(skill,/apply the configured bounded repair plan before retrying/);
 assert.match(skill,/quarantine rather than loop forever/);
+assert.match(skill,/Production completion must reuse the protected production gateway/);
+assert.match(skill,/require non-empty passing live evidence/);
 assert.match(agents,/dtf-research-repair\/SKILL\.md/);
 assert.match(aiContext,/dtf-research-repair\/SKILL\.md/);
 assert.match(aiContext,/existing orchestrator epic\/job machinery/);
