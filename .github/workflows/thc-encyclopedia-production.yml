@@ -127,6 +127,8 @@ jobs:
         run: node scripts/validate-encyclopedia-search-benchmark.mjs
       - name: Validate lesson renderer contract
         run: npm run verify:encyclopedia-renderer
+      - name: Validate lesson structured data
+        run: npm run verify:encyclopedia-structured-data
       - name: Validate encyclopedia production skill
         run: npm run verify:encyclopedia-skill
       - name: Validate controlled lesson structure
