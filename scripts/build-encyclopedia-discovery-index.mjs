@@ -1,8 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { discoverEncyclopediaVolumes } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root=process.cwd();
-const registry=JSON.parse(fs.readFileSync(path.join(root,'content/encyclopedia/current-controlled-registry.json'),'utf8'));
+const registryState=loadEncyclopediaRegistry(root);
+const registry={entries:registryState.entries};
 const topics=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-topics.json'),'utf8')).topics||[];
 const release=JSON.parse(fs.readFileSync(path.join(root,'site/wordpress/education/encyclopedia/current-production-batch.json'),'utf8'));
 const searchLanguage=JSON.parse(fs.readFileSync(path.join(root,'configuration/encyclopedia-search-language.json'),'utf8'));
@@ -17,9 +20,8 @@ const slugify=value=>String(value??'').toLowerCase().normalize('NFKD').replace(/
 const evidenceRoot=path.join(root,'content/encyclopedia/evidence');
 const sourceRegistry=JSON.parse(fs.readFileSync(path.join(evidenceRoot,'authoritative-sources.json'),'utf8'));
 const sourceById=new Map((sourceRegistry.sources||[]).map(source=>[source.id,source]));
-for(let volumeNumber=1;volumeNumber<=21;volumeNumber+=1){
-  const volume=String(volumeNumber).padStart(2,'0');
-  const registerPath=path.join(root,'content','encyclopedia',`volume-${volume}`,'source-register.json');
+for(const volumeInfo of discoverEncyclopediaVolumes(root)){
+  const registerPath=path.join(root,'content','encyclopedia',volumeInfo.name,'source-register.json');
   if(!fs.existsSync(registerPath))continue;
   const register=JSON.parse(fs.readFileSync(registerPath,'utf8'));
   for(const source of register.sources||[]){
@@ -147,8 +149,8 @@ const lessons=(registry.entries||[]).map(entry=>{
     id:entry.id,
     number:Number(entry.number),
     part:Number(entry.part),
-    topic:topic?.title||`Part ${entry.part}`,
-    topicSlug:topic?.slug||`part-${entry.part}`,
+    topic:topic?.title||entry.topicTitle||`Part ${entry.part}`,
+    topicSlug:topic?.slug||entry.topicSlug||`part-${entry.part}`,
     title:entry.title,
     primaryFormat:entry.primaryFormat||lesson.primaryFormat||'Reference',
     teachingVisual:entry.teachingVisual||lesson.requiredTeachingVisual||null,
@@ -162,8 +164,19 @@ const lessons=(registry.entries||[]).map(entry=>{
   };
 });
 
-const topicRows=topics.map(topic=>{
-  const rows=lessons.filter(x=>x.part===Number(topic.part));
+const configuredTopics=new Map(topics.map(topic=>[Number(topic.part),topic]));
+const parts=[...new Set(lessons.map(x=>Number(x.part)))].sort((a,b)=>a-b);
+const topicRows=parts.map(part=>{
+  const configured=configuredTopics.get(part);
+  const first=lessons.find(x=>x.part===part);
+  const topic=configured||{
+    part,
+    slug:first?.topicSlug||`part-${part}`,
+    title:first?.topic||`Part ${part}`,
+    range:[Math.min(...lessons.filter(x=>x.part===part).map(x=>x.number)),Math.max(...lessons.filter(x=>x.part===part).map(x=>x.number))],
+    description:`THC Encyclopedia extension topic Part ${part}.`
+  };
+  const rows=lessons.filter(x=>x.part===part);
   return {...topic,count:rows.length,publishedCount:rows.filter(x=>x.status==='published').length};
 });
 const facets={
@@ -177,7 +190,7 @@ const output={
   publicationCutoff,
   lessonCount:lessons.length,
   searchLanguageVersion:Number(searchLanguage.schemaVersion||1),
-  note:'Generated from the controlled registry, canonical lesson source, and claim-level evidence registry. Review-only entries stay discoverable without exposing unreleased lesson bodies; evidence mappings do not imply scientific approval.',
+  note:`Generated from the protected ${registryState.coreCount}-lesson core plus ${registryState.extensionCount} extension entries, canonical lesson source, and claim-level evidence registry. Review-only entries stay discoverable without exposing unreleased lesson bodies; evidence mappings do not imply scientific approval.`,
   facets,
   topics:topicRows,
   lessons
