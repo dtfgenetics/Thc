@@ -21,6 +21,17 @@ const policy=JSON.parse(fs.readFileSync(policyPath,'utf8'));
 const plan=JSON.parse(fs.readFileSync(planPath,'utf8'));
 const placements=JSON.parse(fs.readFileSync(placementPath,'utf8'));
 const library=fs.readFileSync(libraryPath,'utf8');
+const libraryMetaPath=path.join(root,'site/public-route-patch/learn/infographics/library.json');
+const libraryMeta=JSON.parse(fs.readFileSync(libraryMetaPath,'utf8'));
+const activePublishingSurfaces=[
+  'scripts/build-public-learning-center.mjs',
+  'scripts/publish-wordpress-education-wave2.mjs',
+  'scripts/rebuild-wordpress-learning-experience-v3.mjs',
+  'scripts/attach-wordpress-encyclopedia-visuals.mjs',
+  'site/wordpress/pages/home.html',
+  'site/wordpress/pages/gallery.html',
+  'site/public-route-patch/learn/infographics/index.html'
+].map(p=>path.join(root,p)).filter(fs.existsSync);
 const errors=[];
 
 const assert=(cond,msg)=>{if(!cond)errors.push(msg)};
@@ -67,6 +78,14 @@ for(const token of banned){
   if(library.includes(token)) errors.push(`visual library still references quarantined visual: ${token}`);
 }
 
+for(const removed of libraryMeta.removedAssets||[]){
+  const stem=String(removed).replace(/\.(?:png|jpe?g|webp)$/i,'');
+  for(const surface of activePublishingSurfaces){
+    const body=fs.readFileSync(surface,'utf8');
+    if(body.includes(stem)) errors.push(`${path.relative(root,surface)} still references rejected education visual: ${stem}`);
+  }
+}
+
 for(const p of mapPaths){
   const label=path.relative(root,p);
   const data=JSON.parse(fs.readFileSync(p,'utf8'));
@@ -93,4 +112,4 @@ if(errors.length){
   for(const error of errors) console.error(' - '+error);
   process.exit(1);
 }
-console.log('Education visual system valid: quarantined references removed, 12 subject families and 48 exact role-specific placement records defined, keyword fallback forbidden, approved-only library preserved.');
+console.log(`Education visual system valid: quarantined references removed, rejected assets blocked across ${activePublishingSurfaces.length} publishing surfaces, 12 subject families and 48 exact role-specific placement records defined, keyword fallback forbidden, approved-only library preserved.`);
