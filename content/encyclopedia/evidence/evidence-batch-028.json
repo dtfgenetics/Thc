@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-028",
+  "createdAt": "2026-10-04",
+  "scope": "PubMed/NCBI cannabis nitrogen evidence plus Cornell hemp diagnostic, scouting, and disease-extension evidence.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "PubMed-indexed experimental treatment concentrations remain bounded to the tested genotype, stage, environment, medium, nutrient form, and measurement methods.",
+    "Cornell field symptoms and spatial patterns support differential diagnosis and scouting; they do not by themselves confirm a causal organism.",
+    "Cornell disease observations are regional extension evidence and must retain geography, date, host, and confirmation limitations.",
+    "All mappings remain pending independent science review and do not alter lesson publication or independent-approval state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0305",
+      "lessonId": "THC-ENC-122",
+      "sourceIds": [
+        "ENC-AUTH-150",
+        "ENC-AUTH-149"
+      ],
+      "claimType": "nitrogen-dose-response-and-transfer-limits",
+      "supportedClaim": "Controlled medical-cannabis experiments demonstrate dose-dependent nitrogen effects on biomass, photosynthesis, tissue ionome, water relations, and nitrogen-use efficiency under long photoperiod, while current reviews show that Cannabis nutrient-use evidence remains genotype- and production-type dependent.",
+      "sourceLocator": "PubMed PMID 33312185 / PMCID PMC7704455 / DOI 10.3389/fpls.2020.572293; Wee et al. (2025), DOI 10.1093/jxb/erae362.",
+      "applicability": "Supports the lesson's treatment of nitrogen as a measured physiological input and its warning that a published concentration is experimental evidence rather than a universal cannabis standard.",
+      "limitations": "The primary experiment used specific medical-cannabis material, vegetative stage, controlled-room conditions, soilless media, and five tested N concentrations. Reported optima must not be generalized to flowering, field soil, other genotypes, or other nitrogen-form ratios without validation.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0306",
+      "lessonId": "THC-ENC-281",
+      "sourceIds": [
+        "ENC-AUTH-151",
+        "ENC-AUTH-152"
+      ],
+      "claimType": "diagnostic-pattern-scouting-corroboration",
+      "supportedClaim": "Cornell hemp guidance distinguishes abiotic from biotic problems using causal category, field distribution, plant/tissue inspection, repeated scouting, and contextual records; representative sampling and inspection of upper/lower leaves, canopy levels, stems, crowns, and roots improve diagnostic evidence.",
+      "sourceLocator": "Cornell Hemp: Abiotic vs. biotic issues in hemp fields (2024); Scouting a hemp field for disease and insects (2024).",
+      "applicability": "Corroborates the Encyclopedia identification workflow by connecting visual observations to spatial pattern, sampling design, plant part, growth stage, weather, neighboring reservoirs, and prior stressors.",
+      "limitations": "Field pattern and symptoms narrow a differential but do not prove pathogen identity, nutrient cause, or treatment threshold. Laboratory or expert confirmation may still be required.",
+      "reviewState": "source_collected_needs_science_review"
+    },
+    {
+      "evidenceId": "ENC-EVID-0307",
+      "lessonId": "THC-ENC-301",
+      "sourceIds": [
+        "ENC-AUTH-151",
+        "ENC-AUTH-153"
+      ],
+      "claimType": "disease-system-and-abiotic-confounder-corroboration",
+      "supportedClaim": "Hemp disease assessment must separate infectious disease from abiotic disorders and consider host condition, environment, drainage, humidity/airflow, crop rotation, clean planting material, and observed disease distribution rather than diagnosing from a single symptom.",
+      "sourceLocator": "Cornell Hemp: Abiotic vs. biotic issues in hemp fields (2024); Diseases Affecting Hemp in New York (2020).",
+      "applicability": "Adds Cornell regional hemp evidence to the disease-system lesson and strengthens its confounder/field-context layer.",
+      "limitations": "Cornell's disease occurrence and management observations are centered on New York hemp systems and the publication dates stated. They do not establish universal disease prevalence, pesticide legality, or causal confirmation for an individual crop.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
