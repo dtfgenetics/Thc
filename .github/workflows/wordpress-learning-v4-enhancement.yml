@@ -172,7 +172,7 @@ jobs:
 
       - name: Report education V4 result
         if: always()
-        uses: actions/github-script@v7
+        shell: bash
         env:
           STATUS: ${{ job.status }}
           VALIDATE: ${{ steps.validate.outcome }}
@@ -182,18 +182,16 @@ jobs:
           TOPICS: ${{ steps.publish.outputs.topics }}
           TRACKS: ${{ steps.publish.outputs.tracks }}
           EXPANDED: ${{ steps.expand.outputs.expanded }}
-        with:
-          script: |
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
-              '## THC education guided-learning V4','',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Result: **${process.env.STATUS}**`,
-              `Curriculum validation: **${process.env.VALIDATE || 'not-run'}**`,
-              `WordPress guided-learning publication: **${process.env.PUBLISH || 'not-run'}**`,
-              `Advanced subject expansion: **${process.env.EXPAND || 'not-run'}**`,
-              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
-              `Guided subject pages: **${process.env.TOPICS || '0'}**`,
-              `Learning paths: **${process.env.TRACKS || '0'}**`,
-              `Deepened subjects: **${process.env.EXPANDED || '0'}**`,'',
-              'This layer preserves the canonical THC literature and adds prerequisites, measurements, interpretation cautions, field exercises, ordered learning paths, direct encyclopedia depth, plus advanced Outdoor and Harvest/Post-harvest modules.'
-            ].join('\n')});
+        run: |
+          {
+            echo '## THC education guided-learning V4'
+            echo
+            echo "- Result: **${STATUS:-unknown}**"
+            echo "- Curriculum validation: **${VALIDATE:-not-run}**"
+            echo "- WordPress guided-learning publication: **${PUBLISH:-not-run}**"
+            echo "- Advanced subject expansion: **${EXPAND:-not-run}**"
+            echo "- Visitor verification: **${VERIFY:-not-run}**"
+            echo "- Guided subject pages: **${TOPICS:-0}**"
+            echo "- Learning paths: **${TRACKS:-0}**"
+            echo "- Deepened subjects: **${EXPANDED:-0}**"
+          } >> "$GITHUB_STEP_SUMMARY"
