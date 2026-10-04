@@ -152,6 +152,7 @@ async function scanWorker(){
 await Promise.all(Array.from({length:scanConcurrency},()=>scanWorker()));
 
 const candidates=[];
+const blocked=[];
 for(const row of scanResults){
   const {page,id,storedKinds,publicView,renderedKinds,kinds}=row;
   if(!kinds.length) continue;
@@ -171,7 +172,23 @@ for(const row of scanResults){
     control.safetyHold!==true &&
     lesson.safetyHold!==true;
   if(lessonPublicationAuthorized!==true && !ownerOverrideEligible){
-    throw new Error(`${id}: live copy is defective but neither canonical nor eligible owner publication authorization permits automatic republish.`);
+    blocked.push({
+      id,
+      pageId:page.id,
+      slug:page.slug,
+      kinds,
+      storedKinds,
+      renderedKinds,
+      publicStatus:publicView.status,
+      sourceFile:lesson.__path,
+      reason:'publication-hold',
+      publicationAuthorized:lessonPublicationAuthorized===true,
+      ownerOverrideEligible:false,
+      releaseTimeReview:String(control.releaseTimeReview||''),
+      independentApproval:control.independentApproval??null,
+      safetyHold:control.safetyHold??lesson.safetyHold??null
+    });
+    continue;
   }
   candidates.push({
     id,pageId:page.id,slug:page.slug,kinds,
@@ -186,7 +203,10 @@ for(const row of scanResults){
 const report={
   scannedPublishedLessons:lessonPages.length,
   scanConcurrency,
-  defectsFound:candidates.length,
+  defectsFound:candidates.length+blocked.length,
+  repairableDefects:candidates.length,
+  blockedDefects:blocked.length,
+  blocked,
   runtimeOnlyDefects:candidates.filter(x=>x.runtimeOnly).length,
   storedContentDefects:candidates.filter(x=>x.storedKinds.length>0).length,
   structuredDataMissing:candidates.filter(x=>x.kinds.includes('structured-data-missing')).length,
@@ -197,7 +217,7 @@ const report={
 await writeFile('/tmp/encyclopedia-copy-repair-scan.json',JSON.stringify(report,null,2)+'\n','utf8');
 
 if(!candidates.length){
-  console.log(JSON.stringify({...report,result:'no-repair-needed'},null,2));
+  console.log(JSON.stringify({...report,result:blocked.length?'publication-holds-remain':'no-repair-needed'},null,2));
   process.exit(0);
 }
 
@@ -227,4 +247,4 @@ const child=spawnSync(process.execPath,['scripts/publish-wordpress-encyclopedia-
 });
 if(child.status!==0) process.exit(child.status??1);
 
-console.log(JSON.stringify({...report,result:'repaired-via-canonical-publisher'},null,2));
+console.log(JSON.stringify({...report,result:blocked.length?'repaired-eligible-publication-holds-remain':'repaired-via-canonical-publisher'},null,2));
