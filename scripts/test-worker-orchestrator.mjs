@@ -710,14 +710,18 @@ assert.equal(exhaustedPlan.state, 'QUARANTINED')
 
 
 const productionJob = newJob({ jobId:'prod-1', title:'ship it', state:'PRODUCTION_READY', productionImpact:true, productionTargets:['route:/learn/'], acceptanceCriteria:[{type:'production-live',target:'route:/learn/'}] })
-const deploying = startProductionRelease(productionJob,{workflowRunId:9001,sourceSha:'abc123',now:'2026-10-04T01:00:00.000Z'})
+const productionSourceSha = 'a'.repeat(40)
+const deploying = startProductionRelease(productionJob,{workflowRunId:9001,sourceSha:productionSourceSha,now:'2026-10-04T01:00:00.000Z'})
 assert.equal(deploying.state,'DEPLOYING')
-const live = recordDeploymentComplete(deploying,{workflowRunId:9001,conclusion:'success',now:'2026-10-04T01:05:00.000Z'})
+const live = recordDeploymentComplete(deploying,{workflowRunId:9001,sourceSha:productionSourceSha,conclusion:'success',now:'2026-10-04T01:05:00.000Z'})
 assert.equal(live.state,'LIVE_VERIFYING')
-const done = recordLiveVerification(live,{workflowRunId:9001,sourceSha:'abc123',checks:[{target:'/learn/',ok:true}],now:'2026-10-04T01:06:00.000Z'})
+const done = recordLiveVerification(live,{workflowRunId:9001,sourceSha:productionSourceSha,checks:[{target:'/learn/',ok:true}],now:'2026-10-04T01:06:00.000Z'})
 assert.equal(done.state,'DONE')
-assert.throws(()=>recordLiveVerification(live,{workflowRunId:9001,sourceSha:'wrong',checks:[{target:'/learn/',ok:true}]}),/does not match release source/)
-assert.throws(()=>recordDeploymentComplete(deploying,{workflowRunId:9001,conclusion:'failure'}),/must be success/)
+assert.throws(()=>recordLiveVerification(live,{workflowRunId:9001,sourceSha:'b'.repeat(40),checks:[{target:'/learn/',ok:true}]}),/does not match release source/)
+assert.throws(()=>recordLiveVerification(live,{workflowRunId:9001,sourceSha:productionSourceSha,checks:[{ok:true}]}),/requires a target/)
+assert.throws(()=>recordDeploymentComplete(deploying,{workflowRunId:9001,sourceSha:'b'.repeat(40),conclusion:'success'}),/deployed source SHA/)
+assert.throws(()=>recordDeploymentComplete(deploying,{workflowRunId:9001,sourceSha:productionSourceSha,conclusion:'failure'}),/must be success/)
+assert.throws(()=>startProductionRelease(productionJob,{workflowRunId:'invalid',sourceSha:productionSourceSha}),/positive integer/)
 
 
 const repairReady = { ...repairJob, state:'REPAIRING', repair:{ workerKind:'test-repair', nextEligibleAt:'2026-10-04T00:00:00.000Z' } }
