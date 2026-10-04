@@ -137,6 +137,14 @@ npm run verify:growlens
 - Never expose or commit credentials, tokens, passwords, private keys, private room data, service-role keys, or `.env` secrets.
 - Do not call a commit, merge, build, package, or successful upload a live update until the exact production route is verified.
 
+## Broad continuation and repair requests
+
+When the user asks to **continue**, **finish the project**, **audit and complete**, **research and fix**, or broadly advance DTF work, read `.agents/skills/dtf-research-repair/SKILL.md` before starting a fresh audit.
+
+That controller must resume existing durable jobs/epics/PRs where possible, use the V2 system-orchestrator issue/lease lifecycle as durable truth, rotate inspection surfaces, prefer executable work over repeated discovery, and continue after the first completed repair while safe ready work remains.
+
+Do not create a parallel campaign database or duplicate scheduler. Broad campaigns should materialize through the existing orchestrator epic/job machinery.
+
 ## Standard change sequence
 
 1. Inspect current `main` and relevant implementation/content enough to know what is being replaced or retained.
