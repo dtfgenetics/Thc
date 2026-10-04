@@ -419,6 +419,9 @@ jobs:
           check 'https://dtfseeds.com/terpene-atlas/' 'Variability across 79 inflorescences'
           check 'https://dtfseeds.com/ph-meter/' 'pH Meter'
           check 'https://dtfseeds.com/tds-meter/' 'TDS / EC Meter'
+          check 'https://dtfseeds.com/environment-control/' 'THC Environmental Control Center'
+          check 'https://dtfseeds.com/dryback-lab/' 'THC Irrigation & Dryback Lab'
+          check 'https://dtfseeds.com/dry-cure-lab/' 'THC Dry & Cure Lab'
           check 'https://dtfseeds.com/assets/thc-history-core-v1.mjs' 'export function csvTable'
           module_headers="$(mktemp)"
           curl -fsS --retry 5 --retry-delay 5 \
