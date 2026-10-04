@@ -164,7 +164,7 @@ try {
         'createdAt' => $now
     ]);
 
-    $rateDirectory = growlens_path('rate');
+    $rateDirectory = growlens_private_root() . DIRECTORY_SEPARATOR . 'rate';
     file_put_contents($rateDirectory . DIRECTORY_SEPARATOR . 'excluded-rate.json', '{}');
     @chmod($rateDirectory . DIRECTORY_SEPARATOR . 'excluded-rate.json', 0600);
     file_put_contents(growlens_path('data', $userId . '.account.lock'), 'excluded');
