@@ -45,6 +45,7 @@ for (const lesson of canonical) {
 const lateVolumeMissing = references.filter(reference => /^V(?:20|21)-SRC-\d{3}$/.test(String(reference.rawReference)) && reference.resolutionStatus === 'missing_volume_register_entry_needs_resolution');
 if (lateVolumeMissing.length) errors.push(`Volume 20–21 source-register regression: ${lateVolumeMissing.length} reference(s) are missing controlled register entries.`);
 if (Number(queue.summary?.missingVolumeRegisterEntries || 0) !== references.filter(reference => reference.resolutionStatus === 'missing_volume_register_entry_needs_resolution').length) errors.push('Source queue summary missingVolumeRegisterEntries is stale.');
+if (Number(queue.summary?.directLocatorResolvedNeedsAuthorityReview || 0) !== references.filter(reference => reference.resolutionStatus === 'direct_locator_resolved_needs_authority_review').length) errors.push('Source queue summary direct-locator count is stale.');
 if (Number(queue.summary?.controlNotesExcludedFromEvidenceTraceability || 0) !== references.filter(reference => reference.resolutionStatus === 'control_note_resolved_not_evidence_source').length) errors.push('Source queue summary control-note count is stale.');
 if (Number(queue.summary?.lessonsWithAllSourcesTraceable || 0) !== lessonRows.filter(row => row.resolutionState !== 'source_resolution_incomplete').length) errors.push('Source queue summary traceable lesson count is stale.');
 if (Number(queue.summary?.lessonsNeedingSourceResolution || 0) !== lessonRows.filter(row => row.resolutionState === 'source_resolution_incomplete').length) errors.push('Source queue summary unresolved lesson count is stale.');
@@ -58,6 +59,10 @@ for (const reference of references) {
   if (!/pending|needs|incomplete|resolved/.test(String(reference.resolutionStatus))) errors.push(`${reference.referenceId}: invalid resolution status.`);
   if (!/pending/.test(String(reference.reviewState))) errors.push(`${reference.referenceId}: review must remain pending.`);
   if (reference.publicationEffect !== 'none') errors.push(`${reference.referenceId}: publication effect must be none.`);
+  const directLocators = Array.isArray(reference.directLocators) ? reference.directLocators : [];
+  if (new Set(directLocators).size !== directLocators.length) errors.push(`${reference.referenceId}: directLocators must be unique.`);
+  for (const locator of directLocators) if (!/^https:\/\//.test(String(locator))) errors.push(`${reference.referenceId}: direct locator must use HTTPS: ${locator}`);
+  if (reference.resolutionStatus === 'direct_locator_resolved_needs_authority_review' && !directLocators.length) errors.push(`${reference.referenceId}: direct-locator status requires at least one locator.`);
   for (const id of reference.resolvedAuthoritativeSourceIds || []) if (!authorityIds.has(id)) errors.push(`${reference.referenceId}: unknown authority ${id}.`);
 }
 
