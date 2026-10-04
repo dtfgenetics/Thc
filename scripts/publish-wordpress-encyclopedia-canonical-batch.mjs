@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { effectiveLessonAssessment, buildLessonAnswerRationalesV1 } from './lib/encyclopedia-assessment-v2.mjs';
 import { learnerFacingWorkedExampleFor } from './lib/encyclopedia-worked-examples.mjs';
 import { encyclopediaStructuredDataHtml } from './lib/encyclopedia-structured-data.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const user=process.env.WP_API_USERNAME;
@@ -13,6 +14,8 @@ const backupRoot=process.env.BACKUP_ROOT||'/tmp/dtf-encyclopedia-production';
 if(!user||!pass) throw new Error('Missing WordPress API credentials.');
 const auth=Buffer.from(`${user}:${pass}`).toString('base64');
 const batch=JSON.parse(await readFile(input,'utf8'));
+const registryState=loadEncyclopediaRegistry(process.cwd());
+const registryById=new Map(registryState.entries.map(entry=>[entry.id,entry]));
 if(!Array.isArray(batch.lessonFiles)||!batch.lessonFiles.length) throw new Error('Batch has no lessonFiles.');
 if(batch.publicationAuthorized===false||batch.status==='blocked_external_review'){
   throw new Error(`Batch ${batch.batch||input} is review-only and not authorized for publication.`);
@@ -34,7 +37,7 @@ if(ownerOverrideIds.size && batch.ownerPublicationOverride!==true) throw new Err
 const lessons=[];
 for(const file of batch.lessonFiles){
   const lesson=JSON.parse(await readFile(file,'utf8'));
-  if(!/^THC-ENC-\d{3}$/.test(lesson.id)) throw new Error(`Invalid lesson ID in ${file}`);
+  if(!/^THC-ENC-\d{3,}$/.test(lesson.id)) throw new Error(`Invalid lesson ID in ${file}`);
   if(!lesson.title||!lesson.objective||!Array.isArray(lesson.coreScience)||lesson.coreScience.length<2) throw new Error(`Incomplete canonical lesson ${lesson.id}`);
   const ownerOverride=ownerOverrideIds.has(lesson.id);
   if(ownerOverride){
@@ -127,9 +130,9 @@ async function allChildren(parent){
 }
 
 const backups=[];
-const lessonVisualPattern=/<!-- THC-ENC-VISUAL:THC-ENC-\d{3} START -->[\s\S]*?<!-- THC-ENC-VISUAL:THC-ENC-\d{3} END -->/i;
+const lessonVisualPattern=/<!-- THC-ENC-VISUAL:THC-ENC-\d{3,} START -->[\s\S]*?<!-- THC-ENC-VISUAL:THC-ENC-\d{3,} END -->/i;
 function preserveExistingLessonVisual(slug,existing,content){
-  if(!/^thc-enc-\d{3}$/.test(String(slug||''))||!existing) return content;
+  if(!/^thc-enc-\d{3,}$/.test(String(slug||''))||!existing) return content;
   const raw=String(existing.content?.raw||'');
   const match=raw.match(lessonVisualPattern);
   if(!match||String(content).includes('THC-ENC-VISUAL:')) return content;
@@ -149,8 +152,8 @@ async function upsertPage({slug,title,parent,content,excerpt=''}){
 }
 
 const toolLinksFor=(a)=>{
-  const n=Number(a.number||String(a.id||'').match(/(\d{3})$/)?.[1]||0);
-  const part=Math.max(1,Math.ceil(n/20));
+  const n=Number(a.number||String(a.id||'').match(/(\d{3,})$/)?.[1]||0);
+  const part=Number(registryById.get(a.id)?.part||Math.max(1,Math.ceil(n/20)));
   const links=[];
   const add=(label,href)=>{if(!links.some(x=>x.href===href))links.push({label,href})};
   if([3,5,7].includes(part)){add('Water Quality Lab','/water-quality-lab/');add('pH reference','/ph-meter/');add('EC / TDS reference','/tds-meter/')}
@@ -170,12 +173,12 @@ const toolLinksHtml=(a)=>{
   return links.length?'<div class="thc-tools">'+links.map(x=>`<a href="${esc(x.href)}">${esc(x.label)}<span>→</span></a>`).join('')+'</div>':'';
 };
 const lessonNav=(a)=>{
-  const n=Number(a.number||String(a.id||'').match(/(\d{3})$/)?.[1]||0);
+  const n=Number(a.number||String(a.id||'').match(/(\d{3,})$/)?.[1]||0);
   const prev=n>1?`<a href="/learn/encyclopedia/thc-enc-${String(n-1).padStart(3,'0')}/">← Previous</a>`:'<span></span>';
-  const next=n<420?`<a href="/learn/encyclopedia/thc-enc-${String(n+1).padStart(3,'0')}/">Next →</a>`:'<a href="/learn/encyclopedia/">Browse all topics →</a>';
+  const next=n<registryState.totalCount?`<a href="/learn/encyclopedia/thc-enc-${String(n+1).padStart(3,'0')}/">Next →</a>`:'<a href="/learn/encyclopedia/">Browse all topics →</a>';
   return `<nav class="thc-lesson-nav" aria-label="Encyclopedia lesson navigation">${prev}${next}</nav>`;
 };
-const linkedCrossRefs=(values)=>`<ul class="thc-list">${values.map(value=>`<li>${esc(String(value)).replace(/THC-ENC-(\d{3})/g,(_,n)=>`<a href="/learn/encyclopedia/thc-enc-${n}/">THC-ENC-${n}</a>`)}</li>`).join('')}</ul>`;
+const linkedCrossRefs=(values)=>`<ul class="thc-list">${values.map(value=>`<li>${esc(String(value)).replace(/THC-ENC-(\d{3,})/g,(_,n)=>`<a href="/learn/encyclopedia/thc-enc-${n}/">THC-ENC-${n}</a>`)}</li>`).join('')}</ul>`;
 
 const css=`<style>
 .thc-ency{--green:#133c26;--leaf:#1d6b3a;--ink:#183524;--muted:#587064;--line:#dbe8df;--soft:#f4f8f5;--gold:#d6b85f;color:var(--ink);background:#fff}.thc-ency *{box-sizing:border-box}.thc-wrap{max-width:1180px;margin:auto;padding:0 22px}.thc-hero{background:radial-gradient(circle at 86% 15%,rgba(214,184,95,.2),transparent 28%),linear-gradient(135deg,#0b2918,#194c2d);color:#fff;padding:62px 0 50px}.thc-kicker{font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#d9ef82;font-size:.78rem}.thc-hero h1{max-width:16ch;font-size:clamp(2.4rem,5vw,4.8rem);line-height:.96;margin:.22em 0 .35em;letter-spacing:-.035em}.thc-hero p{max-width:850px;font-size:1.08rem;line-height:1.72;color:#e0ece4}.thc-nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.thc-btn{display:inline-block;padding:11px 16px;border-radius:999px;text-decoration:none!important;font-weight:900;background:#d6ec77;color:#15351f!important}.thc-btn.alt{background:#fff;color:#1b5b33!important;border:1px solid var(--line)}.thc-content{padding:36px 0 64px}.thc-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:34px;align-items:start}.thc-main{min-width:0}.thc-aside{position:sticky;top:18px;display:grid;gap:14px}.thc-panel{background:var(--soft);border:1px solid var(--line);border-radius:18px;padding:18px}.thc-panel h2,.thc-panel h3{margin:.05rem 0 .65rem}.thc-panel p{margin:.35rem 0;color:var(--muted)}.thc-badge{display:inline-flex;background:#e9f4ec;border:1px solid #c9dfcf;color:#245a35;border-radius:999px;padding:7px 11px;font-weight:850;font-size:.8rem}.thc-content h2{font-size:1.65rem;margin:2rem 0 .75rem}.thc-content p,.thc-list{line-height:1.78;color:#3d5a49}.thc-list{padding-left:1.25rem}.thc-terms,.thc-records,.thc-paired,.thc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:14px}.thc-terms>div,.thc-records article,.thc-paired article,.thc-card{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:17px}.thc-terms dt,.thc-records h3{font-weight:900;margin:0 0 5px}.thc-terms dd{margin:0;color:var(--muted);line-height:1.55}.thc-records h3{font-size:1rem}.thc-records p{margin:0}.thc-note{background:#f2f7e8;border-left:5px solid #9ab93c;padding:18px 20px;margin:22px 0;border-radius:0 14px 14px 0}.thc-example{margin:24px 0;border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden}.thc-example summary{cursor:pointer;padding:16px 18px;background:var(--soft);font-weight:850}.thc-example-body{padding:18px}.thc-rationales{display:grid;gap:10px;margin:14px 0 24px}.thc-rationale{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}.thc-rationale summary{cursor:pointer;padding:14px 16px;background:#f8faf8;font-weight:800}.thc-rationale-body{padding:4px 16px 14px}.thc-example-body h3{margin:1.1rem 0 .45rem;font-size:1.05rem}.thc-objective{font-size:1.06rem}.thc-tools{display:grid;gap:8px}.thc-tools a{display:flex;justify-content:space-between;gap:10px;padding:10px 11px;border:1px solid var(--line);border-radius:11px;background:#fff;text-decoration:none!important;font-weight:850;color:#205a35}.thc-lesson-nav{display:flex;justify-content:space-between;gap:14px;margin:30px 0 0;padding-top:20px;border-top:1px solid var(--line)}.thc-lesson-nav a{font-weight:900;color:#1b6538;text-decoration:none}.thc-search{width:100%;padding:15px 17px;border:1px solid #bcd0c2;border-radius:14px;font-size:1rem;margin:12px 0 22px}.thc-card h2{margin:.25rem 0 .55rem;font-size:1.25rem}.thc-card p{margin:.4rem 0 1rem}.thc-id{font-weight:900;color:#1d6b3a;font-size:.84rem;letter-spacing:.06em}.thc-footerbar{background:#0e2e1b;color:#dbe8df;padding:32px 0}.thc-footerbar a{color:#d6ec77;font-weight:900}@media(max-width:900px){.thc-layout{grid-template-columns:1fr}.thc-aside{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:640px){.thc-wrap{padding:0 16px}.thc-hero{padding:42px 0 34px}.thc-content{padding-top:24px}.thc-aside{grid-template-columns:1fr}.thc-terms,.thc-records,.thc-paired{grid-template-columns:1fr}.thc-lesson-nav{align-items:center}}
@@ -188,18 +191,11 @@ function articleHtml(a){
   return `${css}${encyclopediaStructuredDataHtml(a,{site})}<main class="thc-ency" data-thc-encyclopedia-id="${esc(a.id)}" data-thc-source-fingerprint="${fingerprintOf(a)}"><section class="thc-hero"><div class="thc-wrap"><div class="thc-kicker">THC Cannabis Encyclopedia · ${esc(a.id)}</div><h1>${esc(a.title)}</h1><p>${esc(summary)}</p><div class="thc-nav"><a class="thc-btn" href="/learn/encyclopedia/">Browse Encyclopedia</a><a class="thc-btn alt" href="/learn/search/">Search THC Education</a></div></div></section><section class="thc-content"><div class="thc-wrap"><div class="thc-layout"><article class="thc-main"><div class="thc-note thc-objective"><strong>What you will learn</strong><p>${esc(a.objective)}</p></div><h2>Core science</h2>${a.coreScience.map(p=>`<p>${esc(p)}</p>`).join('')}<h2>Why this matters in cultivation</h2>${list(a.cultivationRelevance||[])}<h2>Measure and record</h2>${records(a.measureAndRecord)}<h2>Common misconceptions</h2>${paired(misconceptionPairs(a.misconceptions))}<h2>Evidence limits</h2>${evidence(a.evidenceLimits).map(p=>`<p>${esc(p)}</p>`).join('')}<h2>Check your reasoning</h2>${list(checks.prompts)}<div class="thc-note"><strong>Try first, then compare your reasoning</strong><p>${esc(checks.scoringIntent)} Open the rationales after you have written or discussed your own answer.</p></div>${rationaleHtml(a)}${workedExampleHtml(a)}${practicalResourcesHtml(a)}<h2>Related encyclopedia topics</h2>${linkedCrossRefs(cross)}<h2>Source notes</h2>${list(sourceNotes(a.sourceNotes))}${lessonNav(a)}</article><aside class="thc-aside" aria-label="Lesson reference"><section class="thc-panel"><span class="thc-badge">Educational reference</span><h2>Terms to know</h2>${terms(a.terms)}</section><section class="thc-panel"><h2>Related tools</h2><p>Use measurements and records from the lesson with the connected THC tools.</p>${toolLinksHtml(a)}</section><section class="thc-panel"><h2>Keep the context</h2><p>Record method, units, plant stage, location, timing and cultivar when comparing observations or measurements.</p></section></aside></div></div></section><section class="thc-footerbar"><div class="thc-wrap">Continue with the <a href="/learn/encyclopedia/">Encyclopedia</a>, <a href="/learn/infographics/">visual library</a>, or <a href="/learn/">THC Learning Center</a>.</div></section></main>`;
 }
 
-function cleanRendered(s=''){return String(s).replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();}
-function indexHtml(children){
-  const rows=children.filter(p=>/^thc-enc-\d{3}$/.test(p.slug)).sort((a,b)=>a.slug.localeCompare(b.slug));
-  const cards=rows.map(p=>{const id=p.slug.toUpperCase();const title=cleanRendered(p.title?.rendered||'').replace(/^THC-ENC-\d{3}\s*[—-]\s*/i,'');const summary=cleanRendered(p.excerpt?.rendered||'');return `<article class="thc-card" data-search="${esc(`${id} ${title} ${summary}`.toLowerCase())}"><div class="thc-id">${esc(id)}</div><h2>${esc(title)}</h2><p>${esc(summary)}</p><a class="thc-btn alt" href="/learn/encyclopedia/${esc(p.slug)}/">Read lesson →</a></article>`;}).join('');
-  return `${css}<main class="thc-ency"><section class="thc-hero"><div class="thc-wrap"><div class="thc-kicker">Teaching Healthy Cultivation</div><h1>Cannabis Plant Science Encyclopedia</h1><p>The controlled 420-ID encyclopedia is publishing in verified blocks. Search visitor-verified literature pages here, then use topic infographics as supporting visual material.</p><div class="thc-nav"><a class="thc-btn" href="/learn/infographics/">Search Infographics</a><a class="thc-btn alt" href="/learn/">Learning Center</a></div></div></section><section class="thc-content"><div class="thc-wrap"><label for="thc-ency-search"><strong>Search published encyclopedia lessons</strong></label><input class="thc-search" id="thc-ency-search" type="search" placeholder="Search by THC-ENC ID, title, or topic…" autocomplete="off"><div id="thc-ency-grid" class="thc-grid">${cards}</div><div class="thc-note"><strong>Controlled rollout</strong><p>The permanent architecture contains 420 encyclopedia IDs. Only website pages that have passed the production publication lane are listed here. Independent approval remains a separate project-control field.</p></div></div></section></main><script>(()=>{const q=document.getElementById('thc-ency-search'),cards=[...document.querySelectorAll('#thc-ency-grid .thc-card')];if(!q)return;q.addEventListener('input',()=>{const s=q.value.trim().toLowerCase();cards.forEach(c=>c.hidden=!!s&&!c.dataset.search.includes(s));});})();</script>`;
-}
-
 const now=new Date().toISOString().replace(/[:.]/g,'-');
 const backupDir=path.join(backupRoot,now);await mkdir(backupDir,{recursive:true});
 const learn=await findPage('learn');if(!learn) throw new Error('Canonical /learn/ WordPress page not found.');
-let encyclopedia=await findPage('encyclopedia',learn.id);
-if(!encyclopedia) encyclopedia=await upsertPage({slug:'encyclopedia',title:'Cannabis Plant Science Encyclopedia',parent:learn.id,content:'<p>Encyclopedia publication initializing.</p>',excerpt:'Controlled THC Cannabis Encyclopedia.'});
+const encyclopedia=await findPage('encyclopedia',learn.id);
+if(!encyclopedia) throw new Error('Canonical /learn/encyclopedia/ page not found. The Learning Center publisher owns and must create the searchable encyclopedia root before lesson publication.');
 const published=[];
 for(const lesson of lessons){
   const slug=stableSlug(lesson.id);
@@ -207,9 +203,8 @@ for(const lesson of lessons){
   published.push({id:lesson.id,title:lesson.title,slug,pageId:page.id,link:page.link,sourceFile:lesson._sourceFile,sourceFingerprint:fingerprintOf(lesson)});
 }
 const children=await allChildren(encyclopedia.id);
-encyclopedia=await upsertPage({slug:'encyclopedia',title:'Cannabis Plant Science Encyclopedia',parent:learn.id,content:indexHtml(children),excerpt:'Search visitor-verified THC Cannabis Encyclopedia lessons published from the controlled 420-ID education system.'});
 await writeFile(path.join(backupDir,'pre-write-pages.json'),JSON.stringify(backups,null,2));
-const report={batch:batch.batch,source:batch.source,index:{pageId:encyclopedia.id,link:encyclopedia.link,listedLessons:children.filter(p=>/^thc-enc-\d{3}$/.test(p.slug)).length},published,backupDir,generatedAt:new Date().toISOString()};
+const report={batch:batch.batch,source:batch.source,index:{pageId:encyclopedia.id,link:encyclopedia.link,rootOwner:'learning-center-publisher',rootPreserved:true,listedLessons:children.filter(p=>/^thc-enc-\d{3,}$/.test(p.slug)).length},published,backupDir,generatedAt:new Date().toISOString()};
 await writeFile(path.join(backupDir,'encyclopedia-publication-report.json'),JSON.stringify(report,null,2));
 await writeFile(path.join(backupRoot,'latest-backup-path.txt'),backupDir+'\n');
 console.log(JSON.stringify(report,null,2));
