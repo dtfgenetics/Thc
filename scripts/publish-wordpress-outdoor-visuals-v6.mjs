@@ -99,9 +99,9 @@ const before=rendered(page.content);
 if(!before.includes('data-dtf-outdoor-v6="true"')) throw new Error('Outdoor V6 curriculum is not live; refusing to publish the visual atlas onto an older page.');
 if(!before.includes('data-dtf-topic="outdoor-cultivation"')) throw new Error('Outdoor page lost its canonical V3 topic owner marker.');
 if(!before.includes('data-dtf-learning-v4="topic-outdoor-cultivation"')) throw new Error('Outdoor page lost its canonical V4 learning owner marker.');
+await writeFile(join(backupDir,'before.json'),`${JSON.stringify(page,null,2)}\n`);
 const clean=stripOutdoorAtlas(before);
 const next=`${clean}\n${atlas()}`;
-await writeFile(join(backupDir,'before.json'),`${JSON.stringify(page,null,2)}\n`);
 await writeFile(join(backupDir,'next.html'),next);
 let wrote=false;
 try{
