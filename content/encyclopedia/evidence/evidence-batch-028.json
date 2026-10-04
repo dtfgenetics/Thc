@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "batchId": "ENC-EVID-BATCH-028",
+  "createdAt": "2026-10-04",
+  "scope": "High-priority claim-level nitrogen-supply and nutrient-use evidence for THC-ENC-122.",
+  "sourceRegistry": "content/encyclopedia/evidence/authoritative-sources.json",
+  "status": "source_collection_initial",
+  "reviewState": "needs_independent_science_review",
+  "publicationEffect": "none_review_state_unchanged",
+  "rules": [
+    "Direct cannabis nitrogen-response values remain bounded to the tested genotype, developmental stage, photoperiod, root-zone system, treatment range, and measured endpoints.",
+    "Nitrogen form, total nitrogen, root-zone pH, water chemistry, microbial transformations, and crop response must not be collapsed into a universal NH4:NO3 recipe.",
+    "General nutrient-use mechanisms may support interpretation but do not create cannabis-specific deficiency, toxicity, tissue, or fertilizer thresholds.",
+    "All mappings remain pending independent science review and do not alter lesson publication or approval state."
+  ],
+  "claimEvidence": [
+    {
+      "evidenceId": "ENC-EVID-0305",
+      "lessonId": "THC-ENC-122",
+      "sourceIds": [
+        "ENC-AUTH-096",
+        "ENC-AUTH-040"
+      ],
+      "claimType": "nitrogen-supply-response-and-cannabis-knowledge-limits",
+      "supportedClaim": "Cannabis growth, physiology, mineral composition, and secondary-metabolite responses change with nitrogen supply, while current reviews identify substantial nutrient-acquisition and nutrient-use knowledge gaps between hemp- and drug-type Cannabis; published nitrogen responses therefore support measured, context-specific management rather than universal concentration or tissue targets.",
+      "sourceLocator": "Saloner & Bernstein (2020), DOI 10.3389/fpls.2020.572293; Wee et al. (2025), DOI 10.1093/jxb/erae362.",
+      "applicability": "Supports the lesson's separation of nitrogen input from crop response, its requirement to record genotype/system/stage, and its caution that one published nitrogen concentration is not a cannabis standard.",
+      "limitations": "The primary experiment used a bounded medical-cannabis genotype/system and long-photoperiod treatment design; the review synthesizes incomplete literature. Neither establishes universal nitrate/ammonium ratios, fertilizer concentrations, tissue sufficiency ranges, or stage-independent optima.",
+      "reviewState": "source_collected_needs_science_review"
+    }
+  ]
+}
