@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "volumes": [
     {
       "id": "THC-ENC-V01",
@@ -149,6 +149,6 @@
       "route": "/encyclopedia/volume-21-measurement-data-systems-quality-and-research-literacy"
     }
   ],
-  "generatedFrom": "content/encyclopedia/volume-XX/manifest.json",
-  "generationRule": "Include every source volume whose catalogRegistration is not withheld_until_review_gate."
+  "generatedFrom": "content/encyclopedia/volume-*/manifest.json",
+  "generationRule": "Discover every volume directory and include each source volume whose catalogRegistration is not withheld_until_review_gate."
 }
