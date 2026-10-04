@@ -19,7 +19,9 @@ const required=[
   ['desktop article/sidebar layout','thc-layout'],
   ['mobile breakpoint','@media(max-width:640px)'],
   ['previous lesson behavior','← Previous'],
-  ['next lesson behavior','Next →']
+  ['next lesson behavior','Next →'],
+  ['canonical live fingerprint','data-thc-canonical-fingerprint'],
+  ['structured-data renderer','encyclopediaStructuredDataHtml']
 ];
 for(const [label,needle] of required)if(!src.includes(needle))errors.push('renderer missing '+label);
 if(src.includes('fake visual')||src.includes('placeholder teaching visual'))errors.push('renderer must not emit fake visual placeholders');
