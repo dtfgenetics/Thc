@@ -9,7 +9,7 @@ const js=fs.readFileSync(`${root}/app.js`,'utf8');
 const revision=Object.fromEntries(fs.readFileSync(`${root}/source-revision.txt`,'utf8').trim().split(/\n+/).map(line=>line.split('=',2)));
 
 const target=JSON.parse(fs.readFileSync('site/wordpress/education/academy-deployment-target.json','utf8'));
-assert.equal(data.schemaVersion,1);
+assert.equal(data.schemaVersion,2);
 assert.equal(data.sourceRepository,'dtfgenetics/Thc-learning-courses-');
 assert.equal(data.sourceSha,target.sourceSha,'Applied Learning mirror must match Academy deployment target');
 assert.equal(revision.repository,data.sourceRepository);
@@ -34,6 +34,25 @@ assert.equal(data.differential.id,'ALDIFF-YELLOWING-001');
 assert.equal(data.differential.hypotheses.length,3);
 assert.match(data.differential.boundary,/does not diagnose/i);
 
+const expectedToolIds=[
+  'ALTOOL-GROW-ROOM-BLUEPRINT-001',
+  'ALTOOL-CALIBRATION-BENCH-001',
+  'ALTOOL-PLANT-TIMELINE-ATLAS-001',
+  'ALTOOL-GROWER-FLIGHT-RECORDER-001',
+  'ALTOOL-CROP-INCIDENT-REPORT-001',
+  'ALTOOL-CAUSE-CHAIN-001'
+];
+assert.deepEqual((data.tools??[]).map(x=>x.id).sort(),expectedToolIds.sort());
+assert.deepEqual(new Set(data.tools.map(x=>x.kind)),new Set(['blueprint','calibration','timeline-atlas','flight-recorder','incident-report','cause-chain']));
+for(const tool of data.tools){
+  assert.equal(tool.status,'draft',`${tool.id}: production mirror must preserve draft status`);
+  assert.equal(tool.review?.credentialUseAuthorized,false,`${tool.id}: credential use must remain unauthorized`);
+  assert.equal(tool.review?.humanTechnicalReviewRequired,true,`${tool.id}: technical review gate must remain visible`);
+  assert.equal(tool.review?.accessibilityReviewRequired,true,`${tool.id}: accessibility gate must remain visible`);
+  assert.ok(typeof tool.boundary==='string'&&tool.boundary.length>40,`${tool.id}: boundary missing`);
+  assert.ok(Array.isArray(tool.fields)&&tool.fields.length>0,`${tool.id}: fields missing`);
+}
+
 for(const forbidden of ['review','instructor','rules','correct','answerKey','scoringKey','rationale']){
   assert.ok(!Object.prototype.hasOwnProperty.call(data.graph,forbidden));
   assert.ok(!Object.prototype.hasOwnProperty.call(data.measurement,forbidden));
@@ -46,14 +65,19 @@ assert.ok(Math.abs(dli-32.4)<1e-9);
 assert.match(html,/Development Preview/);
 assert.match(html,/Applied Learning Lab/);
 assert.match(html,/Same Symptom, Different Cause/);
+assert.match(html,/Applied Systems Tools/);
+assert.match(html,/Blueprint, calibration, timeline, records, incidents & cause chains/);
 assert.match(html,new RegExp(data.sourceSha));
 assert.match(js,/fetch\('\.\/data\.json'/);
 assert.match(js,/ppfd\*hours\*3600\/1_000_000/);
+assert.match(js,/floorAreaSqFt:length\*width/);
+assert.match(js,/stop-recalibrate-or-service-and-repeat-verification/);
+assert.match(js,/Stored nowhere; not credential evidence or a controlled facility record/);
 assert.ok(!js.includes('/api/applied-learning/'),'production mirror must be self-contained');
 
 for(const file of ['index.html','app.js','styles.css','data.json','source-revision.txt']){
   assert.ok(fs.statSync(`${root}/${file}`).size>0,`${file} must be non-empty`);
 }
-console.log(`Applied Learning production mirror valid at ${data.sourceSha} with ${data.graph.nodes.length} canonical graph nodes.`);
+console.log(`Applied Learning production mirror valid at ${data.sourceSha} with ${data.graph.nodes.length} canonical graph nodes and ${data.tools.length} systems tools.`);
 
 await import('./test-applied-learning-production-runtime.mjs');
