@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'site/wordpress/education/encyclopedia/repair-final-missing-28.json'
+      - 'site/wordpress/education/encyclopedia/repair-final-48-route-reconcile.json'
       - 'content/encyclopedia/volume-01/lessons/thc-enc-001.json'
       - 'content/encyclopedia/volume-01/lessons/thc-enc-002.json'
       - 'content/encyclopedia/volume-01/lessons/thc-enc-005.json'
@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   repair:
-    name: Publish and verify 28 missing Encyclopedia lessons
+    name: Publish and verify final 48 Encyclopedia reconciliation routes
     runs-on: ubuntu-latest
     timeout-minutes: 40
     environment: production
@@ -49,7 +49,7 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/validate-encyclopedia-production-pointer.mjs
-          node scripts/validate-encyclopedia-release-control.mjs site/wordpress/education/encyclopedia/repair-final-missing-28.json
+          node scripts/validate-encyclopedia-release-control.mjs site/wordpress/education/encyclopedia/repair-final-48-route-reconcile.json
           npm run verify:encyclopedia-content-control
           npm run verify:encyclopedia-assessments
           npm run audit:encyclopedia-substantive-quality
@@ -65,7 +65,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          batch=site/wordpress/education/encyclopedia/repair-final-missing-28.json
+          batch=site/wordpress/education/encyclopedia/repair-final-48-route-reconcile.json
           name="$(basename "$batch" .json)"
           echo "Publishing $name"
           ENCYCLOPEDIA_BATCH_FILE="$batch" BACKUP_ROOT="/tmp/dtf-encyclopedia-repair/$name" \
@@ -118,4 +118,4 @@ jobs:
             grep -Fqi -- "data-thc-topic=\"$hub\"" "$RUNNER_TEMP/$hub.html"
           done
 
-          echo "Visitor verification passed for all 28 repaired lessons and 21-topic catalog."
+          echo "Visitor verification passed for all 48 reconciled lessons and 21-topic catalog."
