@@ -1,0 +1,157 @@
+name: Encyclopedia Visual Candidate Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch_size:
+        description: 'Maximum missing lesson visuals to render in this run'
+        required: false
+        default: '40'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/render-encyclopedia-visual-candidates.py'
+      - '.github/workflows/encyclopedia-visual-candidate-production.yml'
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: encyclopedia-visual-candidate-production
+  cancel-in-progress: false
+
+jobs:
+  render:
+    name: Render next controlled candidate batch
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deterministic raster dependency
+        run: python -m pip install --disable-pip-version-check --no-cache-dir pillow==12.0.0
+
+      - name: Refresh controlled visual queue from current canonical assets
+        run: npm run build:encyclopedia-visual-queue
+
+      - name: Render next missing candidate batch
+        id: render
+        shell: bash
+        env:
+          REQUESTED_BATCH: ${{ inputs.batch_size || '40' }}
+        run: |
+          set -euo pipefail
+          limit="$REQUESTED_BATCH"
+          [[ "$limit" =~ ^[0-9]+$ ]] || limit=40
+          [[ "$limit" -ge 1 && "$limit" -le 50 ]] || limit=40
+          report="$RUNNER_TEMP/encyclopedia-visual-render.json"
+          python scripts/render-encyclopedia-visual-candidates.py --limit="$limit" --manifest="$report"
+          rendered="$(node -p "require(process.argv[1]).rendered" "$report")"
+          pending_after="$(node -p "require(process.argv[1]).pendingAfter" "$report")"
+          echo "rendered=$rendered" >> "$GITHUB_OUTPUT"
+          echo "pending_after=$pending_after" >> "$GITHUB_OUTPUT"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+
+      - name: Validate generated raster candidates
+        if: steps.render.outputs.rendered != '0'
+        shell: bash
+        env:
+          REPORT: ${{ steps.render.outputs.report }}
+        run: |
+          set -euo pipefail
+          python - "$REPORT" <<'PY'
+          import json,sys
+          from pathlib import Path
+          from PIL import Image
+          report=json.load(open(sys.argv[1],encoding='utf-8'))
+          if not report.get('candidateOnly') or report.get('approvalEffect')!='none':
+              raise SystemExit('Visual generation report crossed the approval boundary')
+          for row in report.get('results',[]):
+              path=Path(row['path'])
+              if not path.exists(): raise SystemExit(f'Missing candidate: {path}')
+              with Image.open(path) as im:
+                  if im.format!='PNG' or im.size!=(1600,1000):
+                      raise SystemExit(f'Invalid candidate {path}: {im.format} {im.size}')
+              if path.stat().st_size < 18000:
+                  raise SystemExit(f'Candidate unexpectedly small: {path}')
+          print(f"Validated {len(report.get('results',[]))} PNG candidates.")
+          PY
+
+      - name: Rebuild queue with newly produced candidates
+        if: steps.render.outputs.rendered != '0'
+        run: |
+          npm run build:encyclopedia-visual-queue
+          node scripts/validate-encyclopedia-visual-production-queue.mjs
+
+      - name: Safely integrate candidate binaries through moving-main PR lane
+        id: integrate
+        if: steps.render.outputs.rendered != '0'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPORT: ${{ steps.render.outputs.report }}
+          PENDING_AFTER: ${{ steps.render.outputs.pending_after }}
+        run: |
+          set -euo pipefail
+          mapfile -t paths < <(node -e "const r=require(process.argv[1]); for(const x of r.results) console.log(x.path)" "$REPORT")
+          [[ "${#paths[@]}" -gt 0 ]]
+          dispatch='--dispatch-production=false'
+          if [[ "$PENDING_AFTER" == '0' ]]; then dispatch='--dispatch-production=true'; fi
+          node scripts/studio/integrate-generated-change.mjs \
+            --message="assets(encyclopedia): integrate next visual candidate batch" \
+            "$dispatch" \
+            "${paths[@]}"
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+
+      - name: Continue next batch until machine artwork queue is drained
+        if: steps.render.outputs.pending_after != '0' && steps.render.outputs.rendered != '0'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run encyclopedia-visual-candidate-production.yml --ref main -f batch_size=40
+          echo "Next candidate batch dispatched; remaining before next run: ${{ steps.render.outputs.pending_after }}"
+
+      - name: Upload generation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: encyclopedia-visual-candidate-production-${{ github.run_id }}
+          path: |
+            ${{ steps.render.outputs.report }}
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report candidate production state
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          RENDERED: ${{ steps.render.outputs.rendered }}
+          PENDING: ${{ steps.render.outputs.pending_after }}
+        with:
+          script: |
+            const body=[
+              '## Encyclopedia visual candidate production',
+              '',
+              `Result: **${process.env.STATUS}**`,
+              `Rendered this run: **${process.env.RENDERED || '0'}**`,
+              `Remaining machine artwork queue: **${process.env.PENDING || 'unknown'}**`,
+              '',
+              'Generated PNGs remain review-pending candidates. This automation does not mark independent science review, accessibility approval, rights approval, or final visual approval complete.'
+            ].join('\n');
+            await core.summary.addRaw(body).write();
