@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons, readJson } from './lib/encyclopedia-canonical-lessons.mjs';
+import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
 const root = process.cwd();
 const queuePath = path.join(root, 'data', 'encyclopedia-source-resolution-queue.json');
@@ -10,6 +11,7 @@ const errors = [];
 if (!fs.existsSync(queuePath)) errors.push('Source resolution queue is missing.');
 const queue = errors.length ? { references: [], lessons: [] } : readJson(queuePath);
 const canonical = readCanonicalEncyclopediaLessons(root);
+const registryState = loadEncyclopediaRegistry(root);
 const authorityIds = new Set((readJson(authorityPath).sources || []).map(source => source.id));
 const references = Array.isArray(queue.references) ? queue.references : [];
 const duplicateGroups = Array.isArray(queue.duplicateGroups) ? queue.duplicateGroups : [];
@@ -17,7 +19,7 @@ const lessonRows = Array.isArray(queue.lessons) ? queue.lessons : [];
 const referenceByRaw = new Map(references.map(row => [row.rawReference, row]));
 const referenceById = new Map(references.map(row => [row.referenceId, row]));
 
-if (lessonRows.length !== 420) errors.push(`Expected 420 lesson source rows; found ${lessonRows.length}.`);
+if (lessonRows.length !== registryState.totalCount) errors.push(`Expected ${registryState.totalCount} lesson source rows; found ${lessonRows.length}.`);
 if (new Set(lessonRows.map(row => row.lessonId)).size !== lessonRows.length) errors.push('Lesson source rows must have unique lesson IDs.');
 if (new Set(references.map(row => row.referenceId)).size !== references.length) errors.push('Source candidate IDs must be unique.');
 if (new Set(duplicateGroups.map(row => row.duplicateGroupId)).size !== duplicateGroups.length) errors.push('Duplicate-group IDs must be unique.');
@@ -86,4 +88,4 @@ if (errors.length) {
   errors.slice(0, 80).forEach(error => console.error(` - ${error}`));
   process.exit(1);
 }
-console.log(`Encyclopedia source queue PASS: 420/420 lessons and ${references.length} unique source references are tracked without changing review or publication state.`);
+console.log(`Encyclopedia source queue PASS: ${lessonRows.length}/${registryState.totalCount} lessons and ${references.length} unique source references are tracked without changing review or publication state.`);
