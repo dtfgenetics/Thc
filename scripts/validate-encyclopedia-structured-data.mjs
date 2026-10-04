@@ -1,9 +1,28 @@
 #!/usr/bin/env node
+import fs from 'node:fs';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 import { encyclopediaStructuredData, encyclopediaStructuredDataHtml } from './lib/encyclopedia-structured-data.mjs';
 
 const lessons=readCanonicalEncyclopediaLessons(process.cwd());
 const errors=[];
+const muPluginPath='site/wordpress/mu-plugins/dtf-learning-search.php';
+const publisherPath='scripts/publish-wordpress-encyclopedia-canonical-batch.mjs';
+if(!fs.existsSync(muPluginPath)) errors.push('Missing WordPress MU-plugin structured-data runtime.');
+const muPlugin=fs.existsSync(muPluginPath)?fs.readFileSync(muPluginPath,'utf8'):'';
+const publisher=fs.existsSync(publisherPath)?fs.readFileSync(publisherPath,'utf8'):'';
+for(const [label,needle] of [
+  ['lesson route matcher','dtf_learning_encyclopedia_lesson_id'],
+  ['wp_head hook',"add_action('wp_head'"],
+  ['JSON-LD mime','application/ld+json'],
+  ['schema marker','data-dtf-encyclopedia-schema'],
+  ['Article type',"'Article'"],
+  ['LearningResource type',"'LearningResource'"],
+  ['BreadcrumbList type',"'BreadcrumbList'"],
+  ['stable identifier',"'identifier' => $lesson_id"],
+  ['datePublished',"'datePublished'"],
+  ['dateModified',"'dateModified'"]
+]) if(!muPlugin.includes(needle)) errors.push('MU-plugin structured-data runtime missing '+label);
+if(publisher.includes('application/ld+json')||publisher.includes('encyclopediaStructuredDataHtml')) errors.push('Publisher must not embed JSON-LD into sanitizable WordPress post content');
 if(lessons.length!==420) errors.push('Expected 420 canonical lessons; found '+lessons.length);
 
 for(const lesson of lessons){
@@ -32,4 +51,4 @@ if(errors.length){
   for(const error of errors.slice(0,100)) console.error(' - '+error);
   process.exit(1);
 }
-console.log('Encyclopedia structured data PASS: 420/420 canonical lessons produce Article + LearningResource + BreadcrumbList JSON-LD.');
+console.log('Encyclopedia structured data PASS: 420/420 canonical lesson schema contracts validate and WordPress emits JSON-LD server-side from the MU-plugin.');
