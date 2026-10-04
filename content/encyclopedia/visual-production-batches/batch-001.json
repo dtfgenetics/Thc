@@ -1,0 +1,1005 @@
+{
+  "schemaVersion": 1,
+  "batchId": "ENC-VIS-BATCH-001",
+  "generatedAt": "2026-10-04T13:51:42.396Z",
+  "status": "production-ready-review-controlled",
+  "purpose": "Turn controlled encyclopedia visual briefs into lesson-specific raster teaching candidates without changing publication approval state.",
+  "reviewRule": "Every asset remains unapproved until science, accessibility, rights/provenance, rendering, and responsive review are explicitly recorded.",
+  "itemCount": 24,
+  "priorityRange": {
+    "high": 29,
+    "low": 24
+  },
+  "visualFamilies": {
+    "mechanism-process-diagram": 3,
+    "diagnostic-decision-tree": 20,
+    "measurement-workflow": 1
+  },
+  "items": [
+    {
+      "queueId": "ENC-VIS-098",
+      "lessonId": "THC-ENC-098",
+      "number": 98,
+      "title": "Carbon Dioxide Supply, Ventilation, and Enrichment Context",
+      "visualType": "Concept diagram",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 29,
+      "purpose": "Teach the learner to manage CO2 as a measured photosynthetic input and occupational hazard, coordinated with light, ventilation, crop demand, and fail-safe controls.",
+      "accuracyRequirements": [
+        "Cannabis is a C3 plant, and leaf photosynthesis can respond to elevated CO2 when light, temperature, water, mineral supply, leaf area, and sink capacity are adequate. Short-term leaf responses do not guarantee proportional whole-crop yield, quality, or economic return. Acclimation and other limiting factors can reduce the benefit.",
+        "A dense lit canopy can draw CO2 below the incoming-air level in poorly ventilated zones, while enrichment can be rapidly lost through exhaust. Distribution matters: injection near one sensor can satisfy the controller without supplying the canopy uniformly. Combustion sources add heat, moisture, and potential contaminants and require qualified design.",
+        "CO2 is colorless and odorless. NIOSH lists a recommended exposure limit of 5,000 ppm as a time-weighted average, 30,000 ppm as a short-term limit, and 40,000 ppm as immediately dangerous to life or health. Cultivation control targets are not safety limits. Current occupational rules, alarms, ventilation, entry controls, and emergency procedures govern the facility."
+      ],
+      "requiredLabels": [
+        "CO2 concentration",
+        "Enrichment",
+        "Ventilation loss",
+        "Asphyxiant"
+      ],
+      "misconceptionGuards": [
+        "More CO2 always increases yield: Response is limited by light, temperature, water, nutrition, canopy, sinks, and duration.",
+        "A plant controller is a safety monitor: Independent life-safety design, alarms, and procedures are required."
+      ],
+      "sourceAnchors": [
+        "Chandra S. et al. (2008). Photosynthetic Response of Cannabis sativa L. to Variations in Photosynthetic Photon Flux Densities, Temperature and CO2 Conditions. Physiology and Molecular Biology of Plants 14:299-306.",
+        "Chandra S. et al. (2011). Photosynthetic Response of Cannabis sativa L., an Important Medicinal Plant, to Elevated Levels of CO2. Physiology and Molecular Biology of Plants 17:291-295.",
+        "National Institute for Occupational Safety and Health. NIOSH Pocket Guide to Chemical Hazards: Carbon Dioxide.",
+        "Oklahoma State University Extension (2023). Greenhouse Carbon Dioxide Supplementation. HLA-6723."
+      ],
+      "altTextDraft": "Concept diagram for Carbon Dioxide Supply, Ventilation, and Enrichment Context, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Carbon Dioxide Supply, Ventilation, and Enrichment Context. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-098_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-098_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-103",
+      "lessonId": "THC-ENC-103",
+      "number": 103,
+      "title": "Daily Light Integral Calculation",
+      "visualType": "Chart / measurement",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 29,
+      "purpose": "Teach the learner to calculate DLI from constant or time-varying photon flux and identify errors caused by units, sampling, and wavelength-band mismatch.",
+      "accuracyRequirements": [
+        "For a constant PPFD, DLI = PPFD x photoperiod hours x 0.0036. The factor converts micromoles per second and hours to moles per day. For example, 500 micromoles m-2 s-1 for 18 hours equals 32.4 mol m-2 d-1. The calculation must retain whether the input is PPFD or ePPFD.",
+        "When light changes with clouds, curtains, sunrise, dimming, or control events, DLI must be integrated from logged readings: sum(PFD_i x interval seconds) / 1,000,000. A midday spot reading multiplied by day length can substantially overstate or understate the true integral.",
+        "DLI compresses time into a daily total. Equal DLI can come from different intensities and photoperiods, but plants may respond differently because photosynthesis is nonlinear, signaling depends on timing, heat and water loads differ, and dark-period biology is not preserved by the arithmetic."
+      ],
+      "requiredLabels": [
+        "DLI",
+        "Instantaneous PPFD",
+        "Integration interval",
+        "Temporal profile"
+      ],
+      "misconceptionGuards": [
+        "DLI is PPFD with a new label: PPFD is a rate at a moment; DLI is the time-integrated daily dose.",
+        "Equal DLI means equal growth: Intensity, duration, spectrum, timing, dark period, and other resources can change the response."
+      ],
+      "sourceAnchors": [
+        "Apogee Instruments (2021). The New 400-750 nm ePAR Range Explained.",
+        "Collado C.E. et al. (2024). Supplemental Greenhouse Lighting Increased the Water Use Efficiency, Growth, and Cutting Production of Cannabis Stock Plants. Frontiers in Plant Science 15:1371702.",
+        "Rodriguez-Morrison V., Llewellyn D., and Zheng Y. (2021). Cannabis Yield, Potency, and Leaf Photosynthesis Respond Differently to Increasing Light Levels in an Indoor Environment. Frontiers in Plant Science 12:646020.",
+        "THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026)."
+      ],
+      "altTextDraft": "Chart / measurement for Daily Light Integral Calculation, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Daily Light Integral Calculation. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-103_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-103_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-268",
+      "lessonId": "THC-ENC-268",
+      "number": 268,
+      "title": "Heat Stress",
+      "visualType": "Diagnostic decision tree",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 29,
+      "purpose": "Teach the learner to diagnose cannabis heat stress using tissue temperature, duration, radiation, transpiration, roots, and functional response rather than room-air temperature alone.",
+      "accuracyRequirements": [
+        "Heat stress occurs when tissue temperature and exposure duration exceed the plant's capacity to maintain metabolism, membranes, proteins, water balance, reproduction, and repair. Air temperature is only one input because radiation can warm leaves above air while transpiration and airflow can cool them.",
+        "Cannabis photosynthetic temperature response is genotype-dependent. In comparative work across drug- and fiber-type Cannabis sativa varieties, estimated photosynthetic optima varied from about 25 °C to 30–35 °C depending on variety, and photosynthesis declined at 40 °C relative to each variety's optimum while respiration increased. These are experimental responses, not universal injury thresholds.",
+        "Earlier controlled gas-exchange work also showed strong interaction between PPFD and temperature: photosynthesis and water-use efficiency responded differently as both variables increased, while transpiration continued rising under high light and temperature. Heat diagnosis therefore must include radiation and plant-water status rather than temperature in isolation."
+      ],
+      "requiredLabels": [
+        "leaf temperature",
+        "thermal duration",
+        "transpirational cooling",
+        "dark respiration",
+        "thermal acclimation"
+      ],
+      "misconceptionGuards": [
+        "A warm room automatically means the plants are heat-stressed.",
+        "Air temperature equals leaf temperature."
+      ],
+      "sourceAnchors": [
+        "Chandra S et al. (2008). Photosynthetic response of Cannabis sativa L. to variations in photosynthetic photon flux densities, temperature and CO2 conditions. Physiology and Molecular Biology of Plants 14:299–306. Demonstrated interactive temperature/light effects on cannabis gas exchange and water-use efficiency.",
+        "Chandra S et al. (2011). Temperature response of photosynthesis in different drug and fiber varieties of Cannabis sativa L. Demonstrated variety-dependent photosynthetic temperature optima and different declines at 40 °C.",
+        "Controlled Volume 14 manuscript v1.0 requires tissue temperature, duration, radiation, water/root status, and competing causes rather than one room-temperature threshold."
+      ],
+      "altTextDraft": "Diagnostic decision tree for Heat Stress, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Heat Stress. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-268_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-268_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-269",
+      "lessonId": "THC-ENC-269",
+      "number": 269,
+      "title": "Cold and Chilling Stress",
+      "visualType": "Diagnostic decision tree",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 29,
+      "purpose": "Teach the learner to distinguish chronic cool growth, chilling, freezing, cold-root effects, condensation, and cold-plus-light injury in cannabis without treating one temperature or the absence of frost as a universal diagnostic threshold.",
+      "accuracyRequirements": [
+        "Low temperature slows enzyme reactions, membrane transport, root growth, respiration, water uptake, and photosynthetic repair. Chilling injury can therefore occur above freezing, while freezing injury involves additional risks associated with ice formation and cellular dehydration.",
+        "Cannabis cold response is genotype-, age-, tissue-, duration-, and acclimation-dependent. A controlled hemp study using FINOLA and AutoCBD found that cultivar and plant age altered physiological cold response, and the tested 10-day acclimation treatment at 10 °C did not consistently protect plants; in several outcomes it acted as an additional stress rather than a beneficial hardening treatment.",
+        "In that same study, whole plants exposed to short -0.5 °C events and detached leaves exposed to progressively colder temperatures did not support one simple threshold across all measures. Detached leaves showed much greater damage at -8 °C than at -2 or -4 °C, but those detached-leaf results are not universal field or production thresholds for intact plants."
+      ],
+      "requiredLabels": [
+        "chilling stress",
+        "freezing injury",
+        "cold acclimation",
+        "photoinhibition",
+        "electrolyte leakage"
+      ],
+      "misconceptionGuards": [
+        "No frost means no cold injury occurred.",
+        "One temperature is the universal cannabis cold-damage threshold."
+      ],
+      "sourceAnchors": [
+        "Galic A., Grab H., Kaczmar N., Maser K., Miller W.B., Smart L.B. (2022). Effects of Cold Temperature and Acclimation on Cold Tolerance and Cannabinoid Profiles of Cannabis sativa L. (Hemp). Horticulturae 8(6):531. DOI 10.3390/horticulturae8060531. Direct hemp study of cultivar, age, acclimation, repeated cold exposure, chlorophyll fluorescence, electrolyte leakage, biomass, and cannabinoid responses.",
+        "Lipidomic remodeling in Cannabis sativa L. under cold tolerance (Industrial Crops and Products, 2025) is used as additional direct-hemp evidence for cold-associated growth, photosynthetic, protective, and membrane-lipid responses; its quantitative findings remain treatment- and genotype-specific.",
+        "Controlled Volume 14 evidence requires chilling, freezing, acclimation, cold roots, light interaction, and condensation to remain distinct diagnostic mechanisms."
+      ],
+      "altTextDraft": "Diagnostic decision tree for Cold and Chilling Stress, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Cold and Chilling Stress. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-269_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-269_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-270",
+      "lessonId": "THC-ENC-270",
+      "number": 270,
+      "title": "High-Light and Photoinhibition Injury",
+      "visualType": "Diagnostic decision tree",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 29,
+      "purpose": "Teach the learner to separate high photon exposure, leaf heating, reversible photoprotection, sustained photoinhibition, bleaching, and other top-canopy injuries using measured light, temperature, plant-water status, acclimation, and functional evidence.",
+      "accuracyRequirements": [
+        "High-light stress develops when absorbed excitation exceeds the combined capacity for photochemistry, regulated energy dissipation, antioxidant protection, and repair. Plants can acclimate by changing leaf structure, pigment pools, photoprotection, photosynthetic capacity, and canopy architecture, so high PPFD is not automatically injury.",
+        "Direct indoor cannabis work exposed flowering plants to canopy-level PPFDs spanning approximately 120 to 1,800 µmol·m⁻²·s⁻¹. Dry inflorescence yield increased linearly across that range in the studied environment, while upper-leaf photosynthesis saturated at lower local PPFD. The result demonstrates substantial whole-canopy acclimation and does not support a universal 'light burn' threshold below 1,800 PPFD.",
+        "Tolerance is conditional. CO2 availability, water supply, root function, nutrient status, leaf age, spectrum, photoperiod, temperature, airflow, developmental stage, and the rate of transition into a brighter environment all change how a given photon load is experienced."
+      ],
+      "requiredLabels": [
+        "photoinhibition",
+        "photoprotection",
+        "nonphotochemical quenching",
+        "Fv/Fm",
+        "photooxidative stress"
+      ],
+      "misconceptionGuards": [
+        "Any top-canopy bleaching proves light burn.",
+        "There is one universal cannabis PPFD injury threshold."
+      ],
+      "sourceAnchors": [
+        "Rodriguez-Morrison V et al. (2021). Cannabis Yield, Potency, and Leaf Photosynthesis Respond Differently to Increasing Light Levels in an Indoor Environment. Frontiers in Plant Science 12:646020. Flowering cannabis was grown across approximately 120–1,800 µmol·m⁻²·s⁻¹ canopy PPFD; yield increased linearly to the highest treatment while leaf photosynthesis saturated earlier.",
+        "Light intensity can be used to modify the growth and morphological characteristics of cannabis during the vegetative stage of indoor production (Industrial Crops and Products, 2022). Vegetative cannabis showed broad morphological acclimation across approximately 135–1,430 µmol·m⁻²·s⁻¹ PPFD.",
+        "Vegetative and reproductive stage lighting interactions on flower yield, water use efficiency, terpenes, and cannabinoids of Cannabis sativa (2025). Demonstrated stage- and program-dependent crop responses to supplemental lighting rather than a single intensity rule.",
+        "Controlled Volume 14 manuscript v1.0 requires photon exposure, heat, CO2, water, roots, nutrients, leaf age, spectrum, photoperiod, acclimation, and fluorescence protocol to remain separate parts of the differential."
+      ],
+      "altTextDraft": "Diagnostic decision tree for High-Light and Photoinhibition Injury, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "High-Light and Photoinhibition Injury. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-270_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-270_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-362",
+      "lessonId": "THC-ENC-362",
+      "number": 362,
+      "title": "Latitude, Daylength, and Seasonal Flowering",
+      "visualType": "Daylength and flowering timeline",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 29,
+      "purpose": "Teach the learner to explain how latitude, date, twilight, cultivar genetics, and plant history interact to control seasonal flowering.",
+      "accuracyRequirements": [
+        "Cannabis flowering is controlled by genetics interacting with the daily light-dark cycle. Many cultivars are quantitative short-day plants: flowering becomes faster or more complete as daylength falls below a cultivar-dependent threshold. The threshold is not universally 12 hours. Controlled studies have found meaningful differences among cultivars and responses to changes as small as minutes near a critical photoperiod. Low-intensity civil twilight can also be biologically effective.",
+        "Latitude changes the seasonal daylength curve, but latitude alone does not provide the date of flowering. Local horizon obstruction, artificial light at night, cloud cover, transplant age, plant size, sex expression, photoperiod history, and cultivar identity can shift observed timing. Cultivars sold under the same name can differ genetically and respond differently.",
+        "Photoperiod-insensitive or “autoflowering” plants carry genetic changes that reduce dependence on shortening days. That trait can support high-latitude production, but it does not guarantee yield, quality, uniformity, or freedom from environmental delay. A planting calendar should use local sunrise, sunset, twilight, and historical frost dates together with direct cultivar observations."
+      ],
+      "requiredLabels": [
+        "photoperiod",
+        "critical daylength",
+        "civil twilight",
+        "latitude",
+        "floral initiation",
+        "photoperiod sensitivity",
+        "autoflowering",
+        "genotype-by-environment interaction"
+      ],
+      "misconceptionGuards": [
+        "All photoperiod cannabis begins flowering at exactly 12 hours of light. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured.",
+        "Latitude predicts flowering date without cultivar information. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing."
+      ],
+      "sourceAnchors": [
+        "V19-SRC-005",
+        "V19-SRC-006",
+        "V19-SRC-003"
+      ],
+      "altTextDraft": "Daylength and flowering timeline for Latitude, Daylength, and Seasonal Flowering, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Latitude, Daylength, and Seasonal Flowering. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-362_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-362_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-005",
+      "lessonId": "THC-ENC-005",
+      "number": 5,
+      "title": "Hemp, Drug-Type Cannabis, and Botanical Versus Legal Categories",
+      "visualType": "Comparison plate",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to keep biological descriptors, production classes, chemotypes, and statutory definitions separate.",
+      "accuracyRequirements": [
+        "Hemp and drug-type cannabis belong to Cannabis sativa L. Their separation can reflect intended use, breeding history, architecture, photoperiod response, and cannabinoid profile, but no single visual trait reliably determines legal status. Fiber hemp, grain hemp, cannabinoid hemp, and drug-type flower are production categories with different target traits.",
+        "In the United States, federal hemp status is defined by law using delta-9 tetrahydrocannabinol concentration on a dry-weight basis and specified sampling and testing rules. Legal definitions can change and can differ from state rules. A botanical text should therefore not hard-code a current legal threshold as if it were a permanent plant-science boundary.",
+        "Chemotype classification is also not identical to legal status. A plant can have a CBD-dominant profile yet exceed a statutory THC limit. A young plant’s future chemistry cannot be established by appearance. A laboratory cannabinoid result alone is not a universal legal determination: jurisdiction, sampled plant part, sampling time, analytical method, measurement uncertainty, and administrative rules can all matter."
+      ],
+      "requiredLabels": [
+        "Hemp",
+        "Drug type",
+        "Chemotype",
+        "Statutory definition"
+      ],
+      "misconceptionGuards": [
+        "Hemp is male cannabis: Hemp crops can be male, female, or monoecious depending on cultivar and purpose.",
+        "CBD-dominant automatically means legal hemp: Legal status depends on the applicable jurisdiction, sampling and testing rules, and administrative determination—not a product name or one chemistry label."
+      ],
+      "sourceAnchors": [
+        "Royal Botanic Gardens, Kew. Cannabis sativa L. Plants of the World Online. Accepted name, classification, distribution, and general information.",
+        "United States Code, 7 U.S.C. § 1639o. Federal statutory definition of hemp; U.S.-specific and reviewed July 30, 2026.",
+        "USDA Agricultural Marketing Service. Hemp laboratory testing guidelines; U.S.-specific regulatory guidance reviewed July 30, 2026."
+      ],
+      "altTextDraft": "Comparison plate for Hemp, Drug-Type Cannabis, and Botanical Versus Legal Categories, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Hemp, Drug-Type Cannabis, and Botanical Versus Legal Categories. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-005_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-005_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-006",
+      "lessonId": "THC-ENC-006",
+      "number": 6,
+      "title": "Annual Growth Habit and the Whole-Plant Life Cycle",
+      "visualType": "Process sequence",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to describe the biological stages of an annual cannabis plant without turning calendar averages into universal deadlines.",
+      "accuracyRequirements": [
+        "Cannabis sativa is an herbaceous annual. A seed-derived plant passes through imbibition and germination, seedling establishment, vegetative growth, reproductive transition, flowering, and senescence. If pollination occurs, fertilization and achene development are added to the reproductive sequence. Clones enter the sequence differently because they are already-developed shoot tissues rather than embryos.",
+        "Developmental stage is not the same as time since planting. Temperature, light, root-zone conditions, plant health, container restriction, photoperiod, day-neutral genetics, and stress can speed, delay, or distort visible development. A “week number” is a schedule label; morphology and physiology determine the actual stage.",
+        "Photoperiod-responsive plants require an appropriate uninterrupted dark signal to induce flowering, whereas day-neutral or autoflowering plants initiate reproduction more independently of daylength. Even within those categories, onset and duration vary. This is why stage records should include observable criteria such as leaf development, node count, preflowers, first pistillate flowers, pollen shed, and seed maturity."
+      ],
+      "requiredLabels": [
+        "Annual",
+        "Vegetative phase",
+        "Reproductive phase",
+        "Senescence"
+      ],
+      "misconceptionGuards": [
+        "Every plant follows the same week-by-week chart: Calendars organize work but do not replace stage observations.",
+        "Clones are biologically the same age as new seedlings: A cutting begins as developed donor shoot tissue and may carry aspects of donor ontogenetic, physiological, epigenetic, and pathogen history. Its state can change after rooting and environment change."
+      ],
+      "sourceAnchors": [
+        "Royal Botanic Gardens, Kew. Cannabis sativa L. Plants of the World Online. Accepted name, classification, distribution, and general information.",
+        "Caplan D., Stemeroff J., Dixon M., and Zheng Y. (2018). Vegetative propagation of cannabis by stem cuttings: effects of leaf number, cutting position, rooting hormone, and leaf tip removal. Canadian Journal of Plant Science 98:1126–1132.",
+        "Hesami M. et al. (2023). Effect of explant source on phenotypic changes of in vitro grown cannabis plantlets over multiple subcultures. Biology 12:443.",
+        "Hesami M., Pepe M., and Jones A.M.P. (2023). Morphological Characterization of Cannabis sativa L. Throughout Its Complete Life Cycle. Plants 12(20):3646."
+      ],
+      "altTextDraft": "Process sequence for Annual Growth Habit and the Whole-Plant Life Cycle, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Annual Growth Habit and the Whole-Plant Life Cycle. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-006_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-006_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-009",
+      "lessonId": "THC-ENC-009",
+      "number": 9,
+      "title": "Root System Architecture",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to describe how the initial root axis, lateral roots, fine roots, and root hairs create a changing absorption system.",
+      "accuracyRequirements": [
+        "A seed-derived cannabis plant begins with a primary root derived from the radicle. Lateral roots expand from that axis and produce finer absorbing roots. In containers, transplanting, pruning, oxygen distribution, water placement, and physical barriers can change the final architecture, so a mature cultivated root system may not resemble a simple textbook taproot.",
+        "The growing root tip contains a root cap and apical meristem followed by zones of cell division, elongation, and differentiation. Root hairs form behind the tip and greatly increase contact with the surrounding solution and particles. Older thick roots provide transport and structure but are not the only active absorption sites.",
+        "Living roots use oxygen in aerobic respiration. When pores remain waterlogged, oxygen diffusion and availability decline; roots may shift metabolism, lose energy supply, and suffer impaired growth or death. Compaction, salinity, unfavorable temperature, and pathogens can also damage roots, but each requires system-specific evidence. Because leaves depend on root water and mineral supply, root injury can appear above ground as wilt, chlorosis, slowed growth, or nutrient-like symptoms."
+      ],
+      "requiredLabels": [
+        "Primary root",
+        "Lateral root",
+        "Root hair",
+        "Rhizosphere"
+      ],
+      "misconceptionGuards": [
+        "More water always means more uptake: Uptake requires living roots, oxygen, favorable water potential, and functional transport.",
+        "White roots prove perfect health: Color is useful but not definitive; media staining and species differ."
+      ],
+      "sourceAnchors": [
+        "Hesami M., Pepe M., and Jones A.M.P. (2023). Morphological Characterization of Cannabis sativa L. Throughout Its Complete Life Cycle. Plants 12(20):3646.",
+        "Pan J., Sharif R., Xu X., and Chen X. (2021). Mechanisms of Waterlogging Tolerance in Plants: Research Progress and Prospects. Frontiers in Plant Science 11:627331."
+      ],
+      "altTextDraft": "Labeled anatomy for Root System Architecture, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Root System Architecture. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-009_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-009_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-010",
+      "lessonId": "THC-ENC-010",
+      "number": 10,
+      "title": "Stem Anatomy and Vascular Transport",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to identify the stem tissues that support the canopy and transport water, minerals, sugars, and signals.",
+      "accuracyRequirements": [
+        "The cannabis stem is both a support column and a transport network. Epidermal and cortical tissues form the outer region of young stems. Vascular bundles contain xylem toward the interior and phloem toward the exterior, with cambial activity contributing to thickening as stems mature. The central region contains pith.",
+        "Xylem transport is driven largely by the water-potential gradient created as water evaporates from leaves. A continuous water column, root supply, and intact conducting tissue are required. Phloem moves photosynthates and other compounds from source tissues, often mature leaves, toward growing shoots, roots, flowers, and other sinks.",
+        "Bending or cutting a stem changes both mechanical loading and vascular continuity. Plants can reinforce injured areas through wound responses and new tissue, but severe crushing, splitting, constriction, infection, or repeated movement can reduce transport and create entry sites for pathogens."
+      ],
+      "requiredLabels": [
+        "Xylem",
+        "Phloem",
+        "Cambium",
+        "Pith"
+      ],
+      "misconceptionGuards": [
+        "Xylem pumps water: Water movement depends largely on physical gradients and transpiration, supported by living root processes.",
+        "A healed-looking knuckle is always stronger: Appearance does not prove restored transport or resistance to future load."
+      ],
+      "sourceAnchors": [
+        "Hesami M., Pepe M., and Jones A.M.P. (2023). Morphological Characterization of Cannabis sativa L. Throughout Its Complete Life Cycle. Plants 12(20):3646.",
+        "Savatin D.V., Gramegna G., Modesti V., and Cervone F. (2014). Wounding in the plant tissue: the defense of a dangerous passage. Frontiers in Plant Science 5:470."
+      ],
+      "altTextDraft": "Labeled anatomy for Stem Anatomy and Vascular Transport, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Stem Anatomy and Vascular Transport. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-010_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-010_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-012",
+      "lessonId": "THC-ENC-012",
+      "number": 12,
+      "title": "Leaf Morphology, Leaflets, and Phyllotaxy",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to describe cannabis leaves accurately and use changes in leaf form as observations rather than instant diagnoses.",
+      "accuracyRequirements": [
+        "Cannabis leaves are commonly palmately compound with serrated leaflets. Leaflet number, width, length, serration, petiole length, pigment, and surface traits vary with genetics, developmental stage, shoot position, nutrition, environment, and stress. Juvenile and reproductive shoots can produce simpler leaves than vigorous mature vegetative shoots.",
+        "Young cannabis commonly shows opposite leaf pairs at early nodes. Later growth often shifts toward alternate leaf arrangement, especially with maturity and reproductive development. This transition is useful as a developmental observation but is not a perfect clock.",
+        "Leaves are major photosynthetic and transpiring organs. Their position and angle affect light interception and boundary-layer conditions. As a controlled diagnostic procedure, symptoms should be recorded by leaf age, canopy location, tissue pattern, distribution, and progression before a cause is assigned. These observations narrow hypotheses; they do not prove a nutrient, pest, pathogen, heat, light, or root-zone diagnosis by themselves."
+      ],
+      "requiredLabels": [
+        "Palmately compound",
+        "Leaflet",
+        "Petiole",
+        "Phyllotaxy"
+      ],
+      "misconceptionGuards": [
+        "Leaflet width proves indica or sativa identity: Leaf form cannot verify ancestry or predict effect.",
+        "Nine leaflets prove perfect health: Leaflet number varies naturally and with stage."
+      ],
+      "sourceAnchors": [
+        "Hesami M., Pepe M., and Jones A.M.P. (2023). Morphological Characterization of Cannabis sativa L. Throughout Its Complete Life Cycle. Plants 12(20):3646.",
+        "Papoutsoglou E.A. et al. (2020). Enabling reusability of plant phenomic datasets with MIAPPE 1.1. New Phytologist 227(1):260–273."
+      ],
+      "altTextDraft": "Labeled anatomy for Leaf Morphology, Leaflets, and Phyllotaxy, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Leaf Morphology, Leaflets, and Phyllotaxy. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-012_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-012_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-017",
+      "lessonId": "THC-ENC-017",
+      "number": 17,
+      "title": "Female Flower, Bract, Stigma, and Inflorescence Anatomy",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to identify female reproductive structures without using the colloquial word “calyx” for every surrounding tissue.",
+      "accuracyRequirements": [
+        "Female cannabis inflorescences are made of many small pistillate flowers associated with bracts and small leaves. Each pistillate flower contains a one-ovule ovary and two elongated stigmatic branches that extend outward. The surrounding bract becomes a prominent resin-bearing tissue and is one of the densest sites of capitate-stalked glandular trichomes.",
+        "Cannabis literature and grower language use “bract” and “calyx” inconsistently. This encyclopedia adopts the following controlled convention: calyx means the collective sepal whorl, while the prominent resin-bearing leaf-like structure surrounding the pistillate flower is labeled the bract. That is a declared terminology choice tied to the cited anatomical sources, not a claim that every publication uses the terms identically.",
+        "The commercial “bud” is an inflorescence, not a single flower. Its density, branching, bract size, leaf proportion, stigma development, trichome distribution, and maturation pattern vary with genetics and environment. Pollination changes resource allocation toward achene and embryo development."
+      ],
+      "requiredLabels": [
+        "Pistillate",
+        "Bract",
+        "Stigma",
+        "Ovary"
+      ],
+      "misconceptionGuards": [
+        "A bud is one flower: It is a compound inflorescence containing many small flowers and bracts.",
+        "Every swollen resinous structure is a calyx: The commonly referenced structure is usually the bract."
+      ],
+      "sourceAnchors": [
+        "Lavie O. et al. (2026). Transcriptomic insights into unisexual flower development in Cannabis sativa. BMC Plant Biology.",
+        "Punja Z.K. et al. (2023). Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high-THC cannabis.",
+        "Hesami M., Pepe M., and Jones A.M.P. (2023). Morphological Characterization of Cannabis sativa L. Throughout Its Complete Life Cycle. Plants 12(20):3646."
+      ],
+      "altTextDraft": "Labeled anatomy for Female Flower, Bract, Stigma, and Inflorescence Anatomy, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Female Flower, Bract, Stigma, and Inflorescence Anatomy. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-017_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-017_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-022",
+      "lessonId": "THC-ENC-022",
+      "number": 22,
+      "title": "Seed Lot Identity, Provenance, and Chain of Custody",
+      "visualType": "Concept diagram",
+      "visualFamily": "measurement-workflow",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to build a traceable seed-lot record that separates supplied names from verified genetic and performance evidence.",
+      "accuracyRequirements": [
+        "A cultivar or strain name is not a complete identity. A controlled seed record combines the supplied name with source, breeder or institution, parentage claim, generation, production date if known, receipt date, quantity, package identifiers, and an internally assigned lot ID. Genetic or chemical verification, when available, is stored as evidence rather than substituted for the original supplied information.",
+        "Chain of custody matters because lots are opened, sampled, divided, transferred, tested, planted, returned, or discarded. Each event can introduce labeling error, moisture exposure, contamination, or selection bias. A child container must retain the parent lot ID and receive its own unique container or aliquot ID.",
+        "A useful identity system records uncertainty. Terms such as 'unverified supplied pedigree,' 'open-pollinated,' 'mixed lot,' or 'source not documented' are more accurate than inventing certainty. When two lots carry the same commercial name, keep them separate until evidence supports combining their records."
+      ],
+      "requiredLabels": [
+        "Seed lot",
+        "Provenance",
+        "Chain of custody",
+        "Aliquot"
+      ],
+      "misconceptionGuards": [
+        "The package name is enough: Names can be reused, misspelled, or applied to different material.",
+        "Small home collections do not need lot IDs: A simple ID prevents the same errors at any scale."
+      ],
+      "sourceAnchors": [
+        "Food and Agriculture Organization of the United Nations (2014). Genebank Standards for Plant Genetic Resources for Food and Agriculture. https://www.fao.org/4/i3704e/i3704e.pdf",
+        "International Seed Testing Association. International Rules for Seed Testing 2026, Chapter 2: Sampling. Seed-lot sampling and reporting framework. https://www.seedtest.org/en/publications/international-rules-seed-testing.html"
+      ],
+      "altTextDraft": "Concept diagram for Seed Lot Identity, Provenance, and Chain of Custody, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Seed Lot Identity, Provenance, and Chain of Custody. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-022_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-022_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-026",
+      "lessonId": "THC-ENC-026",
+      "number": 26,
+      "title": "Imbibition: The First Phase of Germination",
+      "visualType": "Process sequence",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to describe water uptake by a dry seed and the difference between hydration, metabolic restart, and completed germination.",
+      "accuracyRequirements": [
+        "Imbibition begins when a dry seed contacts available water. Hydrophilic components in the fruit coat, seed coat, embryo, and reserves draw in water. The initial phase is largely physical and can occur in living or dead tissue, so swelling alone does not prove viability.",
+        "As hydration progresses, membranes reorganize, stored molecular machinery becomes active, mitochondria resume effective respiration, and repair processes address damage accumulated during drying and storage. In a typical triphasic pattern, rapid initial water uptake is followed by a plateau while metabolism restarts; renewed uptake accompanies embryo expansion and radicle protrusion.",
+        "General seed research—not a cannabis-specific injury experiment—shows that damaged or aged seed can leak solutes during rapid hydration, while inadequate water prevents completion of germination. For cannabis, treat this as a plausible mechanism to test rather than a diagnosis. Maintain repeatable water contact without leaving the unit submerged in stagnant, oxygen-poor conditions."
+      ],
+      "requiredLabels": [
+        "Imbibition",
+        "Triphasic uptake",
+        "Membrane repair",
+        "Leakage"
+      ],
+      "misconceptionGuards": [
+        "Swelling proves the embryo is alive: Dead tissues can absorb water.",
+        "More water always speeds germination: Excess water can reduce oxygen and increase disease risk."
+      ],
+      "sourceAnchors": [
+        "El-Maarouf-Bouteau H. (2022). The Seed and the Metabolism Regulation. Biology 11:168.  https://doi.org/10.3390/biology11020168",
+        "Rajjou L. et al. (2012). Seed Germination and Vigor. Annual Review of Plant Biology 63:507-533. https://doi.org/10.1146/annurev-arplant-042811-105550"
+      ],
+      "altTextDraft": "Process sequence for Imbibition: The First Phase of Germination, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Imbibition: The First Phase of Germination. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-026_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-026_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-028",
+      "lessonId": "THC-ENC-028",
+      "number": 28,
+      "title": "Temperature Effects on Germination Rate",
+      "visualType": "Process sequence",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to interpret temperature as a rate-limiting and stress factor without converting one experiment into a universal optimum.",
+      "accuracyRequirements": [
+        "Temperature changes membrane behavior, enzyme activity, respiration, pathogen growth, water uptake, and embryo expansion. Within a suitable range, warmer conditions generally accelerate germination until an optimum is reached. Beyond it, rate and final success can decline because of thermal inhibition or injury.",
+        "A controlled study of two industrial hemp oilseed cultivars tested constant temperatures from 3 to 42 degrees C. High percentage and rate occurred between 19 and 30 degrees C in that experiment, and modeled cardinal values were cultivar- and method-specific. These results provide a defensible research anchor, not a permanent target for every drug-type or hemp genotype.",
+        "Air temperature near a room thermostat may differ from the actual seed environment. Heat mats, enclosed domes, lights, cold floors, evaporative cooling, and wet substrate can shift seed-level temperature. Daily fluctuation can also produce a different response from a constant-temperature laboratory test."
+      ],
+      "requiredLabels": [
+        "Cardinal temperatures",
+        "Thermal time",
+        "Suboptimal temperature",
+        "Supraoptimal temperature"
+      ],
+      "misconceptionGuards": [
+        "One exact temperature is universally optimal: Optima depend on genotype, endpoint, and test conditions.",
+        "Room temperature equals seed temperature: Local heat transfer and evaporation can create meaningful differences."
+      ],
+      "sourceAnchors": [
+        "Geneve R.L. et al. (2022). Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.). Crops 2:415-427.  https://doi.org/10.3390/crops2040029",
+        "El-Maarouf-Bouteau H. (2022). The Seed and the Metabolism Regulation. Biology 11:168.  https://doi.org/10.3390/biology11020168"
+      ],
+      "altTextDraft": "Process sequence for Temperature Effects on Germination Rate, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Temperature Effects on Germination Rate. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-028_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-028_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-029",
+      "lessonId": "THC-ENC-029",
+      "number": 29,
+      "title": "Moisture Without Oxygen Deprivation",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to manage water availability and pore-space aeration as simultaneous requirements during germination.",
+      "accuracyRequirements": [
+        "Germination requires water and oxygen. Water supports hydration and biochemical reactions; oxygen supports aerobic respiration as metabolic demand increases. A saturated paper, plug, or substrate can contain abundant water but insufficient gas exchange, especially when warm, compacted, deep, or sealed.",
+        "The correct condition is moist and aerated, not alternately flooded and dry. Substrate texture, compression, container depth, drainage path, water volume, temperature, and seed placement all influence the balance. Visible surface dryness does not necessarily describe moisture at seed depth.",
+        "Low oxygen can constrain aerobic seed metabolism and radicle development; disease risk under wet conditions is a separate, organism- and temperature-dependent process. Insufficient contact between seed and moist substrate can also interrupt imbibition. Do not diagnose either mechanism from surface wetness alone: use a repeatable preparation and watering method and record germination stage, moisture condition, temperature, and disease signs."
+      ],
+      "requiredLabels": [
+        "Water availability",
+        "Air-filled porosity",
+        "Hypoxia",
+        "Saturation"
+      ],
+      "misconceptionGuards": [
+        "Wet means hydrated correctly: Saturation can deprive the seed and root of oxygen.",
+        "A humidity dome replaces watering control: Air humidity and substrate water are related but not interchangeable."
+      ],
+      "sourceAnchors": [
+        "El-Maarouf-Bouteau H. (2022). The Seed and the Metabolism Regulation. Biology 11:168.  https://doi.org/10.3390/biology11020168",
+        "Ocamb C.M. (rev. 2026). Hemp (Cannabis sativa) - Damping-off. Pacific Northwest Plant Disease Management Handbook.  https://pnwhandbooks.org/plantdisease/host-disease/hemp-cannabis-sativa-damping",
+        "Rolletschek H. et al. (2025). Advances in seed hypoxia research. Plant Physiology 197:kiae556. https://doi.org/10.1093/plphys/kiae556"
+      ],
+      "altTextDraft": "Concept diagram for Moisture Without Oxygen Deprivation, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Moisture Without Oxygen Deprivation. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-029_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-029_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-031",
+      "lessonId": "THC-ENC-031",
+      "number": 31,
+      "title": "Root Hairs and Early Nutrient Acquisition",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to explain how the young root develops absorptive surface area and why physical root-zone conditions precede aggressive feeding.",
+      "accuracyRequirements": [
+        "The radicle becomes the primary root. Near its tip, protected by a root cap, cells divide and then elongate. Farther back, cells differentiate and root hairs develop. Root hairs greatly expand the contact surface between the young root and water films, dissolved ions, particles, and microorganisms.",
+        "Root hairs are short-lived and vulnerable to drying and physical disturbance. Their density and length also respond to nutrient conditions in general plant research. Because the evidence cited here is not cannabis-specific, treat visible root hairs as a context-dependent observation rather than a stand-alone health score; root color alone cannot establish water or nutrient acquisition.",
+        "The early seedling still uses seed reserves while root uptake increases. General plant physiology describes ion delivery by mass flow, diffusion, and root interception followed by membrane transport; this lesson does not claim cannabis-specific quantification of those pathways. Raising solution concentration does not prove uptake, so interpret nutrition with root condition, moisture, temperature, pH, and EC."
+      ],
+      "requiredLabels": [
+        "Root hair",
+        "Zone of maturation",
+        "Rhizosphere",
+        "Mass flow"
+      ],
+      "misconceptionGuards": [
+        "Root hairs are tiny lateral roots: They are extensions of individual epidermal cells.",
+        "White roots prove perfect health: Color is useful but does not measure oxygen, uptake, pathogens, or microscopic injury."
+      ],
+      "sourceAnchors": [
+        "Canadian Food Inspection Agency (2021). The Biology of Cannabis sativa L. (Cannabis, hemp, marijuana).  https://inspection.canada.ca/en/plant-varieties/plants-novel-traits/applicants/directive-94-08/biology-documents/cannabis-sativa",
+        "El-Maarouf-Bouteau H. (2022). The Seed and the Metabolism Regulation. Biology 11:168.  https://doi.org/10.3390/biology11020168",
+        "Tanaka N. et al. (2014). Characteristics of a root hair-less line of Arabidopsis thaliana under physiological stresses. Journal of Experimental Botany 65:1497-1512. https://doi.org/10.1093/jxb/eru014"
+      ],
+      "altTextDraft": "Labeled anatomy for Root Hairs and Early Nutrient Acquisition, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Root Hairs and Early Nutrient Acquisition. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-031_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-031_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-032",
+      "lessonId": "THC-ENC-032",
+      "number": 32,
+      "title": "Hypocotyl Elongation and Seed-Coat Shedding",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to describe emergence mechanics and diagnose common coat-retention and elongation problems without unnecessary handling.",
+      "accuracyRequirements": [
+        "After radicle establishment, hypocotyl cells elongate and lift the cotyledons. In an epigeal emergence pattern, the hypocotyl often curves as it moves through or out of the medium, reducing direct injury to the shoot apex. Light and mechanical release then support straightening and cotyledon expansion.",
+        "A retained fruit or seed covering is an observation, not a diagnosis. Record planting depth, moisture history, emergence time, and visible damage, but do not assign a cause from appearance alone; the current evidence does not support a universal causal list for cannabis. Manual removal creates a mechanical-injury risk, so any intervention should be cautious, documented, and compared with non-intervention when practical.",
+        "Excessive hypocotyl length commonly reflects low light, delayed light exposure after emergence, crowding, or a warm environment that drives elongation faster than structural development. Depth and obstruction also affect emergence energy. Long, thin seedlings are not made stronger by adding more water or fertilizer."
+      ],
+      "requiredLabels": [
+        "Hypocotyl",
+        "Hypocotyl hook",
+        "Seed-coat retention",
+        "Etiolation"
+      ],
+      "misconceptionGuards": [
+        "Every retained coat must be pulled off: Premature handling can cause more damage than the coat.",
+        "Stretch is fixed with deeper watering: Low light and temperature-driven elongation are more relevant causes."
+      ],
+      "sourceAnchors": [
+        "El-Maarouf-Bouteau H. (2022). The Seed and the Metabolism Regulation. Biology 11:168.  https://doi.org/10.3390/biology11020168",
+        "Canadian Food Inspection Agency (2021). The Biology of Cannabis sativa L. (Cannabis, hemp, marijuana).  https://inspection.canada.ca/en/plant-varieties/plants-novel-traits/applicants/directive-94-08/biology-documents/cannabis-sativa"
+      ],
+      "altTextDraft": "Concept diagram for Hypocotyl Elongation and Seed-Coat Shedding, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Hypocotyl Elongation and Seed-Coat Shedding. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-032_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-032_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-033",
+      "lessonId": "THC-ENC-033",
+      "number": 33,
+      "title": "Cotyledon Function and the First True Leaves",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to identify the transition from reserve-supported growth to expanding photosynthetic and root uptake capacity.",
+      "accuracyRequirements": [
+        "Cannabis is a dicot. Its two cotyledons are formed in the embryo, contain stored resources, and expand after emergence. Once exposed to light they can photosynthesize, supporting the seedling while the root system and first true leaves develop.",
+        "The first true leaves arise from the shoot apex between the cotyledons. Early leaf form is simpler than the mature palmately compound pattern; later leaves typically develop more leaflets as the plant and meristem mature. Leaflet number alone should not be used as a rigid age clock.",
+        "Cotyledons naturally lose importance as true leaves expand. Early yellowing, necrosis, distortion, or loss is non-specific and cannot establish seed quality, disease, salinity, or another cause by itself. Record timing and distribution, then evaluate new growth, roots, moisture, temperature, pH, EC, and disease signs rather than trying to keep cotyledons permanently green."
+      ],
+      "requiredLabels": [
+        "Cotyledon",
+        "True leaf",
+        "Autotrophic transition",
+        "Unifoliate"
+      ],
+      "misconceptionGuards": [
+        "Cotyledons are the first true leaves: They are embryonic seed leaves with a different developmental origin.",
+        "Every cotyledon spot is a deficiency: Injury, coat abrasion, infection, and normal senescence can resemble nutrition problems."
+      ],
+      "sourceAnchors": [
+        "El-Maarouf-Bouteau H. (2022). The Seed and the Metabolism Regulation. Biology 11:168.  https://doi.org/10.3390/biology11020168",
+        "Canadian Food Inspection Agency (2021). The Biology of Cannabis sativa L. (Cannabis, hemp, marijuana).  https://inspection.canada.ca/en/plant-varieties/plants-novel-traits/applicants/directive-94-08/biology-documents/cannabis-sativa"
+      ],
+      "altTextDraft": "Concept diagram for Cotyledon Function and the First True Leaves, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Cotyledon Function and the First True Leaves. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-033_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-033_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-034",
+      "lessonId": "THC-ENC-034",
+      "number": 34,
+      "title": "Seedling Light Acclimation",
+      "visualType": "Chart / measurement",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to increase light exposure based on measured dose and plant response while preventing stretch and abrupt high-light injury.",
+      "accuracyRequirements": [
+        "Light is both energy and information. After emergence, adequate light limits excessive hypocotyl elongation and supports cotyledon and true-leaf photosynthesis. The relevant exposure depends on PPFD, photoperiod, spectrum, distance, uniformity, leaf temperature, carbon dioxide, water status, and prior acclimation.",
+        "Low-light-acclimated plants can experience photoinhibition when exposure suddenly exceeds their acclimated capacity; this mechanism is established in plant research but has not been reduced to a universal cannabis-seedling threshold. Increase exposure in measured steps while tracking leaf temperature, water status, and response. The rate of acclimation depends on prior light, spectrum, duration, genotype, and environment.",
+        "There is no defensible single cannabis seedling PPFD that fits every genotype and system. Use a calibrated meter, map the tray rather than one point, and record photoperiod and leaf temperature. Stretch, bleaching, distortion, stalled expansion, or localized injury are non-diagnostic observations; interpret them only alongside measured light, temperature, water status, nutrition, disease, and genotype."
+      ],
+      "requiredLabels": [
+        "PPFD",
+        "Photomorphogenesis",
+        "Photoacclimation",
+        "Photoinhibition"
+      ],
+      "misconceptionGuards": [
+        "Seedlings need darkness after emergence: Established emerged tissue needs light for normal development.",
+        "More light always makes stronger seedlings: Abrupt or excessive exposure can damage unacclimated tissue."
+      ],
+      "sourceAnchors": [
+        "Tian Y. et al. (2017). Effects of periodic photoinhibitory light exposure on physiology and productivity of Arabidopsis plants grown under low light. Journal of Experimental Botany 68:4249-4262. https://doi.org/10.1093/jxb/erx213",
+        "Zhang Y. et al. (2024). Strategies for adaptation to high light in plants. Plant Communications 5:100857. https://pmc.ncbi.nlm.nih.gov/articles/PMC11399379/"
+      ],
+      "altTextDraft": "Chart / measurement for Seedling Light Acclimation, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Seedling Light Acclimation. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-034_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-034_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-036",
+      "lessonId": "THC-ENC-036",
+      "number": 36,
+      "title": "Seedling Nutrition and Salinity Sensitivity",
+      "visualType": "Chart / measurement",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to support early growth without allowing concentrated soluble salts or pH error to damage a small root system.",
+      "accuracyRequirements": [
+        "The germinating embryo and cotyledons supply early reserves, while roots progressively take over mineral acquisition. Seedling media may contain a starter nutrient charge, be nearly inert, or receive nutrient solution from the beginning. Management must match the actual system rather than a fixed calendar.",
+        "High soluble-salt concentration lowers solution water potential and can constrain water uptake. In one industrial-hemp study, NaCl concentration and temperature altered root, stem, and total seedling length; the design did not establish a universal nutrient-solution EC threshold. Delayed emergence, short or browned roots, stalled growth, leaf injury, or collapse remain non-specific observations and require direct measurements and controls.",
+        "EC indicates total ionic concentration, not which nutrient is present or whether the ratio is correct. pH, alkalinity, media chemistry, irrigation frequency, evaporation, drainage, and fertilizer source all affect the root-zone result. Input EC alone cannot describe accumulation around the roots."
+      ],
+      "requiredLabels": [
+        "Electrical conductivity",
+        "Salinity stress",
+        "Osmotic potential",
+        "Nutrient charge"
+      ],
+      "misconceptionGuards": [
+        "Low EC always means deficiency: A small seedling may be adequately supplied by reserves and media charge.",
+        "EC identifies the missing nutrient: It measures combined ionic conductivity, not composition."
+      ],
+      "sourceAnchors": [
+        "Varga I. et al. (2022). Germination of Industrial Hemp (Cannabis sativa L.) at Different Levels of Sodium Chloride and Temperatures. Agriculturae Conspectus Scientificus 87:11-15. https://acs.agr.hr/articles/1114_Germination_of_Industrial_Hemp_%28Cannabis_sativa_L_%29_at_Different_Level_of_Sodium_Chloride_and_Temperatures_en.pdf",
+        "Geneve R.L. et al. (2022). Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.). Crops 2:415-427. https://doi.org/10.3390/crops2040029"
+      ],
+      "altTextDraft": "Chart / measurement for Seedling Nutrition and Salinity Sensitivity, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Seedling Nutrition and Salinity Sensitivity. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-036_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-036_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-037",
+      "lessonId": "THC-ENC-037",
+      "number": 37,
+      "title": "Damping-Off Biology and Prevention",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to recognize pre- and post-emergence damping-off risk and build prevention around sanitation, drainage, environment, and early removal.",
+      "accuracyRequirements": [
+        "Damping-off is a syndrome, not one organism. Cannabis and general seedling literature identify Pythium or related oomycetes, Fusarium species, Rhizoctonia solani, and other organisms as potential causes. Pre-emergence disease appears as seed decay or missing seedlings. Post-emergence disease can produce water-soaked or constricted stem tissue, root discoloration, wilting, lodging, and collapse.",
+        "Young seedlings are vulnerable because tissues are tender and reserves are limited. Wet, poorly drained, compacted, contaminated, or slow-growing conditions can favor disease. Temperature effects depend on the pathogen and host; 'cold and wet' is a common risk pattern but not a complete rule for every organism.",
+        "Prevention uses multiple barriers: traceable vigorous seed, clean trays and tools, appropriate new or treated medium, clean water practices, drainage, noncompacted media, controlled humidity, air movement, prompt emergence, spacing, scouting, and removal of diseased material. A pesticide or biological product is not automatically legal or effective on cannabis; the current label and jurisdiction control its use."
+      ],
+      "requiredLabels": [
+        "Damping-off",
+        "Oomycete",
+        "Inoculum",
+        "Disease triangle"
+      ],
+      "misconceptionGuards": [
+        "Damping-off is always one fungus: Multiple fungi and oomycetes can cause the syndrome.",
+        "Cinnamon proves or cures the diagnosis: Anecdotal household treatments do not identify the pathogen or replace prevention."
+      ],
+      "sourceAnchors": [
+        "Ocamb C.M. (rev. 2026). Hemp (Cannabis sativa) - Damping-off. Pacific Northwest Plant Disease Management Handbook.  https://pnwhandbooks.org/plantdisease/host-disease/hemp-cannabis-sativa-damping",
+        "University of Minnesota Extension. How to Prevent Seedling Damping Off. General horticultural disease guidance.  https://extension.umn.edu/solve-problem/how-prevent-seedling-damping",
+        "Punja Z.K. (2021). Emerging Diseases of Cannabis sativa and Sustainable Management. Pest Management Science 77:3857-3870.  https://doi.org/10.1002/ps.6307"
+      ],
+      "altTextDraft": "Concept diagram for Damping-Off Biology and Prevention, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Damping-Off Biology and Prevention. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-037_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-037_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-038",
+      "lessonId": "THC-ENC-038",
+      "number": 38,
+      "title": "Normal, Weak, and Abnormal Seedling Evaluation",
+      "visualType": "Chart / measurement",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to classify early outcomes using essential structures, development, and trend rather than appearance alone.",
+      "accuracyRequirements": [
+        "Evaluation should examine the whole seedling: primary and lateral root development, hypocotyl integrity, cotyledons, shoot apex, first true leaves, symmetry, color, lesions, and continued growth. Under a declared internal triage rule, isolated cotyledon damage may be monitored while loss of the shoot apex or progressive root decay triggers a higher-risk classification. This is an operational disposition rule, not a universal prognosis.",
+        "Weak is not the same as abnormal. A late but structurally complete seedling may recover under good conditions, while a fast seedling with a severe root or apex defect may not. Classification should include trend over a defined observation period rather than one photograph.",
+        "Causes overlap. Genetic defects, immaturity, aging, mechanical injury, coat retention, deep placement, salinity, low oxygen, temperature stress, pathogens, and handling can produce similar appearances. The evaluator should separate the phenotype observed from the cause hypothesized."
+      ],
+      "requiredLabels": [
+        "Normal seedling",
+        "Abnormal seedling",
+        "Weak seedling",
+        "Off-type"
+      ],
+      "misconceptionGuards": [
+        "Any unusual seedling is genetic: Environment and handling commonly cause abnormal appearance.",
+        "The fastest seedling is always the best adult: Early vigor is one trait and does not predict every mature characteristic."
+      ],
+      "sourceAnchors": [
+        "Ranal M.A. and Santana D.G. (2006). How and Why to Measure the Germination Process? Brazilian Journal of Botany 29:1-11.  https://doi.org/10.1590/S0100-84042006000100002",
+        "Geneve R.L. et al. (2022). Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.). Crops 2:415-427.  https://doi.org/10.3390/crops2040029",
+        "Rao N.K. et al. (2006). Manual of Seed Handling in Genebanks. Bioversity International. https://openknowledge.fao.org/server/api/core/bitstreams/4b836b56-8189-49a0-a15b-e48e300b5956/content"
+      ],
+      "altTextDraft": "Chart / measurement for Normal, Weak, and Abnormal Seedling Evaluation, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Normal, Weak, and Abnormal Seedling Evaluation. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-038_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-038_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-040",
+      "lessonId": "THC-ENC-040",
+      "number": 40,
+      "title": "Germination Testing, Metrics, and Failure Analysis",
+      "visualType": "Process sequence",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to design a repeatable germination test, calculate decision-useful metrics, and locate failure within the seed-to-seedling sequence.",
+      "accuracyRequirements": [
+        "A useful test begins with an unbiased sample from one traceable lot. It defines sample size, replicate structure, substrate, water preparation, temperature, light after emergence, scoring endpoint, observation times, final count, and abnormal-seedling rules. Conditions must be recorded, not described only as 'standard.'",
+        "Final germination percentage estimates how many units reached the endpoint. Time metrics describe speed and uniformity. Emergence percentage, normal-seedling percentage, and survival identify later losses. These measures should not be collapsed: a lot can germinate well but emerge poorly because of depth, crusting, transfer injury, disease, or seedling environment.",
+        "Use the sequence as an editorial troubleshooting framework, not a diagnostic key. Record the last completed stage—no swelling, swelling without radicle emergence, radicle death, emergence failure, or post-emergence collapse—then test multiple plausible causes with controls and measurements. No stage or symptom identifies water contact, viability, dormancy, salinity, hypoxia, disease, depth, or coat effects by itself."
+      ],
+      "requiredLabels": [
+        "Replicate",
+        "Median germination time",
+        "Germination curve",
+        "Failure mode"
+      ],
+      "misconceptionGuards": [
+        "Final percentage is the whole test: Speed, uniformity, normal development, and survival affect production value.",
+        "A small hand-picked sample represents the lot: Biased selection can greatly inflate apparent quality."
+      ],
+      "sourceAnchors": [
+        "Geneve R.L. et al. (2022). Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.). Crops 2:415-427.  https://doi.org/10.3390/crops2040029",
+        "Ranal M.A. and Santana D.G. (2006). How and Why to Measure the Germination Process? Brazilian Journal of Botany 29:1-11.  https://doi.org/10.1590/S0100-84042006000100002",
+        "Tan J.W. et al. (2022). Seed Priming and Pericarp Removal Improve Germination in Low-Germinating Seed Lots of Industrial Hemp. Crops 2:407-414.  https://doi.org/10.3390/crops2040028"
+      ],
+      "altTextDraft": "Process sequence for Germination Testing, Metrics, and Failure Analysis, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Germination Testing, Metrics, and Failure Analysis. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-040_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-040_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    }
+  ]
+}

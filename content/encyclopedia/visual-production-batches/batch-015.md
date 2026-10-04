@@ -1,0 +1,270 @@
+# ENC-VIS-BATCH-015
+
+Lessons: **24** · Priority: **16 → 10**
+
+This is a production packet, not approval. Each raster must pass independent science, accessibility, provenance/rights, responsive, and final asset QA.
+
+## 1. THC-ENC-236 — Oxidation and Cannabinoid Degradation
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to explain postharvest cannabinoid change as a network of decarboxylation, oxidation, photochemistry, isomerization, matrix effects, and analytical loss rather than a one-step THC-to-CBN clock.
+- Required labels: oxidation, degradation, photochemistry, isomerization, CBN, stability study
+- Accuracy requirements: After harvest, cannabinoid profiles can change through decarboxylation, oxidation, photochemical reactions, isomerization, and other transformations. Light, oxygen exposure, temperature, moisture, time, particle size, grinding, solvent, packaging, and trichome damage can alter reaction rates and measured profiles. | THC can decline while CBN increases, but loss of THC should not be assumed to equal one-to-one formation of CBN. Storage studies show that reaction stoichiometry depends on conditions and that parent-cannabinoid loss can involve additional products that may not be included in a routine analytical panel. | A one-year controlled cannabis storage study found substantial condition-dependent changes in phytocannabinoid profiles and showed that whole versus ground inflorescences can behave differently. Grinding changes surface area and exposure, so sample form is part of the stability condition rather than a trivial preparation detail.
+- Misconception guards: All lost THC becomes measurable CBN. | CBN percentage is a universal clock for cannabis age.
+- Sources: Milay L et al. (2020). Metabolic Profiling of Cannabis Secondary Metabolites for Evaluation of Optimal Postharvest Storage Conditions. Frontiers in Plant Science 11:583605. One-year study comparing whole/ground inflorescences and extracts under multiple temperatures; demonstrated time-, matrix-, and sample-form-dependent cannabinoid changes. | Trofin IG et al. (2019). The role of time and storage conditions on the composition of hashish and marijuana samples: a four-year study. Demonstrated first-order-like THC degradation/CBN formation under tested conditions and showed that light and temperature altered the conversion relationship. | The controlled Volume 12 manuscript requires degradation claims to preserve mass-balance uncertainty and prohibits treating amber color, THC loss, or CBN alone as a universal chemical clock.
+- Target: `site/wordpress/assets/infographics/THC-ENC-236_teaching-visual-v1.png`
+
+## 2. THC-ENC-239 — Trichome Color as a Subjective Field Indicator
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to use trichome color as a documented morphological observation while preventing unsupported claims that clear, cloudy, amber, or brown appearance directly measures cannabinoid concentration or defines a universal harvest point.
+- Required labels: color class, observer bias, white balance, autofluorescence, senescence, dehiscence
+- Accuracy requirements: Cannabis glandular heads can appear clear, cloudy, white, yellow, amber, or brown as secretion, cuticle properties, internal material, senescence, damage, drying, illumination, and optical settings change. Color is therefore a visual phenotype, not a direct chemical assay. | A 2023 cannabis microscopy study associated maturation of stalked-capitate heads with brown color development, reduced UV autofluorescence, senescence, dehiscence, collapse, and other structural changes in the tested genotypes. The same study also demonstrated asynchronous development, meaning different maturity states coexist on the same bract. | Color classification is sensitive to tissue choice, fresh versus dried state, magnification, focus, background, light source, camera exposure, and white balance. These sources of variation can shift an observer's category even when the underlying chemistry has not been measured.
+- Misconception guards: Cloudy trichomes always contain maximum THC. | Amber color directly measures CBN percentage.
+- Sources: Punja ZK, Sutton DB, Kim T. (2023). Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high-THC cannabis inflorescences. Journal of Cannabis Research 5:12. Reported brown color development with reduced UV autofluorescence, senescence, dehiscence, asynchronous maturation, and drying-related morphology changes in the studied material. | Milay L et al. (2020). Metabolic Profiling of Cannabis Secondary Metabolites for Evaluation of Optimal Postharvest Storage Conditions. Demonstrated condition-dependent cannabinoid change after harvest, reinforcing that color cannot be equated directly with one degradation product. | The controlled Volume 12 manuscript explicitly restricts trichome color to a subjective field observation unless tissue, imaging, scoring, and matched chemistry have been locally validated.
+- Target: `site/wordpress/assets/infographics/THC-ENC-239_teaching-visual-v1.png`
+
+## 3. THC-ENC-247 — Limonene
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to explain limonene identity, stereochemistry, cannabis biosynthesis, oxidation, analytical context, and why citrus aroma or human effects cannot be inferred from one limonene value.
+- Required labels: limonene, enantiomer, chirality, oxidation product, chiral analysis
+- Accuracy requirements: Limonene is a cyclic monoterpene found in cannabis volatile profiles. Direct cannabis enzyme work functionally characterized a CsTPS whose major product was (-)-limonene and which also produced minor alpha-pinene, camphene, beta-pinene, and myrcene. | Limonene is chiral. Enantiomers can differ in odor character, while routine non-chiral terpene methods may report a combined or unspecified limonene result. Analytical capability therefore matters when stereochemical identity is part of the claim. | Limonene can decline or transform during exposure to oxygen, light, heat, handling, and storage. A basic terpene panel may quantify the parent compound without capturing every oxidation product.
+- Misconception guards: All limonene is chemically and sensorially identical. | A lemon smell proves limonene is high.
+- Sources: Booth JK, Page JE, Bohlmann J. (2017). Terpene synthases from Cannabis sativa. PLOS ONE 12:e0173911. Functionally characterized a limonene-dominant cannabis terpene synthase and documented limonene in inflorescence profiles. | Validated cannabis GC methods demonstrate that limonene reporting depends on standards, chromatographic method, and sample preparation; chiral identity requires specialized separation beyond routine non-chiral panels. | Controlled Volume 13 manuscript v1.0 requires limonene chemistry, citrus aroma, oxidation, and human-effect claims to remain distinct.
+- Target: `site/wordpress/assets/infographics/THC-ENC-247_teaching-visual-v1.png`
+
+## 4. THC-ENC-251 — Humulene, Ocimene, Terpinolene, and Minor Terpenes
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to interpret humulene, ocimene, terpinolene, and other lower-abundance terpenes as parts of a multicomponent cannabis volatile profile rather than isolated predictors of aroma, lineage, quality, or effect.
+- Required labels: alpha-humulene, beta-ocimene, terpinolene, minor terpene, mixture effect
+- Accuracy requirements: Cannabis inflorescences contain many terpenes beyond the compounds usually listed as the largest peaks. In direct Finola flower profiling, terpinolene and (E)-beta-ocimene were among abundant monoterpenes, while alpha-humulene was among abundant sesquiterpenes; individual plants still showed substantial variation. | Direct enzyme work showed that alpha-humulene and beta-caryophyllene can be coproducts of one characterized cannabis sesquiterpene synthase. Other cannabis terpene synthases are multiproduct enzymes as well, so a minor peak cannot automatically be mapped to one unique gene. | The label minor is analytical and sample-specific. A compound can be minor by mass yet relevant to headspace or sensory perception if its volatility and odor threshold make it noticeable, while a larger tissue peak may contribute less to perceived aroma.
+- Misconception guards: Minor terpene means biologically unimportant. | The largest terpene peak must dominate aroma.
+- Sources: Booth JK, Page JE, Bohlmann J. (2017). Terpene synthases from Cannabis sativa. PLOS ONE 12:e0173911. Profiled Finola flowers across early-to-mid flowering and functionally characterized multi-product cannabis terpene synthases, including a beta-caryophyllene/alpha-humulene synthase. | Oswald IWH et al. (2023). Minor, Nonterpenoid Volatile Compounds Drive the Aroma Differences of Exotic Cannabis. ACS Omega. Demonstrated that important aroma differences can be associated with low-abundance nonterpenoid volatiles not represented by conventional terpene narratives. | Controlled Volume 13 manuscript v1.0 requires minor-terpene abundance, headspace contribution, sensory importance, lineage, and effect claims to remain separate evidence levels.
+- Target: `site/wordpress/assets/infographics/THC-ENC-251_teaching-visual-v1.png`
+
+## 5. THC-ENC-256 — Temperature, Airflow, and Volatile Loss
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to explain how temperature, moisture removal, gas exchange, exposure time, and compound volatility interact during cannabis drying without reducing volatile preservation to one universal temperature, humidity, or airflow recipe.
+- Required labels: volatilization, vapor pressure, mass transfer, drying rate, boundary layer
+- Accuracy requirements: Cannabis drying removes water while a chemically diverse volatilome remains present in glandular and plant tissues. Volatile loss can occur through evaporation, diffusion, oxidation, physical disruption, and other transformations, so preservation is governed by more than temperature alone. | Increasing temperature generally increases molecular motion and vapor pressure and can accelerate both water removal and volatile loss, but actual retention depends on compound identity, tissue structure, exposure time, atmosphere, moisture state, and the drying technology. Direct cannabis/hemp studies show that terpene responses differ by compound and drying method rather than following one universal retention curve. | Air movement changes the boundary layer around plant material and therefore changes heat and mass transfer. More air exchange can speed moisture removal while also maintaining a concentration gradient that favors movement of volatile molecules away from the material. Airflow therefore has competing process effects and should be treated as a measured drying variable, not simply 'more is better' or 'less preserves terpenes.'
+- Misconception guards: There is one scientifically proven drying temperature and humidity that is optimal for every cannabis cultivar. | Cold drying automatically preserves every volatile compound.
+- Sources: Spadafora ND et al. (2024). The influence of drying and storage conditions on the volatilome and cannabinoid content of Cannabis sativa L. inflorescences. Analytical and Bioanalytical Chemistry 416:3797–3809. Compared freeze and tray drying and showed drying/storage method-dependent changes in the cannabis volatilome. | In Pursuit of Optimal Quality: Cultivar-Specific Drying Approaches for Medicinal Cannabis (2024). Direct controlled-atmosphere drying experiments demonstrated cultivar- and compound-specific terpene retention rather than one universal drying response. | Relationship between Total Antioxidant Capacity, Cannabinoids and Terpenoids in Hops and Cannabis (2023). Compared cannabis drying methods and documented method-dependent terpene losses, including greater loss in the hotter microwave-assisted hot-air treatment than freeze drying in the studied material. | Controlled Volume 13 manuscript v1.0 requires drying physics, volatile retention, microbial risk, sensory quality, and universal protocol claims to remain separate evidence levels.
+- Target: `site/wordpress/assets/infographics/THC-ENC-256_teaching-visual-v1.png`
+
+## 6. THC-ENC-258 — Terpene Sampling and Analytical Variation
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to teach that a reported cannabis terpene profile is the result of both biological composition and a measurement chain including sampling, preparation, extraction or headspace conditions, chromatography, standards, calibration, and data processing.
+- Required labels: representative sample, headspace analysis, solvent extraction, matrix effect, limit of quantification
+- Accuracy requirements: A laboratory terpene result is not a direct reading of an entire plant or batch. It begins with a physical sample whose tissue position, size, developmental state, grinding, storage, and representativeness can change the material entering the analytical method. | Cannabis terpenes can be measured with headspace techniques, solvent extraction, GC-FID, GC-MS, GC-MS/MS, and other approaches. These methods do not necessarily interrogate the same chemical fraction. Headspace methods emphasize compounds entering the gas phase under specified conditions, while solvent extraction can change recovery and can expose the sample to additional preparation losses or transformations. | A validated static-headspace GC-MS/MS method quantifying 93 cannabis terpenoids showed that sample preparation and extraction significantly changed the observed chemical fingerprint compared with untreated flower. The same work found relatively stable profile patterns for pronounced terpenoids across dates while absolute concentrations could vary with aging.
+- Misconception guards: A terpene certificate is the exact chemistry of every flower in the lot. | All laboratories measure the same terpene fraction in the same way.
+- Sources: Tandem Mass Spectrometric Quantification of 93 Terpenoids in Cannabis Using Static Headspace Injections. Analytical Chemistry (2019), DOI 10.1021/acs.analchem.9b02844. Validated SHS-GC-MS/MS for 93 terpenoids and demonstrated significant sample-preparation/extraction effects on cannabis chemical fingerprints. | Dei Cas M, Arnoldi S, Monguzzi L, Casagni E, Morano C, Vieira de Manincor E, Bolchi C, Pallavicini M, Gambaro V, Roda G. (2021). Characterization of chemotype-dependent terpenoids profile in cannabis by headspace gas-chromatography coupled to time-of-flight mass spectrometry. Journal of Pharmaceutical and Biomedical Analysis 203:114180. doi:10.1016/j.jpba.2021.114180. Demonstrates method-specific terpene profiling across Cannabis chemotypes and supports explicit reporting of preparation, standards, and analytical conditions. | Controlled Volume 13 manuscript v1.0 requires biological variation, sampling variation, extraction/headspace behavior, analytical uncertainty, and laboratory disagreement to remain distinct evidence levels.
+- Target: `site/wordpress/assets/infographics/THC-ENC-258_teaching-visual-v1.png`
+
+## 7. THC-ENC-259 — Chemovar Classification Beyond Strain Names
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to explain why measured chemical profiles provide a more defensible description of cannabis material than broad Indica/Hybrid/Sativa labels or strain names, while preserving the difference between chemotype, genotype, pedigree, phenotype, and product identity.
+- Required labels: chemovar, chemotype, genotype, pedigree, multivariate profile
+- Accuracy requirements: Commercial cannabis is commonly described with Indica, Hybrid, Sativa, and named-strain labels, but these labels do not consistently correspond to reproducible chemical categories. They can carry historical, marketing, morphological, or consumer meanings that should not be treated as laboratory measurements. | A large US analysis of 89,923 commercial cannabis samples from six states identified reproducible chemical clusters using cannabinoid and terpene data. The study found that Indica/Hybrid/Sativa labels were poorly or inconsistently aligned with underlying chemistry, demonstrating that those commercial categories are weak substitutes for measured composition. | Named strains can show more chemical consistency than random naming would predict in some datasets, but the same name is not perfectly uniform across producers or samples. A strain name therefore cannot prove genotype, pedigree, chemistry, or expected effect without supporting records and measurements.
+- Misconception guards: Indica, Hybrid, and Sativa labels reliably define distinct chemical classes in commercial cannabis. | Two samples with the same strain name are chemically and genetically identical.
+- Sources: Smith CJ et al. (2022). The phytochemical diversity of commercial Cannabis in the United States. PLOS ONE 17:e0267498. Analyzed 89,923 commercial samples from six states and found reproducible chemical clusters but poor/inconsistent alignment of Indica/Hybrid/Sativa labels with measured chemistry. | Wishart DS et al. (2024). Chemical Composition of Commercial Cannabis. Journal of Agricultural and Food Chemistry 72(25):14099–14113. doi:10.1021/acs.jafc.3c06616. Uses modern metabolomics, literature mining, and bioinformatics to catalogue commercial Cannabis chemistry; supports chemistry-based reporting while remaining limited by the sampled commercial materials and analytical methods. | Controlled Volume 13 manuscript v1.0 requires commercial name, botanical identity, pedigree, genotype, chemotype, sensory phenotype, and human-effect claims to remain distinct evidence levels.
+- Target: `site/wordpress/assets/infographics/THC-ENC-259_teaching-visual-v1.png`
+
+## 8. THC-ENC-347 — Equilibrium Moisture and Moisture Sorption
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to explain equilibrium moisture, sorption isotherms, hysteresis, temperature, and moisture redistribution.
+- Required labels: equilibrium moisture content, sorption isotherm, adsorption, desorption, hysteresis, equilibrium RH, hygroscopicity
+- Accuracy requirements: At equilibrium, a material has no net moisture exchange with surrounding air under a stable temperature and humidity. Equilibrium moisture content links material water content to environmental relative humidity and temperature. | Sorption isotherms differ during drying and rewetting, a phenomenon called hysteresis. Flower structure, composition, particle size, prior drying, temperature, and cultivar can change the relation. | Material rarely reaches perfect equilibrium instantly. Dense flowers and sealed containers can maintain internal gradients while external air or a surface reading appears stable.
+- Misconception guards: A product immediately matches room RH when placed in the room. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used. | Rewetting follows the exact reverse path of drying. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.
+- Sources: V18-SRC-010 | V18-SRC-013 | V18-SRC-014
+- Target: `site/wordpress/assets/infographics/THC-ENC-347_teaching-visual-v1.png`
+
+## 9. THC-ENC-348 — Air Temperature, RH, and Product Temperature During Drying
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to relate air and product temperatures, RH, dew point, evaporation, and transition conditions during drying.
+- Required labels: dry-bulb temperature, product temperature, relative humidity, dew point, evaporative cooling, condensation, sensor placement
+- Accuracy requirements: Fresh material can remain cooler than surrounding air because evaporation consumes latent heat. As drying slows, product temperature may approach air temperature, but radiation, airflow, load, and surface conditions create local differences. | Relative humidity rises where moisture enters air and falls after dehumidification or heating. Cold product or surfaces can reach dew point during harvest loading, lights-off transitions, refrigeration, or room recovery. | A wall sensor can miss flower-zone conditions. Sensors near supply air, wet loads, doors, exterior surfaces, and dense racks experience different exposure.
+- Misconception guards: Product temperature always equals room temperature. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used. | Low room RH guarantees no condensation. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.
+- Sources: V18-SRC-002 | V18-SRC-011 | V18-SRC-015
+- Target: `site/wordpress/assets/infographics/THC-ENC-348_teaching-visual-v1.png`
+
+## 10. THC-ENC-349 — Airflow, Loading Density, and Drying Uniformity
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to map how rack spacing, flower density, obstructions, fan paths, and recirculation create drying distributions.
+- Required labels: loading density, airflow distribution, dead zone, short circuit, pressure drop, rack spacing, uniformity, edge effect
+- Accuracy requirements: Airflow carries heat and vapor, but the load resists and redirects it. Dense hanging plants, trays, bins, racks, walls, and packaging create pressure drops, bypass paths, and sheltered pockets. | High velocity at one location can overdry surfaces or damage material while other locations remain wet. Visible branch movement does not prove uniform exchange inside flowers or behind racks. | Uniformity must be assessed across space and time. Mean room mass loss can hide wet sub-batches and overdried edge material.
+- Misconception guards: More fan speed always creates more uniform drying. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used. | Equal rack spacing guarantees equal airflow. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.
+- Sources: V18-SRC-002 | V18-SRC-011 | V18-SRC-016
+- Target: `site/wordpress/assets/infographics/THC-ENC-349_teaching-visual-v1.png`
+
+## 11. THC-ENC-350 — Drying Curves and Rate-of-Change Interpretation
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to use mass, moisture, aW, temperature, and time-series data to distinguish drying phases, stalls, overshoot, and spatial variation.
+- Required labels: drying curve, mass loss, drying rate, slope, plateau, endpoint, overshoot, sample interval
+- Accuracy requirements: A drying curve plots a defined moisture-related measure against time. Container or representative-product mass can provide continuous trend, while destructive moisture or aW tests provide periodic endpoints. | The rate changes as available surface water declines and internal resistance increases. A plateau can indicate approach to equilibrium, sensor resolution, airflow failure, high room humidity, or a sample no longer representing the load. | Calculated slopes depend on interval, smoothing, missing data, scale drift, product removal, and container changes. An apparent endpoint requires confirmation with the relevant quality and safety measurements.
+- Misconception guards: A flat mass curve proves every flower is dry. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used. | One plant’s mass curve represents the entire room. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.
+- Sources: V18-SRC-010 | V18-SRC-011 | V18-SRC-017
+- Target: `site/wordpress/assets/infographics/THC-ENC-350_teaching-visual-v1.png`
+
+## 12. THC-ENC-351 — Terpene Retention and Volatile Loss
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to explain volatile retention through biosynthetic starting profile, vapor pressure, temperature, airflow, tissue damage, time, and packaging.
+- Required labels: volatile organic compound, terpene, sulfur compound, vapor pressure, emission, oxidation, retention, absolute mass
+- Accuracy requirements: Volatile compounds can leave material through evaporation, air exchange, damaged trichomes, and packaging permeation, or change through oxidation and other reactions. Compounds differ greatly in volatility and odor threshold. | Postharvest cannabis studies show cultivar- and method-specific changes in terpene and broader volatilome profiles during drying and storage. Relative percentages can rise when other compounds are lost, so absolute quantification and mass basis matter. | Grinding and trimming increase exposed surface and can disrupt secretory cavities. Long drying can extend exposure even at moderate temperature; more intense conditions can accelerate both drying and volatile loss.
+- Misconception guards: Total terpene percentage alone measures aroma retention. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used. | A cooler process automatically retains every volatile. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.
+- Sources: V18-SRC-018 | V18-SRC-019 | V18-SRC-020
+- Target: `site/wordpress/assets/infographics/THC-ENC-351_teaching-visual-v1.png`
+
+## 13. THC-ENC-353 — Curing: Definition, Measurement, and Limits
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to define curing operationally and distinguish it from drying, storage, moisture equilibration, fermentation, and unmeasured quality claims.
+- Required labels: curing, conditioning, equilibration, storage, moisture redistribution, biochemical change, endpoint, process definition
+- Accuracy requirements: Curing is used inconsistently. In cannabis practice it may mean a controlled conditioning period after primary drying, during which moisture redistributes and aroma, texture, combustibility, or chemical profile may change. | Research has not established one universal curing mechanism, duration, container routine, or quality endpoint. Changes attributed to curing can also result from continuing drying, rehydration, oxidation, volatilization, microbial activity, pigment change, or selective perception. | A process cannot be evaluated when its start, environment, material state, container, handling, endpoint, and analytical measurements are undefined.
+- Misconception guards: Curing is a proven fermentation that always improves cannabis. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used. | A fixed number of days produces a universal finished product. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.
+- Sources: V18-SRC-010 | V18-SRC-018 | V18-SRC-023
+- Target: `site/wordpress/assets/infographics/THC-ENC-353_teaching-visual-v1.png`
+
+## 14. THC-ENC-354 — Container Curing and Moisture Redistribution
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to control container loading, headspace, moisture migration, mixing, sampling, condensation, and release during conditioning.
+- Required labels: container conditioning, headspace, moisture migration, equilibration, fill ratio, mixing, condensation, wet pocket
+- Accuracy requirements: Material placed in a closed or semi-closed container redistributes moisture among wetter interiors, drier surfaces, air, and the container. Average aW can change as the sample equilibrates. | Large dense flowers, mixed sizes, uneven primary drying, high fill, cold material, and limited mixing can preserve wet pockets. Opening a container changes headspace but does not necessarily equalize internal material. | Moisture addition or humidification devices can create local over-wetting, microbial risk, residues, or uncontrolled chemistry unless qualified for the product and jurisdiction.
+- Misconception guards: Opening a container once per day makes all flowers uniform. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used. | A humidity indicator in headspace directly measures internal flower aW. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.
+- Sources: V18-SRC-010 | V18-SRC-013 | V18-SRC-023
+- Target: `site/wordpress/assets/infographics/THC-ENC-354_teaching-visual-v1.png`
+
+## 15. THC-ENC-358 — Water-Activity Measurement and Instrument Control
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to collect defensible aW data through representative samples, temperature equilibration, calibration/verification, cleanliness, and uncertainty.
+- Required labels: water-activity meter, chilled mirror, capacitance sensor, equilibrium, check standard, calibration, verification, uncertainty
+- Accuracy requirements: Water-activity instruments estimate equilibrium vapor pressure above a sample using a defined sensor and chamber. Sample temperature, equilibration, chamber cleanliness, volatile interference, sample depth, and instrument range affect results. | Verification with appropriate standards checks performance at relevant points. Calibration changes the instrument relationship when permitted. Traceability does not guarantee fitness for purpose unless uncertainty is small enough for the decision. | Grinding can improve sample averaging but alters structure and exposed area; intact-flower tests preserve geometry but can miss internal variability. The method must match the specification.
+- Misconception guards: A new water-activity meter is automatically accurate. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used. | One decimal place proves the result is precise enough for release. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.
+- Sources: V18-SRC-012 | V18-SRC-031 | V18-SRC-032
+- Target: `site/wordpress/assets/infographics/THC-ENC-358_teaching-visual-v1.png`
+
+## 16. THC-ENC-360 — Postharvest Deviation and Release Review
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to control postharvest deviations through containment, impact assessment, investigation, sampling, CAPA, and authorized release or disposition.
+- Required labels: deviation, hold, impact assessment, out-of-specification, investigation, CAPA, disposition, release authority
+- Accuracy requirements: A postharvest deviation is departure from an approved process, range, identity, sanitation, environmental, sampling, packaging, or storage requirement. Not every deviation makes product unacceptable, but every significant deviation requires controlled assessment. | Impact assessment considers duration, magnitude, location, affected lots, product state, microbes, chemistry, moisture/aW, contamination, identity, worker safety, and downstream use. Testing can add evidence but cannot always prove an unsampled batch is unaffected. | Release is a documented decision by an authorized role against current specifications and rules. Reworking, blending, remediation, relabeling, or disposal each requires separate authorization and traceability.
+- Misconception guards: Passing a retest automatically invalidates the original failure. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used. | A small excursion can be ignored if product looks normal. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion.
+- Sources: V18-SRC-002 | V18-SRC-035 | V18-SRC-036
+- Target: `site/wordpress/assets/infographics/THC-ENC-360_teaching-visual-v1.png`
+
+## 17. THC-ENC-363 — Climate Normals and Local Weather Records
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to use long-term climate baselines and site weather records without confusing averages with guarantees.
+- Required labels: climate normal, weather, percentile, extreme event, return period, growing degree day, frost-free period, precipitation distribution
+- Accuracy requirements: Climate normals summarize long-term observations, commonly over 30 years. They help compare sites and seasons, but an average monthly temperature or rainfall total does not show the timing, intensity, or sequence that plants experience. Two seasons with the same rainfall can differ biologically if one receives gentle weekly rain and the other receives one storm followed by drought. | For outdoor cultivation, important variables include minimum and maximum temperature, frost dates, heat waves, rainfall intensity and duration, dew and leaf-wetness periods, solar radiation, wind speed and gusts, humidity, hail, smoke, and drought status. Percentiles and extremes are often more useful for risk planning than means. A site weather station adds local detail but must be installed, maintained, and interpreted correctly. | Weather records need metadata. Sensor height, shielding, calibration, nearby structures, vegetation growth, station movement, logging interval, missing data, and maintenance affect conclusions. Compare local sensors with a reliable reference station and preserve raw data before calculating summaries.
+- Misconception guards: A 30-year average predicts this year’s weather. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured. | Monthly rainfall totals describe root-zone water supply. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.
+- Sources: V19-SRC-003 | V19-SRC-009 | V19-SRC-033
+- Target: `site/wordpress/assets/infographics/THC-ENC-363_teaching-visual-v1.png`
+
+## 18. THC-ENC-364 — Microclimates, Slope, Aspect, and Cold-Air Drainage
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to predict and verify small-scale temperature, radiation, wind, and moisture differences across a site.
+- Required labels: microclimate, aspect, slope, cold-air drainage, frost pocket, thermal mass, boundary layer, inversion
+- Accuracy requirements: Microclimate is the environment experienced at the crop rather than at a regional weather station. Elevation differences of only a few meters, slope direction, nearby trees, buildings, water, soil color, surface cover, and wind exposure can change temperature, humidity, radiation, and wetness. | At night, exposed surfaces radiate heat and cool. Dense cold air can move downslope and collect in low areas, creating frost pockets even when a nearby station remains above freezing. South- and west-facing slopes in the Northern Hemisphere commonly receive more afternoon energy, while north-facing slopes may remain cooler and wetter. These patterns reverse with hemisphere and are modified by terrain and shading. | Shelter can reduce damaging wind but can also trap humidity and lengthen dew persistence. Bare soil, mulch, vegetation, raised beds, and containers have different heat storage and water behavior. Microclimate mapping requires repeated measurements under the conditions of concern, not one daytime walk.
+- Misconception guards: The lowest point is always the warmest because heat rises. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured. | A solid wind barrier improves every microclimate. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.
+- Sources: V19-SRC-003 | V19-SRC-004 | V19-SRC-023
+- Target: `site/wordpress/assets/infographics/THC-ENC-364_teaching-visual-v1.png`
+
+## 19. THC-ENC-368 — Transplanting and Outdoor Acclimation
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to move plants outdoors while controlling light, wind, temperature, humidity, root, and handling transitions.
+- Required labels: acclimation, hardening, transplant shock, boundary layer, root-ball integrity, sunscald, vapor-pressure gradient, establishment
+- Accuracy requirements: A greenhouse or indoor plant has leaves and stems developed under a specific light spectrum, intensity, air movement, humidity, temperature, and root environment. Outdoor transfer can abruptly increase solar radiation, ultraviolet exposure, wind, vapor-pressure demand, temperature variation, and root-zone drying. Injury can occur even when the outdoor average temperature appears suitable. | Acclimation is a staged exposure process. Increase outdoor duration and light gradually, protect from extreme midday radiation and wind at first, and monitor leaf temperature and water status. Plants need enough root occupancy to hold the plug or root ball together without severe circling or restriction. Water before transplanting to a workable moisture state, protect roots from sun and air, plant at the intended depth, remove air gaps, and irrigate the root zone rather than flooding the entire field by habit. | Transplant success depends on post-plant weather. Cold nights, heat, gusts, heavy rain, saturated soil, and low humidity can each slow establishment. The correct schedule is therefore weather- and plant-specific rather than a fixed number of days.
+- Misconception guards: Hardening off means deliberately starving plants of water. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured. | Cloudy weather eliminates transplant stress. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.
+- Sources: V19-SRC-001 | V19-SRC-003 | V19-SRC-009
+- Target: `site/wordpress/assets/infographics/THC-ENC-368_teaching-visual-v1.png`
+
+## 20. THC-ENC-371 — Wind Exposure and Structural Support
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to relate wind speed, gusts, turbulence, canopy form, soil anchorage, and support design to plant injury and system failure.
+- Required labels: wind load, gust, turbulence, drag, lodging, leverage, anchorage, trellis
+- Accuracy requirements: Wind imposes force on leaves, branches, stems, trellises, tunnels, and greenhouse coverings. Force rises rapidly with wind speed, while a tall wide canopy increases drag and leverage. Repeated moderate movement can strengthen stems, but acute gusts can split unions, abrade tissue, uproot plants, collapse supports, or tear films. | The wind experienced inside a crop differs from the weather-station wind. Terrain, buildings, tree lines, solid fences, row orientation, canopy porosity, and openings create acceleration, turbulence, and sheltered zones. Solid barriers can produce strong eddies downwind; designed porous windbreaks reduce speed over a broader area. | Support must be designed for the mature wet canopy, not the transplant. Stakes, netting, anchors, posts, wires, ties, and attachment points each have load limits and failure modes. Ties that are too tight can girdle expanding stems, while unsupported heavy flowers can split after rain. Protected structures require engineering for local wind and snow loads.
+- Misconception guards: More plant movement always creates stronger plants. This is too simple because outdoor crop response also depends on genotype, developmental stage, local microclimate, soil or root-zone condition, and the way the variable was measured. | A solid fence gives the best wind protection. A single observation cannot establish the mechanism or predict the whole block; use representative locations, repeated measurements, and crop-response data before generalizing.
+- Sources: V19-SRC-023 | V19-SRC-031 | V19-SRC-034
+- Target: `site/wordpress/assets/infographics/THC-ENC-371_teaching-visual-v1.png`
+
+## 21. THC-ENC-395 — Chemotype and Terpene Selection With Laboratory Data
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to use representative, method-controlled chemical data while separating major chemotype, concentration, total yield, volatile profile, and stability.
+- Required labels: chemotype, cannabinoid ratio, concentration, dry basis, total analyte yield, volatile profile, sample position, analytical uncertainty
+- Accuracy requirements: Chemotype can refer to major cannabinoid ratio classes, while concentration describes the amount measured in a sample. The classic THC/CBD ratio can show Mendelian-like inheritance in defined crosses, but absolute cannabinoid concentrations are more complex and can involve multiple loci, copy-number and structural variation, gene expression, maternal effects, development, and environment. | Laboratory selection begins with sampling. Cannabinoids and volatiles vary among flowers, positions, developmental stages, handling methods, drying conditions, and laboratories. One visually resinous flower is not a representative plant sample. Report wet or dry basis, moisture method, sample mass, tissue and position, harvest stage, preparation, analytical method, calibration, uncertainty, and the laboratory’s decision rules. | Terpene and broader volatile profiles are highly dimensional. Relative percentages can change because other compounds are lost; absolute amounts and total dry mass provide different information. Aroma names are not chemical phenotypes, and measured chemicals do not prove sensory effect or human outcome. Confirm selected profiles across clones, seed families, environments, harvests, and storage. Legal cannabinoid compliance requires current rules and representative sampling.
+- Misconception guards: A high percentage means the plant produced the most cannabinoid. Concentration and total analyte yield are different quantities and can rank plants differently. | One COA defines the genetic chemotype permanently. Chemistry varies with tissue, stage, environment, handling, and analytical method, so repeated standardized samples are needed for stable claims.
+- Sources: V20-SRC-020 | V20-SRC-021 | V20-SRC-022 | V20-SRC-023 | V20-SRC-024
+- Target: `site/wordpress/assets/infographics/THC-ENC-395_teaching-visual-v1.png`
+
+## 22. THC-ENC-401 — Measurement Units and Conversion Discipline
+
+- Family: `comparison-matrix`
+- Priority: **16**
+- Purpose: Teach the learner to use quantities, units, symbols, prefixes, bases, and dimensional checks consistently so cultivation records can be interpreted and reproduced.
+- Required labels: quantity, unit, SI, unit symbol, prefix, dimension, conversion factor, mass fraction
+- Accuracy requirements: A number without a defined quantity and unit is not a complete measurement. “500” could mean microlitres, millilitres, litres, milligrams per litre, microsiemens per centimetre, watts, micromoles per square metre per second, or an instrument count. Controlled records name the quantity first, then the value, unit, method, basis, position, and time. SI rules distinguish unit symbols from abbreviations: symbols are not pluralized, are case sensitive, and do not take periods except at the end of a sentence. | Conversions must preserve dimensions and basis. A conversion factor can change litres to millilitres, but it cannot convert electrical conductivity to dissolved-solids concentration without a model and stated factor. Percent can represent mass fraction, volume fraction, mass per volume, relative change, or percentage points; these are not interchangeable. Moisture content on a wet basis differs from moisture on a dry basis. Cannabinoid concentration in fresh material differs from a dry-mass-corrected result. Records must state numerator, denominator, sample state, and calculation. | Dimensional analysis is a practical error control. Units should cancel through a calculation, leaving the expected result. Equations should preserve unrounded input values, while reported digits should reflect measurement resolution and uncertainty. Spreadsheets need locked unit columns, validation rules, and explicit conversions rather than mixed units hidden inside formulas. A unit conversion can be mathematically correct while the conclusion remains biologically wrong if sample identity, time, or basis changed.
+- Misconception guards: ppm is one universal concentration unit in every context. Parts per million is a ratio and its practical meaning depends on whether the basis is mass/mass, mass/volume, or an instrument-specific estimate. | EC can be converted to ppm without naming the instrument factor. EC is a conductivity measurement, while displayed ppm is an estimated TDS value based on a selected conversion factor.
+- Sources: V21-SRC-003 | V21-SRC-004 | V21-SRC-005 | V21-SRC-033
+- Target: `site/wordpress/assets/infographics/THC-ENC-401_teaching-visual-v1.png`
+
+## 23. THC-ENC-019 — Glandular and Nonglandular Trichome Classes
+
+- Family: `comparison-matrix`
+- Priority: **10**
+- Purpose: Teach the learner to differentiate the major trichome classes and connect structure, location, development, and sampling.
+- Required labels: Trichome, Bulbous, Capitate-sessile, Capitate-stalked, Nonglandular trichome
+- Accuracy requirements: Cannabis bears glandular and nonglandular trichomes. Glandular categories commonly include bulbous, capitate-sessile, and capitate-stalked forms. Their abundance and proportions change with organ, developmental stage, and genotype. Capitate-stalked trichomes become especially prominent on female floral bracts and nearby small leaves. | The glandular head contains secretory disk cells beneath a storage cavity where cannabinoid-rich resin and volatile compounds accumulate. The stalk elevates the head above the epidermis. These structures are fragile: abrasion, compression, excessive handling, heat, oxidation, and time can change appearance or material recovery. | Classification is not always a set of perfectly separate boxes. Research shows developmental and morphological transitions, and apparent size depends on magnification, lighting, focus, sample orientation, and plant age. Sampling only the most exposed top leaf produces a biased picture of the inflorescence.
+- Misconception guards: Every plant hair produces cannabinoids: Nonglandular trichomes lack the characteristic secretory head. | All trichomes mature at the same rate: Tissue, position, age, and genotype change development.
+- Sources: Punja Z.K. et al. (2023). Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high-THC cannabis. | Livingston S.J. et al. (2020). Cannabis glandular trichomes alter morphology and metabolite content during flower maturation. The Plant Journal. | Andre C.M., Hausman J.-F., Guerriero G. (2016). Cannabis sativa: The Plant of the Thousand and One Molecules. Frontiers in Plant Science.
+- Target: `site/wordpress/assets/infographics/THC-ENC-019_teaching-visual-v1.png`
+
+## 24. THC-ENC-023 — Seed Viability Versus Seed Vigor
+
+- Family: `comparison-matrix`
+- Priority: **10**
+- Purpose: Teach the learner to distinguish the capacity to produce a normal seedling from the speed, uniformity, and resilience with which a lot establishes.
+- Required labels: Viability, Vigor, Germination percentage, Normal seedling
+- Accuracy requirements: Viability and vigor answer different questions. A lot can reach a high final germination percentage yet germinate slowly or unevenly. It may therefore be viable under a favorable test while establishing poorly under a cooler, wetter, saltier, deeper, or otherwise stressful production environment. | Vigor is expressed through multiple traits: time to germination, spread of germination times, emergence strength, seedling integrity, and performance under defined stress. Informal physical traits such as size, coat color, hardness, or float behavior are not interchangeable with a validated vigor test; a trait may correlate within a defined lot but is not a universal stand-alone assay. Cannabis research has shown that priming may increase germination speed without necessarily increasing final germination in already viable lots. | Assessment requires a defined endpoint and consistent conditions. Radicle emergence and normal-seedling evaluation are separate seed-testing endpoints: one records the germination event, while the other evaluates whether essential structures support continued development under favorable conditions. Dead, hard, contaminated, radicle-only, delayed, and abnormal outcomes should remain separate recorded categories rather than one undifferentiated 'failed' count.
+- Misconception guards: Viable means vigorous: A seed can germinate but do so slowly, weakly, or abnormally. | Fast always means genetically superior: Storage, maturity, injury, test environment, and priming also affect speed.
+- Sources: Geneve R.L. et al. (2022). Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.). Crops 2:415-427.  https://doi.org/10.3390/crops2040029 | Tan J.W. et al. (2022). Seed Priming and Pericarp Removal Improve Germination in Low-Germinating Seed Lots of Industrial Hemp. Crops 2:407-414.  https://doi.org/10.3390/crops2040028 | Ranal M.A. and Santana D.G. (2006). How and Why to Measure the Germination Process? Brazilian Journal of Botany 29:1-11.  https://doi.org/10.1590/S0100-84042006000100002 | Matthews S. et al. (2011). Towards automated single counts of radicle emergence to predict seed and seedling vigour. Seed Testing International 142:44-48. https://www.seedtest.org/api/rm/643TD7S8VT7656R/sti-142.pdf | Rao N.K. et al. (2006). Manual of Seed Handling in Genebanks. Bioversity International. https://openknowledge.fao.org/server/api/core/bitstreams/4b836b56-8189-49a0-a15b-e48e300b5956/content
+- Target: `site/wordpress/assets/infographics/THC-ENC-023_teaching-visual-v1.png`
+

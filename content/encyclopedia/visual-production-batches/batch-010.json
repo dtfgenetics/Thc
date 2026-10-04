@@ -1,0 +1,1111 @@
+{
+  "schemaVersion": 1,
+  "batchId": "ENC-VIS-BATCH-010",
+  "generatedAt": "2026-10-04T13:51:42.404Z",
+  "status": "production-ready-review-controlled",
+  "purpose": "Turn controlled encyclopedia visual briefs into lesson-specific raster teaching candidates without changing publication approval state.",
+  "reviewRule": "Every asset remains unapproved until science, accessibility, rights/provenance, rendering, and responsive review are explicitly recorded.",
+  "itemCount": 24,
+  "priorityRange": {
+    "high": 24,
+    "low": 23
+  },
+  "visualFamilies": {
+    "mechanism-process-diagram": 7,
+    "diagnostic-decision-tree": 10,
+    "measurement-workflow": 7
+  },
+  "items": [
+    {
+      "queueId": "ENC-VIS-383",
+      "lessonId": "THC-ENC-383",
+      "number": 383,
+      "title": "Controlled Crosses and Parent Verification",
+      "visualType": "Controlled-cross identity and pollen-flow workflow",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to preserve parent identity and prevent unintended pollen, sample, label, and generation errors during controlled crossing.",
+      "accuracyRequirements": [
+        "A controlled cross is a documented transfer of pollen from a verified pollen parent to a verified seed parent while excluding unintended pollen. In Cannabis, wind-dispersed pollen, delayed pollen release, mixed tools, mislabeled clones, and overlooked male or intersexual flowers can compromise a cross. A physical bag or separate room is not sufficient unless airflow, timing, seals, handling, and later seed recovery are controlled.",
+        "Verification begins before flowering. Confirm parent IDs from permanent records and, when appropriate, genotype markers or fingerprints. Map every flowering plant, inspect for unexpected sex expression, and define pollen collection, storage, viability, and disposal methods. Pollinated branches or plants require durable cross labels tied to a cross record. Open-pollinated seed from a mixed room must not be represented as a known biparental cross.",
+        "After seed set, preserve maternal plant, branch or inflorescence position, pollination date, pollen lot, personnel, and harvest lot. Progeny testing or markers can detect some errors, but no marker panel proves complete parentage unless it is sufficiently informative for the candidate parents. Control plants and unpollinated checks help identify stray pollen. Failed identity or contamination control should downgrade the seed lot rather than be hidden by a confident name."
+      ],
+      "requiredLabels": [
+        "controlled cross",
+        "seed parent",
+        "pollen parent",
+        "isolation",
+        "emasculation",
+        "pollen exclusion",
+        "chain of identity",
+        "cross ID"
+      ],
+      "misconceptionGuards": [
+        "Seed collected from a labeled female automatically has the intended father. Maternal identity does not establish pollen identity; stray pollen, mixed pollen lots, labeling errors, or unnoticed male and intersexual flowers can create unintended parentage.",
+        "A closed door prevents Cannabis pollen movement. Pollen can move with airflow, leaks, HVAC, clothing, tools, and personnel, so isolation must control pathways and handling rather than rely on a room label alone."
+      ],
+      "sourceAnchors": [
+        "V20-SRC-004",
+        "V20-SRC-014",
+        "V20-SRC-015",
+        "V20-SRC-033"
+      ],
+      "altTextDraft": "Controlled-cross identity and pollen-flow workflow for Controlled Crosses and Parent Verification, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Controlled Crosses and Parent Verification. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-383_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-383_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-389",
+      "lessonId": "THC-ENC-389",
+      "number": 389,
+      "title": "Feminized Seed Production Biology",
+      "visualType": "XX sex-reversal and feminized-seed biology diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to explain the genetic and hormonal basis of producing pollen on genetically female plants while separating biology from operational chemical procedures.",
+      "accuracyRequirements": [
+        "Dioecious Cannabis commonly has XX females and XY males. Feminized seed production uses pollen from a genetically female plant that has been induced to form functional male flowers. Because the pollen donor lacks a Y chromosome, the intended progeny are genetically female under the XX/XY model. This does not mean every progeny plant will show identical morphology, chemistry, fertility, or environmental sex expression.",
+        "Ethylene signaling strongly influences sex expression. Silver-based ethylene inhibitors, especially silver thiosulfate in research, can induce male flowers on female plants. Response depends on genotype, developmental stage, application method, concentration, plant condition, and environment. Treated plants and materials require chemical-safety, waste, legal, and product-separation controls; this plant-science volume does not provide an application recipe or authorize product use.",
+        "Breeding quality depends on more than obtaining seeds. Verify the pollen donor’s genetic sex, identity, disease status, fertility, pollen viability, and the recipient’s identity. Evaluate seed set, germination, offspring sex genotype and expression, intersexuality under defined environments, vigor, chemistry, and off-types. Self-feminized seed increases inbreeding, while feminized seed from two different XX parents is an outcross. Those designs have different segregation and risk."
+      ],
+      "requiredLabels": [
+        "feminized seed",
+        "XX",
+        "sex reversal",
+        "masculinization",
+        "ethylene signaling",
+        "silver thiosulfate",
+        "pollen fertility",
+        "sex expression"
+      ],
+      "misconceptionGuards": [
+        "Feminized seed is genetically identical to the female parent. An outcrossed feminized family combines two XX parents, while a selfed family still segregates wherever the pollen donor is heterozygous.",
+        "All pollen from an induced female is equally fertile. Pollen production and fertility can vary by genotype, developmental stage, treatment response, environment, and handling."
+      ],
+      "sourceAnchors": [
+        "V20-SRC-014",
+        "V20-SRC-015",
+        "V20-SRC-017",
+        "V20-SRC-018",
+        "V20-SRC-019"
+      ],
+      "altTextDraft": "XX sex-reversal and feminized-seed biology diagram for Feminized Seed Production Biology, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Feminized Seed Production Biology. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-389_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-389_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-391",
+      "lessonId": "THC-ENC-391",
+      "number": 391,
+      "title": "Qualitative Versus Quantitative Selection",
+      "visualType": "Qualitative and quantitative trait comparison plate",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to choose selection and validation methods based on whether variation is discrete, continuous, thresholded, or mixed.",
+      "accuracyRequirements": [
+        "Qualitative traits form discrete classes under a sufficiently clear model, such as presence of a validated resistance allele or major chemotype category in a defined cross. Quantitative traits form continuous distributions because many genes, environment, development, and measurement contribute. Plant height, yield, flowering time, total cannabinoid concentration, volatile abundance, and disease severity are commonly quantitative even when breeders apply pass/fail thresholds.",
+        "A trait can have both major-gene and quantitative components. Cannabinoid ratio can show Mendelian-like classes while absolute concentration remains polygenic and environmentally sensitive. Powdery mildew response can involve major resistance or susceptibility loci plus smaller loci, pathogen isolate, leaf stage, and environment. A visual category may hide a continuous measurement.",
+        "Qualitative selection can be efficient when class definitions are accurate and the phenotype or marker has high penetrance. Quantitative selection requires replicated measurements, family information, environmental sampling, and statistical estimates. Converting every trait to a score does not make it objective; scale construction, observer training, repeatability, and missing values matter. Selection thresholds should be set before looking at preferred individuals."
+      ],
+      "requiredLabels": [
+        "qualitative trait",
+        "quantitative trait",
+        "penetrance",
+        "expressivity",
+        "polygenic",
+        "threshold trait",
+        "heritability",
+        "phenotype distribution"
+      ],
+      "misconceptionGuards": [
+        "A trait with three visible classes must be controlled by one gene. Discrete-looking classes can arise from thresholds, epistasis, multiple loci, environment, or scoring conventions.",
+        "A numeric score is automatically quantitative and reliable. Numbers can still represent subjective ordinal ratings; repeatability, calibration, and biological meaning must be established."
+      ],
+      "sourceAnchors": [
+        "V20-SRC-006",
+        "V20-SRC-007",
+        "V20-SRC-020",
+        "V20-SRC-021",
+        "V20-SRC-026"
+      ],
+      "altTextDraft": "Qualitative and quantitative trait comparison plate for Qualitative Versus Quantitative Selection, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Qualitative Versus Quantitative Selection. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-391_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-391_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-393",
+      "lessonId": "THC-ENC-393",
+      "number": 393,
+      "title": "Replicated Trials and Environmental Noise",
+      "visualType": "Replicated multi-environment trial layout",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to separate genetic signal from position, room, season, management, and measurement effects using replication, randomization, blocking, and checks.",
+      "accuracyRequirements": [
+        "A single plant in a single location cannot separate genotype from environment. Replication means independent experimental units receiving the same genotype or family. Repeated measurements on one plant improve temporal detail but are not biological replicates. Clones can provide genetically matched units, while seed families provide a distribution that must be modeled correctly.",
+        "Randomization reduces systematic bias, and blocking groups units that share a known gradient such as bench, room zone, field strip, irrigation line, harvest date, or drying rack. Check cultivars connect trials across time and location. Border plants and guard rows can reduce edge effects. Trial maps must be preserved so spatial trends can be inspected rather than averaged away.",
+        "Genotype-by-environment interaction occurs when relative performance changes across environments. A line can be broadly adapted, specifically adapted, or unstable. Multi-environment trials should represent target production systems, not merely the easiest rooms. Management deviations, missing plants, pest events, instrument failures, and selective harvests belong in the dataset. Statistical significance does not replace effect size, uncertainty, biological relevance, or repeatability."
+      ],
+      "requiredLabels": [
+        "replication",
+        "randomization",
+        "block",
+        "check cultivar",
+        "experimental unit",
+        "genotype-by-environment interaction",
+        "spatial trend",
+        "pseudoreplication"
+      ],
+      "misconceptionGuards": [
+        "Ten measurements from one plant are ten replicates. Repeated measurements improve precision on that plant but do not create ten independent experimental units.",
+        "Clones eliminate environmental variation. Clones reduce genetic variation among replicates; they do not remove position, microclimate, handling, pathogen, or measurement differences."
+      ],
+      "sourceAnchors": [
+        "V20-SRC-005",
+        "V20-SRC-006",
+        "V20-SRC-007",
+        "V20-SRC-025"
+      ],
+      "altTextDraft": "Replicated multi-environment trial layout for Replicated Trials and Environmental Noise, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Replicated Trials and Environmental Noise. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-393_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-393_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-394",
+      "lessonId": "THC-ENC-394",
+      "number": 394,
+      "title": "Phenotyping Morphology, Flowering, and Yield",
+      "visualType": "Standardized Cannabis phenotype measurement plate",
+      "visualFamily": "measurement-workflow",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to measure plant architecture, development, flowering, biomass, and product yield with controlled definitions and repeatable sampling.",
+      "accuracyRequirements": [
+        "Phenotyping converts plant observations into data. Terms such as “stretch,” “dense,” “fast,” “branchy,” or “heavy” are not comparable until the measurement, reference point, stage, and unit are defined. Height may be measured from media surface to apex; canopy width may require two perpendicular axes; flowering onset may mean first preflower, first pistillate inflorescence, or a defined proportion of flowering nodes.",
+        "Yield must identify the product and basis. Whole-plant fresh mass, trimmed wet flower, dry inflorescence, marketable flower, seed, fiber, and total analyte yield answer different questions. Moisture correction, stem and leaf fractions, rejected material, sampling, and postharvest losses affect comparisons. Concentration multiplied by representative dry mass can estimate total analyte yield, but both components carry uncertainty.",
+        "Use stage-specific protocols, training images, calibrated instruments, and repeatability checks. Record plant positions and destructive-sampling history. Automated images, lidar, and computer vision can increase throughput but require ground truth and can inherit bias from lighting, occlusion, segmentation, and training data. Preserve raw images and metadata rather than only final scores."
+      ],
+      "requiredLabels": [
+        "phenotype",
+        "ontology",
+        "developmental stage",
+        "architecture",
+        "harvest index",
+        "fresh mass",
+        "dry mass",
+        "marketable yield"
+      ],
+      "misconceptionGuards": [
+        "Dry flower weight and harvest yield are interchangeable. Yield depends on the defined harvest fraction, drying basis, rejected material, and denominator used.",
+        "A photograph is an objective phenotype by itself. Images require scale, view, lighting, developmental stage, and a defined scoring or measurement method to become reproducible data."
+      ],
+      "sourceAnchors": [
+        "V20-SRC-005",
+        "V20-SRC-012",
+        "V20-SRC-034"
+      ],
+      "altTextDraft": "Standardized Cannabis phenotype measurement plate for Phenotyping Morphology, Flowering, and Yield, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Phenotyping Morphology, Flowering, and Yield. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-394_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-394_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-396",
+      "lessonId": "THC-ENC-396",
+      "number": 396,
+      "title": "Disease and Pest Resistance Screening",
+      "visualType": "Resistance-screen design and escape-control decision tree",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to distinguish genetic resistance, tolerance, susceptibility, and disease escape through controlled challenge, replication, pathogen identity, and multi-stage evidence.",
+      "accuracyRequirements": [
+        "Resistance reduces infection, colonization, reproduction, or damage by a defined organism under defined conditions. Tolerance allows acceptable performance despite infection or injury. Escape occurs when a plant avoids exposure or favorable conditions. A plant with no visible disease in one room may be resistant, unexposed, younger, spatially protected, or incorrectly scored.",
+        "A resistance screen requires verified pest or pathogen identity, a reproducible challenge, susceptible and resistant checks, adequate inoculum or infestation, randomization, replication, and environmental control. Rate incidence, severity, pathogen reproduction, plant growth, and time. Different isolates can overcome different resistance genes, and development stage can change response. Greenhouse screens and field trials answer complementary questions.",
+        "Cannabis powdery mildew research illustrates multiple architectures: a disrupted susceptibility gene near CsMLO1, a dominant PM2 locus on chromosome 9, additional smaller QTL, and diverse germplasm with low disease across years. A marker is useful only after validation in the breeding population and with the relevant pathogen. Strong single-gene resistance can be introgressed, but durability may require combining mechanisms and monitoring pathogen change."
+      ],
+      "requiredLabels": [
+        "resistance",
+        "susceptibility",
+        "tolerance",
+        "disease escape",
+        "inoculum",
+        "isolate",
+        "disease severity",
+        "area under disease progress curve"
+      ],
+      "misconceptionGuards": [
+        "No visible disease proves resistance. A plant can escape exposure, receive insufficient inoculum, or encounter an environment unfavorable to disease development.",
+        "A resistance marker works in every genetic background. Marker-trait associations can break because of recombination, allele differences, or background interactions."
+      ],
+      "sourceAnchors": [
+        "V20-SRC-026",
+        "V20-SRC-027",
+        "V20-SRC-028",
+        "V20-SRC-029"
+      ],
+      "altTextDraft": "Resistance-screen design and escape-control decision tree for Disease and Pest Resistance Screening, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Disease and Pest Resistance Screening. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-396_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-396_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-397",
+      "lessonId": "THC-ENC-397",
+      "number": 397,
+      "title": "Progeny Testing and Combining Ability",
+      "visualType": "Parent-by-progeny combining-ability record",
+      "visualFamily": "measurement-workflow",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to estimate parental breeding value from offspring performance across mates, families, environments, and target traits.",
+      "accuracyRequirements": [
+        "A progeny test evaluates a parent by measuring its descendants. This is essential when the parent’s own phenotype is misleading, when traits are expressed only in one sex or late stage, or when selection aims at transmission rather than clone performance. Families can be half-sibs, full-sibs, selfs, testcrosses, or structured diallel and factorial sets.",
+        "General combining ability describes average performance across several mates and is often associated with additive effects. Specific combining ability describes an unusually favorable or unfavorable combination relative to parental averages and can include dominance and epistasis. Estimates depend on the mating design, tester choice, environments, family size, and statistical model. A parent tested with one mate does not have a reliable general combining-ability estimate.",
+        "Use common testers and checks, balanced family sizes where possible, and replicated trials. Preserve both mean and within-family variation. A cross with one exceptional offspring may be attractive for clone selection but poor for seed-family uniformity. Conversely, a parent producing consistently acceptable families can be valuable even if it never produces the single most extreme individual."
+      ],
+      "requiredLabels": [
+        "progeny test",
+        "general combining ability",
+        "specific combining ability",
+        "testcross",
+        "half-sib",
+        "full-sib",
+        "breeding value",
+        "family effect"
+      ],
+      "misconceptionGuards": [
+        "The best parent phenotype always gives the best progeny. Individual phenotype and breeding value are related imperfectly, especially for low-heritability or strongly environment-dependent traits.",
+        "One exceptional child proves a superior cross. A single outlier may not represent the family mean or repeat in another progeny sample."
+      ],
+      "sourceAnchors": [
+        "V20-SRC-004",
+        "V20-SRC-006",
+        "V20-SRC-007",
+        "V20-SRC-025"
+      ],
+      "altTextDraft": "Parent-by-progeny combining-ability record for Progeny Testing and Combining Ability, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Progeny Testing and Combining Ability. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-397_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-397_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-398",
+      "lessonId": "THC-ENC-398",
+      "number": 398,
+      "title": "Population Maintenance and Avoiding Genetic Bottlenecks",
+      "visualType": "Effective population size and family-contribution diagram",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to maintain useful allelic diversity by controlling parent number, sex ratio, family contribution, drift, selection, and contamination.",
+      "accuracyRequirements": [
+        "The number of plants in a population is not the same as its effective population size. Unequal sex ratios, few successful pollen parents, unequal seed contribution, related matings, reproductive failure, and strong selection can make a large grow genetically equivalent to a much smaller breeding population. Small effective size increases drift, inbreeding, and loss of rare alleles.",
+        "Population maintenance requires a defined objective. A conservation population aims to retain diversity and representative allele frequencies; a breeding population deliberately changes them. To conserve, use many unrelated parents, balanced male and female or family contributions, controlled sampling, and sufficient seed from each family. Avoid allowing the earliest, tallest, or most pollen-productive plants to dominate unintentionally.",
+        "Genotyping can estimate relatedness and structure, but sampling and marker density matter. Phenotypic diversity is not a reliable substitute for genomic diversity, and cultivar names may not reflect identity. Maintain base-population seed, selected cycles, and safety duplicates separately. Contamination by stray pollen, volunteers, mixed seed, or mislabeled clones can alter a population as strongly as deliberate selection."
+      ],
+      "requiredLabels": [
+        "census population",
+        "effective population size",
+        "genetic drift",
+        "bottleneck",
+        "founder effect",
+        "allele loss",
+        "family contribution",
+        "coancestry"
+      ],
+      "misconceptionGuards": [
+        "A field with hundreds of plants cannot have a bottleneck. Effective population size can be much smaller than census size when only a few parents contribute offspring.",
+        "Visible diversity proves genetic diversity is preserved. Morphological variation can miss losses at unobserved loci, and uniform appearance does not necessarily mean low diversity."
+      ],
+      "sourceAnchors": [
+        "V20-SRC-006",
+        "V20-SRC-008",
+        "V20-SRC-010",
+        "V20-SRC-011",
+        "V20-SRC-012"
+      ],
+      "altTextDraft": "Effective population size and family-contribution diagram for Population Maintenance and Avoiding Genetic Bottlenecks, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Population Maintenance and Avoiding Genetic Bottlenecks. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-398_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-398_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-399",
+      "lessonId": "THC-ENC-399",
+      "number": 399,
+      "title": "Seed Storage, Germplasm Backup, and Regeneration",
+      "visualType": "Germplasm conservation and regeneration workflow",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to preserve seed and living genetic resources through identity control, drying, storage, viability monitoring, safety duplication, and genetically responsible regeneration.",
+      "accuracyRequirements": [
+        "Germplasm conservation protects future breeding options. Seed lots need accession identity, parentage or collection origin, harvest and processing records, initial quality, and legal status. Cannabis seed is generally managed as an orthodox seed under dry, cold genebank practices, but each lot’s moisture response, viability, vigor, and storage behavior should be verified rather than assumed.",
+        "Long-term storage requires controlled drying, moisture-proof packaging, stable low temperature, monitoring, and backup at a separate secure location. Germination percentage alone can hide declining vigor or abnormal seedlings. Establish retest intervals and thresholds based on initial viability, storage conditions, seed quantity, value, and expected longevity. Preserve enough seed that monitoring does not consume the accession.",
+        "Regeneration creates new seed when quantity or viability falls. It can change the accession through small parent number, unequal flowering, pollen contamination, selection, environmental mortality, and accidental mixing. Use adequate effective population size, controlled isolation, representative family contribution, identity checks, and documentation. Clonal, tissue-culture, field, and cryogenic backups have different pathogen, mutation, space, and recovery risks and should complement rather than silently replace seed conservation."
+      ],
+      "requiredLabels": [
+        "germplasm",
+        "accession",
+        "orthodox seed",
+        "viability",
+        "vigor",
+        "regeneration",
+        "safety duplicate",
+        "base collection"
+      ],
+      "misconceptionGuards": [
+        "A freezer automatically preserves seed indefinitely. Longevity depends on initial seed quality, moisture, packaging, temperature stability, species or genotype, and storage duration.",
+        "High germination means genetic integrity was preserved. Viability says seeds can germinate; it does not show that allele frequencies, identity, or family representation were maintained."
+      ],
+      "sourceAnchors": [
+        "V20-SRC-030",
+        "V20-SRC-031",
+        "V20-SRC-032",
+        "V20-SRC-011"
+      ],
+      "altTextDraft": "Germplasm conservation and regeneration workflow for Seed Storage, Germplasm Backup, and Regeneration, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Seed Storage, Germplasm Backup, and Regeneration. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-399_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-399_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-403",
+      "lessonId": "THC-ENC-403",
+      "number": 403,
+      "title": "Calibration, Verification, and Traceability",
+      "visualType": "Calibration, verification, traceability, and action record",
+      "visualFamily": "measurement-workflow",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to control instruments through calibration, verification, reference standards, as-found condition, adjustments, and traceable records.",
+      "accuracyRequirements": [
+        "Calibration establishes a relationship between indications and reference quantity values under stated conditions. It does not automatically adjust an instrument, prove fitness for every use, or create permanent accuracy. Verification checks whether specified requirements are met. Adjustment changes instrument response. These activities must be named correctly because a routine check against a buffer or standard may be verification rather than a full calibration.",
+        "Metrological traceability belongs to a measurement result, not merely to a sticker on an instrument. It requires a documented unbroken chain of calibrations to a reference, with each link contributing uncertainty. Traceability alone does not establish that the uncertainty, range, method, or sample handling is adequate for the decision. A traceable scale can still be inappropriate for a tiny sample, and a calibrated pH meter can still be wrong in a dirty, damaged, poorly stored, or temperature-mismatched electrode.",
+        "Records should preserve as-found and as-left results. When an instrument fails verification, evaluate the affected data window rather than simply recalibrating and continuing. Consider drift direction, magnitude, prior checks, use frequency, environmental exposure, maintenance, and whether a second method or retained sample can bound impact. Reference materials need identity, lot, expiry, storage, preparation, assigned value, uncertainty, and suitability for the instrument range."
+      ],
+      "requiredLabels": [
+        "calibration",
+        "verification",
+        "adjustment",
+        "reference standard",
+        "traceability",
+        "as-found",
+        "as-left",
+        "tolerance"
+      ],
+      "misconceptionGuards": [
+        "A calibration sticker proves every result is traceable and fit for purpose. Traceability also requires a documented chain to appropriate references, a suitable method, and evidence that the instrument was performing within the needed range.",
+        "Calibration and verification are the same activity. Calibration establishes the relationship between indication and reference values; verification checks whether performance meets a defined requirement."
+      ],
+      "sourceAnchors": [
+        "V21-SRC-004",
+        "V21-SRC-006",
+        "V21-SRC-007",
+        "V21-SRC-008",
+        "V21-SRC-019"
+      ],
+      "altTextDraft": "Calibration, verification, traceability, and action record for Calibration, Verification, and Traceability, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Calibration, Verification, and Traceability. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-403_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-403_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-406",
+      "lessonId": "THC-ENC-406",
+      "number": 406,
+      "title": "Environmental Data Logging",
+      "visualType": "Sensor–location–time–aggregation data pipeline",
+      "visualFamily": "measurement-workflow",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to collect environmental time-series data with controlled sensor identity, placement, timing, missing-data, and aggregation rules.",
+      "accuracyRequirements": [
+        "Environmental data are inseparable from place and time. Temperature, humidity, carbon dioxide, light, soil moisture, pressure, airflow, and leaf wetness can vary across centimetres and seconds. A data channel therefore needs sensor ID, measured quantity, unit, location, height, orientation, shielding, surrounding crop condition, logging interval, controller relationship, and clock basis.",
+        "Timestamps should use a documented time zone and daylight-saving rule or coordinated universal time. Clock drift, power loss, duplicate timestamps, firmware changes, and controller resets can break alignment among sensors, irrigation, lighting, weather, and crop events. Preserve raw data and flag missing, substituted, clipped, or invalid values. Do not silently interpolate a long outage or replace an extreme value because it appears inconvenient.",
+        "Aggregation changes meaning. A daily average can hide a damaging thirty-minute heat spike, condensation event, dark-period light leak, or repeated oscillation. Minimum, maximum, percentile, duration above or below limits, rate of change, and spatial spread may be more relevant than mean. Autocorrelation means thousands of minute readings are not thousands of independent environmental replicates."
+      ],
+      "requiredLabels": [
+        "time series",
+        "timestamp",
+        "time zone",
+        "sampling interval",
+        "logging interval",
+        "sensor placement",
+        "aggregation",
+        "missing data"
+      ],
+      "misconceptionGuards": [
+        "More frequent logging automatically creates more independent information. High-frequency observations from the same sensor are often strongly autocorrelated and may add detail without increasing independent replication.",
+        "A daily mean proves the crop never exceeded a limit. A mean can hide short excursions, spatial extremes, or sensor failures that matter biologically."
+      ],
+      "sourceAnchors": [
+        "V21-SRC-006",
+        "V21-SRC-009",
+        "V21-SRC-010",
+        "V21-SRC-026",
+        "V21-SRC-033"
+      ],
+      "altTextDraft": "Sensor–location–time–aggregation data pipeline for Environmental Data Logging, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Environmental Data Logging. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-406_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-406_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-408",
+      "lessonId": "THC-ENC-408",
+      "number": 408,
+      "title": "pH, EC, and Water-Quality Records",
+      "visualType": "Water-sample, meter-control, and interpretation record",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to record water and solution measurements with controlled sampling, temperature, instrument checks, chemistry context, and interpretation limits.",
+      "accuracyRequirements": [
+        "pH and electrical conductivity are method-dependent measurements, not complete descriptions of water. pH describes hydrogen-ion activity under the method conditions. EC describes the solution’s ability to conduct current and is influenced by ion concentration, mobility, temperature, and instrument compensation. Two waters can share EC but contain very different ions, alkalinity, sodium, chloride, nutrients, or contaminants.",
+        "Records should distinguish source water, treated water, stock, final solution, input, root-zone extract, runoff, leachate, and laboratory sample. Sample temperature, equilibration, container, storage, aeration, and time can change results. A meter needs electrode or cell identity, cleaning, storage condition, standard lots, verification results, temperature mode, and maintenance. TDS or ppm estimates derived from EC require the instrument factor and should not replace direct chemical analysis.",
+        "Water-quality interpretation often requires alkalinity, hardness, major ions, nutrients, metals, microbiology, treatment history, and seasonal variability. Laboratory reports need method, units, detection limits, sample receipt condition, and accreditation scope. Changes in pH after acid addition depend strongly on alkalinity; pH alone does not predict acid demand."
+      ],
+      "requiredLabels": [
+        "pH",
+        "electrical conductivity",
+        "alkalinity",
+        "hardness",
+        "ion",
+        "total dissolved solids",
+        "temperature compensation",
+        "sample preservation"
+      ],
+      "misconceptionGuards": [
+        "Equal EC means equal nutrient composition. Conductivity reflects the combined ionic content and can be similar for solutions with very different nutrient ratios.",
+        "Low pH water always requires more base than high-alkalinity water. Alkalinity measures acid-neutralizing capacity and often predicts amendment demand better than pH alone."
+      ],
+      "sourceAnchors": [
+        "V21-SRC-002",
+        "V21-SRC-004",
+        "V21-SRC-008",
+        "V21-SRC-025",
+        "V21-SRC-033"
+      ],
+      "altTextDraft": "Water-sample, meter-control, and interpretation record for pH, EC, and Water-Quality Records, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "pH, EC, and Water-Quality Records. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-408_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-408_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-410",
+      "lessonId": "THC-ENC-410",
+      "number": 410,
+      "title": "Scouting and Plant-Health Records",
+      "visualType": "Scouting route, incidence, severity, and evidence record",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to record plant-health observations using repeatable routes, units, severity scales, organism confidence, and diagnostic boundaries.",
+      "accuracyRequirements": [
+        "Scouting is structured observation, not a casual walk. Define the crop population, route, number and type of units, plant parts, canopy layers, substrate or soil zones, traps, and observation interval. Incidence is the proportion of units affected; severity is the amount of tissue or impact within an affected unit. Counts, ratings, and percentages require an explicit denominator and scale.",
+        "Symptoms are plant responses; signs are physical evidence of an organism. Yellowing, necrosis, wilt, spots, distortion, root discoloration, odor, webbing, frass, spores, and insects can each have several causes. Record distribution, progression, environmental and treatment history, and co-occurring evidence. Identify organisms to the justified level and preserve photographs or specimens when confidence is limited.",
+        "Scouting records should distinguish observation, preliminary interpretation, confirmatory test, action threshold, intervention, and outcome. A positive molecular test may detect an organism without proving that it caused every symptom. A favorable environment does not prove infection. Absence from a limited sample does not prove absence from the crop."
+      ],
+      "requiredLabels": [
+        "scouting unit",
+        "incidence",
+        "severity",
+        "prevalence",
+        "symptom",
+        "sign",
+        "distribution",
+        "specimen"
+      ],
+      "misconceptionGuards": [
+        "One symptomatic leaf establishes the diagnosis. Many disorders share visual symptoms, so diagnosis requires pattern, context, differential reasoning, and sometimes confirmatory testing.",
+        "A pest present on a trap proves crop damage. Traps indicate presence or activity but do not automatically establish infestation level, injury, or economic impact on plants."
+      ],
+      "sourceAnchors": [
+        "V21-SRC-002",
+        "V21-SRC-011",
+        "V21-SRC-026",
+        "V21-SRC-033"
+      ],
+      "altTextDraft": "Scouting route, incidence, severity, and evidence record for Scouting and Plant-Health Records, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Scouting and Plant-Health Records. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-410_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-410_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-412",
+      "lessonId": "THC-ENC-412",
+      "number": 412,
+      "title": "Laboratory Sample and Result Tracking",
+      "visualType": "Sample-to-COA chain-of-custody and result map",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to connect laboratory results to sample identity, chain of custody, preparation, method, scope, uncertainty, and batch inference.",
+      "accuracyRequirements": [
+        "A laboratory result belongs to the submitted sample and method. Extending it to a plant, batch, product, or cultivar requires representative sampling and intact identity. The record should link sample ID, source population, increments, composite or individual status, collector, date, mass, container, preservation, transport, receipt condition, laboratory accession, subsampling, preparation, and remaining retained material.",
+        "Method scope matters. A validated cannabinoid method for dried flower may not be valid for roots, extracts, wet tissue, soil, or a different concentration range. Results need units, wet or dry basis, sample preparation, method version, instrument platform, calibration, quality controls, detection and quantitation limits, dilution, uncertainty where available, and accreditation scope. “Not detected” means below the method’s detection capability under the reported conditions—not zero.",
+        "Certificates of analysis should be reviewed for identity, dates, authorized signatures, amendments, qualifiers, calculations, and linked corrections. Interlaboratory variation can arise from sampling, moisture correction, extraction, calibration, chromatography, reference materials, analyte definitions, and decision rules. Retests require a written rationale; selecting the most favorable result without investigating disagreement is not evidence control."
+      ],
+      "requiredLabels": [
+        "chain of custody",
+        "test method",
+        "scope",
+        "matrix",
+        "aliquot",
+        "homogenization",
+        "detection limit",
+        "quantitation limit"
+      ],
+      "misconceptionGuards": [
+        "A COA proves every unit in the batch has the reported value. The result characterizes the submitted sample under the method used and supports batch inference only to the extent the sampling plan is representative.",
+        "Not detected means the analyte is absent. It means the analyte was not detected above the method's reporting or detection threshold under the tested conditions."
+      ],
+      "sourceAnchors": [
+        "V21-SRC-008",
+        "V21-SRC-020",
+        "V21-SRC-021",
+        "V21-SRC-022",
+        "V21-SRC-026"
+      ],
+      "altTextDraft": "Sample-to-COA chain-of-custody and result map for Laboratory Sample and Result Tracking, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Laboratory Sample and Result Tracking. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-412_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-412_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-413",
+      "lessonId": "THC-ENC-413",
+      "number": 413,
+      "title": "Deviations, Root-Cause Analysis, and CAPA",
+      "visualType": "Deviation containment, investigation, CAPA, and effectiveness workflow",
+      "visualFamily": "measurement-workflow",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to control departures from requirements through containment, evidence preservation, impact assessment, root-cause analysis, corrective action, and effectiveness verification.",
+      "accuracyRequirements": [
+        "A deviation is a departure from an approved requirement, method, range, identity, process, or record. First protect people, crop, samples, equipment, and data. Containment can include stopping work, isolating material, preserving logs, marking affected units, securing samples, and preventing further processing. A correction restores an immediate condition; it is not automatically a corrective action that prevents recurrence.",
+        "Investigation should reconstruct the event timeline and define the problem precisely: what requirement applied, what occurred, when, where, to which units, for how long, and with what evidence. Review equipment, environment, materials, methods, training, workload, design, software, and prior events. “Operator error” is usually incomplete unless the system explains why the error was possible, undetected, or repeated. Five Whys, fishbone diagrams, fault trees, and change analysis organize questions but do not prove cause.",
+        "CAPA should address verified or strongly supported causes, assign owners and dates, control unintended consequences, update affected documents and training, and define measurable effectiveness checks. More testing can add evidence but cannot always prove an unsampled batch was unaffected. Closure requires authorized disposition of material and data, completion of actions, and evidence that recurrence risk was reduced."
+      ],
+      "requiredLabels": [
+        "deviation",
+        "nonconformity",
+        "correction",
+        "containment",
+        "root cause",
+        "contributing cause",
+        "CAPA",
+        "effectiveness check"
+      ],
+      "misconceptionGuards": [
+        "Passing a retest automatically invalidates the original failure. A retest is additional evidence and does not erase the need to explain the original result and determine whether the retest was justified.",
+        "Root cause is always one person or one failed component. Complex failures can arise from interacting process, equipment, training, environment, design, and management factors."
+      ],
+      "sourceAnchors": [
+        "V21-SRC-008",
+        "V21-SRC-026",
+        "V21-SRC-027",
+        "V21-SRC-028",
+        "V21-SRC-029"
+      ],
+      "altTextDraft": "Deviation containment, investigation, CAPA, and effectiveness workflow for Deviations, Root-Cause Analysis, and CAPA, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Deviations, Root-Cause Analysis, and CAPA. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-413_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-413_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-415",
+      "lessonId": "THC-ENC-415",
+      "number": 415,
+      "title": "Reading a Scientific Paper",
+      "visualType": "Scientific-paper evidence extraction map",
+      "visualFamily": "measurement-workflow",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to evaluate a paper by connecting its question, material, design, methods, results, uncertainty, limitations, and publication status to the claim being used.",
+      "accuracyRequirements": [
+        "Begin with the claim you need to evaluate, not the paper’s title. Identify the research question, biological material, cultivar or accession, propagation mode, plant count, experimental unit, environment, treatments, controls, endpoints, sampling positions, methods, and analysis. Abstracts compress evidence and may omit exclusions, null results, protocol details, uncertainty, and limitations.",
+        "Read figures and tables with units, denominators, axes, sample sizes, error bars, and captions. Statistical significance does not state biological importance. Examine effect size, uncertainty, variability, missing data, model assumptions, multiple comparisons, and whether the stated conclusion matches the design. A controlled-environment result may establish mechanism while having limited transfer to commercial rooms or outdoor crops.",
+        "Check the source’s current status. Find the DOI, journal page, PubMed record where available, data and protocol links, corrections, expressions of concern, or retractions. Preprints and reviews can be useful but have different roles. Funding and conflicts do not automatically invalidate work, yet they should inform scrutiny of design, selective reporting, and claims. Record exact page, figure, table, or section supporting each project claim."
+      ],
+      "requiredLabels": [
+        "research question",
+        "hypothesis",
+        "population",
+        "method",
+        "endpoint",
+        "effect size",
+        "confidence interval",
+        "peer review"
+      ],
+      "misconceptionGuards": [
+        "Peer reviewed means the paper is correct and universally applicable. Peer review filters work before publication but does not guarantee validity, reproducibility, or transfer to every cultivar or production system.",
+        "A significant p-value proves a large useful effect. Statistical significance depends on effect size, variability, sample size, and model assumptions and does not establish practical importance."
+      ],
+      "sourceAnchors": [
+        "V21-SRC-009",
+        "V21-SRC-014",
+        "V21-SRC-015",
+        "V21-SRC-030",
+        "V21-SRC-034"
+      ],
+      "altTextDraft": "Scientific-paper evidence extraction map for Reading a Scientific Paper, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Reading a Scientific Paper. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-415_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-415_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-417",
+      "lessonId": "THC-ENC-417",
+      "number": 417,
+      "title": "Correlation, Causation, and Confounding",
+      "visualType": "Causal pathway, confounder, mediator, and collider diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to separate association from causal evidence by identifying temporal order, confounders, mediators, selection effects, and alternative explanations.",
+      "accuracyRequirements": [
+        "Correlation describes variables changing together; it does not identify why. Temperature and irrigation volume may rise together because hot weather causes both. Diseased plants may receive more treatment because symptoms prompted intervention, creating an association between treatment and poor outcome even when the treatment did not cause the disease. Reverse causation and management response are common in observational cultivation records.",
+        "A confounder influences both the proposed cause and outcome. Cultivar, plant size, room position, root-zone volume, crop stage, worker, season, and prior health can confound comparisons. A mediator lies on the causal pathway and should not always be “controlled away.” Conditioning on a collider—an outcome influenced by two variables—can create a false association. Causal diagrams help state assumptions before analysis.",
+        "Strong causal evidence combines a defined intervention, suitable control, randomization or credible adjustment, temporal order, mechanism, dose or gradient where relevant, replication, and consistency with alternative evidence. Observational data remain valuable for surveillance and hypothesis generation. Models can adjust only for measured, correctly modeled variables; a high correlation coefficient or predictive accuracy does not prove the intervention will work."
+      ],
+      "requiredLabels": [
+        "correlation",
+        "causation",
+        "confounder",
+        "mediator",
+        "collider",
+        "reverse causation",
+        "selection bias",
+        "temporal sequence"
+      ],
+      "misconceptionGuards": [
+        "A strong correlation proves a strong causal effect. Correlation can be produced by confounding, reverse causation, selection, shared trends, or measurement structure.",
+        "Controlling for every available variable always improves causal inference. Adjusting for mediators, colliders, or variables affected by the exposure can create bias."
+      ],
+      "sourceAnchors": [
+        "V21-SRC-009",
+        "V21-SRC-030",
+        "V21-SRC-032",
+        "V21-SRC-034"
+      ],
+      "altTextDraft": "Causal pathway, confounder, mediator, and collider diagram for Correlation, Causation, and Confounding, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Correlation, Causation, and Confounding. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-417_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-417_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-418",
+      "lessonId": "THC-ENC-418",
+      "number": 418,
+      "title": "Cultivar-Specific Evidence and Generalization Limits",
+      "visualType": "Genotype-by-environment-by-management transfer model",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to evaluate whether evidence from one cultivar, line, clone, population, stage, and system can support a broader cultivation claim.",
+      "accuracyRequirements": [
+        "Cannabis populations can differ in flowering response, architecture, sex expression, disease susceptibility, nutrient response, water use, cannabinoid-acid profile, volatile composition, and stress tolerance. A commercial cultivar name may not uniquely identify a genotype. Seed-derived plants within a named population can segregate, while clones share a source genotype but can differ through health, epigenetic state, pathogen status, age, and environment.",
+        "Genotype-by-environment interaction occurs when relative performance changes across environments. Genotype-by-management interaction extends the idea to irrigation, density, pruning, lighting, nutrition, and harvest practices. A treatment that increases yield in one cultivar can have no effect or reduce quality in another. Ranking stability requires replicated comparison across relevant conditions rather than assuming the highest performer in one trial is broadly superior.",
+        "Generalization should state the source material and target population. Mechanistic plant physiology may transfer broadly, while numerical thresholds and production claims often require local validation. Genetic markers can support identity, ancestry, or trait prediction only within their validated population and method. Phenotype similarity cannot prove genetic identity, and one laboratory profile cannot establish stable cultivar performance."
+      ],
+      "requiredLabels": [
+        "genotype",
+        "cultivar",
+        "accession",
+        "chemotype",
+        "phenotype",
+        "genotype-by-environment interaction",
+        "management interaction",
+        "external validity"
+      ],
+      "misconceptionGuards": [
+        "Cultivars with the same name are genetically identical. Names can contain multiple genetic populations or be reused across unrelated material, so controlled identity requires more than a label.",
+        "A response observed in one clone applies to all cannabis. A clone establishes evidence for that genotype under the tested conditions, not for the entire species."
+      ],
+      "sourceAnchors": [
+        "V21-SRC-011",
+        "V21-SRC-012",
+        "V21-SRC-033",
+        "V21-SRC-034"
+      ],
+      "altTextDraft": "Genotype-by-environment-by-management transfer model for Cultivar-Specific Evidence and Generalization Limits, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Cultivar-Specific Evidence and Generalization Limits. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-418_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-418_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-420",
+      "lessonId": "THC-ENC-420",
+      "number": 420,
+      "title": "Building an Evidence-Based Cultivation Knowledge System",
+      "visualType": "Controlled knowledge-system architecture diagram",
+      "visualFamily": "measurement-workflow",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to integrate permanent identities, claims, evidence, manuscripts, visuals, assessments, downloads, software, reviews, releases, and corrections into one auditable system.",
+      "accuracyRequirements": [
+        "A knowledge system is more than a folder of documents. Every lesson, course, SOP, guide, visual, form, source, claim, route, download, and release needs a permanent identity and defined relationship. The canonical source should be clear: Drive can control manuscripts, evidence, visual masters, rights, and approval; a repository can control structured website content and code. Copies and exports are derivatives that must retain source version and checksum or revision evidence.",
+        "Claims should be atomic enough to review. A ledger connects each claim to exact sources, evidence class, applicability limits, risk, reviewer decision, review date, and affected outputs. Visuals require the same control because diagrams can introduce unsupported relationships, scales, thresholds, or labels. Assessments need answer rationale and source mapping. Accessibility text, print files, metadata, search terms, routes, and downloads are part of the educational deliverable—not optional decoration.",
+        "Release gates must remain separate. Created is not reviewed; reviewed is not approved; approved is not deployed; deployed is not verified live. A release candidate freezes source versions and collects science, safety, legal, editorial, assessment, visual, accessibility, rights, security, browser, mobile, download, backup, and rollback evidence. Corrections then create a new controlled version while preserving what changed, who approved it, where it was published, and whether users need notification."
+      ],
+      "requiredLabels": [
+        "knowledge system",
+        "controlled ID",
+        "claim ledger",
+        "evidence graph",
+        "canonical source",
+        "derivative",
+        "review gate",
+        "release candidate"
+      ],
+      "misconceptionGuards": [
+        "A finished manuscript is a finished educational product. Publication also requires review, structured data, navigation, visuals where needed, accessibility, assessments, citations, deployment, and live verification.",
+        "A merged pull request proves scientific approval and public release. Source control records code or content integration; scientific review and deployment are separate controlled states."
+      ],
+      "sourceAnchors": [
+        "V21-SRC-010",
+        "V21-SRC-013",
+        "V21-SRC-016",
+        "V21-SRC-017",
+        "V21-SRC-026"
+      ],
+      "altTextDraft": "Controlled knowledge-system architecture diagram for Building an Evidence-Based Cultivation Knowledge System, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Building an Evidence-Based Cultivation Knowledge System. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-420_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-420_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-104",
+      "lessonId": "THC-ENC-104",
+      "number": 104,
+      "title": "Photoperiod and Total Daily Photons",
+      "visualType": "Concept diagram",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 23,
+      "purpose": "Teach the learner to explain how photon dose and light-dark timing interact without reducing photoperiod biology to a DLI calculation.",
+      "accuracyRequirements": [
+        "Total daily photons are the integral of photon flux over time, but photoperiod also organizes development. A 12-hour and an 18-hour schedule can be set to the same DLI by changing PPFD; they are not biologically identical because photon rate, dark duration, phytochrome state, circadian timing, temperature cycle, transpiration, and carbohydrate use differ.",
+        "Photoperiod cannabis generally behaves as a facultative short-day crop, while day-neutral or autoflowering germplasm is less dependent on the same inductive night signal. Critical responses vary among cultivars. Research across hemp cultivars found meaningful differences in flowering response, including sensitivity to small photoperiod changes and biologically effective twilight.",
+        "Timers must control actual light at the plant, not merely commanded fixture hours. Sunrise and sunset ramps, greenhouse sunlight, indicator lamps, door openings, controller failures, and spectral channels can alter the effective schedule. A photon threshold used to define 'lights on' must be documented rather than assumed."
+      ],
+      "requiredLabels": [
+        "Photoperiod",
+        "Scotoperiod",
+        "Critical photoperiod",
+        "Circadian entrainment"
+      ],
+      "misconceptionGuards": [
+        "DLI replaces photoperiod: The integral does not preserve dark duration or photoreceptor and circadian timing.",
+        "Every cannabis cultivar flowers at exactly 12 hours: Twelve hours is a common production schedule, not a universal biological threshold."
+      ],
+      "sourceAnchors": [
+        "Zhang M. et al. (2021). Photoperiodic Flowering Response of Essential Oil, Grain, and Fiber Hemp Cultivars. Frontiers in Plant Science 12:694153.",
+        "Dang M., Muthu Arachchige N., and Campbell L.G. (2022). Optimizing Photoperiod Switch to Maximize Floral Biomass and Cannabinoid Yield: A Meta-Analytic Quantile Regression Approach. Frontiers in Plant Science 12:797425.",
+        "THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026).",
+        "THC Cultivation SOP Source Materials Packet v1.0 (project source, May 2026)."
+      ],
+      "altTextDraft": "Concept diagram for Photoperiod and Total Daily Photons, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Photoperiod and Total Daily Photons. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-104_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-104_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-113",
+      "lessonId": "THC-ENC-113",
+      "number": 113,
+      "title": "Cryptochromes, Phototropins, and Blue Light",
+      "visualType": "Concept diagram",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 23,
+      "purpose": "Teach the learner to differentiate major blue-light receptor functions and evaluate blue-light treatments through dose, fraction, background spectrum, and crop response.",
+      "accuracyRequirements": [
+        "Blue light participates in photosynthesis and also activates multiple receptors. Cryptochrome signaling commonly affects de-etiolation, elongation, circadian regulation, and pigment pathways. Phototropins mediate directional growth, chloroplast movement, leaf positioning, and components of stomatal opening. These networks interact with phytochrome, hormones, temperature, carbon dioxide, and water status.",
+        "A blue percentage is incomplete unless the wavelength band, absolute blue photon flux, total PPFD or ePPFD, background spectrum, photoperiod, and measurement method are stated. Ten percent blue at 1,000 PPFD provides twice the blue photon flux of ten percent at 500 PPFD.",
+        "Responses are not universally 'compact under blue.' Cannabis morphology and chemical outcomes vary with genotype, intensity, stage, spectral composition, and experimental design. Blue photons may change leaf thickness, area, stomatal behavior, pigmentation, height, and energy efficiency, but these outcomes must be measured rather than inferred from fixture appearance."
+      ],
+      "requiredLabels": [
+        "Cryptochrome",
+        "Phototropin",
+        "Blue fraction",
+        "Phototropism"
+      ],
+      "misconceptionGuards": [
+        "Blue light is only for vegetative growth: Blue receptors and photosynthesis function throughout development.",
+        "More blue always makes cannabis shorter: Absolute dose, other wavelengths, intensity, genotype, and environment determine response."
+      ],
+      "sourceAnchors": [
+        "Holweg M.M.S.F. et al. (2024). The Role of Red and White Light in Optimizing Growth and Accumulation of Plant Specialized Metabolites at Two Light Intensities in Medical Cannabis. Frontiers in Plant Science 15:1393803.",
+        "THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026).",
+        "THC Cultivation SOP Source Materials Packet v1.0 (project source, May 2026)."
+      ],
+      "altTextDraft": "Concept diagram for Cryptochromes, Phototropins, and Blue Light, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Cryptochromes, Phototropins, and Blue Light. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-113_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-113_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-117",
+      "lessonId": "THC-ENC-117",
+      "number": 117,
+      "title": "Photoperiodic Flower Induction",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 23,
+      "purpose": "Teach the learner to describe flower induction as genotype-specific perception of recurring light-dark cycles and separate induction, visible flowering, and later development.",
+      "accuracyRequirements": [
+        "Photoperiod cannabis generally initiates reproductive development after repeated inductive cycles with sufficiently long nights. Leaves perceive light and transmit flowering signals to meristems. Visible pistillate structures occur after upstream signaling, so the timer switch date is not the same as the date of induction or the date of visible flower.",
+        "The threshold is not universally 12 hours. Controlled research across essential-oil, grain, and fiber hemp found cultivar-dependent critical responses and showed that small day-length changes could delay flowering in some genotypes. Seed lots sharing a name may also differ genetically.",
+        "Temperature, plant age, maturity, stress, light intensity, twilight, night interruption, spectrum, and prior photoperiod can modify response. Day-neutral germplasm follows a different developmental control pattern. Production records must therefore identify genotype, source, propagation history, and operational milestone."
+      ],
+      "requiredLabels": [
+        "Floral induction",
+        "Floral initiation",
+        "Short-day response",
+        "Days to flower"
+      ],
+      "misconceptionGuards": [
+        "The flip instantly creates flowers: Induction and meristem transition precede visible flower development.",
+        "Twelve hours is the natural threshold for all cannabis: It is a common conservative schedule; critical response varies by genotype and conditions."
+      ],
+      "sourceAnchors": [
+        "Zhang M. et al. (2021). Photoperiodic Flowering Response of Essential Oil, Grain, and Fiber Hemp Cultivars. Frontiers in Plant Science 12:694153.",
+        "Dang M., Muthu Arachchige N., and Campbell L.G. (2022). Optimizing Photoperiod Switch to Maximize Floral Biomass and Cannabinoid Yield: A Meta-Analytic Quantile Regression Approach. Frontiers in Plant Science 12:797425.",
+        "THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026)."
+      ],
+      "altTextDraft": "Labeled anatomy for Photoperiodic Flower Induction, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Photoperiodic Flower Induction. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-117_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-117_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-201",
+      "lessonId": "THC-ENC-201",
+      "number": 201,
+      "title": "Vegetative-to-Reproductive Transition",
+      "visualType": "Process sequence",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 23,
+      "purpose": "Teach the learner to recognize the cannabis transition from vegetative growth toward reproductive development as a staged, genotype- and environment-dependent process rather than a single instant caused by a calendar date or one light-cycle change.",
+      "accuracyRequirements": [
+        "Cannabis reproductive development is not one instantaneous switch. Induction, floral initiation, visible flower development, inflorescence expansion, anthesis, fertilization, and maturation are separable stages.",
+        "Photoperiod-sensitive genotypes commonly accelerate reproductive development when daylength becomes sufficiently short, but internal developmental age and genotype also influence the response. Solitary flowers can appear before a dense terminal inflorescence develops.",
+        "Experiments with modern drug-type cultivars show substantial variation in flowering response. In one ten-cultivar study, all tested cultivars initiated flowering under photoperiods from 12 through 14 hours of light, while some also initiated at 15 hours without continuing normal floral development. This demonstrates why initiation and full reproductive development should not be treated as identical endpoints."
+      ],
+      "requiredLabels": [
+        "phase transition",
+        "floral induction",
+        "floral initiation",
+        "anthesis",
+        "phenology"
+      ],
+      "misconceptionGuards": [
+        "The day a timer changes is the exact biological start of flowering.",
+        "Visible preflowers prove that the whole plant has completed the reproductive transition."
+      ],
+      "sourceAnchors": [
+        "Ahrens A, Llewellyn D, Zheng Y. (2023). Is Twelve Hours Really the Optimum Photoperiod for Promoting Flowering in Indoor-Grown Cultivars of Cannabis sativa? Plants 12(14):2605. Ten cultivars showed cultivar-dependent initiation and early-flower responses across 12–15 h photoperiods.",
+        "Spitzer-Rimon B et al. (2019). Architecture and Florogenesis in Female Cannabis sativa Plants. Frontiers in Plant Science 10:350. Supports separating solitary flower development, photoperiod response, and inflorescence development.",
+        "Kurtz LE et al. (2023). Comparative genomics of flowering behavior in Cannabis sativa. Frontiers in Plant Science. Supports genetic variation in flowering behavior and the distinction between photoperiod-sensitive and autoflowering types."
+      ],
+      "altTextDraft": "Process sequence for Vegetative-to-Reproductive Transition, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Vegetative-to-Reproductive Transition. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-201_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-201_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-202",
+      "lessonId": "THC-ENC-202",
+      "number": 202,
+      "title": "Critical Night Length and Photoperiod Response",
+      "visualType": "Concept diagram",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 23,
+      "purpose": "Teach the learner to explain cannabis photoperiodism using cultivar-specific response thresholds, uninterrupted dark-period signaling, and measured flowering endpoints instead of treating 12/12 as a universal biological constant.",
+      "accuracyRequirements": [
+        "Many cannabis genotypes behave as quantitative short-day plants: shortening daylength generally promotes reproductive development, but the response curve and effective threshold differ among cultivars.",
+        "Controlled studies have measured substantial cultivar variation. Research on hemp found critical photoperiods ranging across different daylengths, with some cultivars showing large flowering changes from differences as small as 15 minutes near their response threshold.",
+        "A study of ten indoor drug-type cultivars found flowering initiation in all tested cultivars through 14 hours of light, while responses at 15 hours varied and some initiated floral structures without normal continued development. Therefore, the daylength that permits initiation is not necessarily the daylength that optimizes mature floral production."
+      ],
+      "requiredLabels": [
+        "photoperiod",
+        "critical photoperiod",
+        "night interruption",
+        "quantitative short-day response",
+        "entrainment"
+      ],
+      "misconceptionGuards": [
+        "Every cannabis cultivar has an exact 12-hour critical daylength.",
+        "Only total hours of darkness matter; the timing and interruption of darkness do not."
+      ],
+      "sourceAnchors": [
+        "Zhang M et al. (2021). Photoperiodic Flowering Response of Essential Oil, Grain, and Fiber Hemp (Cannabis sativa L.) Cultivars. Frontiers in Plant Science. Demonstrated strong cultivar variation and threshold sensitivity near critical photoperiods.",
+        "Ahrens A, Llewellyn D, Zheng Y. (2023). Is Twelve Hours Really the Optimum Photoperiod for Promoting Flowering in Indoor-Grown Cultivars of Cannabis sativa? Plants 12(14):2605. Demonstrated flowering initiation through 14 h in all ten tested cultivars and cultivar-dependent responses at longer photoperiods.",
+        "The 12/12 schedule is described as a common production convention rather than a universal species constant."
+      ],
+      "altTextDraft": "Concept diagram for Critical Night Length and Photoperiod Response, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Critical Night Length and Photoperiod Response. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-202_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-202_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1052 @@
+{
+  "schemaVersion": 1,
+  "batchId": "ENC-VIS-BATCH-008",
+  "generatedAt": "2026-10-04T13:51:42.403Z",
+  "status": "production-ready-review-controlled",
+  "purpose": "Turn controlled encyclopedia visual briefs into lesson-specific raster teaching candidates without changing publication approval state.",
+  "reviewRule": "Every asset remains unapproved until science, accessibility, rights/provenance, rendering, and responsive review are explicitly recorded.",
+  "itemCount": 24,
+  "priorityRange": {
+    "high": 24,
+    "low": 24
+  },
+  "visualFamilies": {
+    "diagnostic-decision-tree": 23,
+    "mechanism-process-diagram": 1
+  },
+  "items": [
+    {
+      "queueId": "ENC-VIS-319",
+      "lessonId": "THC-ENC-319",
+      "number": 319,
+      "title": "Disease Resistance and Susceptibility",
+      "visualType": "Diagnostic decision tree",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to interpret disease resistance, tolerance, and susceptibility as genotype-by-pathogen-by-environment traits; use replicated Cannabis evidence without converting one resistant accession, locus, or trial into a universal cultivar claim.",
+      "accuracyRequirements": [
+        "Cannabis genotypes vary substantially in disease susceptibility. Direct screening has documented large differences in powdery-mildew severity among Cannabis sativa germplasm, including entries with consistently low disease in replicated trials, and a 2026 Septoria study likewise found substantial susceptibility variation among accessions.",
+        "Resistance is pathogen specific. A genotype with low powdery-mildew severity should not be assumed resistant to Septoria, Botrytis, Fusarium, HLVd, BCTV, or another disease unless that interaction has been tested.",
+        "Genetic studies have identified Cannabis loci associated with powdery-mildew susceptibility or resistance, including evidence near CsMLO1. A candidate locus can strengthen biological understanding but does not make phenotype independent of genetic background, pathogen population, environment, or experimental design."
+      ],
+      "requiredLabels": [
+        "resistance",
+        "susceptibility",
+        "tolerance",
+        "quantitative resistance",
+        "genotype-by-environment interaction"
+      ],
+      "misconceptionGuards": [
+        "A cultivar resistant to one disease is broadly disease-resistant.",
+        "No visible disease in one crop cycle proves genetic resistance."
+      ],
+      "sourceAnchors": [
+        "Screening Diverse Cannabis sativa Germplasm for Resistance to Golovinomyces ambrosiae. Plant Disease. 2026. PMID:41319034. doi:10.1094/PDIS-07-25-1591-RE. https://pubmed.ncbi.nlm.nih.gov/41319034/",
+        "Schwartz JA, et al. Screening of Cannabis sativa Germplasm for Susceptibility to Septoria Leaf Spot. Plant Disease. 2026;110(5):1750-1756. PMID:40920100. doi:10.1094/PDIS-07-25-1367-RE. https://pubmed.ncbi.nlm.nih.gov/40920100/",
+        "Genetic Mapping, Identification, and Characterization of a Candidate Susceptibility Gene for Powdery Mildew in Cannabis sativa. Plant Disease. 2024. PMID:37750850. https://pubmed.ncbi.nlm.nih.gov/37750850/",
+        "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/"
+      ],
+      "altTextDraft": "Diagnostic decision tree for Disease Resistance and Susceptibility, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Disease Resistance and Susceptibility. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-319_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-319_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-320",
+      "lessonId": "THC-ENC-320",
+      "number": 320,
+      "title": "Disease Incident Records and Eradication Review",
+      "visualType": "Record / example",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to document a Cannabis disease incident from first signal through diagnosis, containment, source/pathway analysis, corrective action, verification, and closure so conclusions remain traceable and future crop cycles can test whether the problem truly recurred or was resolved.",
+      "accuracyRequirements": [
+        "Disease incidents are easier to interpret when the evidence sequence is preserved: first symptom or positive test, case definition, plant and facility map, samples and results, suspected pathways, interventions, new cases over time, and final verification. Retrospective memory is much weaker than contemporaneous records.",
+        "Accurate diagnosis is central to integrated disease management. Cannabis greenhouse guidance recommends identifying disease hot spots, recording affected plant locations, and using diagnostic testing when the causal pathogen is unclear. These records allow later comparison among crop cycles and can reveal recurring sources or seasonal patterns.",
+        "Eradication is a strong claim. Removing symptomatic plants or obtaining one negative environmental sample does not prove an infectious agent has been eliminated from stock plants, propagation cohorts, water systems, media, debris, tools, facility niches, or asymptomatic hosts. Closure criteria should therefore be defined before the incident is closed."
+      ],
+      "requiredLabels": [
+        "incident record",
+        "case definition",
+        "containment",
+        "corrective action",
+        "verification of effectiveness"
+      ],
+      "misconceptionGuards": [
+        "Removing all visibly sick plants proves the pathogen is eradicated.",
+        "The first positive plant must be the source of the outbreak."
+      ],
+      "sourceAnchors": [
+        "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. Notes recording disease hot spots, diagnostic confirmation, sanitation, monitoring, and recurring crop-cycle risks. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+        "Penn State Extension. Assessing the Risk of Disease in Greenhouses. Updated 2025. Emphasizes scouting responsibility, treatment/environment records, records of recurring root/stem/cutting rots, damping-off, leaf spots, flower blights, and review of likely sources/resolution. https://extension.psu.edu/assessing-the-risk-of-disease-in-greenhouses",
+        "University of Missouri Extension. Plant Biosecurity Preparedness Plan for U.S. Agricultural Producers. Emphasizes operation maps/records, scouting, risk assessment, response procedures, mitigation, drills, and plan revision. https://extension.missouri.edu/publications/mp745"
+      ],
+      "altTextDraft": "Record / example for Disease Incident Records and Eradication Review, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Disease Incident Records and Eradication Review. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-320_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-320_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-321",
+      "lessonId": "THC-ENC-321",
+      "number": 321,
+      "title": "IPM Principles and the Prevention Hierarchy",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to explain integrated pest management as a recurring evidence-based decision process that prioritizes prevention, monitoring, correct identification, context-specific action thresholds, lower-risk interventions, and verification rather than routine calendar pesticide use.",
+      "accuracyRequirements": [
+        "IPM is a process rather than a single control method. EPA describes a four-part decision sequence built around action thresholds, monitoring and accurate identification, prevention, and control selected for effectiveness and risk.",
+        "Prevention is the first line of defense because keeping pests and pathogens out, removing reservoirs, using clean plant material, and reducing favorable conditions can prevent a population or epidemic from becoming established.",
+        "Monitoring and identification come before intervention because not every organism is harmful and because injury, symptoms, pest abundance, crop stage, beneficial organisms, and environmental context affect the appropriate response."
+      ],
+      "requiredLabels": [
+        "integrated pest management",
+        "prevention hierarchy",
+        "action threshold",
+        "monitoring",
+        "verification"
+      ],
+      "misconceptionGuards": [
+        "IPM means never using pesticides.",
+        "IPM means spraying several products in rotation."
+      ],
+      "sourceAnchors": [
+        "US Environmental Protection Agency. Integrated Pest Management (IPM) Principles. Last updated 2026-07-22. https://www.epa.gov/safepestcontrol/integrated-pest-management-ipm-principles",
+        "Virginia Cooperative Extension. Integrated Pest Management of Hemp in Virginia. Current publication accessed 2026-09-01. https://www.pubs.ext.vt.edu/ENTO/ENTO-349/ENTO-349.html",
+        "University of Missouri Extension. Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. https://extension.missouri.edu/publications/ipm1026"
+      ],
+      "altTextDraft": "Concept diagram for IPM Principles and the Prevention Hierarchy, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "IPM Principles and the Prevention Hierarchy. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-321_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-321_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-322",
+      "lessonId": "THC-ENC-322",
+      "number": 322,
+      "title": "Facility Zoning and Clean-to-Dirty Workflow",
+      "visualType": "Workflow",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to design plant-health work flow so people, tools, carts, plant material, and waste move in ways that reduce transfer from suspect, infested, or contaminated areas into cleaner propagation and production zones.",
+      "accuracyRequirements": [
+        "Greenhouse biosecurity is strongly affected by movement. Soil, plant debris, insects, spores, infected sap, contaminated containers, shoes, tools, carts, and plant material can all create transfer pathways between crops and production areas.",
+        "Extension greenhouse guidance recommends moving through cleaner areas before infested areas when possible and separating clean stock or incoming quarantine material from general production. This is a risk-reduction principle rather than proof that a particular worker or route caused an outbreak.",
+        "Zoning is most useful when it matches biological risk: propagation and pathogen-screened mother stock may require stronger separation from receiving, quarantine, waste, or known-positive areas than ordinary low-risk movement within one crop block."
+      ],
+      "requiredLabels": [
+        "zoning",
+        "clean-to-dirty workflow",
+        "traffic pathway",
+        "cross-contamination",
+        "risk boundary"
+      ],
+      "misconceptionGuards": [
+        "A colored floor map by itself creates biosecurity.",
+        "Clean-to-dirty workflow proves the dirty zone caused any later detection."
+      ],
+      "sourceAnchors": [
+        "University of Minnesota greenhouse pest-control guidance. Clean stock, quarantine, inspection, and clean-area-first worker movement guidance. https://ncipmhort.cfans.umn.edu/sites/ncipmhort.cfans.umn.edu/files/2022-04/6d%2BGreenhouse%2BPest%2BControl%2BStudy%2BGuide.pdf",
+        "University of Kentucky Grow Forward. Sanitation for Management of Plant Diseases. https://growforward.mgcafe.uky.edu/modules/sanitation-management-plant-diseases",
+        "UMass Amherst Greenhouse & Floriculture. Cleaning and Disinfecting the Greenhouse. Current fact sheet accessed 2026-09-01. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/cleaning-disinfecting-greenhouse",
+        "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/"
+      ],
+      "altTextDraft": "Workflow for Facility Zoning and Clean-to-Dirty Workflow, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Facility Zoning and Clean-to-Dirty Workflow. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-322_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-322_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-323",
+      "lessonId": "THC-ENC-323",
+      "number": 323,
+      "title": "Plant Intake and Quarantine",
+      "visualType": "Workflow",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to use receiving inspection, source records, physical separation, appropriate testing, and defined release criteria to reduce the chance that incoming Cannabis/hemp plants introduce pests or pathogens into established production.",
+      "accuracyRequirements": [
+        "Incoming vegetative material can carry arthropod pests, pathogens, or latent infections despite appearing healthy. Virginia Tech specifically recommends briefly quarantining purchased hemp clones and seedlings before introduction because pests such as aphids and mites may arrive on transplants and establish rapidly in enclosed production.",
+        "Visual inspection is necessary but insufficient. HLVd and other pathogens can occur in asymptomatic Cannabis plants, while very small arthropods or early life stages can be missed during a single inspection.",
+        "Quarantine reduces exposure opportunity by separating incoming material while source records, repeated observations, and appropriate diagnostic tests are reviewed. It does not prove material is pathogen-free and should not be represented as a universal number of days that guarantees clearance."
+      ],
+      "requiredLabels": [
+        "plant intake",
+        "quarantine",
+        "release criteria",
+        "source traceability",
+        "latent infection"
+      ],
+      "misconceptionGuards": [
+        "Healthy-looking incoming clones are pathogen-free.",
+        "One visual inspection replaces quarantine."
+      ],
+      "sourceAnchors": [
+        "Virginia Cooperative Extension. Integrated Pest Management of Hemp in Virginia. Recommends quarantine/inspection of incoming hemp clones and seedling starts. https://www.pubs.ext.vt.edu/ENTO/ENTO-349/ENTO-349.html",
+        "Penn State Extension. Assessing the Risk of Disease in Greenhouses. Current risk-assessment guidance for purchased plugs, stock plants, virus indexing, sanitation, and propagation separation. https://extension.psu.edu/assessing-the-risk-of-disease-in-greenhouses",
+        "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/"
+      ],
+      "altTextDraft": "Workflow for Plant Intake and Quarantine, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Plant Intake and Quarantine. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-323_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-323_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-324",
+      "lessonId": "THC-ENC-324",
+      "number": 324,
+      "title": "Personnel Entry and Clothing Controls",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to explain how hands, footwear, clothing, gloves, and work sequence can move pests, soil, sap, and plant pathogens, and how plant-health entry controls reduce transfer without implying that personnel movement alone proves an outbreak source.",
+      "accuracyRequirements": [
+        "People can move biologically relevant material between greenhouse zones on hands, gloves, footwear, clothing, tools, carts, and other carried items. Greenhouse sanitation guidance therefore treats hand hygiene, clean footwear, clothing management, access control, and clean-area-first work sequence as components of prevention.",
+        "Personnel controls should match the hazard. Sap-transmitted agents are most relevant during cutting, pruning, training, defoliation, and other plant-contact work; soilborne pathogens may move with contaminated footwear or debris; arthropods can hitchhike on clothing or carried materials.",
+        "Cannabis-specific HLVd experiments demonstrate mechanical transmission through infectious sap and wounded plant tissue, strengthening the biological rationale for clean hands, gloves, tools, and work sequence during high-contact tasks."
+      ],
+      "requiredLabels": [
+        "personnel biosecurity",
+        "entry control",
+        "work sequence",
+        "protective clothing",
+        "hitchhiker pest"
+      ],
+      "misconceptionGuards": [
+        "People are the cause of every greenhouse disease spread event.",
+        "Disposable gloves stay clean for an entire shift."
+      ],
+      "sourceAnchors": [
+        "UMass Amherst Greenhouse & Floriculture. Cleaning and Disinfecting the Greenhouse. Current fact sheet accessed 2026-09-01. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/cleaning-disinfecting-greenhouse",
+        "University of Kentucky Grow Forward. Sanitation for Management of Plant Diseases. https://growforward.mgcafe.uky.edu/modules/sanitation-management-plant-diseases",
+        "Washington State University Extension. Greenhouse Construction and Management — good greenhouse sanitation practices. https://extension.wsu.edu/pnw-gardeners-handbook/chapter-26-greenhouse-construction-and-management/",
+        "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/"
+      ],
+      "altTextDraft": "Concept diagram for Personnel Entry and Clothing Controls, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Personnel Entry and Clothing Controls. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-324_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-324_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-325",
+      "lessonId": "THC-ENC-325",
+      "number": 325,
+      "title": "Tool, Bench, and Container Sanitation",
+      "visualType": "Workflow",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to distinguish physical cleaning from subsequent sanitation/disinfection and apply traceable surface-control practices to tools, benches, reusable containers, hose ends, and other crop-contact equipment without inventing universal chemical concentrations or contact times.",
+      "accuracyRequirements": [
+        "Greenhouse sanitation is not one step. Current extension guidance consistently separates removal of soil, plant material, media, algae, sap, and other organic debris from the subsequent use of an appropriate disinfectant or other validated sanitation process.",
+        "Organic matter can reduce the activity of several disinfectants, so applying a chemical to visibly dirty tools, benches, trays, or pots is not equivalent to a validated clean-and-disinfect procedure.",
+        "Crop-contact surfaces differ in cleanability. Smooth nonporous benches and containers are generally easier to clean and disinfect than porous wood, cracked plastics, worn surfaces, or equipment with inaccessible joints where debris and moisture accumulate."
+      ],
+      "requiredLabels": [
+        "cleaning",
+        "disinfection",
+        "organic load",
+        "contact time",
+        "crop-contact surface"
+      ],
+      "misconceptionGuards": [
+        "Cleaning and disinfection are the same step.",
+        "More disinfectant is always more effective and safer."
+      ],
+      "sourceAnchors": [
+        "UMass Amherst Greenhouse & Floriculture. Cleaning and Disinfecting the Greenhouse. Current fact sheet accessed 2026-09-01. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/cleaning-disinfecting-greenhouse",
+        "NC State Extension. Prevention and Management of Soilborne Diseases of Ornamental Plants and Vegetables in the Greenhouse. https://content.ces.ncsu.edu/prevention-and-management-of-soilborne-diseases-of-ornamental-plants-and-vegetables-in-the-greenhouse",
+        "Penn State Extension. Assessing the Risk of Disease in Greenhouses. https://extension.psu.edu/assessing-the-risk-of-disease-in-greenhouses",
+        "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/"
+      ],
+      "altTextDraft": "Workflow for Tool, Bench, and Container Sanitation, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Tool, Bench, and Container Sanitation. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-325_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-325_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-326",
+      "lessonId": "THC-ENC-326",
+      "number": 326,
+      "title": "Cleaning Versus Disinfection",
+      "visualType": "Comparison plate",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to separate physical removal of contamination from microbial inactivation so sanitation procedures are designed as validated sequences rather than treating a disinfectant application as a substitute for cleaning.",
+      "accuracyRequirements": [
+        "Cleaning and disinfection solve different problems. Cleaning removes material from a surface; disinfection attempts to inactivate susceptible microorganisms that remain under the conditions supported by the procedure or product label.",
+        "Greenhouse extension guidance consistently places cleaning before disinfection because residual soil, media, plant debris, sap, algae, and other organic matter can shield organisms or reduce the effectiveness of several disinfectants.",
+        "A visibly clean surface is not necessarily microbiologically clean, while a disinfectant applied to a visibly dirty surface has not necessarily reached or inactivated the target organism."
+      ],
+      "requiredLabels": [
+        "cleaning",
+        "disinfection",
+        "sanitation",
+        "organic matter",
+        "sterilization"
+      ],
+      "misconceptionGuards": [
+        "Spraying disinfectant on dirt is the same as cleaning and disinfecting.",
+        "A surface that looks clean is sterile."
+      ],
+      "sourceAnchors": [
+        "UMass Amherst Greenhouse & Floriculture. Cleaning and Disinfecting the Greenhouse. Current fact sheet accessed 2026-09-01. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/cleaning-disinfecting-greenhouse",
+        "NC State Extension. Prevention and Management of Soilborne Diseases of Ornamental Plants and Vegetables in the Greenhouse. https://content.ces.ncsu.edu/prevention-and-management-of-soilborne-diseases-of-ornamental-plants-and-vegetables-in-the-greenhouse",
+        "Penn State Extension. Bedding Plant Diseases — preventing recontamination and cleaning before disinfestation. https://extension.psu.edu/bedding-plant-diseases"
+      ],
+      "altTextDraft": "Comparison plate for Cleaning Versus Disinfection, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Cleaning Versus Disinfection. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-326_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-326_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-327",
+      "lessonId": "THC-ENC-327",
+      "number": 327,
+      "title": "Disinfectant Contact Time and Surface Preparation",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to explain why disinfectant performance depends on prepared surfaces, effective wet/contact time, product concentration/formulation, surface compatibility, and target-organism evidence rather than product name alone.",
+      "accuracyRequirements": [
+        "Disinfectant efficacy is conditional. Product chemistry, concentration, target organism, organic load, surface material, temperature, solution age, and contact time can all influence whether an inactivation claim applies.",
+        "Greenhouse guidance emphasizes removing soil and plant debris before disinfection because organic material can neutralize or shield against several commonly used disinfectants.",
+        "A surface that dries before the required wet/contact interval may not have received the process described by the label or SOP. Conversely, extending exposure or concentration beyond a label is not automatically safer, more effective, or legally permitted."
+      ],
+      "requiredLabels": [
+        "contact time",
+        "surface preparation",
+        "wet time",
+        "working solution",
+        "surface compatibility"
+      ],
+      "misconceptionGuards": [
+        "A brief mist is equivalent to the label-required contact time.",
+        "If a disinfectant is effective, doubling concentration is better."
+      ],
+      "sourceAnchors": [
+        "UMass Amherst Greenhouse & Floriculture. Cleaning and Disinfecting the Greenhouse. Current fact sheet accessed 2026-09-01. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/cleaning-disinfecting-greenhouse",
+        "NC State Extension. Prevention and Management of Soilborne Diseases of Ornamental Plants and Vegetables in the Greenhouse. https://content.ces.ncsu.edu/prevention-and-management-of-soilborne-diseases-of-ornamental-plants-and-vegetables-in-the-greenhouse",
+        "Oregon State University Horticulture. Chemical Control — disinfectants for tools and equipment, cleaning and contact-time principles. https://horticulture.oregonstate.edu/nursery/nursery/chemical-control"
+      ],
+      "altTextDraft": "Concept diagram for Disinfectant Contact Time and Surface Preparation, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Disinfectant Contact Time and Surface Preparation. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-327_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-327_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-328",
+      "lessonId": "THC-ENC-328",
+      "number": 328,
+      "title": "Water-System and Irrigation-Line Hygiene",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to explain how irrigation sources, reservoirs, recirculating systems, hose ends, lines, emitters, and biofilm can become plant-health transfer pathways, and how source control, maintenance, targeted testing, and validated treatment reduce risk without equating microbial detection with disease.",
+      "accuracyRequirements": [
+        "Irrigation water can be a disease pathway. Greenhouse guidance identifies Pythium and Phytophthora as important plant pathogens that may enter production through contaminated surface water, runoff, reservoirs, hydroponic systems, or recirculating irrigation.",
+        "Hemp-specific extension guidance confirms that Pythium can spread in water and recommends sanitation and water-quality control in greenhouse production. This supports water-system hygiene as a Cannabis/hemp disease-prevention layer without implying that every detection or wet root symptom is Pythium disease.",
+        "Recirculating systems can amplify a shared exposure pathway if contaminated water reaches multiple plants. Reservoir covers, debris removal, drainage, hose-end hygiene, line maintenance, and cleaning/disinfection procedures can reduce avoidable transfer opportunities."
+      ],
+      "requiredLabels": [
+        "source water",
+        "recirculating irrigation",
+        "biofilm",
+        "waterborne pathogen",
+        "reservoir hygiene"
+      ],
+      "misconceptionGuards": [
+        "Clear-looking irrigation water is pathogen-free.",
+        "Any microbe detected in a reservoir is harmful."
+      ],
+      "sourceAnchors": [
+        "Penn State Extension. Pythium. Updated 2023-11-21. Describes surface-water, reservoir, hydroponic, and ebb-and-flow risks plus reservoir cleaning and targeted water-treatment options. https://extension.psu.edu/pythium",
+        "Penn State Extension. Sources of Plant Disease in Greenhouses. Updated 2023-11-20. Identifies Pythium and Phytophthora as important pathogens that can enter through water. https://extension.psu.edu/sources-of-plant-disease-in-greenhouses",
+        "NC State Extension. Pythium Root and Crown Rot of Industrial Hemp. Hemp-specific water-spread and greenhouse water-quality guidance. https://content.ces.ncsu.edu/pythium-root-and-crown-rot-of-industrial-hemp",
+        "UMass Amherst Plant Diagnostics Laboratory. Irrigation Water Testing for Pythium, Phytophthora, and Rhizoctonia. Current service guidance accessed 2026-09-01. https://www.umass.edu/agriculture-food-environment/services/plant-diagnostics-laboratory/irrigation-water-testing"
+      ],
+      "altTextDraft": "Labeled anatomy for Water-System and Irrigation-Line Hygiene, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Water-System and Irrigation-Line Hygiene. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-328_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-328_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-329",
+      "lessonId": "THC-ENC-329",
+      "number": 329,
+      "title": "Pest Exclusion and Structural Sealing",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to explain how screening, door and vent management, structural sealing, receiving controls, and exterior maintenance reduce pest entry while preserving ventilation, access, and operational safety.",
+      "accuracyRequirements": [
+        "Exclusion is a preventive IPM layer. Greenhouse extension guidance shows that aphids, whiteflies, thrips, and other flying pests can enter through vents, sidewalls, cooling-pad openings, roof vents, doors, and damaged screening.",
+        "Screen effectiveness depends on target pest size and screen characteristics. Finer screens may exclude smaller insects but also increase resistance to airflow, so exclusion design must account for cooling and ventilation performance rather than treating the smallest mesh as universally best.",
+        "Doorway management matters in mechanically ventilated houses because open, unprotected doors can become high-flow entry points. Double-door or vestibule arrangements can reduce this pathway when correctly integrated with the ventilation system."
+      ],
+      "requiredLabels": [
+        "pest exclusion",
+        "insect screening",
+        "structural sealing",
+        "airlock or vestibule",
+        "entry point"
+      ],
+      "misconceptionGuards": [
+        "The finest possible screen is always the best greenhouse screen.",
+        "Screening vents eliminates the need for incoming-plant quarantine."
+      ],
+      "sourceAnchors": [
+        "University of Florida IFAS Extension. Exclusion Methods for Managing Greenhouse Vegetable Pests (ENY-846/IN730). Current version accessed 2026-09-01. Describes insect screening, airflow penalties, roof-vent entry, and double-door systems. https://ask.ifas.ufl.edu/publication/IN730",
+        "University of Florida IFAS Extension. Thrips Management Program for Horticultural Crops (ENY-987/IN1145). Current version accessed 2026-09-01. Describes pest-specific screen sizing and the need to compensate for restricted airflow. https://ask.ifas.ufl.edu/publication/IN1145",
+        "Penn State Extension. Assessing the Risk of Disease in Greenhouses. Current guidance on screening vents/cooling pads and structural risk review. https://extension.psu.edu/assessing-the-risk-of-disease-in-greenhouses"
+      ],
+      "altTextDraft": "Concept diagram for Pest Exclusion and Structural Sealing, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Pest Exclusion and Structural Sealing. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-329_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-329_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-330",
+      "lessonId": "THC-ENC-330",
+      "number": 330,
+      "title": "Environmental Management for Disease Prevention",
+      "visualType": "Diagnostic decision tree",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to explain how temperature, humidity, condensation, air movement, plant density, irrigation, and root-zone moisture change disease pressure, while avoiding unsupported universal Cannabis setpoints.",
+      "accuracyRequirements": [
+        "Disease develops through interactions among a susceptible host, a capable pathogen, and a conducive environment. Environmental management therefore reduces risk by making infection, spread, or pathogen survival less favorable while still supporting crop growth.",
+        "Humidity, condensation, free moisture, temperature, and air movement affect several important Cannabis diseases, including Botrytis bud rot and powdery mildew. Cannabis-specific greenhouse research supports environmental management as part of integrated disease management but also notes that standardized optimum cultural parameters are not fully established across all Cannabis genotypes and production systems.",
+        "Room-average humidity can hide a wetter canopy microclimate. Dense foliage, large flowering biomass, poor air distribution, cool surfaces, irrigation timing, and night cooling can produce local condensation or prolonged high humidity even when a central sensor appears acceptable."
+      ],
+      "requiredLabels": [
+        "disease-conducive environment",
+        "leaf wetness",
+        "dew point",
+        "canopy microclimate",
+        "root-zone moisture"
+      ],
+      "misconceptionGuards": [
+        "One room humidity reading represents every point inside a dense Cannabis canopy.",
+        "Lower humidity is always better for the crop."
+      ],
+      "sourceAnchors": [
+        "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. (Cannabis) under Greenhouse Conditions. Plants. 2024;13(6):786. doi:10.3390/plants13060786. Cannabis-specific environmental, airflow, seasonal, and disease-management review. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+        "Punja ZK. Emerging diseases of Cannabis sativa and sustainable management. Pest Management Science. 2021;77(9):3857-3870. doi:10.1002/ps.6307. Discusses environmental management of Botrytis and other Cannabis diseases. https://pmc.ncbi.nlm.nih.gov/articles/PMC8451794/",
+        "UMass Amherst Greenhouse & Floriculture. Reducing Humidity in the Greenhouse. Current fact sheet accessed 2026-09-01. Describes condensation, leaf wetness, airflow, and greenhouse humidity management. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/reducing-humidity-in-greenhouse",
+        "NC State Extension. Pythium Root and Crown Rot of Industrial Hemp. Hemp-specific relationship among water spread, wet conditions, drainage, sanitation, and root-rot risk. https://content.ces.ncsu.edu/pythium-root-and-crown-rot-of-industrial-hemp"
+      ],
+      "altTextDraft": "Diagnostic decision tree for Environmental Management for Disease Prevention, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Environmental Management for Disease Prevention. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-330_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-330_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-331",
+      "lessonId": "THC-ENC-331",
+      "number": 331,
+      "title": "Scouting Routes and Representative Sampling",
+      "visualType": "Record / example",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to build repeatable scouting routes and representative sampling plans that detect pest and disease trends early, cover crop and risk zones systematically, and preserve enough denominator and location information for meaningful decisions.",
+      "accuracyRequirements": [
+        "Regular monitoring is the information backbone of IPM. Current greenhouse guidance recommends repeatable routes, maps, visual plant inspection, sticky cards where appropriate, magnification, root checks, and records that preserve pest identity, location, abundance, life stage, and treatment response.",
+        "Representative scouting is not the same as inspecting only visibly damaged plants. A useful route includes ordinary crop areas plus biologically important risk points such as receiving zones, doors and vents, propagation, wet areas, crop edges, prior hot spots, and suspect plants.",
+        "Sampling method must match the target. Sticky cards are useful for trends in certain flying adults but do not replace direct plant inspection for eggs, immature stages, nonflying pests, disease symptoms, roots, or organisms poorly represented on traps."
+      ],
+      "requiredLabels": [
+        "scouting route",
+        "sample unit",
+        "representative sampling",
+        "sentinel or indicator plant",
+        "sampling denominator"
+      ],
+      "misconceptionGuards": [
+        "Looking at a few visibly damaged plants is representative scouting.",
+        "Sticky cards measure every life stage and every greenhouse pest equally well."
+      ],
+      "sourceAnchors": [
+        "UMass Amherst Greenhouse & Floriculture. IPM Scouting and Decision Making. Current fact sheet accessed 2026-09-01. Describes mapped routes, sticky cards, plant inspection, indicator plants, records, and treatment evaluation. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/ipm-scouting-decision-making",
+        "UMass Amherst Greenhouse & Floriculture. Integrated Pest Management — Greenhouse Best Management Practices. Current guidance on systematic scouting routes, plant-part inspection, roots, sticky cards, sanitation during scouting, and record review. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/greenhouse-best-management-practices-bmp-manual/integrated-pest-management",
+        "University of Missouri Extension. Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. Routine scouting, visual inspection, sticky cards, and abundance/life-stage records. https://extension.missouri.edu/publications/ipm1026"
+      ],
+      "altTextDraft": "Record / example for Scouting Routes and Representative Sampling, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Scouting Routes and Representative Sampling. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-331_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-331_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-332",
+      "lessonId": "THC-ENC-332",
+      "number": 332,
+      "title": "Pest and Disease Identification Escalation",
+      "visualType": "Diagnostic decision tree",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to use an evidence-based escalation path from field observation to magnification, reference comparison, representative sampling, and laboratory diagnostics so management actions are not built on symptom guessing or overconfident identification.",
+      "accuracyRequirements": [
+        "Many plant problems share visual symptoms. Yellowing, wilting, root discoloration, leaf spots, distortion, necrosis, or reduced vigor can arise from pathogens, arthropods, nutrition, pH/EC problems, irrigation, temperature, chemical injury, root stress, or combinations of factors.",
+        "Identification confidence should match the evidence. Obvious arthropods may sometimes be identified by morphology and life stage with magnification and authoritative references, while ambiguous diseases may require microscopy, culturing, serology, PCR or other laboratory methods.",
+        "A good diagnostic sample is part of the test. 2026 plant-clinic guidance emphasizes fresh representative living material, early-to-moderate symptoms, relevant healthy-to-affected transition tissue, multiple plant parts when the cause is uncertain, photographs, and production/history information."
+      ],
+      "requiredLabels": [
+        "diagnostic escalation",
+        "symptom",
+        "sign",
+        "differential diagnosis",
+        "representative diagnostic sample"
+      ],
+      "misconceptionGuards": [
+        "A symptom photograph always identifies the causal pathogen.",
+        "All yellow leaves indicate the same nutrient deficiency."
+      ],
+      "sourceAnchors": [
+        "University of Missouri Extension. Plant Diagnostic Clinic: Guidelines for Collecting and Submitting Samples. Reviewed March 2026. Representative living tissue, symptom stages, transition tissue, photos, and diagnostic methods. https://extension.missouri.edu/publications/f260",
+        "University of Missouri Extension Plant Diagnostic Clinic. Physical sample submission. Current page accessed 2026-09-01. Emphasizes similar-looking symptoms and escalation beyond photographs to microscopy/testing. https://extension.missouri.edu/programs/plant-diagnostic-clinic/sample-submission",
+        "NC State Extension Plant Disease and Insect Clinic. Submitting Samples From Plants in a Greenhouse. Updated 2026-02-27. Greenhouse-specific representative sampling guidance. https://pdic.ces.ncsu.edu/submitting-samples-from-plants-in-a-greenhouse/",
+        "Colorado State University Extension. Molecular Methods for Diagnosing Plant Diseases. Reviewed 2025-08. Sampling and molecular diagnostic method boundaries. https://extension.colostate.edu/resource/molecular-methods-for-diagnosing-plant-diseases/"
+      ],
+      "altTextDraft": "Diagnostic decision tree for Pest and Disease Identification Escalation, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Pest and Disease Identification Escalation. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-332_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-332_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-333",
+      "lessonId": "THC-ENC-333",
+      "number": 333,
+      "title": "Thresholds, Tolerances, and Decision Records",
+      "visualType": "Record / example",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to use thresholds and tolerances as explicit, evidence-bounded decision tools that combine monitoring data, crop stage, injury, vector/disease risk, crop value, beneficial organisms, and uncertainty rather than inventing universal Cannabis treatment numbers.",
+      "accuracyRequirements": [
+        "IPM thresholds prevent both reflexive treatment and delayed response by defining when monitoring information is important enough to change management. A threshold can trigger more scouting or diagnostics as well as a control action; it is not automatically a pesticide trigger.",
+        "Validated economic thresholds are crop- and pest-specific. Virginia Tech notes that economic thresholds and injury levels remain unestablished for important hemp insect and mite pests because the crop has not been studied long enough to support those values.",
+        "Tolerance can be much lower when an organism vectors a damaging pathogen, when propagation or mother stock has a high biosecurity value, or when a marketable plant part is directly injured. Conversely, low populations of some nonvector pests may be tolerated when injury is negligible and natural enemies are functioning."
+      ],
+      "requiredLabels": [
+        "action threshold",
+        "economic injury level",
+        "tolerance",
+        "decision record",
+        "decision trigger"
+      ],
+      "misconceptionGuards": [
+        "Every Cannabis pest has a validated economic threshold.",
+        "A sticky-card number copied from another crop is automatically a Cannabis treatment threshold."
+      ],
+      "sourceAnchors": [
+        "Virginia Cooperative Extension. Integrated Pest Management of Hemp in Virginia. Current publication accessed 2026-09-01. States that economic thresholds and injury levels remain unestablished for important hemp pests. https://www.pubs.ext.vt.edu/ENTO/ENTO-349/ENTO-349.html",
+        "UMass Amherst Greenhouse & Floriculture. IPM Scouting and Decision Making. Current fact sheet accessed 2026-09-01. Shows monitoring-based decision making and context-dependent grower thresholds. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/ipm-scouting-decision-making",
+        "University of Missouri Extension. Insect Pests of Industrial Hemp in Missouri. Current page accessed 2026-09-01. Discusses monitoring, records, economic thresholds, biological and mechanical controls in hemp. https://extension.missouri.edu/publications/mx83",
+        "US Environmental Protection Agency. Integrated Pest Management Principles. Current page accessed 2026-09-01. Defines action thresholds as an IPM decision element. https://www.epa.gov/safepestcontrol/integrated-pest-management-ipm-principles"
+      ],
+      "altTextDraft": "Record / example for Thresholds, Tolerances, and Decision Records, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Thresholds, Tolerances, and Decision Records. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-333_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-333_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-334",
+      "lessonId": "THC-ENC-334",
+      "number": 334,
+      "title": "Cultural Controls",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to use crop, irrigation, fertility, sanitation, host, spacing, timing, weed, and environmental practices to make pest establishment and disease development less favorable while preserving plant health and documenting tradeoffs.",
+      "accuracyRequirements": [
+        "Cultural controls reduce pest or disease pressure by changing production conditions rather than directly killing the target. In greenhouse IPM this can include sanitation, weed removal, clean planting material, irrigation and fertility management, spacing, crop sequencing, resistant or less-susceptible material when available, and environmental practices.",
+        "Plant vigor and pest risk do not always move in the same direction. For example, excessive nitrogen can produce soft growth favorable to some aphids and spider mites, while excessive moisture or poor drainage can favor root diseases. The goal is balanced crop management rather than deliberate plant stress.",
+        "Weeds, volunteer plants, pet plants, algae, and crop debris can function as pest, pathogen, or vector reservoirs. Removing them can reduce continuity between crop cycles and improve scouting visibility, but reservoir removal should be linked to the target biology rather than treated as proof of eradication."
+      ],
+      "requiredLabels": [
+        "cultural control",
+        "host susceptibility",
+        "crop sanitation",
+        "crop density",
+        "resource management"
+      ],
+      "misconceptionGuards": [
+        "Cultural control means intentionally stressing plants so pests dislike them.",
+        "More fertilizer always makes plants more resistant to pests."
+      ],
+      "sourceAnchors": [
+        "University of Missouri Extension. Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. Cultural practices include sanitation, proper watering/fertility, clean stock, weeds/debris removal, and avoiding excessive nitrogen. https://extension.missouri.edu/publications/ipm1026",
+        "Cornell University Biological Control Program. Integrated Pest Management. Lists cultural, physical/mechanical, biological, resistant-host, and chemical tactics as integrated control categories. https://biocontrol.entomology.cornell.edu/ipm.php",
+        "Cornell CALS. Pesticides and Pest Management. Current greenhouse guidance on pest identification, monitoring, weeds, and cultural/mechanical/physical controls. https://cals.cornell.edu/occupational-environmental-health-program/greenhouses/pesticides-and-pest-management",
+        "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. Cannabis-specific environmental and cultural disease-management context. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/"
+      ],
+      "altTextDraft": "Concept diagram for Cultural Controls, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Cultural Controls. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-334_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-334_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-335",
+      "lessonId": "THC-ENC-335",
+      "number": 335,
+      "title": "Mechanical and Physical Controls",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to apply barriers, exclusion, trapping, removal, pruning, isolation, environmental or process-based physical methods, and other nonchemical interventions according to target biology, scale, crop stage, and measurable effectiveness.",
+      "accuracyRequirements": [
+        "Mechanical and physical controls act without depending primarily on pesticide toxicity. Common greenhouse examples include hand removal, pruning, trapping, screens and barriers, weed removal, isolation, and other methods that directly change pest access or abundance.",
+        "A physical method must match the target life stage and pathway. Sticky traps can capture certain flying adults and support monitoring or suppression, but they do not eliminate eggs, larvae, mites, root pests, or pathogens that are not exposed to the trap.",
+        "Exclusion can prevent entry but introduces engineering tradeoffs. Fine insect screens can reduce movement of small flying pests while also restricting greenhouse airflow, so barrier selection must account for target pest size, ventilation, cooling, pressure, and maintenance."
+      ],
+      "requiredLabels": [
+        "mechanical control",
+        "physical control",
+        "exclusion barrier",
+        "localized removal",
+        "verification"
+      ],
+      "misconceptionGuards": [
+        "Sticky traps control every greenhouse pest life stage.",
+        "Physical control is automatically harmless to plants or workers."
+      ],
+      "sourceAnchors": [
+        "University of Missouri Extension. Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. Includes physical/mechanical strategies, localized treatment, screening, scouting, and sanitation. https://extension.missouri.edu/publications/ipm1026",
+        "University of Missouri Extension. Insect Pests of Industrial Hemp in Missouri. Current page accessed 2026-09-01. Includes traps, row covers/netting, and mechanical/physical approaches in hemp IPM. https://extension.missouri.edu/publications/mx83",
+        "Cornell University Biological Control Program. Integrated Pest Management. Defines physical/mechanical controls within integrated pest management. https://biocontrol.entomology.cornell.edu/ipm.php",
+        "University of Florida IFAS Extension. Exclusion Methods for Managing Greenhouse Vegetable Pests. Current version accessed 2026-09-01. Evidence on insect screening and airflow tradeoffs. https://ask.ifas.ufl.edu/publication/IN730"
+      ],
+      "altTextDraft": "Concept diagram for Mechanical and Physical Controls, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Mechanical and Physical Controls. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-335_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-335_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-336",
+      "lessonId": "THC-ENC-336",
+      "number": 336,
+      "title": "Biological Controls",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to select, deploy, and evaluate biological-control organisms or microbial products by matching the target pest or pathogen, life stage, crop environment, release timing, compatibility, and follow-up monitoring.",
+      "accuracyRequirements": [
+        "Biological control is most reliable when the beneficial organism is matched to the target species and life stage, because predators, parasitoids, entomopathogens, and antagonists differ in host range and environmental requirements.",
+        "Preventive or early releases can outperform rescue releases after a pest population is already widespread because establishment and reproduction of the beneficial population take time.",
+        "Temperature, humidity, crop architecture, prey density, pesticide residues, sanitation, and release method can strongly alter biological-control performance."
+      ],
+      "requiredLabels": [
+        "biological control",
+        "augmentative release",
+        "predator",
+        "parasitoid",
+        "compatibility"
+      ],
+      "misconceptionGuards": [
+        "One beneficial insect controls every greenhouse pest.",
+        "Biological control always works after a severe outbreak has developed."
+      ],
+      "sourceAnchors": [
+        "University of Missouri Extension. Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. https://extension.missouri.edu/publications/ipm1026",
+        "Cornell University Biological Control Program. Integrated Pest Management and biological-control resources. https://biocontrol.entomology.cornell.edu/ipm.php",
+        "Cornell Integrated Pest Management. Biocontrol. Current page reviewed 2026-10-03. Defines biological control as reducing pest populations with living organisms or their products and distinguishes conservation, classical, and augmentative biocontrol. https://cals.cornell.edu/integrated-pest-management/eco-resilience/biocontrol",
+        "Cornell Integrated Pest Management. How to Use Biocontrol. Current page reviewed 2026-10-03. Notes that success depends on timing, target presence, release rate, agent health, storage, and compatibility with other pest-management strategies. https://cals.cornell.edu/integrated-pest-management/eco-resilience/biocontrol/how-use-biocontrol"
+      ],
+      "altTextDraft": "Concept diagram for Biological Controls, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Biological Controls. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-336_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-336_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-338",
+      "lessonId": "THC-ENC-338",
+      "number": 338,
+      "title": "Isolation, Removal, and Waste Handling",
+      "visualType": "Chart / measurement",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to use isolation, plant or material removal, containment, transport, and waste controls to reduce biological spread while preserving identity, worker safety, and traceable records.",
+      "accuracyRequirements": [
+        "Isolation reduces opportunities for contact and transfer but does not prove that unaffected material is pathogen- or pest-free.",
+        "Removal can lower pest abundance or inoculum, yet movement of affected plants or debris can spread arthropods, spores, sap, soil, water, or contaminated tools if handling is poorly controlled.",
+        "Containment planning should account for the target's likely transmission route, including direct contact, sap, tools, vectors, airborne particles, water, media, and personnel movement."
+      ],
+      "requiredLabels": [
+        "isolation",
+        "hold",
+        "containment",
+        "waste stream",
+        "chain of identity"
+      ],
+      "misconceptionGuards": [
+        "Removing one symptomatic plant proves the incident is over.",
+        "A sealed bag eliminates every contamination risk."
+      ],
+      "sourceAnchors": [
+        "University of Missouri Extension. Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. https://extension.missouri.edu/publications/ipm1026",
+        "THC-ENC-310, THC-ENC-316, and THC-ENC-317 for viroid/pathogen transmission and facility reservoirs.",
+        "U.S. EPA. Integrated Pest Management (IPM) Principles. Current page reviewed 2026-10-03. Supports prevention, monitoring, identification, thresholds, and use of lower-risk physical/mechanical controls before escalation. https://www.epa.gov/safepestcontrol/integrated-pest-management-ipm-principles",
+        "USDA APHIS. United States-Canada Greenhouse-Grown Plant Certification Program Technical Requirements, Version 1.0, 2024. Describes systems and surveillance audits, objective evidence, integrated pest-risk measures, and corrective measures for greenhouse facilities. https://www.aphis.usda.gov/sites/default/files/2016-gcp-technical-requirement-mou_1.pdf"
+      ],
+      "altTextDraft": "Chart / measurement for Isolation, Removal, and Waste Handling, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Isolation, Removal, and Waste Handling. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-338_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-338_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-340",
+      "lessonId": "THC-ENC-340",
+      "number": 340,
+      "title": "IPM Program Audit and Continuous Improvement",
+      "visualType": "Record / example",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to audit an IPM program as a complete system by reviewing prevention, monitoring, diagnosis, decisions, interventions, records, outcomes, recurring failures, and improvement actions over time.",
+      "accuracyRequirements": [
+        "An IPM audit should evaluate the full prevention-to-verification chain rather than counting pesticide applications or checking whether a scouting form exists.",
+        "Useful audits combine leading indicators such as inspection completion, quarantine compliance, sanitation verification, trap servicing, training, and response time with lagging indicators such as pest incidence, disease severity, crop loss, repeat events, and treatment frequency.",
+        "Trend analysis requires comparable denominators and methods. Counts from different room sizes, trap densities, scouting routes, crop stages, or sampling effort should not be compared as though they were equivalent."
+      ],
+      "requiredLabels": [
+        "program audit",
+        "leading indicator",
+        "lagging indicator",
+        "trend analysis",
+        "continuous improvement"
+      ],
+      "misconceptionGuards": [
+        "An IPM audit is the same as checking whether pesticides were applied correctly.",
+        "More completed forms always mean the IPM program is improving."
+      ],
+      "sourceAnchors": [
+        "U.S. EPA. Integrated Pest Management (IPM) Principles. Current page reviewed 2026-10-03. Defines IPM as a series of evaluations, decisions, prevention, monitoring, thresholds, and controls. https://www.epa.gov/safepestcontrol/integrated-pest-management-ipm-principles",
+        "U.S. EPA. Integrated Pest Management Toolkit 2021. Recordkeeping section states accurate records are critical for determining program efficacy, identifying trends and repetitive issues, evaluating objectives, and improving decisions. https://www.epa.gov/system/files/documents/2021-07/integrated-pest-management-toolkit-2021_4.pdf",
+        "USDA APHIS. United States-Canada Greenhouse-Grown Plant Certification Program Technical Requirements, Version 1.0, 2024. Systems and surveillance audits gather objective evidence that integrated pest-risk measures are implemented and effective, with corrective measures when noncompliances are found. https://www.aphis.usda.gov/sites/default/files/2016-gcp-technical-requirement-mou_1.pdf",
+        "Transfer note: these sources support general IPM evaluation, recordkeeping, audit, and continuous-improvement principles; they do not establish universal Cannabis performance benchmarks."
+      ],
+      "altTextDraft": "Record / example for IPM Program Audit and Continuous Improvement, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "IPM Program Audit and Continuous Improvement. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-340_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-340_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-341",
+      "lessonId": "THC-ENC-341",
+      "number": 341,
+      "title": "Harvest Maturity as a Multi-Signal Decision",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to define harvest maturity by product objective, developmental evidence, representative sampling, environmental risk, and downstream quality rather than one visual cue.",
+      "accuracyRequirements": [
+        "Harvest maturity is a management decision, not a single universal biological endpoint. Reproductive tissues, glandular trichomes, cannabinoids, volatiles, seed development, senescence, and disease risk follow overlapping but nonidentical trajectories.",
+        "Visible stigma change and trichome appearance can support a local staging system, but each depends on tissue, position, illumination, observer, genotype, and post-pollination status. Chemical analysis describes the submitted sample and can differ across the plant.",
+        "The best harvest date can change with the intended product, legal cannabinoid limit, weather, disease, labor, drying capacity, seed maturity, and quality target. A later maximum concentration may not maximize total saleable yield or safety."
+      ],
+      "requiredLabels": [
+        "harvest maturity",
+        "developmental stage",
+        "trichome observation",
+        "stigma",
+        "inflorescence position",
+        "cannabinoid profile",
+        "weather risk",
+        "product objective"
+      ],
+      "misconceptionGuards": [
+        "A fixed amber-trichome percentage defines maturity for every cultivar. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "The highest cannabinoid percentage is always the best harvest point. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion."
+      ],
+      "sourceAnchors": [
+        "V18-SRC-001",
+        "V18-SRC-002",
+        "V18-SRC-003",
+        "V18-SRC-004"
+      ],
+      "altTextDraft": "Concept diagram for Harvest Maturity as a Multi-Signal Decision, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Harvest Maturity as a Multi-Signal Decision. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-341_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-341_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-342",
+      "lessonId": "THC-ENC-342",
+      "number": 342,
+      "title": "Whole-Plant Versus Branch Harvest",
+      "visualType": "Comparison plate",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to compare whole-plant and sectional harvest through handling, drying geometry, spatial maturity, labor, contamination, and traceability.",
+      "accuracyRequirements": [
+        "Whole-plant harvest preserves large connected structures and can reduce the number of cuts and handling events. Branch or sectional harvest can separate maturity zones, improve loading control, and make damaged or diseased material easier to segregate.",
+        "Geometry changes drying. Large stems, overlapping branches, flower density, hanging orientation, and local airflow affect heat and moisture transfer. A whole plant and separated branches cannot be assumed to follow the same drying curve under the same room setting.",
+        "Sectional harvesting increases labels, cuts, surfaces, labor, and opportunities for mix-ups or cross-contamination. Whole-plant harvesting can conceal interior defects and create uneven load density."
+      ],
+      "requiredLabels": [
+        "whole-plant harvest",
+        "branch harvest",
+        "sectional harvest",
+        "load geometry",
+        "stem-to-flower ratio",
+        "handling damage",
+        "traceability"
+      ],
+      "misconceptionGuards": [
+        "Whole-plant drying is always slower and therefore always better. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "Branch harvest automatically makes every flower uniform. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion."
+      ],
+      "sourceAnchors": [
+        "V18-SRC-002",
+        "V18-SRC-005",
+        "V18-SRC-006"
+      ],
+      "altTextDraft": "Comparison plate for Whole-Plant Versus Branch Harvest, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Whole-Plant Versus Branch Harvest. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-342_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-342_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-343",
+      "lessonId": "THC-ENC-343",
+      "number": 343,
+      "title": "Harvest Sanitation and Batch Segregation",
+      "visualType": "Workflow",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to protect identity and hygiene from cutting through transport, loading, trim, drying, sampling, and waste disposition.",
+      "accuracyRequirements": [
+        "Harvest converts living crop tissue into handled plant material with many new contact surfaces. Tools, gloves, bins, carts, racks, floors, labels, and workers can transfer debris, microbes, allergens, residues, and plant identity.",
+        "Batch segregation is physical and documentary. Adjacent material can mix through fallen flowers, trim, shared bins, air movement, labels, tools, or cleaning gaps even when plants were separate before cutting.",
+        "Sanitation does not make diseased or contaminated material acceptable. Suspect material requires a defined hold, sample, disposition, and movement route independent of routine crop flow."
+      ],
+      "requiredLabels": [
+        "batch",
+        "lot",
+        "segregation",
+        "harvest tool",
+        "food-contact surface",
+        "chain of identity",
+        "hold",
+        "contaminated material"
+      ],
+      "misconceptionGuards": [
+        "Harvested flower is safe because the plant was healthy. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "A label on the room is enough to preserve batch identity. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion."
+      ],
+      "sourceAnchors": [
+        "V18-SRC-002",
+        "V18-SRC-007",
+        "V18-SRC-008"
+      ],
+      "altTextDraft": "Workflow for Harvest Sanitation and Batch Segregation, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Harvest Sanitation and Batch Segregation. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-343_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-343_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-344",
+      "lessonId": "THC-ENC-344",
+      "number": 344,
+      "title": "Wet Trimming Versus Dry Trimming",
+      "visualType": "Comparison plate",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to compare trimming timing through leaf removal, surface exposure, drying rate, handling damage, microbial risk, chemistry, and labor.",
+      "accuracyRequirements": [
+        "Wet trimming removes leaves before drying, while dry trimming removes them after material has lost substantial water. Each changes load geometry, exposed surface area, airflow pathways, labor timing, and the physical state of glandular trichomes.",
+        "Direct cannabis research found trimming treatment effects on measured cannabinoid and terpene outcomes in one chemovar, but results depend on cultivar, treatment definition, drying system, sample composition, and analytical basis.",
+        "Dry material is brittle and can shed trichomes or fragments during handling; wet material is more deformable and can smear resin or compact in containers. Neither method is inherently more sanitary without controlled tools, surfaces, and workflow."
+      ],
+      "requiredLabels": [
+        "wet trim",
+        "dry trim",
+        "fan leaf",
+        "sugar leaf",
+        "surface area",
+        "handling loss",
+        "trichome loss",
+        "trim fraction"
+      ],
+      "misconceptionGuards": [
+        "Wet trimming always destroys terpenes. This oversimplifies the system because the observed outcome also depends on material condition, spatial variation, process history, and the measurement method used.",
+        "Dry trimming always preserves more resin. A visible or single-number result does not establish the mechanism by itself; compare representative samples, process conditions, and the relevant quality endpoint before drawing that conclusion."
+      ],
+      "sourceAnchors": [
+        "V18-SRC-009",
+        "V18-SRC-002",
+        "V18-SRC-005"
+      ],
+      "altTextDraft": "Comparison plate for Wet Trimming Versus Dry Trimming, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Wet Trimming Versus Dry Trimming. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-344_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-344_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    }
+  ]
+}

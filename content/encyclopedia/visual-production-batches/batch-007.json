@@ -1,0 +1,1045 @@
+{
+  "schemaVersion": 1,
+  "batchId": "ENC-VIS-BATCH-007",
+  "generatedAt": "2026-10-04T13:51:42.402Z",
+  "status": "production-ready-review-controlled",
+  "purpose": "Turn controlled encyclopedia visual briefs into lesson-specific raster teaching candidates without changing publication approval state.",
+  "reviewRule": "Every asset remains unapproved until science, accessibility, rights/provenance, rendering, and responsive review are explicitly recorded.",
+  "itemCount": 24,
+  "priorityRange": {
+    "high": 24,
+    "low": 24
+  },
+  "visualFamilies": {
+    "diagnostic-decision-tree": 24
+  },
+  "items": [
+    {
+      "queueId": "ENC-VIS-293",
+      "lessonId": "THC-ENC-293",
+      "number": 293,
+      "title": "Beet Leafhoppers and Virus Vectoring",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to identify beet leafhopper risk in hemp by separating vector detection, host use, and Beet curly top virus confirmation, and use current hemp research to interpret vector presence without equating insect capture with disease.",
+      "accuracyRequirements": [
+        "Beet leafhopper is the recognized vector of Beet curly top virus, an important disease of hemp in parts of the western United States. Field research in New Mexico detected beet leafhoppers in and around hemp and confirmed BCTV infection in CBD, fiber, and grain hemp types under field conditions.",
+        "Vector detection and disease diagnosis are separate observations. A sticky-card or sweep-net capture confirms that a leafhopper was present, but does not show that the individual carried BCTV, fed long enough to inoculate a plant, or caused observed symptoms.",
+        "Current 2026 research adds an important boundary: beet leafhoppers were unable to survive on hemp beyond seven days in the reported experiments, indicating that hemp can be exposed to vector feeding without being a host on which the insect completes its life cycle. This helps explain why transient movement from surrounding vegetation can still matter epidemiologically."
+      ],
+      "requiredLabels": [
+        "beet leafhopper",
+        "BCTV",
+        "viruliferous",
+        "persistent transmission",
+        "vector competence"
+      ],
+      "misconceptionGuards": [
+        "Every beet leafhopper found near hemp carries BCTV.",
+        "A leafhopper capture proves a symptomatic plant has curly top."
+      ],
+      "sourceAnchors": [
+        "Creamer et al. (2023), Interactions of beet leafhopper, vector of beet curly top virus, and hemp in New Mexico, Environmental Entomology. Direct field and choice-test evidence in hemp. https://pubmed.ncbi.nlm.nih.gov/37478402/",
+        "Han et al. (2026), Beet Curly Top Virus Genetic Diversity, Impact on Cannabinoids, Potential Seed Transmission, and Vector Biology in Hemp, Phytopathology 116(5). Multistate hemp evidence; leafhoppers did not survive on hemp beyond seven days in the study. https://pubmed.ncbi.nlm.nih.gov/41563377/",
+        "University of Arizona Cooperative Extension, Beet Curly Top Virus in Industrial Hemp. Hemp symptom, susceptibility, and vector context. https://extension.arizona.edu/publication/beet-curly-top-virus-industrial-hemp"
+      ],
+      "altTextDraft": "Labeled anatomy for Beet Leafhoppers and Virus Vectoring, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Beet Leafhoppers and Virus Vectoring. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-293_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-293_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-294",
+      "lessonId": "THC-ENC-294",
+      "number": 294,
+      "title": "Root Aphids and Soil-Dwelling Pests",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to recognize root-associated aphids and other soil-dwelling invertebrates on hemp or cannabis by sampling the root/media zone, distinguish them from canopy aphids and non-pest soil organisms, and separate pest evidence from root-disease diagnosis.",
+      "accuracyRequirements": [
+        "Rice root aphid is directly documented as a common root-associated insect of indoor-grown Cannabis sativa in the United States and Canada. Published observations report colonies across soil, coir, rockwool, and aeroponic systems, making the plant rather than one substrate type the key host association.",
+        "Most rice root aphids on cannabis occur at roots and the stem base. Winged females can emerge from the media and may become trapped on sticky plant hairs or monitoring cards; those winged adults can be the first visible clue to a largely hidden root-zone colony.",
+        "Root-zone pest symptoms are inherently nonspecific. Reduced vigor, chlorosis, wilting, poor root growth, or nutrient-like symptoms can also result from low oxygen, irrigation problems, root pathogens, salinity, pH/EC problems, or physical root injury. Direct root/media inspection is therefore necessary."
+      ],
+      "requiredLabels": [
+        "Rhopalosiphum rufiabdominale",
+        "rhizosphere",
+        "alate",
+        "anholocyclic",
+        "soil-dwelling pest"
+      ],
+      "misconceptionGuards": [
+        "Root aphids must form obvious colonies on leaves before they can affect cannabis.",
+        "A winged aphid on a leaf always indicates a canopy-feeding species."
+      ],
+      "sourceAnchors": [
+        "Cranshaw & Wainwright-Evans (2020), Cannabis sativa as a Host of Rice Root Aphid in North America, Journal of Integrated Pest Management 11(1):15. Direct Cannabis host, production-system, root-location, and alate-dispersal evidence. https://academic.oup.com/jipm/article/11/1/15/5873259",
+        "Ong et al. (2025), Rice root aphids and cannabis aphids are parasitised by Aphelinus varipes, The Canadian Entomologist 157:e39. Confirms rice root aphid in commercial cannabis biological-control context. https://www.cambridge.org/core/journals/canadian-entomologist/article/rice-root-aphids-rhopalosiphum-rufiabdominale-and-cannabis-aphids-phorodon-cannabis-hemiptera-aphididae-are-parasitised-by-aphelinus-varipes-hymenoptera-aphelinidae/021F39B65C66F7CAE01D2DC9D3824B44",
+        "Florida Department of Agriculture and Consumer Services, Arthropods on Hemp circular. Distinguishes documented pests, predators, decomposers, and incidental arthropods recovered from hemp systems. https://ccmedia.fdacs.gov/content/download/114776/file/FDACS-P-02203_2023-11%28Arthropods-on-Hemp-Circular%29.pdf"
+      ],
+      "altTextDraft": "Labeled anatomy for Root Aphids and Soil-Dwelling Pests, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Root Aphids and Soil-Dwelling Pests. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-294_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-294_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-295",
+      "lessonId": "THC-ENC-295",
+      "number": 295,
+      "title": "Slugs, Snails, and Outdoor Seedling Injury",
+      "visualType": "Chart / measurement",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to recognize slug and snail feeding as one cause of outdoor seedling injury by combining chewing pattern, slime trails, shelter/moisture conditions, and direct nocturnal evidence while separating mollusk injury from caterpillars, earwigs, beetles, damping-off, and mechanical damage.",
+      "accuracyRequirements": [
+        "Slugs and snails are moisture-associated terrestrial gastropods that feed on a broad range of plants. Young seedlings are particularly vulnerable because irregular chewing can remove a large fraction of their photosynthetic or stem tissue before the plant has substantial reserves.",
+        "Typical injury includes irregular holes or missing tissue with relatively smooth chewed edges. Shiny mucus trails near plants, containers, residue, or soil surfaces provide useful supporting evidence but should be paired with direct organism observations where possible.",
+        "Mollusk feeding is not unique in appearance. Caterpillars, earwigs, beetles, cutworms, vertebrates, hail, transplant damage, and some seedling diseases can also produce missing or collapsed tissue. Damping-off should be distinguished by crown/root lesions or collapse patterns rather than chewing alone."
+      ],
+      "requiredLabels": [
+        "gastropod",
+        "radula",
+        "slime trail",
+        "shelter site",
+        "seedling vulnerability"
+      ],
+      "misconceptionGuards": [
+        "Any irregular hole in a seedling proves slug or snail feeding.",
+        "No daytime slugs means they are absent."
+      ],
+      "sourceAnchors": [
+        "Utah State University Extension, Slugs and Snails. Documents moisture association, irregular smooth-edged chewing, slime trails, shelter, and high vulnerability of new seedlings. https://extension.usu.edu/vegetableguide/leafy-greens/slugs-snails",
+        "Panthi et al. (2024), Arthropod and mollusk pests of hemp, Cannabis sativa, and their indoor management plan in Florida. Establishes mollusks within the broader hemp pest diagnostic framework and emphasizes differential diagnosis among chewing injuries. https://academic.oup.com/jipm/article/15/1/1/7499162",
+        "Controlled Master Content Map v1.0 fixes THC-ENC-295 as Slugs, Snails, and Outdoor Seedling Injury; cross-crop evidence is explicitly bounded where Cannabis-specific data are sparse."
+      ],
+      "altTextDraft": "Chart / measurement for Slugs, Snails, and Outdoor Seedling Injury, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Slugs, Snails, and Outdoor Seedling Injury. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-295_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-295_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-296",
+      "lessonId": "THC-ENC-296",
+      "number": 296,
+      "title": "Ants, Wasps, and Secondary Pest Indicators",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to interpret ants, wasps, and other conspicuous insects in hemp or cannabis as possible pests, natural enemies, scavengers, or indirect indicators, and confirm their ecological role before assigning damage or control significance.",
+      "accuracyRequirements": [
+        "Ants and wasps are ecologically diverse, so their presence in a hemp or cannabis crop does not have one meaning. Some ants may directly damage plant crowns or seeds, some are attracted to honeydew-producing pests, and many wasps are predators or parasitoids that contribute to biological control.",
+        "Pavement ants have been documented damaging hemp at the crown in Utah extension observations. This is species- and context-specific evidence and should not be generalized to every ant found on a plant.",
+        "Aphid honeydew can attract ants. In that situation, ant activity may function as an indirect scouting clue for a sap-feeding colony. The correct follow-up is to inspect for aphids, whiteflies, scales, or other honeydew producers rather than calling the ants the primary pest by default."
+      ],
+      "requiredLabels": [
+        "secondary indicator",
+        "trophobiosis",
+        "parasitoid wasp",
+        "predatory wasp",
+        "incidental organism"
+      ],
+      "misconceptionGuards": [
+        "Every ant on a cannabis plant is feeding on the plant.",
+        "Ants near aphids are proof that the ants caused the plant symptoms."
+      ],
+      "sourceAnchors": [
+        "Utah State University Extension, Pavement Ants — Hemp. Documents Tetramorium caespitum crown feeding and associated hemp injury in a regional context. https://extension.usu.edu/planthealth/ipm/notes_ag/hemp-pavement-ants",
+        "NC State Extension, Cannabis Aphid in Industrial Hemp. Notes aphid honeydew can attract ants and documents parasitoid wasps and predators as aphid natural enemies. https://content.ces.ncsu.edu/cannabis-aphid-in-industrial-hemp",
+        "Colorado State University, Pest Management of Hemp in Enclosed Production — Cannabis Aphid. Warns that winged aphids can be confused with fungus gnats and tiny aphid parasitoid wasps on sticky traps. https://webdoc.agsci.colostate.edu/hempinsects/PDFs/Cannabis%20Aphid%20Management_.pdf",
+        "Missouri Extension, Biological control: Natural enemies can help manage pests (2026). Current extension overview of predators and parasitoids in IPM. https://extension.missouri.edu/news/biological-control-natural-enemies-can-help-manage-pests"
+      ],
+      "altTextDraft": "Concept diagram for Ants, Wasps, and Secondary Pest Indicators, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Ants, Wasps, and Secondary Pest Indicators. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-296_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-296_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-299",
+      "lessonId": "THC-ENC-299",
+      "number": 299,
+      "title": "Biological Control Compatibility",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to evaluate whether pest-management actions, prior residues, environmental conditions, and scouting tools are compatible with predators, parasitoids, and microbial biological-control agents without assuming that any product or beneficial organism is universally compatible.",
+      "accuracyRequirements": [
+        "Biological control succeeds only when the natural enemy is matched to the target pest and life stage and can survive the production environment. Predatory mites, parasitoid wasps, and generalist predators differ in prey range, temperature/humidity performance, establishment, and sensitivity to residues.",
+        "Pesticide compatibility is not a simple product-wide yes/no property. UConn Extension emphasizes that direct toxicity, persistent residues, loss of prey, repellency, impaired reproduction, altered sex ratio, reduced emergence, and shortened longevity can all disrupt beneficial organisms.",
+        "Prior applications matter. Residues on incoming plant material, benches, containers, greenhouse plastic, or crop tissue can interfere with a new biological-control program even when no fresh application is occurring."
+      ],
+      "requiredLabels": [
+        "biological control agent",
+        "compatibility",
+        "residual toxicity",
+        "sublethal effect",
+        "selectivity"
+      ],
+      "misconceptionGuards": [
+        "A pesticide labeled 'biological' is automatically safe for every beneficial organism.",
+        "If beneficial insects survive an application, compatibility is proven."
+      ],
+      "sourceAnchors": [
+        "UConn Extension, Starting a Biological Control Program for Greenhouse Insect and Mite Pests, revised July 2024. Covers target matching, residue history, environmental planning, and compatibility review. https://ipm.cahnr.uconn.edu/ipm-starting-a-biological-control-program-for-greenhouse-insect-and-mite-pests/",
+        "UConn Extension, Some Factors Concerning Pesticide Compatibility with Biological Control Agents, latest revision 2024. Details direct and sublethal effects, residues, prey loss, and species-specific compatibility. https://ipm.cahnr.uconn.edu/ipm-some-factors-concerning-pesticide-compatibility-with-biological-control-agents/",
+        "Penn State Extension, Planning for Biological Control in Greenhouses (2026). Current guidance on matching natural enemies to pests/life stages, environmental performance, monitoring, and selective compatibility. https://extension.psu.edu/planning-for-biological-control-in-greenhouses",
+        "UC Statewide IPM, Biological Control and Natural Enemies of Invertebrates. Supports conserving natural enemies and recognizing pesticide-driven secondary pest outbreaks. https://ipm.ucanr.edu/home-and-landscape/biological-control-and-natural-enemies-of-invertebrates/"
+      ],
+      "altTextDraft": "Concept diagram for Biological Control Compatibility, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Biological Control Compatibility. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-299_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-299_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-300",
+      "lessonId": "THC-ENC-300",
+      "number": 300,
+      "title": "Pest Records, Mapping, and Trend Analysis",
+      "visualType": "Chart / measurement",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to turn scouting observations into comparable records, spatial maps, and time-series trends that distinguish hotspots, spread, treatment response, and sampling artifacts while preserving uncertainty and diagnostic traceability.",
+      "accuracyRequirements": [
+        "Pest records are useful only when observations can be compared. A count without date, location, sampling method, effort, and crop stage cannot reliably show whether a population increased or whether the observer simply sampled differently.",
+        "Spatial mapping helps distinguish introduction points, propagation-lot problems, doorway or vent associations, irrigation/moisture hotspots, field-edge pressure, and spread through handling or plant movement. It also supports targeted resampling of the same locations.",
+        "Trend analysis should separate pest abundance, injury, natural enemies, and management actions. Plant damage can persist after a pest declines, while beneficial populations can rise after pest numbers increase; combining these into one score can hide important causal timing."
+      ],
+      "requiredLabels": [
+        "time series",
+        "hotspot",
+        "spatial map",
+        "metadata",
+        "sampling artifact"
+      ],
+      "misconceptionGuards": [
+        "A pest list without dates and locations is enough for trend analysis.",
+        "Old plant injury should be counted as a current pest population."
+      ],
+      "sourceAnchors": [
+        "Missouri Extension, Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. Recommends routine scouting and recording pest abundance and life stages using sticky cards and visual inspection. https://extension.missouri.edu/publications/ipm1026",
+        "UConn IPM Greenhouse Publications. Provides greenhouse sticky-card count forms, scouting summary reports, monitoring forms, and scouting/decision resources. https://ipm.cahnr.uconn.edu/greenhouse-publications/",
+        "UC Statewide IPM, Establishing Action Thresholds. Explicitly connects systematic monitoring and good records with crop acceptability, management actions, market outcome, and development of locally appropriate thresholds. https://ipm.ucanr.edu/agriculture/floriculture-and-ornamental-nurseries/establishing-treatment-thresholds/",
+        "Missouri Extension, Insect Pests of Industrial Hemp in Missouri. Current hemp IPM guidance includes monitoring tools, recordkeeping of pest populations and crop stages, thresholds, and conservation of beneficials. https://extension.missouri.edu/publications/mx83"
+      ],
+      "altTextDraft": "Chart / measurement for Pest Records, Mapping, and Trend Analysis, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Pest Records, Mapping, and Trend Analysis. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-300_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-300_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-301",
+      "lessonId": "THC-ENC-301",
+      "number": 301,
+      "title": "The Disease Triangle and Disease Cycle",
+      "visualType": "Process sequence",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to use host susceptibility, pathogen presence, environmental favorability, time, and pathogen life-cycle stages to explain why infectious disease develops and to separate disease risk from symptom appearance alone.",
+      "accuracyRequirements": [
+        "Infectious disease requires more than a pathogen name. Disease expression depends on the interaction of a susceptible Cannabis host, a pathogenic organism or infectious agent, and environmental conditions that permit infection and disease development. Time, plant stage, inoculum quantity, and repeated exposure modify the amount of disease that develops.",
+        "The disease cycle describes a chain of events that may include inoculum production, dispersal, contact with a susceptible infection court, penetration or entry, infection, colonization, symptom development, reproduction, secondary spread, and survival between crops. Different pathogens use different routes and do not complete every stage in the same way.",
+        "Symptoms are host responses and can lag behind infection. A plant can therefore look healthy during latent or low-level infection, while abiotic stress can mimic infectious disease without a pathogen being present. This is why symptom pattern, pathogen evidence, environmental history, and diagnostic testing should be interpreted together."
+      ],
+      "requiredLabels": [
+        "disease triangle",
+        "inoculum",
+        "infection court",
+        "latent period",
+        "polycyclic disease"
+      ],
+      "misconceptionGuards": [
+        "Finding a microorganism automatically proves it caused the symptoms.",
+        "A plant that looks healthy cannot carry an infectious agent."
+      ],
+      "sourceAnchors": [
+        "University of Missouri Extension, Preventing and Managing Plant Diseases. Defines the disease triangle and disease-cycle sequence including inoculum, spread, penetration, infection, and secondary cycles. https://extension.missouri.edu/publications/mg13",
+        "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. doi:10.3390/plants13060786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+        "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. Pathogens. 2024. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/"
+      ],
+      "altTextDraft": "Process sequence for The Disease Triangle and Disease Cycle, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "The Disease Triangle and Disease Cycle. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-301_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-301_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-302",
+      "lessonId": "THC-ENC-302",
+      "number": 302,
+      "title": "Powdery Mildew Biology",
+      "visualType": "ID and life-cycle plate",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to recognize Cannabis powdery mildew as a living, polycyclic host-pathogen system; distinguish characteristic fungal growth from look-alike residues; and interpret genotype, inoculum, and environment without turning symptom recognition into unsupported treatment advice.",
+      "accuracyRequirements": [
+        "Powdery mildew on Cannabis commonly appears as white superficial colonies on leaves and can extend to petioles, stems, and inflorescence-associated tissues. The visible powder is fungal mycelium and conidia, not a nutrient precipitate or mineral residue.",
+        "Current Cannabis and hemp literature identifies Golovinomyces ambrosiae as a primary causal organism. Taxonomic names in older reports may differ because the Golovinomyces species complex has been revised, so organism identity should follow current molecular or diagnostic evidence rather than relying only on an older species label.",
+        "G. ambrosiae is polycyclic. Asexual conidia produced on infected tissue can disperse to susceptible tissue and generate repeated disease cycles. This makes small, initially localized infections epidemiologically important when susceptible hosts remain continuously available."
+      ],
+      "requiredLabels": [
+        "powdery mildew",
+        "Golovinomyces ambrosiae",
+        "conidium",
+        "biotroph",
+        "polycyclic"
+      ],
+      "misconceptionGuards": [
+        "Every white patch on a Cannabis leaf is powdery mildew.",
+        "Powdery mildew requires free-standing water on the leaf in the same way as every foliar fungus."
+      ],
+      "sourceAnchors": [
+        "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. doi:10.3390/plants13060786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+        "Genetic Mapping, Identification, and Characterization of a Candidate Susceptibility Gene for Powdery Mildew in Cannabis sativa. Plant Disease. 2024. PMID:37750850. https://pubmed.ncbi.nlm.nih.gov/37750850/",
+        "Screening Diverse Cannabis sativa Germplasm for Resistance to Golovinomyces ambrosiae. Plant Disease. 2026. PMID:41319034. doi:10.1094/PDIS-07-25-1591-RE. https://pubmed.ncbi.nlm.nih.gov/41319034/",
+        "Brochu AS, et al. First Report of Powdery Mildew Caused by Golovinomyces ambrosiae on Cannabis sativa in Quebec, Canada. Plant Disease. 2022. PMID:35350887. https://pubmed.ncbi.nlm.nih.gov/35350887/"
+      ],
+      "altTextDraft": "ID and life-cycle plate for Powdery Mildew Biology, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Powdery Mildew Biology. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-302_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-302_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-303",
+      "lessonId": "THC-ENC-303",
+      "number": 303,
+      "title": "Botrytis Gray Mold and Inflorescence Rot",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to identify Botrytis cinerea as a major Cannabis inflorescence-rot pathogen, recognize its disease pattern and epidemiological context, and separate confirmed Botrytis disease from other bud rots and postharvest molds.",
+      "accuracyRequirements": [
+        "Botrytis cinerea is a documented Cannabis pathogen that can cause destructive gray mold and inflorescence rot. Early disease may appear as localized browning or decay within developing floral tissue before extensive gray sporulation becomes visible.",
+        "Cannabis studies have recovered and molecularly identified B. cinerea from diseased inflorescences and reproduced disease experimentally. Advanced infections can destroy large portions of an inflorescence, and infection present before harvest can contribute to postharvest loss.",
+        "Dense, maturing inflorescences create a distinct microclimate from room-average air. Disease risk is influenced by genotype, tissue architecture, moisture and humidity conditions, season, inoculum pressure, and the duration of favorable conditions rather than by one room sensor value alone."
+      ],
+      "requiredLabels": [
+        "Botrytis cinerea",
+        "bud rot",
+        "conidium",
+        "sclerotium",
+        "necrotroph"
+      ],
+      "misconceptionGuards": [
+        "All bud rot in Cannabis is caused by Botrytis cinerea.",
+        "Room-average relative humidity fully describes the moisture environment inside dense inflorescences."
+      ],
+      "sourceAnchors": [
+        "Punja ZK, et al. Pathogens and Molds Affecting Production and Quality of Cannabis sativa L. Front Plant Sci. 2019. PMID:31681341. https://pmc.ncbi.nlm.nih.gov/articles/PMC6811654/",
+        "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. doi:10.3390/plants13060786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+        "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. Pathogens. 2024. PMID:38203190. https://pubmed.ncbi.nlm.nih.gov/38203190/",
+        "Microbial hazards during harvesting and processing at an outdoor United States cannabis farm. PMID:29370578. Documents B. cinerea sequences in cannabis-farm environmental samples. https://pubmed.ncbi.nlm.nih.gov/29370578/"
+      ],
+      "altTextDraft": "Labeled anatomy for Botrytis Gray Mold and Inflorescence Rot, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Botrytis Gray Mold and Inflorescence Rot. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-303_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-303_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-304",
+      "lessonId": "THC-ENC-304",
+      "number": 304,
+      "title": "Fusarium Root, Crown, and Vascular Diseases",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to recognize Fusarium as a diverse group of Cannabis pathogens that can affect roots, crowns, vascular tissues, stems, and inflorescences; distinguish Fusarium syndromes from look-alikes; and interpret propagation, water, and diagnostic evidence without treating genus detection as proof of disease.",
+      "accuracyRequirements": [
+        "Multiple Fusarium species and lineages have been recovered from diseased Cannabis roots, crowns, stems, and inflorescences. Documented symptoms include root browning, crown and pith discoloration, yellowing, stunting, wilt, plant collapse, and in some cases floral infection.",
+        "The Fusarium oxysporum complex is not a single uniform pathogen population. A 2022 study of Cannabis-associated wilt isolates from Israel, Italy, and North America found a polyphyletic assemblage and experimentally confirmed pathogenicity of diverse lineages, showing that strain identity and aggressiveness matter.",
+        "Infected mother plants and cuttings can serve as propagation pathways. Fusarium has been recovered from asymptomatic infected mother plants and matching wilted cuttings, so visual health at the stock-plant stage does not guarantee pathogen-free propagation material."
+      ],
+      "requiredLabels": [
+        "Fusarium oxysporum species complex",
+        "vascular discoloration",
+        "crown rot",
+        "propagative transmission",
+        "Koch's postulates"
+      ],
+      "misconceptionGuards": [
+        "Every Fusarium isolate from Cannabis is pathogenic.",
+        "Internal stem browning is unique to Fusarium."
+      ],
+      "sourceAnchors": [
+        "Punja ZK, et al. Pathogens and Molds Affecting Production and Quality of Cannabis sativa L. Front Plant Sci. 2019. PMID:31681341. https://pmc.ncbi.nlm.nih.gov/articles/PMC6811654/",
+        "Members of the Fusarium oxysporum Complex Causing Wilt Symptoms in Medical Cannabis in Israel, Italy, and North America Comprise a Polyphyletic Assemblage. Plant Disease. 2022. PMID:35412332. doi:10.1094/PDIS-01-22-0155-RE. https://pubmed.ncbi.nlm.nih.gov/35412332/",
+        "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. 2024. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/",
+        "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/"
+      ],
+      "altTextDraft": "Labeled anatomy for Fusarium Root, Crown, and Vascular Diseases, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Fusarium Root, Crown, and Vascular Diseases. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-304_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-304_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-305",
+      "lessonId": "THC-ENC-305",
+      "number": 305,
+      "title": "Pythium and Oomycete Root Rot",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to recognize Pythium-associated damping-off, root rot, and crown rot in Cannabis; distinguish oomycetes from true fungi and abiotic root decline; and use plant, water, and laboratory evidence to support diagnosis without overgeneralizing from one species or production system.",
+      "accuracyRequirements": [
+        "Pythium species are documented Cannabis and hemp pathogens. Cannabis studies have recovered P. myriotylum, P. dissotocum, P. aphanidermatum, P. ultimum, and other Pythium taxa from symptomatic roots and crowns, with disease patterns including browning, water-soaked or necrotic crown tissue, stunting, chlorosis, wilt, collapse, and plant death.",
+        "Pythium is an oomycete, not a true fungus. This biological distinction matters for taxonomy, diagnostic interpretation, survival structures, water-associated spread, and the fact that products effective against some true fungi are not automatically effective or appropriate against oomycetes.",
+        "Causation has been demonstrated directly in Cannabis for multiple Pythium species. P. ultimum was shown to cause crown rot in greenhouse Cannabis after inoculation and re-isolation, and P. myriotylum has been reported causing crown/root rot in hemp and, in 2026, damping-off and root rot in Cannabis sativa in Florida."
+      ],
+      "requiredLabels": [
+        "oomycete",
+        "Pythium",
+        "damping-off",
+        "zoospore",
+        "root rot"
+      ],
+      "misconceptionGuards": [
+        "Pythium is simply another true fungus.",
+        "Every brown root system is Pythium root rot."
+      ],
+      "sourceAnchors": [
+        "Punja ZK, et al. Pathogens and Molds Affecting Production and Quality of Cannabis sativa L. Front Plant Sci. 2019. PMID:31681341. https://pmc.ncbi.nlm.nih.gov/articles/PMC6811654/",
+        "Pitman TL, et al. First report of Pythium ultimum causing crown rot in greenhouse grown Cannabis sativa in California. Plant Disease. 2020. PMID:33337241. doi:10.1094/PDIS-10-20-2228-PDN. https://pubmed.ncbi.nlm.nih.gov/33337241/",
+        "Hu J. First Report of Crown and Root Rot Caused by Pythium myriotylum on Hemp (Cannabis sativa) in Arizona. Plant Disease. 2021. doi:10.1094/PDIS-12-20-2712-PDN. https://apsjournals.apsnet.org/doi/10.1094/PDIS-12-20-2712-PDN",
+        "Brown A, et al. First Report of Pythium myriotylum Causing Damping off and Root Rot in Cannabis sativa in Florida. Plant Disease. 2026;110(3). doi:10.1094/PDIS-07-25-1413-PDN. https://apsjournals.apsnet.org/doi/10.1094/PDIS-07-25-1413-PDN",
+        "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/"
+      ],
+      "altTextDraft": "Labeled anatomy for Pythium and Oomycete Root Rot, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Pythium and Oomycete Root Rot. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-305_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-305_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-306",
+      "lessonId": "THC-ENC-306",
+      "number": 306,
+      "title": "Rhizoctonia and Damping-Off Complexes",
+      "visualType": "ID and life-cycle plate",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to treat damping-off as a seedling disease syndrome with multiple possible biological and abiotic causes; recognize where Rhizoctonia fits in the differential diagnosis; and use root, crown, seedling-pattern, and laboratory evidence before assigning a causal organism.",
+      "accuracyRequirements": [
+        "Damping-off is a syndrome rather than a single-pathogen diagnosis. Current hemp disease guidance lists Pythium/Globisporangium species, Fusarium species, Rhizoctonia solani, and potentially other organisms as causes or contributors to seed decay, root/crown rot, stunting, and seedling collapse.",
+        "Cannabis- and hemp-specific pathogenicity evidence is strongest for several Fusarium and Pythium species. Rhizoctonia is included in hemp diagnostic guidance and is biologically plausible as part of the damping-off complex, but the direct Cannabis-specific experimental literature is less developed. That evidence difference should be stated rather than hidden.",
+        "Pre-emergence loss can look like poor germination, while post-emergence disease can produce constricted or necrotic stem-base tissue, brown roots, stunting, and rapid collapse. Similar losses can also result from low seed vigor, saturated or oxygen-poor media, salinity, temperature stress, planting injury, or other root pathogens."
+      ],
+      "requiredLabels": [
+        "damping-off",
+        "Rhizoctonia solani",
+        "pre-emergence damping-off",
+        "post-emergence damping-off",
+        "disease complex"
+      ],
+      "misconceptionGuards": [
+        "Damping-off is the name of one pathogen.",
+        "Every failed seed was killed by disease."
+      ],
+      "sourceAnchors": [
+        "Pacific Northwest Plant Disease Management Handbook. Hemp (Cannabis sativa)-Damping-off. Revised March 2026. Lists Pythium/Globisporangium, Fusarium, Rhizoctonia solani, and other organisms in the hemp damping-off complex. https://pnwhandbooks.org/plantdisease/host-disease/hemp-cannabis-sativa-damping",
+        "Khan MFR, et al. First Report of Damping-Off and Seedling Rot of Hemp (Cannabis sativa) Caused by Fusarium solani in North Dakota, U.S.A. Plant Disease. 2023;107(1). doi:10.1094/PDIS-12-21-2681-PDN. https://apsjournals.apsnet.org/doi/10.1094/PDIS-12-21-2681-PDN",
+        "Pitman TL, et al. First report of Pythium ultimum causing crown rot in greenhouse grown Cannabis sativa in California. Plant Disease. 2020. PMID:33337241. doi:10.1094/PDIS-10-20-2228-PDN. https://pubmed.ncbi.nlm.nih.gov/33337241/",
+        "Punja ZK. Emerging diseases of Cannabis sativa and sustainable management. Pest Manag Sci. 2021;77:3857-3870. PMID:33527549. doi:10.1002/ps.6307. https://pubmed.ncbi.nlm.nih.gov/33527549/"
+      ],
+      "altTextDraft": "ID and life-cycle plate for Rhizoctonia and Damping-Off Complexes, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Rhizoctonia and Damping-Off Complexes. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-306_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-306_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-307",
+      "lessonId": "THC-ENC-307",
+      "number": 307,
+      "title": "Sclerotinia and Stem-Rot Risks",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to recognize Sclerotinia sclerotiorum white mold and stem/inflorescence rot as a documented Cannabis disease, identify characteristic lesions, white mycelium and sclerotia, and separate this pathogen from other stem and flower rots using tissue and laboratory evidence.",
+      "accuracyRequirements": [
+        "Sclerotinia sclerotiorum is the causal agent of white mold and is now supported by direct Cannabis infection research as well as North American disease reports. Cannabis infections have included tan-to-brown necrotic lesions and cankers on the crown and stem, floral infection, white mycelium, and sclerotia in or around affected tissues.",
+        "A 2026 Cannabis study followed infection in floral tissue and documented rapid degradation of epidermal and cortical parenchyma followed by infection of vascular phloem. Dual RNA sequencing showed major transcriptional responses in both Cannabis and S. sclerotiorum, providing direct cellular and molecular evidence for this pathosystem.",
+        "Sclerotia are epidemiologically important survival structures. In other well-studied hosts they can germinate directly as mycelium or form apothecia that release ascospores. These general life-cycle mechanisms help interpret Cannabis risk, but the relative importance of each inoculum route in a specific Cannabis production system must be established from local evidence."
+      ],
+      "requiredLabels": [
+        "Sclerotinia sclerotiorum",
+        "sclerotium",
+        "apothecium",
+        "ascospore",
+        "necrotroph"
+      ],
+      "misconceptionGuards": [
+        "Every white fungal growth on a Cannabis stem is Sclerotinia.",
+        "A brown stem canker proves white mold even when sclerotia or diagnostic evidence are absent."
+      ],
+      "sourceAnchors": [
+        "Cale NL, et al. Dual RNA sequencing reveals the transcriptomic and cellular response of Cannabis sativa to infection by the fungal pathogen Sclerotinia sclerotiorum. Scientific Reports. 2026;16:17739. Published 16 Apr 2026. https://www.nature.com/articles/s41598-026-47998-2",
+        "Punja ZK. Emerging diseases of Cannabis sativa and sustainable management. Pest Manag Sci. 2021;77:3857-3870. PMID:33527549. doi:10.1002/ps.6307. https://pmc.ncbi.nlm.nih.gov/articles/PMC8451794/",
+        "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/"
+      ],
+      "altTextDraft": "Labeled anatomy for Sclerotinia and Stem-Rot Risks, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Sclerotinia and Stem-Rot Risks. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-307_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-307_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-308",
+      "lessonId": "THC-ENC-308",
+      "number": 308,
+      "title": "Leaf Spots and Foliar Pathogen Differentiation",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to differentiate common Cannabis and hemp leaf-spot syndromes by lesion pattern, pathogen signs, epidemiology, and laboratory evidence, with particular attention to Septoria cannabis and Alternaria species while recognizing bacterial and abiotic look-alikes.",
+      "accuracyRequirements": [
+        "Leaf spots are a symptom category, not a diagnosis. Cannabis and hemp foliar lesions can be caused by fungi such as Septoria cannabis and Alternaria species, bacterial pathogens such as Serratia or Xanthomonas, systemic disease, chemical injury, nutrient or environmental stress, spray injury, and mechanical damage.",
+        "Septoria leaf spot is well documented in field-grown hemp. A 2026 replicated Cannabis sativa germplasm study confirmed substantial variation in susceptibility among accessions, reinforcing that genotype affects observed disease severity and that one cultivar's field response should not be generalized to all Cannabis.",
+        "Alternaria alternata has been demonstrated as a causal hemp leaf-spot pathogen through morphology, multilocus sequencing, inoculation, symptom reproduction, and re-isolation. However, Alternaria can also be isolated from seeds, residues, or plant tissues without proving it caused a particular lesion, so pathogenicity evidence remains important."
+      ],
+      "requiredLabels": [
+        "leaf spot",
+        "Septoria cannabis",
+        "Alternaria alternata",
+        "pycnidium",
+        "differential diagnosis"
+      ],
+      "misconceptionGuards": [
+        "A circular brown spot is enough to identify Septoria.",
+        "Every Alternaria isolate recovered from Cannabis caused the observed lesion."
+      ],
+      "sourceAnchors": [
+        "Schwartz JA, et al. Screening of Cannabis sativa Germplasm for Susceptibility to Septoria Leaf Spot. Plant Disease. 2026;110(5):1750-1756. PMID:40920100. doi:10.1094/PDIS-07-25-1367-RE. https://pubmed.ncbi.nlm.nih.gov/40920100/",
+        "Tang L, et al. First Report of Leaf Spot on Industrial Hemp (Cannabis sativa) Caused by Alternaria alternata in China. Plant Disease. 2021;105(10):3294. PMID:33904327. doi:10.1094/PDIS-01-21-0130-PDN. https://apsjournals.apsnet.org/doi/10.1094/PDIS-01-21-0130-PDN",
+        "Pacific Northwest Plant Disease Management Handbook. Hemp (Cannabis sativa)-Brown Blight (Alternaria Diseases). Revised March 2026. https://pnwhandbooks.org/plantdisease/host-disease/hemp-cannabis-sativa-brown-blight-alternaria-diseases",
+        "Wang S. Diagnosing Hemp and Cannabis Crop Diseases. UC Davis Western Institute for Food Safety and Security / diagnostic guide, 2026. https://hemp.ucdavis.edu/sites/g/files/dgvnsk12601/files/media/documents/Diagnosing%20Hemp%20and%20Cannabis%20Crop%20Diseases%20-%20Shouhua%20Wang.pdf"
+      ],
+      "altTextDraft": "Labeled anatomy for Leaf Spots and Foliar Pathogen Differentiation, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Leaf Spots and Foliar Pathogen Differentiation. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-308_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-308_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-309",
+      "lessonId": "THC-ENC-309",
+      "number": 309,
+      "title": "Bacterial Diseases and Opportunistic Infection",
+      "visualType": "Diagnostic decision tree",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to recognize documented bacterial diseases of Cannabis and hemp while distinguishing pathogenic bacteria from commensal, endophytic, epiphytic, saprophytic, and secondary organisms; use lesion pattern, isolation, molecular evidence, and pathogenicity testing to support causation.",
+      "accuracyRequirements": [
+        "Confirmed bacterial diseases of Cannabis and hemp are fewer than fungal and oomycete diseases, and many bacteria detected in Cannabis tissues are endophytes, epiphytes, saprophytes, or secondary colonizers. Therefore, bacterial detection must not be equated automatically with pathogenicity.",
+        "Serratia marcescens has been demonstrated to cause hemp leaf spot. North Carolina greenhouse cases produced small dark, vein-limited lesions that expanded into substantial necrosis, and pathogenicity work supported a causal role. Pseudomonas syringae has also produced lesions in hemp inoculation studies, while Xanthomonas campestris pv. cannabis is recognized in diagnostic references as a hemp leaf-spot pathogen.",
+        "Bacterial foliar symptoms can overlap with Septoria, Alternaria, other fungal leaf spots, spray injury, nutrient or environmental disorders, and mechanical damage. Water-soaking, angular or vein-limited lesions, chlorotic halos, and bacterial streaming can increase suspicion but are not species-level proof."
+      ],
+      "requiredLabels": [
+        "bacterial leaf spot",
+        "opportunistic pathogen",
+        "endophyte",
+        "epiphyte",
+        "bacterial streaming"
+      ],
+      "misconceptionGuards": [
+        "Any bacterium found inside a Cannabis plant is a bacterial disease.",
+        "A yellow halo identifies Xanthomonas."
+      ],
+      "sourceAnchors": [
+        "Schappe T, Ritchie DF, Thiessen LD. First Report of Serratia marcescens Causing a Leaf Spot Disease on Industrial Hemp (Cannabis sativa). Plant Disease. 2020;104(4):1248. doi:10.1094/PDIS-04-19-0782-PDN. https://apsjournals.apsnet.org/doi/10.1094/PDIS-04-19-0782-PDN",
+        "Surveying for Potential Diseases and Abiotic Disorders of Industrial Hemp (Cannabis sativa) Production. Plant Health Progress. Reports pathogenicity observations for Pseudomonas syringae and Serratia marcescens and emphasizes diagnostic uncertainty. https://apsjournals.apsnet.org/doi/10.1094/PHP-03-20-0017-RS",
+        "Buirs L, Punja ZK. Endophytes in Cannabis sativa: Identifying and Characterizing Microbes with Beneficial and Detrimental Effects on Plant Health. Plants. 2025;14(8):1247. PMID:40284136. doi:10.3390/plants14081247. https://pmc.ncbi.nlm.nih.gov/articles/PMC12030312/",
+        "Punja ZK. Emerging diseases of Cannabis sativa and sustainable management. Pest Manag Sci. 2021;77:3857-3870. PMID:33527549. doi:10.1002/ps.6307. https://pmc.ncbi.nlm.nih.gov/articles/PMC8451794/",
+        "UF/IFAS. Field Guide to Hemp (Cannabis sativa) Diseases. Xanthomonas leaf spot section; notes limited information for the hemp disease complex. https://ask.ifas.ufl.edu/publication/PP379"
+      ],
+      "altTextDraft": "Diagnostic decision tree for Bacterial Diseases and Opportunistic Infection, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Bacterial Diseases and Opportunistic Infection. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-309_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-309_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-310",
+      "lessonId": "THC-ENC-310",
+      "number": 310,
+      "title": "Hop Latent Viroid",
+      "visualType": "ID and life-cycle plate",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to understand hop latent viroid as an infectious RNA pathogen of Cannabis, recognize that infection can be asymptomatic or associated with dudding/stunting and quality loss, and interpret tissue testing, propagation, root/water, seed/pollen, and possible insect associations without overstating transmission routes.",
+      "accuracyRequirements": [
+        "HLVd is a 256-nucleotide infectious RNA and is a well-documented cause of Cannabis stunt or dudding disease. Infected plants may be symptomless for a period or may develop stunting, malformed or yellowing foliage, reduced vigor, altered rooting, and reduced floral/metabolite performance. These symptoms overlap with many other disorders, so molecular testing is central to diagnosis.",
+        "A 2025 Cannabis transmission study detected HLVd in asymptomatic stock plants and rooted cuttings, in recirculated nutrient solution from propagation systems, and demonstrated plant-to-plant spread through root infection in hydroponic cultivation. After experimental stem inoculation, roots became detectably infected before foliage in the tested system, showing that tissue choice and timing affect test sensitivity.",
+        "HLVd RNA was detectable in multiple plant tissues, including roots, leaves, inflorescences, trichome glands, pollen/anthers, and seeds in controlled studies. Seed transmission has also been demonstrated in hemp experiments. These findings establish several biologically plausible pathways, but their relative importance under a specific production system should be measured rather than assumed."
+      ],
+      "requiredLabels": [
+        "hop latent viroid",
+        "viroid",
+        "dudding",
+        "RT-qPCR",
+        "latent/asymptomatic infection"
+      ],
+      "misconceptionGuards": [
+        "A healthy-looking Cannabis plant cannot have HLVd.",
+        "Dudding symptoms alone are enough to diagnose HLVd."
+      ],
+      "sourceAnchors": [
+        "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid, a Widespread and Destructive Pathogen Affecting Cannabis (Cannabis sativa L.) Plants in North America. Plants. 2025;14(5):830. PMID:40094815. PMCID:PMC11902214. doi:10.3390/plants14050830. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/",
+        "New Insights into Hop Latent Viroid Detection, Infectivity, Host Range, and Transmission. Viruses. 2024;16(1):30. PMID:38257731. PMCID:PMC10819085. doi:10.3390/v16010030. https://pmc.ncbi.nlm.nih.gov/articles/PMC10819085/",
+        "Ong M, et al. Acquisition of hop latent viroid from viroid-infected cannabis plants by rice root aphids and cannabis aphids. Arch Virol. 2025. PMID:41065859. doi:10.1007/s00705-025-06422-2. https://pubmed.ncbi.nlm.nih.gov/41065859/",
+        "A Novel, Precise and High-Throughput Technology for Viroid Detection in Cannabis (MFDetect). 2023. PMCID:PMC10385567. Compares tissue and developmental-stage HLVd detection with RT-qPCR. https://pmc.ncbi.nlm.nih.gov/articles/PMC10385567/",
+        "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. 2024. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/"
+      ],
+      "altTextDraft": "ID and life-cycle plate for Hop Latent Viroid, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Hop Latent Viroid. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-310_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-310_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-311",
+      "lessonId": "THC-ENC-311",
+      "number": 311,
+      "title": "Beet Curly Top Virus",
+      "visualType": "ID and life-cycle plate",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to recognize Beet curly top virus as an important hemp virus transmitted by beet leafhoppers, distinguish vector presence from confirmed plant infection, and interpret symptom, strain, seed, genotype, and molecular-test evidence without assuming every curled or stunted plant has BCTV.",
+      "accuracyRequirements": [
+        "BCTV is a documented viral pathogen of hemp and Cannabis sativa in the western United States. Infection can be associated with stunting, leaf curling or twisting, chlorosis, abnormal growth, and reduced performance, but these symptoms overlap with other viruses, viroids, herbicide or environmental injury, nutrition problems, and genetic phenotypes.",
+        "The beet leafhopper is the established BCTV vector. Detecting leafhoppers in or near a crop increases epidemiological relevance but does not prove that a particular insect carries BCTV or that a symptomatic plant is infected. Plant infection requires pathogen-specific testing when diagnostic certainty matters.",
+        "A 2026 multi-state hemp study found substantial BCTV genetic diversity and recombination, including several strains across surveyed western states. This diversity means a single historic strain assumption should not replace current molecular identification or regional surveillance."
+      ],
+      "requiredLabels": [
+        "Beet curly top virus",
+        "beet leafhopper",
+        "vector",
+        "strain",
+        "PCR detection"
+      ],
+      "misconceptionGuards": [
+        "Leaf curling or stunting proves BCTV.",
+        "Finding beet leafhoppers proves the crop is infected with BCTV."
+      ],
+      "sourceAnchors": [
+        "Han J, et al. Beet Curly Top Virus Genetic Diversity, Impact on Cannabinoids, Potential Seed Transmission, and Vector Biology in Hemp. Phytopathology. 2026;116(5):813-824. PMID:41563377. doi:10.1094/PHYTO-09-25-0297-R. https://pubmed.ncbi.nlm.nih.gov/41563377/",
+        "Interactions of beet leafhopper (Hemiptera: Cicadellidae), vector of beet curly top virus, and hemp in New Mexico. Environ Entomol. 2023. PMID:37478402. doi:10.1093/ee/nvad069. https://pubmed.ncbi.nlm.nih.gov/37478402/",
+        "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. 2024. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/"
+      ],
+      "altTextDraft": "ID and life-cycle plate for Beet Curly Top Virus, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Beet Curly Top Virus. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-311_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-311_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-312",
+      "lessonId": "THC-ENC-312",
+      "number": 312,
+      "title": "Other Viruses and Viroid-Like Symptoms",
+      "visualType": "ID and life-cycle plate",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to interpret mosaic, mottling, chlorosis, curling, twisting, stunting, and other virus-like Cannabis symptoms as diagnostic hypotheses rather than virus diagnoses, and use targeted molecular tests or sequencing to distinguish confirmed viruses, viroids, mixed infections, and noninfectious look-alikes.",
+      "accuracyRequirements": [
+        "Cannabis and hemp can display mosaic, mottling, streaking, chlorosis, twisting, curling, stunting, and abnormal growth, but these appearances are not specific to viral disease. Abiotic stress, genetic variation, herbicide or chemical injury, nutrient imbalance, insect feeding, HLVd, and other pathogens can produce overlapping phenotypes.",
+        "Molecular surveys of field-grown hemp have detected a diverse virus/viroid community including Beet curly top virus, Alfalfa mosaic virus, Tobacco streak virus, Cannabis cryptic virus, Cannabis sativa mitovirus 1, Citrus yellow-vein-associated virus, Tomato bushy stunt virus, and HLVd. Detection does not mean each agent caused the observed symptoms in every sample.",
+        "A detailed Cannabis diagnostics study tested plants showing mosaic, line, and mottling symptoms for several expected viruses and failed to confirm those targets. Sequencing often detected HLVd and a Cannabis mitovirus, but the study noted that neither had been demonstrated to cause the specific foliar patterns observed. This is a direct example of why appearance must not be converted into a familiar virus name."
+      ],
+      "requiredLabels": [
+        "virus-like symptom",
+        "virome",
+        "mixed infection",
+        "metagenomic sequencing",
+        "cryptic virus"
+      ],
+      "misconceptionGuards": [
+        "Mosaic automatically means tobacco mosaic virus.",
+        "A virus detected by sequencing must be causing the visible symptoms."
+      ],
+      "sourceAnchors": [
+        "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. Int J Mol Sci. 2024;25(1):14. PMID:38203190. PMCID:PMC10779078. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/",
+        "Han J, et al. Beet Curly Top Virus Genetic Diversity, Impact on Cannabinoids, Potential Seed Transmission, and Vector Biology in Hemp. Phytopathology. 2026;116(5):813-824. PMID:41563377. https://pubmed.ncbi.nlm.nih.gov/41563377/",
+        "Wagstaff C, et al. First Report of ‘Candidatus Phytoplasma trifolii’ and Spiroplasma citri in Cannabis sativa in Washington State, U.S.A. Plant Disease. 2026;110(4). doi:10.1094/PDIS-08-25-1736-PDN. https://apsjournals.apsnet.org/doi/full/10.1094/PDIS-08-25-1736-PDN",
+        "Punja ZK. Emerging diseases of Cannabis sativa and sustainable management. Pest Manag Sci. 2021;77:3857-3870. PMID:33527549. https://pmc.ncbi.nlm.nih.gov/articles/PMC8451794/"
+      ],
+      "altTextDraft": "ID and life-cycle plate for Other Viruses and Viroid-Like Symptoms, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Other Viruses and Viroid-Like Symptoms. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-312_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-312_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-313",
+      "lessonId": "THC-ENC-313",
+      "number": 313,
+      "title": "Pathogen-Free Appearance Versus Latent Infection",
+      "visualType": "Comparison plate",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to distinguish visual health from tested pathogen status, understand how latent, asymptomatic, early, localized, or low-titer infections can escape symptom-based scouting, and use risk-based testing without assuming every symptom-free Cannabis plant is infected.",
+      "accuracyRequirements": [
+        "A symptom-free Cannabis plant is not automatically pathogen-free. Several important agents can be present before obvious disease develops, and some infections may remain visually subtle or asymptomatic depending on genotype, tissue, developmental stage, environment, and pathogen load.",
+        "HLVd provides direct Cannabis evidence for this principle. Studies have detected the viroid in asymptomatic stock plants and vegetative cuttings, and tissue-distribution research shows that viroid abundance can differ among roots, petioles, leaves, canopy positions, genotypes, and time points.",
+        "Visual scouting and laboratory testing answer different questions. Scouting can rapidly find spatial patterns, active lesions, pest signs, and symptomatic plants, while molecular or culture-based diagnostics can test specific pathogen hypotheses. Neither replaces the other."
+      ],
+      "requiredLabels": [
+        "asymptomatic infection",
+        "latent infection",
+        "incubation period",
+        "pathogen status",
+        "visual status"
+      ],
+      "misconceptionGuards": [
+        "Healthy-looking means pathogen-free.",
+        "A symptomless clone from an infected mother must be free of the pathogen."
+      ],
+      "sourceAnchors": [
+        "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. PMID:40094815. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/",
+        "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. Int J Mol Sci. 2024;25(1):14. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/",
+        "Cannabis genotypes display differences in the tissue distribution and levels of Hop latent viroid in leaves and roots following inoculation. Can J Plant Pathol. 2026. https://www.tandfonline.com/doi/full/10.1080/07060661.2026.2680120",
+        "New Insights into Hop Latent Viroid Detection, Infectivity, Host Range, and Transmission. Viruses. 2024;16(1):30. PMID:38257731. https://pmc.ncbi.nlm.nih.gov/articles/PMC10819085/"
+      ],
+      "altTextDraft": "Comparison plate for Pathogen-Free Appearance Versus Latent Infection, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Pathogen-Free Appearance Versus Latent Infection. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-313_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-313_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-314",
+      "lessonId": "THC-ENC-314",
+      "number": 314,
+      "title": "Sampling Plants for Laboratory Diagnosis",
+      "visualType": "Record / example",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to collect representative Cannabis disease samples that preserve diagnostic value, match the suspected pathogen and tissue, include appropriate comparison material and metadata, and support laboratory interpretation without contaminating or biasing the specimen.",
+      "accuracyRequirements": [
+        "Laboratory accuracy begins before the sample reaches the laboratory. Tissue choice, disease stage, number of plants, specimen quality, packaging, timing, and metadata determine whether culture, microscopy, PCR, sequencing, or other methods can address the diagnostic question.",
+        "For localized lesions, recently affected tissue and active lesion margins are often more informative than completely dead, dry, or decomposed tissue, which may be dominated by secondary organisms. For root/crown problems, intact roots, crown tissue, and whole-plant context can be essential.",
+        "Cannabis pathogen distribution is not always uniform. HLVd studies demonstrate that roots, petioles, leaves, canopy positions, genotypes, and developmental stages can differ in detectable pathogen level. The appropriate tissue for one pathogen or assay is therefore not automatically appropriate for another."
+      ],
+      "requiredLabels": [
+        "representative sample",
+        "active lesion margin",
+        "sample integrity",
+        "chain of identity",
+        "diagnostic question"
+      ],
+      "misconceptionGuards": [
+        "The most severely dead tissue is always the best disease sample.",
+        "One convenient leaf is an adequate sample for every Cannabis pathogen."
+      ],
+      "sourceAnchors": [
+        "University of Missouri Extension. Plant Diagnostic Clinic: Guidelines for Collecting and Submitting Samples. Reviewed March 2026. https://extension.missouri.edu/publications/f260",
+        "Kansas State University Plant Disease Diagnostic Lab. Specimen Collection Guidelines. Current 2026 guidance. https://www.plantpath.k-state.edu/extension/plant-disease-diagnostic-lab/collection-guidelines/",
+        "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. Int J Mol Sci. 2024;25(1):14. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/",
+        "Cannabis genotypes display differences in the tissue distribution and levels of Hop latent viroid in leaves and roots following inoculation. Can J Plant Pathol. 2026. https://www.tandfonline.com/doi/full/10.1080/07060661.2026.2680120"
+      ],
+      "altTextDraft": "Record / example for Sampling Plants for Laboratory Diagnosis, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Sampling Plants for Laboratory Diagnosis. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-314_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-314_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-315",
+      "lessonId": "THC-ENC-315",
+      "number": 315,
+      "title": "False Negatives, Composite Samples, and Test Timing",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to interpret negative Cannabis pathogen tests as sample- and time-specific evidence, understand how tissue distribution, pathogen load, assay sensitivity, inhibitors, sampling error, pooling, and infection timing can produce false negatives, and design retesting decisions around biological risk rather than certainty language.",
+      "accuracyRequirements": [
+        "A negative pathogen result means the target was not detected in the tested specimen under that assay's conditions. It does not create absolute proof that the entire plant, propagation lot, room, or crop is pathogen-free.",
+        "False negatives can arise before or during analysis. Important causes include collecting a tissue with little or no pathogen, sampling too early after exposure, uneven within-plant distribution, low target concentration, degraded specimens, extraction failure or inhibitors, assay mismatch with pathogen variation, and errors in collection, labeling, or handling.",
+        "Cannabis HLVd research demonstrates the sampling problem directly. Viroid concentrations differ among genotypes, roots versus foliage, canopy positions, and days after infection. In some tested plants roots became detectable earlier or carried more target than upper leaves, while other genotypes showed different patterns. A tissue that tests negative at one time can therefore differ from another tissue or later sample from the same plant."
+      ],
+      "requiredLabels": [
+        "false negative",
+        "limit of detection",
+        "composite sample",
+        "sampling error",
+        "analytical sensitivity"
+      ],
+      "misconceptionGuards": [
+        "A negative PCR means the whole plant is guaranteed pathogen-free: A negative result means the target was not detected in the tested specimen under that assay's conditions; tissue choice, timing, target load, specimen quality, and assay limits still constrain what can be concluded.",
+        "The same tissue is equally sensitive at every infection stage and in every genotype: Pathogen distribution and detectable load can vary by tissue, genotype, and time after infection, so specimen choice must follow pathogen- and assay-specific evidence."
+      ],
+      "sourceAnchors": [
+        "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. Int J Mol Sci. 2024;25(1):14. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/",
+        "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. PMID:40094815. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/",
+        "Cannabis genotypes display differences in the tissue distribution and levels of Hop latent viroid in leaves and roots following inoculation. Can J Plant Pathol. 2026. https://www.tandfonline.com/doi/full/10.1080/07060661.2026.2680120",
+        "A Novel, Precise and High-Throughput Technology for Viroid Detection in Cannabis (MFDetect). Viruses. 2023;15(7):1487. PMCID:PMC10385567. https://pmc.ncbi.nlm.nih.gov/articles/PMC10385567/",
+        "University of Missouri Extension. Plant Diagnostic Clinic: Guidelines for Collecting and Submitting Samples. Reviewed March 2026. https://extension.missouri.edu/publications/f260"
+      ],
+      "altTextDraft": "Concept diagram for False Negatives, Composite Samples, and Test Timing, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "False Negatives, Composite Samples, and Test Timing. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-315_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-315_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-316",
+      "lessonId": "THC-ENC-316",
+      "number": 316,
+      "title": "Tool-Mediated and Clone-Mediated Transmission",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to trace how pathogens can move with vegetative propagation, infected mother stock, sap-contaminated handling, pruning, and shared equipment while distinguishing demonstrated transmission routes from plausible but unconfirmed contact pathways.",
+      "accuracyRequirements": [
+        "Vegetative propagation creates a direct biological link between Cannabis mother plants and daughter cuttings. Pathogens present in mother stock can therefore enter propagation cohorts even when the source plant has mild or no visible symptoms.",
+        "Cannabis studies and production observations have demonstrated spread of Fusarium from stock plants through cuttings into vegetatively propagated plants. HLVd has likewise been detected in asymptomatic stock plants and rooted cuttings, establishing clonal propagation as an important pathway for pathogen movement.",
+        "HLVd is mechanically transmissible in infectious sap. Controlled stem inoculation produces systemic infection, and the viroid can remain detectable for days in crushed leaf extracts and for weeks in dried infected plant material. These findings support concern about sap-contaminated handling, but contamination of a tool surface is not identical to proven transmission into every contacted plant."
+      ],
+      "requiredLabels": [
+        "mechanical transmission",
+        "clonal transmission",
+        "mother stock",
+        "fomite",
+        "transmission chain"
+      ],
+      "misconceptionGuards": [
+        "A healthy-looking mother always produces pathogen-free clones.",
+        "If two plants were touched by the same tool, the tool definitely transmitted the disease."
+      ],
+      "sourceAnchors": [
+        "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. PMID:40094815. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/",
+        "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+        "Punja ZK, et al. Pathogens and Molds Affecting Production and Quality of Cannabis sativa L. Front Plant Sci. 2019. PMID:31681341. https://pmc.ncbi.nlm.nih.gov/articles/PMC6811654/"
+      ],
+      "altTextDraft": "Concept diagram for Tool-Mediated and Clone-Mediated Transmission, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Tool-Mediated and Clone-Mediated Transmission. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-316_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-316_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-317",
+      "lessonId": "THC-ENC-317",
+      "number": 317,
+      "title": "Water, Media, and Facility Reservoirs",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to evaluate irrigation water, recirculated nutrient solution, growing media, benches, gutters, emitters, debris, and other facility niches as possible pathogen reservoirs while separating environmental detection from proven plant infection or outbreak source attribution.",
+      "accuracyRequirements": [
+        "Cannabis root and systemic pathogens can move through shared production environments. Fusarium and Pythium root pathogens are associated with diseased roots and can be dispersed by water, while HLVd has been detected in recirculated nutrient solution and experimentally shown to spread plant-to-plant through root infection in hydroponic Cannabis.",
+        "A reservoir is not the same as a confirmed outbreak source. Detection of pathogen DNA, RNA, spores, or propagules in water, media, or a facility surface establishes presence in the sampled location; source attribution requires compatible timing, organism identity, exposure pathways, and infected recipients.",
+        "Growing media and plant debris can support survival or movement of root and stem pathogens, while benches, gutters, pots, emitters, floors, and handling areas can accumulate contaminated material. Persistence differs widely among fungi, oomycetes, bacteria, viruses, and viroids."
+      ],
+      "requiredLabels": [
+        "reservoir",
+        "recirculating irrigation",
+        "environmental sample",
+        "source attribution",
+        "inoculum pressure"
+      ],
+      "misconceptionGuards": [
+        "A positive water test means every plant sharing the water is infected.",
+        "A negative reservoir sample proves the system never contained the pathogen."
+      ],
+      "sourceAnchors": [
+        "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+        "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. PMID:40094815. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/",
+        "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. 2024. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/"
+      ],
+      "altTextDraft": "Concept diagram for Water, Media, and Facility Reservoirs, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Water, Media, and Facility Reservoirs. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-317_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-317_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-318",
+      "lessonId": "THC-ENC-318",
+      "number": 318,
+      "title": "Postharvest Microbes and Mycotoxin Context",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 24,
+      "purpose": "Teach the learner to interpret postharvest Cannabis microbial contamination, total yeast and mold results, toxigenic fungal detection, and mycotoxin testing as related but distinct quality and safety measurements, and trace contamination across preharvest, harvest, drying, trimming, storage, and analytical stages.",
+      "accuracyRequirements": [
+        "Cannabis inflorescences carry a complex mycobiome that can include pathogens, epiphytes, endophytes, and postharvest molds. Frequently discussed genera include Aspergillus, Penicillium, Fusarium, Mucor, and other fungi, but detection frequency and health significance depend on species or strain, viability, abundance, analytical method, product type, and jurisdictional standards.",
+        "Microbial load and mycotoxin concentration are not interchangeable measurements. A culture count can be elevated without a tested mycotoxin being present, while detecting a toxigenic fungal taxon does not prove that it produced toxin in the sampled material. Mycotoxin claims require toxin-specific analytical evidence.",
+        "Contamination can originate before harvest or increase during harvest and postharvest handling. Cannabis greenhouse research indicates that genotype, season, inflorescence microclimate, drying method, handling, and equipment sanitation can influence total yeast and mold levels."
+      ],
+      "requiredLabels": [
+        "total yeast and mold",
+        "mycotoxin",
+        "toxigenic fungus",
+        "postharvest colonization",
+        "contaminant test"
+      ],
+      "misconceptionGuards": [
+        "A high total yeast and mold count proves mycotoxins are present.",
+        "Detecting Aspergillus DNA proves viable Aspergillus or toxin production in the sample."
+      ],
+      "sourceAnchors": [
+        "Gwinn KD, Leung MCK, Stephens AB, Punja ZK. Fungal and mycotoxin contaminants in cannabis and hemp flowers: implications for consumer health and directions for further research. Front Microbiol. 2023. PMID:37928692. https://pubmed.ncbi.nlm.nih.gov/37928692/",
+        "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+        "Cannabis Products and Contaminant Detection: Critical Review of Regulatory Oversight and Analytical Methodologies. 2026. PMID:41952362. https://pubmed.ncbi.nlm.nih.gov/41952362/"
+      ],
+      "altTextDraft": "Concept diagram for Postharvest Microbes and Mycotoxin Context, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Postharvest Microbes and Mycotoxin Context. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-318_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-318_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    }
+  ]
+}

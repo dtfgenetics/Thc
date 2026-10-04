@@ -1,0 +1,539 @@
+{
+  "schemaVersion": 1,
+  "batchId": "ENC-VIS-BATCH-016",
+  "generatedAt": "2026-10-04T13:51:42.409Z",
+  "status": "production-ready-review-controlled",
+  "purpose": "Turn controlled encyclopedia visual briefs into lesson-specific raster teaching candidates without changing publication approval state.",
+  "reviewRule": "Every asset remains unapproved until science, accessibility, rights/provenance, rendering, and responsive review are explicitly recorded.",
+  "itemCount": 12,
+  "priorityRange": {
+    "high": 10,
+    "low": 10
+  },
+  "visualFamilies": {
+    "comparison-matrix": 12
+  },
+  "items": [
+    {
+      "queueId": "ENC-VIS-142",
+      "lessonId": "THC-ENC-142",
+      "number": 142,
+      "title": "Diploidy, Meiosis, and Genetic Recombination",
+      "visualType": "Concept diagram",
+      "visualFamily": "comparison-matrix",
+      "visualPriorityScore": 10,
+      "purpose": "Teach the learner to trace chromosome segregation and recombination from a diploid parent to genetically variable haploid gametes and offspring.",
+      "accuracyRequirements": [
+        "A typical diploid cannabis plant forms haploid reproductive cells through meiosis. Homologous chromosomes pair, exchange segments through crossing over, and segregate; sister chromatids then separate. Fertilization restores diploidy. The result is not a shuffled copy of a whole parent but a new combination of chromosome segments from both parents.",
+        "Independent assortment applies most cleanly to loci on different chromosomes or far apart. Linked loci can travel together, while recombination frequency depends on physical position, chromosome structure, sex, and the cross. Suppressed recombination around differentiated sex-chromosome regions and rearranged cannabinoid-synthase regions can make simple probability assumptions fail.",
+        "A cutting bypasses meiosis and preserves the sampled plant's nuclear genotype far more closely than seed reproduction. Selfing, sibling mating, backcrossing, and outcrossing all pass through meiosis and expose different combinations, homozygosity, linkage blocks, and recessive variation."
+      ],
+      "requiredLabels": [
+        "Diploid",
+        "Meiosis",
+        "Recombination",
+        "Linkage"
+      ],
+      "misconceptionGuards": [
+        "Every sibling receives 50 percent of each parent's traits: Offspring receive chromosome segments, not equal halves of visible traits.",
+        "Linked genes assort independently: Nearby loci may remain associated unless recombination separates them."
+      ],
+      "sourceAnchors": [
+        "Laverty K.U. et al. (2019). A physical and genetic map of Cannabis sativa identifies extensive rearrangements at the THC/CBD acid synthase loci. Genome Research 29:146-156.",
+        "Prentout D. et al. (2020). RNA-seq segregation analysis identifies the sex chromosomes of Cannabis sativa. Genome Research 30:164-172.",
+        "Woods P. et al. (2021). Quantitative trait loci controlling agronomic and biochemical traits in Cannabis sativa. Genetics 219:iyab099.",
+        "THC Cannabis Plant Science Source Packet v1.1 (project source, May 2026)."
+      ],
+      "altTextDraft": "Concept diagram for Diploidy, Meiosis, and Genetic Recombination, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Diploidy, Meiosis, and Genetic Recombination. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-142_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-142_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-143",
+      "lessonId": "THC-ENC-143",
+      "number": 143,
+      "title": "Mendelian Inheritance and Its Limits",
+      "visualType": "Concept diagram",
+      "visualFamily": "comparison-matrix",
+      "visualPriorityScore": 10,
+      "purpose": "Teach the learner to use segregation ratios as testable models while recognizing linkage, incomplete penetrance, multiple loci, structural variation, and measurement error.",
+      "accuracyRequirements": [
+        "Mendelian models are powerful because they make falsifiable predictions. A single locus with two alleles and complete dominance can yield familiar F2 ratios, while codominance can reveal all three genotypic classes. The ratio applies to a specified cross and phenotype definition, not to every characteristic of the plant.",
+        "Cannabis offers useful examples and warnings. Major cannabinoid-ratio classes can often be predicted from functional synthase genotypes, yet the synthase region contains linked genes, pseudogenes, rearrangements, and expression differences. Absolute cannabinoid concentration, aroma, architecture, yield, and stress response are not explained by a one-locus ratio.",
+        "Departures from expectation may reflect linkage, epistasis, lethality, gametic or seedling selection, incomplete penetrance, environmental misclassification, small samples, pollen contamination, or incorrect parent identity. A chi-square result does not decide which mechanism caused a departure."
+      ],
+      "requiredLabels": [
+        "Dominant",
+        "Recessive",
+        "Segregation ratio",
+        "Penetrance"
+      ],
+      "misconceptionGuards": [
+        "Dominant means stronger or better: Dominance describes heterozygote expression, not quality, frequency, or vigor.",
+        "A 3:1-looking family proves one gene: Several mechanisms and small samples can mimic the same pattern."
+      ],
+      "sourceAnchors": [
+        "Wenger J.P. et al. (2020). Validating a predictive model of cannabinoid inheritance with feral, clinical, and industrial Cannabis sativa. American Journal of Botany 107:1423-1432.",
+        "Welling M.T. et al. (2016). Characterisation of cannabinoid composition in a diverse Cannabis sativa germplasm collection. Euphytica 208:463-475.",
+        "Laverty K.U. et al. (2019). A physical and genetic map of Cannabis sativa identifies extensive rearrangements at the THC/CBD acid synthase loci. Genome Research 29:146-156.",
+        "van Velzen R. and Schranz M.E. (2021). Origin and evolution of the cannabinoid oxidocyclase gene family. Genome Biology and Evolution 13:evab130."
+      ],
+      "altTextDraft": "Concept diagram for Mendelian Inheritance and Its Limits, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Mendelian Inheritance and Its Limits. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-143_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-143_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-148",
+      "lessonId": "THC-ENC-148",
+      "number": 148,
+      "title": "Cannabis Genome Structure and Repetitive DNA",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "comparison-matrix",
+      "visualPriorityScore": 10,
+      "purpose": "Teach the learner to describe the chromosome-scale cannabis genome while accounting for assembly differences, repeat content, structural variation, and reference bias.",
+      "accuracyRequirements": [
+        "Cannabis is usually described as having ten chromosomes in the haploid set. Modern assemblies place most sequence on chromosome-scale scaffolds, but total assembled size, chromosome labels, gap content, and gene models vary. A recent haploid assembly reported about 770 Mb and more than three-quarters repetitive sequence, illustrating why short-read assembly and marker placement can be difficult.",
+        "Repetitive elements are not disposable noise. They influence genome size, recombination, gene regulation, and assembly accuracy. Tandem arrays and transposable elements are prominent near cannabinoid oxidocyclase genes and differentiated sex-chromosome regions. Similar gene copies and pseudogenes can cause primers or reads to map to the wrong target.",
+        "One reference misses sequence absent from its source genotype and can misrepresent highly variable loci. Pangenome and haplotype-resolved approaches expose presence/absence variation, introgression, structural diversity, and alternative synthase arrangements that a single linear reference compresses."
+      ],
+      "requiredLabels": [
+        "Reference genome",
+        "Repetitive DNA",
+        "Structural variant",
+        "Pangenome"
+      ],
+      "misconceptionGuards": [
+        "The reference genome is the cannabis genome: It is a coordinate model derived from particular samples.",
+        "Repeated DNA has no function: Repeats can affect genome structure, regulation, and evolution."
+      ],
+      "sourceAnchors": [
+        "Ryu B.R. et al. (2024). Chromosome-level haploid assembly of Cannabis sativa L. Scientific Data.",
+        "Grassa C.J. et al. (2021). A new Cannabis genome assembly associates elevated CBD with hemp introgressed into marijuana. New Phytologist 230:1665-1679.",
+        "Laverty K.U. et al. (2019). A physical and genetic map of Cannabis sativa identifies extensive rearrangements at the THC/CBD acid synthase loci. Genome Research 29:146-156.",
+        "Lynch R.C. et al. (2025). Domesticated cannabinoid synthases amid a wild mosaic cannabis pangenome. Nature."
+      ],
+      "altTextDraft": "Labeled anatomy for Cannabis Genome Structure and Repetitive DNA, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Cannabis Genome Structure and Repetitive DNA. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-148_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-148_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-150",
+      "lessonId": "THC-ENC-150",
+      "number": 150,
+      "title": "Cultivar, Strain, Line, Accession, and Clone",
+      "visualType": "Concept diagram",
+      "visualFamily": "comparison-matrix",
+      "visualPriorityScore": 10,
+      "purpose": "Teach the learner to use plant-genetic-resource terms precisely and attach each name to a reproducible biological unit.",
+      "accuracyRequirements": [
+        "These words describe different kinds of identity. A cultivar or protected variety is a plant grouping, not merely a memorable name. A line is defined by breeding history and may still segregate. An accession is a conserved sample and documentation unit. A clone is a vegetatively propagated ramet derived from one source genotype.",
+        "In cannabis commerce, strain often labels a product or claimed lineage without an enforceable identity standard. Samples sold under one name have shown substantial genetic differences, while differently named samples can be close. The word can be retained for audience recognition, but it must not replace source, generation, clone code, or test data.",
+        "Seed lots from one named cultivar are not equivalent to a single clone. A clone name should refer to a documented source plant or reference sample. A line name should include generation, family, and selection history. An accession identifier must remain tied to the conserving institution and acquisition record."
+      ],
+      "requiredLabels": [
+        "Cultivar or variety",
+        "Strain",
+        "Line",
+        "Accession"
+      ],
+      "misconceptionGuards": [
+        "A strain name is a genotype: The same market name can contain genetically divergent material.",
+        "A seed cultivar is a clone: Seed reproduction creates segregating individuals unless the material is exceptionally uniform."
+      ],
+      "sourceAnchors": [
+        "International Union for the Protection of New Varieties of Plants. 1991 Act of the UPOV Convention: variety definition.",
+        "FAO. Plant genetic resources concepts and definitions: accession.",
+        "Schwabe A.L. and McGlaughlin M.E. (2019). Genetic tools weed out misconceptions of strain reliability in Cannabis sativa. Journal of Cannabis Research 1:3.",
+        "Jin D. et al. (2021). Classification of cannabis strains in the Canadian market with discriminant analysis of principal components. PLOS ONE 16:e0253387."
+      ],
+      "altTextDraft": "Concept diagram for Cultivar, Strain, Line, Accession, and Clone, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Cultivar, Strain, Line, Accession, and Clone. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-150_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-150_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-158",
+      "lessonId": "THC-ENC-158",
+      "number": 158,
+      "title": "Genetic Identity Testing and Marker Systems",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "comparison-matrix",
+      "visualPriorityScore": 10,
+      "purpose": "Teach the learner to select and validate marker systems for the identity question, biological unit, reference set, and error tolerance.",
+      "accuracyRequirements": [
+        "Identity testing is comparative. A marker panel can show that two samples match within its resolution, differ, or have an estimated relationship; it cannot authenticate a name without a verified reference tied to that name. The same panel may be suitable for clone matching but weak for parentage, population ancestry, or trait prediction.",
+        "SSRs are economical and informative but can suffer allele-calling differences between laboratories. SNP panels are scalable but depend on marker selection and reference populations. GBS and whole-genome sequencing provide more loci while adding missing data, mapping, batch, and bioinformatic choices.",
+        "A defensible fingerprint system uses reference plants, duplicate tissue samples, chain of custody, positive and negative controls, replicate thresholds, and predefined match metrics. Closely related siblings can be difficult to distinguish with small panels, while somatic mosaicism can produce low-level differences within a clone."
+      ],
+      "requiredLabels": [
+        "SSR",
+        "SNP",
+        "GBS",
+        "Fingerprint"
+      ],
+      "misconceptionGuards": [
+        "A DNA profile proves the commercial name: Only a verified reference can connect the profile to a controlled name.",
+        "More markers eliminate all error: Sample mix-up, reference error, contamination, and analysis choices remain."
+      ],
+      "sourceAnchors": [
+        "Henry P. et al. (2020). A single nucleotide polymorphism assay sheds light on cannabis population structure and genetic relatedness. Journal of Cannabis Research 2:26.",
+        "Borin M. et al. (2021). Developing and testing molecular markers in Cannabis sativa for sex and chemotype. Plants 10:2109.",
+        "Schwabe A.L. and McGlaughlin M.E. (2019). Genetic tools weed out misconceptions of strain reliability in Cannabis sativa. Journal of Cannabis Research 1:3.",
+        "Cascini F. et al. (2019). Highly predictive genetic markers distinguish drug-type from fiber-type Cannabis sativa L. Plants 8:496."
+      ],
+      "altTextDraft": "Labeled anatomy for Genetic Identity Testing and Marker Systems, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Genetic Identity Testing and Marker Systems. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-158_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-158_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-182",
+      "lessonId": "THC-ENC-182",
+      "number": 182,
+      "title": "Plant Architecture as a Genetic and Managed Trait",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "comparison-matrix",
+      "visualPriorityScore": 10,
+      "purpose": "Teach the learner to explain cannabis plant architecture as an emergent phenotype shaped by genotype, developmental stage, environment, spacing, and management, and show how to measure architecture without reducing it to retail ancestry labels or one ideal canopy form.",
+      "accuracyRequirements": [
+        "Cannabis shoot architecture develops from repeating phytomers and branch hierarchies. The architecture observed at any one time is not purely genetic: it is a phenotype produced by genotype interacting with developmental stage, light environment, temperature, water and nutrient status, plant density, mechanical support, and deliberate pruning or training.",
+        "Genetic differences can produce repeatable tendencies in height, internode length, branching intensity, leaf distribution, and reproductive architecture, but management and environment can substantially modify those traits. Architecture therefore should be measured directly rather than inferred from broad retail labels such as sativa, indica, or hybrid.",
+        "Architecture alters the plant's internal light and microclimate. Cannabis studies show strong vertical gradients in inflorescence cannabinoid concentration and demonstrate that pruning, branch removal, defoliation, and plant density can change spatial uniformity. Higher density can increase yield per unit area while reducing yield per plant and increasing lower-canopy light limitation, showing that an architecture decision can improve one production metric while worsening another."
+      ],
+      "requiredLabels": [
+        "plant architecture",
+        "phytomer",
+        "branch order",
+        "internode length",
+        "phenotypic plasticity",
+        "canopy density",
+        "planting density"
+      ],
+      "misconceptionGuards": [
+        "A retail sativa or indica label is enough to predict final plant architecture.",
+        "The shortest plant automatically has the most efficient canopy."
+      ],
+      "sourceAnchors": [
+        "Spitzer-Rimon B, Duchin S, Bernstein N, Kamenetsky R. (2019). Architecture and Florogenesis in Female Cannabis sativa Plants. Frontiers in Plant Science 10:350. DOI 10.3389/fpls.2019.00350.",
+        "Danziger N, Bernstein N. (2021). Plant architecture manipulation increases cannabinoid standardization in drug-type medical cannabis. Industrial Crops and Products 167:113528. DOI 10.1016/j.indcrop.2021.113528.",
+        "Danziger N, Bernstein N. (2022). Too Dense or Not Too Dense: Higher Planting Density Reduces Cannabinoid Uniformity but Increases Yield/Area in Drug-Type Medical Cannabis. Frontiers in Plant Science 13:713481. DOI 10.3389/fpls.2022.713481.",
+        "Crispim Massuela D et al. (2022). Impact of Harvest Time and Pruning Technique on Total CBD Concentration and Yield of Medicinal Cannabis. Plants 11(1):140. DOI 10.3390/plants11010140."
+      ],
+      "altTextDraft": "Labeled anatomy for Plant Architecture as a Genetic and Managed Trait, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Plant Architecture as a Genetic and Managed Trait. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-182_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-182_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-196",
+      "lessonId": "THC-ENC-196",
+      "number": 196,
+      "title": "Horizontal Versus Vertical Canopies",
+      "visualType": "Comparison plate",
+      "visualFamily": "comparison-matrix",
+      "visualPriorityScore": 10,
+      "purpose": "Teach the learner to compare horizontal and vertically distributed canopy architectures by light interception, access, support, airflow, and measurement needs rather than assuming one geometry is universally superior.",
+      "accuracyRequirements": [
+        "Canopy geometry changes which leaves face the dominant light field. A shallow horizontal canopy can place many shoot tips at similar distance from overhead fixtures, while a vertical canopy requires lighting and measurement strategies that account for a larger height range or side-facing surfaces.",
+        "Uniform height does not guarantee uniform photon exposure. Fixture layout, overlap, leaf angle, branch density, wall reflections, edge effects, and plant-to-plant variation can still create substantial spatial differences.",
+        "Vertical distribution can increase usable plant surface in some layouts, but it can also create deeper shaded zones, more complex structural support, and harder-to-measure light fields if illumination is not matched to the geometry."
+      ],
+      "requiredLabels": [
+        "horizontal canopy",
+        "vertical canopy",
+        "lighting geometry",
+        "projected canopy area",
+        "surface-to-volume relationship"
+      ],
+      "misconceptionGuards": [
+        "A flat canopy always receives perfectly uniform light.",
+        "Vertical growing automatically creates more usable yield from the same lighting power."
+      ],
+      "sourceAnchors": [
+        "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834. Supports the importance of architecture and within-canopy position.",
+        "Cannabis lighting literature supports matching photon measurements to crop geometry; treatment-specific results are not generalized into a universal horizontal-versus-vertical recommendation.",
+        "General controlled-environment horticulture literature provides system-level context for surface orientation, lighting geometry, and area-normalized comparisons."
+      ],
+      "altTextDraft": "Comparison plate for Horizontal Versus Vertical Canopies, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Horizontal Versus Vertical Canopies. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-196_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-196_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-198",
+      "lessonId": "THC-ENC-198",
+      "number": 198,
+      "title": "Training Autos Versus Photoperiod Plants",
+      "visualType": "Comparison plate",
+      "visualFamily": "comparison-matrix",
+      "visualPriorityScore": 10,
+      "purpose": "Teach the learner to compare canopy-training decisions in autoflowering and photoperiod-sensitive cannabis by developmental timing, recovery opportunity, genotype, and measurable plant response rather than fixed calendar rules.",
+      "accuracyRequirements": [
+        "Photoperiod-sensitive plants can often be maintained in vegetative conditions by controlling daylength, allowing the grower to extend vegetative development before inducing flowering. This can provide more scheduling flexibility for recovery from structural training.",
+        "Autoflowering or day-neutral plants transition toward reproduction with less dependence on a short-day cue. Because the grower has less ability to postpone reproductive development through photoperiod alone, time lost to severe stress can consume a larger fraction of the available vegetative growth period.",
+        "Autoflowering is not a guarantee of a fixed flowering day. Genetic background, environment, plant vigor, container/root-zone conditions, and stress can shift visible developmental timing."
+      ],
+      "requiredLabels": [
+        "autoflowering",
+        "photoperiod-sensitive",
+        "recovery window",
+        "developmental clock",
+        "training intensity"
+      ],
+      "misconceptionGuards": [
+        "Autoflowering plants cannot be trained at all.",
+        "Autoflowering plants should always receive the same high-stress training schedule as photoperiod plants."
+      ],
+      "sourceAnchors": [
+        "Leckie KM et al. (2024). Loss of daylength sensitivity by splice site mutation in Cannabis pseudo-response regulator. The Plant Journal 118(6):2020–2036. doi:10.1111/tpj.16726. Cannabis-specific evidence that photoperiod insensitivity/autoflowering has a genetic basis; it does not imply identical timing or training tolerance across autoflower genotypes.",
+        "Massuela DC, Hartung J, Munz S, Erpenbach F, Graeff-Hönninger S. (2022). Impact of Harvest Time and Pruning Technique on Total CBD Concentration and Yield of Medicinal Cannabis. Plants 11(1):140. doi:10.3390/plants11010140. Cannabis pruning results are cultivar-, treatment-, and harvest-context specific and are not a universal prescription.",
+        "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834. doi:10.3390/plants10091834. Supports genotype- and architecture-dependent canopy responses; the practical recovery-window concept remains a decision framework rather than a fixed number of days."
+      ],
+      "altTextDraft": "Comparison plate for Training Autos Versus Photoperiod Plants, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Training Autos Versus Photoperiod Plants. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-198_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-198_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-257",
+      "lessonId": "THC-ENC-257",
+      "number": 257,
+      "title": "Oxidation, Packaging, and Storage",
+      "visualType": "Workflow",
+      "visualFamily": "comparison-matrix",
+      "visualPriorityScore": 10,
+      "purpose": "Teach the learner to explain how oxygen, light, temperature, time, package properties, and compound-specific chemistry reshape stored cannabis while rejecting simple claims that one package or atmosphere preserves every volatile and cannabinoid equally.",
+      "accuracyRequirements": [
+        "Stored cannabis is chemically dynamic. Volatile compounds can evaporate, oxidize, partition into package headspace, interact with packaging, or transform into other products, while acidic cannabinoids can decarboxylate and other cannabinoid changes can occur with time and environmental exposure.",
+        "Packaging influences storage through gas exchange, light transmission, sorption, headspace volume, seal integrity, and moisture behavior. A container name such as glass, polymer, or mylar does not by itself define those properties; the actual package system and storage conditions matter.",
+        "A 2024 cannabis study comparing nitrogen-modified atmosphere packaging with normal atmospheric packaging across five chemovars found no universal preservation advantage for total cannabinoids or total aromatic compounds. Individual volatile compounds behaved differently: some losses were reduced under nitrogen while other compounds declined or shifted differently, showing that package-atmosphere effects are analyte-specific."
+      ],
+      "requiredLabels": [
+        "oxidation",
+        "modified atmosphere packaging",
+        "oxygen transmission",
+        "headspace",
+        "relative abundance"
+      ],
+      "misconceptionGuards": [
+        "Nitrogen packaging preserves every terpene better than air.",
+        "Glass automatically preserves all cannabinoids and terpenes best under every condition."
+      ],
+      "sourceAnchors": [
+        "MacLaughlin LL, MacDonald MT. (2024). Is nitrogen-modified atmosphere packaging a tool for retention of volatile terpenes and cannabinoids in stored Cannabis sativa inflorescence? Journal of Cannabis Research 6:42. Found no universal MAP advantage for totals and demonstrated compound-specific responses across five chemovars and multiple storage times.",
+        "Spadafora ND et al. (2024). The influence of drying and storage conditions on the volatilome and cannabinoid content of Cannabis sativa L. inflorescences. Analytical and Bioanalytical Chemistry 416:3797–3809. Demonstrated storage-condition effects on the volatile profile and cannabinoid transformations.",
+        "Controlled Volume 13 manuscript v1.0 requires package material, atmosphere, compound-specific change, oxidation markers, sensory quality, and universal shelf-life claims to remain separate evidence levels."
+      ],
+      "altTextDraft": "Workflow for Oxidation, Packaging, and Storage, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Oxidation, Packaging, and Storage. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-257_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-257_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-384",
+      "lessonId": "THC-ENC-384",
+      "number": 384,
+      "title": "F1 Populations and Heterozygosity",
+      "visualType": "F1 allele and heterozygosity concept diagram",
+      "visualFamily": "comparison-matrix",
+      "visualPriorityScore": 10,
+      "purpose": "Teach the learner to interpret F1 uniformity, heterozygosity, dominance, maternal effects, and hybrid performance without assuming every F1 is identical or superior.",
+      "accuracyRequirements": [
+        "The F1 generation is the first filial generation from two parents. At a locus where the parents are fixed for different alleles, every true F1 is heterozygous. Cannabis parents, however, are often highly heterozygous rather than fully inbred. Their F1 offspring can therefore segregate at many loci and may vary substantially even though they share the same two named parents.",
+        "Uniform F1 hybrids usually require stable, sufficiently homozygous or otherwise predictable parental lines. Heterosis is performance above a defined parental reference, not simply vigor in a healthy seedling. It can arise from dominance, overdominance, epistasis, masking of deleterious alleles, and population divergence. Hybrid vigor in one environment or trait does not prove superior quality, stability, fertility, or transmission.",
+        "Reciprocal crosses can differ because the seed parent contributes cytoplasm, seed size, maternal environment, and early developmental effects. Parent sex also changes which chromosomes and recombination histories can be transmitted in dioecious material. Evaluate both reciprocal directions when the program depends on seed traits, vigor, flowering, or chemistry and when lawful logistics permit. F1 records must distinguish a single selected F1 clone from the entire F1 family."
+      ],
+      "requiredLabels": [
+        "F1",
+        "homozygous",
+        "heterozygous",
+        "dominance",
+        "heterosis",
+        "maternal effect",
+        "reciprocal cross",
+        "hybrid"
+      ],
+      "misconceptionGuards": [
+        "All F1 seed from two parents is genetically identical. That is only approached when parental genotypes are sufficiently fixed and predictable; heterozygous Cannabis parents can produce substantial segregation within the F1 family.",
+        "F1 always means uniform and vigorous. F1 identifies a generation, not a quality grade. Uniformity and heterosis are empirical properties that must be measured against the parents or another defined reference."
+      ],
+      "sourceAnchors": [
+        "V20-SRC-004",
+        "V20-SRC-006",
+        "V20-SRC-008",
+        "V20-SRC-010",
+        "V20-SRC-016"
+      ],
+      "altTextDraft": "F1 allele and heterozygosity concept diagram for F1 Populations and Heterozygosity, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "F1 Populations and Heterozygosity. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-384_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-384_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-385",
+      "lessonId": "THC-ENC-385",
+      "number": 385,
+      "title": "F2 Segregation and Population Size",
+      "visualType": "F2 segregation and recovery-probability chart",
+      "visualFamily": "comparison-matrix",
+      "visualPriorityScore": 10,
+      "purpose": "Teach the learner to design F2 populations around trait architecture, recombination, linkage, rare-combination probability, and selection capacity.",
+      "accuracyRequirements": [
+        "An F2 population is commonly produced by selfing or intercrossing F1 individuals. It exposes new homozygous and recombinant combinations, making it valuable for mapping and selection. Simple 1:2:1 or 3:1 expectations apply only under defined single-locus assumptions with clear phenotypes, adequate sample size, no distortion, and reliable classification. Most horticultural traits involve multiple loci, dominance, epistasis, linkage, genotype-by-environment interaction, and measurement error.",
+        "Population size should be based on the probability of the desired combination and the number of individuals that can be measured accurately. Recovering several independent favorable alleles in one individual can require far more plants than intuition suggests. Linkage can make combinations harder or easier to recover depending on allele phase and recombination distance. Selecting too few plants creates a genetic bottleneck and can fix hidden defects.",
+        "F2 individuals should be permanently identified and, where possible, preserved by clone or seed family before destructive testing. Selection can target individuals, but traits with low heritability often need F3 family confirmation. The rarest-looking phenotype is not automatically transgressive or heritable. Compare against parents and checks under the same conditions, and retain unselected or less selected material when conservation of diversity is part of the objective."
+      ],
+      "requiredLabels": [
+        "F2",
+        "segregation",
+        "recombination",
+        "linkage",
+        "Mendelian ratio",
+        "transgressive segregation",
+        "population size",
+        "selection differential"
+      ],
+      "misconceptionGuards": [
+        "A small F2 shows every possible phenotype. Rare recombinant or multilocus combinations may be absent simply because the sample is too small, even when the underlying alleles are present in the population.",
+        "All F2 ratios follow one-gene Mendelian expectations. Simple ratios require specific assumptions about locus number, dominance, viability, penetrance, classification, and independence; linkage, epistasis, polygenic control, and environmental effects can change the observed distribution."
+      ],
+      "sourceAnchors": [
+        "V20-SRC-004",
+        "V20-SRC-006",
+        "V20-SRC-007",
+        "V20-SRC-020",
+        "V20-SRC-021"
+      ],
+      "altTextDraft": "F2 segregation and recovery-probability chart for F2 Segregation and Population Size, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "F2 Segregation and Population Size. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-385_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-385_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-409",
+      "lessonId": "THC-ENC-409",
+      "number": 409,
+      "title": "Morphology and Growth Measurements",
+      "visualType": "Standardized Cannabis morphology measurement plate",
+      "visualFamily": "comparison-matrix",
+      "visualPriorityScore": 10,
+      "purpose": "Teach the learner to convert descriptive plant appearance into repeatable measurements using defined anatomy, position, stage, reference points, and image methods.",
+      "accuracyRequirements": [
+        "Morphology becomes comparable data only after the trait is operationally defined. Plant height can mean substrate line to highest natural point, apical tip after straightening, or support height. Canopy width can mean one axis, two perpendicular axes, or projected area. Node count depends on which nodes are included. Stem diameter depends on measurement height and tool. Each definition changes the result.",
+        "Plant measurements must include identity, developmental stage, treatment history, posture, time relative to irrigation and light, and organ position. Leaf dimensions require a defined leaf age and node. Internode measurements require named node pairs. Flower and trichome observations require sample sites and optical method. Fresh mass, dry mass, trimmed mass, and saleable mass answer different questions and must not be mixed.",
+        "Images can improve auditing but introduce perspective, lens distortion, lighting, color, focus, and scale errors. Use a fixed camera position, reference scale, color target where needed, background, orientation, and file naming. Automated image analysis should preserve software, model version, thresholds, training data limits, and manual correction history. Observer training and blinded repeat scoring can reveal ambiguity."
+      ],
+      "requiredLabels": [
+        "operational definition",
+        "phenotyping",
+        "landmark",
+        "sampling position",
+        "canopy width",
+        "internode",
+        "biomass",
+        "image scale"
+      ],
+      "misconceptionGuards": [
+        "Tall, bushy, frosty, and dense are complete phenotype measurements. These descriptions need operational definitions and quantitative or reproducible scoring methods before they can support comparison.",
+        "A photograph is objective without a scale and standardized viewpoint. Perspective, lighting, distance, stage, and camera settings can change apparent morphology."
+      ],
+      "sourceAnchors": [
+        "V21-SRC-011",
+        "V21-SRC-012",
+        "V21-SRC-033",
+        "V21-SRC-034"
+      ],
+      "altTextDraft": "Standardized Cannabis morphology measurement plate for Morphology and Growth Measurements, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Morphology and Growth Measurements. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-409_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-409_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    }
+  ]
+}

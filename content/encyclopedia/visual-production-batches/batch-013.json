@@ -1,0 +1,1040 @@
+{
+  "schemaVersion": 1,
+  "batchId": "ENC-VIS-BATCH-013",
+  "generatedAt": "2026-10-04T13:51:42.406Z",
+  "status": "production-ready-review-controlled",
+  "purpose": "Turn controlled encyclopedia visual briefs into lesson-specific raster teaching candidates without changing publication approval state.",
+  "reviewRule": "Every asset remains unapproved until science, accessibility, rights/provenance, rendering, and responsive review are explicitly recorded.",
+  "itemCount": 24,
+  "priorityRange": {
+    "high": 18,
+    "low": 18
+  },
+  "visualFamilies": {
+    "diagnostic-decision-tree": 13,
+    "mechanism-process-diagram": 10,
+    "measurement-workflow": 1
+  },
+  "items": [
+    {
+      "queueId": "ENC-VIS-188",
+      "lessonId": "THC-ENC-188",
+      "number": 188,
+      "title": "Screen and Trellis Systems",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to explain screens and trellises as physical canopy-support and shoot-positioning systems, and show how their effects depend on architecture, spacing, light distribution, airflow, access, and the training decisions made around the support structure.",
+      "accuracyRequirements": [
+        "A screen or trellis is not itself a plant physiological treatment. It is a physical framework that changes what growers can support and where shoots can be positioned. Its biological effects arise indirectly through altered shoot orientation, spacing, light exposure, self-shading, branch loading, airflow pathways, and the pruning or bending decisions used with it.",
+        "Cannabis can form substantial vertical gradients in light environment, leaf condition, inflorescence development, and cannabinoid concentration within a dense canopy. Research on plant density and architecture manipulation shows that reducing lower-canopy light deprivation or removing poorly exposed lower growth can change crop uniformity. A support system can assist spatial organization, but it does not guarantee uniform irradiance by itself.",
+        "A visually level canopy is not necessarily a physiologically uniform canopy. Leaves differ in angle, overlap, age, photosynthetic capacity, and distance from fixtures or sunlight. Representative light measurements and plant observations are required to determine whether a screen has actually improved exposure."
+      ],
+      "requiredLabels": [
+        "trellis",
+        "screen",
+        "shoot positioning",
+        "canopy plane",
+        "self-shading",
+        "support load",
+        "canopy access"
+      ],
+      "misconceptionGuards": [
+        "A flat-looking screen guarantees equal light to every flowering site.",
+        "SCROG is a standardized scientific treatment with one validated cannabis protocol."
+      ],
+      "sourceAnchors": [
+        "Danziger N, Bernstein N. (2022). Too Dense or Not Too Dense: Higher Planting Density Reduces Cannabinoid Uniformity but Increases Yield/Area in Drug-Type Medical Cannabis. Frontiers in Plant Science 13:713481. DOI 10.3389/fpls.2022.713481.",
+        "Danziger N, Bernstein N. (2021). Plant architecture manipulation increases cannabinoid standardization in drug-type medical cannabis. Industrial Crops and Products 167:113528. DOI 10.1016/j.indcrop.2021.113528.",
+        "Ijoma GN et al. (2026). The curious origins of a high-stress training technique mainlining: its molecular, biochemical, and agronomic perspectives for the cultivation of Cannabis sativa. Journal of Cannabis Research 8:3. DOI 10.1186/s42238-025-00339-y; secondary source documenting SCROG/trellis terminology and evidence gaps.",
+        "Spitzer-Rimon B, Duchin S, Bernstein N, Kamenetsky R. (2019). Architecture and Florogenesis in Female Cannabis sativa Plants. Frontiers in Plant Science 10:350. DOI 10.3389/fpls.2019.00350."
+      ],
+      "altTextDraft": "Labeled anatomy for Screen and Trellis Systems, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Screen and Trellis Systems. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-188_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-188_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-189",
+      "lessonId": "THC-ENC-189",
+      "number": 189,
+      "title": "Pruning Lower Shoots and Sink Competition",
+      "visualType": "Concept diagram",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to explain how removing lower shoots changes canopy structure and the population of competing sinks, while avoiding the oversimplification that resources removed from one branch are automatically redirected in a fixed amount to retained flowers.",
+      "accuracyRequirements": [
+        "Developing shoots and inflorescences are sinks that compete within a connected whole plant, but allocation is not a simple bucket of resources divided equally among branch tips. Sink strength, vascular connection, developmental stage, leaf photosynthesis, root function, local light, hormone signaling, and whole-plant demand all affect partitioning.",
+        "Lower canopy positions in cannabis can experience substantially less light and can produce inflorescences with different mass and cannabinoid concentrations than upper positions. Dense stands can intensify lower-canopy shading and leaf decline. These gradients provide a biological reason to study removal or retention of poorly exposed lower growth rather than assuming every shoot contributes equally to the crop.",
+        "Cannabis architecture experiments have directly evaluated lower branch removal and related pruning treatments. Some treatments improved spatial cannabinoid uniformity by eliminating or changing low-position inflorescences, while yield and chemical responses depended on treatment and genotype. Removal therefore changes both the number of sinks and the architecture/microclimate in which remaining organs develop."
+      ],
+      "requiredLabels": [
+        "sink",
+        "source",
+        "source-sink relationship",
+        "lower-shoot pruning",
+        "sink strength",
+        "assimilate partitioning",
+        "canopy stratification"
+      ],
+      "misconceptionGuards": [
+        "Resources from a removed branch are transferred one-for-one into the remaining flowers.",
+        "Every lower shoot is inherently unproductive."
+      ],
+      "sourceAnchors": [
+        "Danziger N, Bernstein N. (2021). Plant architecture manipulation increases cannabinoid standardization in drug-type medical cannabis. Industrial Crops and Products 167:113528. DOI 10.1016/j.indcrop.2021.113528.",
+        "Danziger N, Bernstein N. (2022). Too Dense or Not Too Dense: Higher Planting Density Reduces Cannabinoid Uniformity but Increases Yield/Area in Drug-Type Medical Cannabis. Frontiers in Plant Science 13:713481. DOI 10.3389/fpls.2022.713481.",
+        "Crispim Massuela D et al. (2022). Impact of Harvest Time and Pruning Technique on Total CBD Concentration and Yield of Medicinal Cannabis. Plants 11(1):140. DOI 10.3390/plants11010140.",
+        "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834; cannabis evidence on positional architecture and chemical uniformity.",
+        "General plant source-sink physiology is used for allocation concepts; no fixed redistribution coefficient is asserted for cannabis."
+      ],
+      "altTextDraft": "Concept diagram for Pruning Lower Shoots and Sink Competition, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Pruning Lower Shoots and Sink Competition. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-189_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-189_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-190",
+      "lessonId": "THC-ENC-190",
+      "number": 190,
+      "title": "Defoliation: Mechanisms, Evidence, and Risk",
+      "visualType": "Concept diagram",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to evaluate defoliation as a canopy intervention by separating the physiological role of leaf area from treatment-specific claims about light penetration, airflow, yield, and recovery.",
+      "accuracyRequirements": [
+        "Leaves are major photosynthetic source organs. Removing them changes total light-intercepting area, internal light distribution, transpiring surface, source-sink relationships, and canopy airflow at the same time. Defoliation is therefore not a single-variable treatment.",
+        "Opening a dense canopy can improve photon penetration and air movement to previously shaded or enclosed tissue, but the benefit must be weighed against loss of photosynthetic area and the plant's capacity to replace or functionally compensate for removed leaves.",
+        "Cannabis studies of pruning, architecture, and defoliation show that treatment effects are strongly dependent on cultivar, intensity, timing, plant density, and the surrounding production system. These studies do not support a universal defoliation schedule or a fixed percentage of leaves to remove across cultivars."
+      ],
+      "requiredLabels": [
+        "defoliation",
+        "leaf area",
+        "source tissue",
+        "source-sink balance",
+        "canopy porosity",
+        "compensatory response"
+      ],
+      "misconceptionGuards": [
+        "Removing more leaves always increases light use efficiency.",
+        "A leaf that shades a flower is biologically useless."
+      ],
+      "sourceAnchors": [
+        "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834. Supports architecture- and canopy-position effects; not a universal defoliation prescription.",
+        "Danziger N, Bernstein N. (2021). Light matters: Effect of light spectra on cannabinoid profile and plant development of medical cannabis (Cannabis sativa L.). Industrial Crops and Products 164:113351. Supports the importance of light environment and plant development; not a direct defoliation trial.",
+        "Recent cannabis pruning/architecture studies and reviews were consulted for treatment-specific evidence; results remain cultivar- and system-dependent and should not be generalized into fixed schedules.",
+        "General plant-physiology literature on source-sink balance, leaf-area loss, and compensatory photosynthesis is used only as mechanistic context where cannabis-specific evidence is limited."
+      ],
+      "altTextDraft": "Concept diagram for Defoliation: Mechanisms, Evidence, and Risk, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Defoliation: Mechanisms, Evidence, and Risk. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-190_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-190_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-191",
+      "lessonId": "THC-ENC-191",
+      "number": 191,
+      "title": "Leaf Tucking and Non-Destructive Canopy Adjustment",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to use leaf tucking as a reversible canopy adjustment, understand what it can and cannot change, and document whether repositioning improves access to light, airflow, or inspection without unnecessary leaf removal.",
+      "accuracyRequirements": [
+        "Leaf tucking changes leaf position, not leaf number. The tucked leaf generally remains photosynthetically active, so the intervention redistributes local shading while preserving source tissue.",
+        "Leaves and petioles continually adjust orientation in response to light, gravity, growth, and neighboring organs. A tucked leaf may therefore move back toward an exposed position as the canopy grows.",
+        "Repositioning one leaf can increase direct light to a nearby shoot while reducing light on another surface. The useful question is not whether a site looks brighter, but how whole-canopy light distribution changes."
+      ],
+      "requiredLabels": [
+        "leaf tucking",
+        "petiole",
+        "canopy porosity",
+        "source leaf",
+        "reversible intervention"
+      ],
+      "misconceptionGuards": [
+        "Leaf tucking permanently fixes canopy shading.",
+        "A tucked leaf stops contributing photosynthesis."
+      ],
+      "sourceAnchors": [
+        "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834. Supports the importance of architecture and canopy position; it is not a leaf-tucking trial.",
+        "General plant-physiology literature on leaf orientation, source leaves, and canopy light interception is used as mechanistic context where cannabis-specific treatment evidence is absent.",
+        "No source is used to claim that leaf tucking alone guarantees increased yield or quality."
+      ],
+      "altTextDraft": "Labeled anatomy for Leaf Tucking and Non-Destructive Canopy Adjustment, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Leaf Tucking and Non-Destructive Canopy Adjustment. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-191_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-191_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-193",
+      "lessonId": "THC-ENC-193",
+      "number": 193,
+      "title": "Monster Cropping and Reproductive Reversion",
+      "visualType": "Concept diagram",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to explain what happens when flowering cannabis tissue is returned to vegetative conditions, distinguish developmental reversion from a special yield mechanism, and monitor the slow, variable recovery that can follow revegetation.",
+      "accuracyRequirements": [
+        "Photoperiod-sensitive cannabis can shift developmental programs when daylength and uninterrupted dark-period signals change. A flowering cutting returned to vegetative-inducing conditions may resume vegetative shoot production if it survives and retains competent meristems.",
+        "Revegetating shoots commonly pass through an atypical transition in which leaf shape, phyllotaxy, branching, and growth rate differ from established vegetative growth. These changes reflect developmental reprogramming rather than a separate cannabis growth mode.",
+        "A flowering cutting must simultaneously form or maintain roots, repair cutting wounds, and redirect meristem activity. That combined demand can make establishment slower and less predictable than cloning vigorous vegetative shoots."
+      ],
+      "requiredLabels": [
+        "monster cropping",
+        "revegetation",
+        "developmental reversion",
+        "photoperiod",
+        "morphological transition"
+      ],
+      "misconceptionGuards": [
+        "Monster cropping is a separate biological growth process unique to cannabis.",
+        "Every flowering cutting will successfully return to vegetative growth."
+      ],
+      "sourceAnchors": [
+        "Ahrens A, Llewellyn D, Zheng Y. (2023). Is Twelve Hours Really the Optimum Photoperiod for Promoting Flowering in Indoor-Grown Cultivars of Cannabis sativa? Plants 12(14):2605. doi:10.3390/plants12142605. Cannabis-specific flowering study across ten drug-type cultivars; supports cultivar-dependent photoperiod response but does not test monster-cropping yield.",
+        "Leckie KM et al. (2024). Loss of daylength sensitivity by splice site mutation in Cannabis pseudo-response regulator. The Plant Journal 118(6):2020–2036. doi:10.1111/tpj.16726. Cannabis-specific genetic evidence for photoperiod insensitivity/autoflowering; it does not establish a universal revegetation protocol.",
+        "Tooke F, Ordidge M, Chiurugwi T, Battey N. (2005). Mechanisms and function of flower and inflorescence reversion. Journal of Experimental Botany 56(420):2587–2599. doi:10.1093/jxb/eri254. General plant-development review used only for floral-reversion mechanism; it is not Cannabis-specific.",
+        "No standardized Cannabis trial is used here to claim a universal yield increase from the cultivation practice called monster cropping."
+      ],
+      "altTextDraft": "Concept diagram for Monster Cropping and Reproductive Reversion, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Monster Cropping and Reproductive Reversion. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-193_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-193_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-194",
+      "lessonId": "THC-ENC-194",
+      "number": 194,
+      "title": "Plant Spacing and Canopy Closure",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to connect plant spacing, branch spread, canopy closure, light interception, access, and disease risk so spacing decisions are based on measurable canopy development rather than plant-count rules alone.",
+      "accuracyRequirements": [
+        "Spacing determines how quickly neighboring canopies interact. Wider spacing delays overlap; closer spacing can increase early area occupancy but also increases competition for light, air movement, root-zone resources, and physical access.",
+        "Canopy closure is a developmental outcome, not a fixed calendar date. Cultivar architecture, container or root-zone volume, vegetative duration, training, light environment, and plant vigor all influence when the available area becomes occupied.",
+        "Increasing plant density can raise yield per unit area up to a system-dependent point even while yield per individual plant falls. These are different metrics and should not be substituted for one another."
+      ],
+      "requiredLabels": [
+        "plant spacing",
+        "canopy closure",
+        "plant density",
+        "ground cover",
+        "self-shading"
+      ],
+      "misconceptionGuards": [
+        "More plants per area always produce more usable yield.",
+        "Canopy closure should occur on the same day for every cultivar."
+      ],
+      "sourceAnchors": [
+        "Peer-reviewed cannabis production studies examining density, architecture, and light distribution support evaluating both individual-plant and area-based responses; treatment optima remain system dependent.",
+        "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834. Supports architecture and canopy-position effects.",
+        "General crop-canopy literature is used for ground cover, closure, competition, and area-based yield concepts."
+      ],
+      "altTextDraft": "Concept diagram for Plant Spacing and Canopy Closure, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Plant Spacing and Canopy Closure. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-194_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-194_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-195",
+      "lessonId": "THC-ENC-195",
+      "number": 195,
+      "title": "Canopy Depth and Light Attenuation",
+      "visualType": "Concept diagram",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to measure how light decreases through a cannabis canopy and use canopy depth, PPFD profiles, and tissue response to distinguish productive leaf area from deeply shaded growth.",
+      "accuracyRequirements": [
+        "Light typically declines with depth because upper leaves intercept part of the incoming radiation before it can reach lower layers. The decline is not a simple fixed percentage per node or per centimeter.",
+        "Leaf angle, leaf-area density, branch arrangement, fixture geometry, side lighting, reflective surfaces, and plant movement all influence the light profile. Two canopies of equal height can therefore have very different internal photon distributions.",
+        "Canopy-light models often describe attenuation with exponential relationships related to cumulative leaf area. These models are useful concepts, but their coefficients must be measured or justified for the actual canopy rather than copied as universal cannabis values."
+      ],
+      "requiredLabels": [
+        "canopy depth",
+        "light attenuation",
+        "PPFD",
+        "extinction coefficient",
+        "sunfleck"
+      ],
+      "misconceptionGuards": [
+        "Cannabis light intensity drops by one fixed percentage at every node.",
+        "Canopy height alone determines light penetration."
+      ],
+      "sourceAnchors": [
+        "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834. Supports positional and architecture-related differences within large cannabis plants.",
+        "Peer-reviewed cannabis lighting studies support measuring photon environment and crop response across controlled conditions; their treatment-specific PPFD results are not converted here into a universal canopy-depth rule.",
+        "General canopy-radiation literature provides the conceptual basis for leaf-area-dependent attenuation and extinction coefficients."
+      ],
+      "altTextDraft": "Concept diagram for Canopy Depth and Light Attenuation, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Canopy Depth and Light Attenuation. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-195_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-195_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-200",
+      "lessonId": "THC-ENC-200",
+      "number": 200,
+      "title": "Canopy Measurements, Maps, and Yield Interpretation",
+      "visualType": "Chart / measurement",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to build repeatable canopy maps and connect geometry, light, interventions, and harvest measurements without confusing correlation, yield per plant, and yield per area.",
+      "accuracyRequirements": [
+        "Canopy management changes a three-dimensional structure. Measurements of height, width, depth, occupancy, shoot distribution, and light are therefore more informative when tied to repeatable coordinates rather than collected from whichever location looks representative.",
+        "A PPFD map describes the photon field at the time and geometry measured. It does not automatically predict yield because leaves differ in orientation, acclimation, duration of exposure, temperature, water status, and developmental role.",
+        "Yield per plant and yield per unit area answer different questions. Higher individual-plant yield can coexist with lower area productivity when plant density differs, and the reverse can also occur."
+      ],
+      "requiredLabels": [
+        "canopy map",
+        "sampling grid",
+        "normalization",
+        "correlation",
+        "replication"
+      ],
+      "misconceptionGuards": [
+        "One center-canopy PPFD reading represents the entire crop.",
+        "The plant with the highest yield always belongs to the most productive spacing system."
+      ],
+      "sourceAnchors": [
+        "Cannabis architecture and lighting research supports spatial measurement of canopy position, photon environment, and crop outcomes rather than reliance on single-point observations.",
+        "NIST experimental-design and measurement principles support the distinctions among repeatability, replication, controls, calibration, uncertainty, and causal interpretation used in this lesson.",
+        "Area-normalized and plant-normalized yield are treated as separate metrics because they answer different production questions."
+      ],
+      "altTextDraft": "Chart / measurement for Canopy Measurements, Maps, and Yield Interpretation, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Canopy Measurements, Maps, and Yield Interpretation. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-200_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-200_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-203",
+      "lessonId": "THC-ENC-203",
+      "number": 203,
+      "title": "Autoflowering and Day-Neutral Phenotypes",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to explain autoflowering cannabis as a genetically influenced reduction in photoperiod dependence, distinguish day-neutral behavior from fixed-age flowering, and document developmental timing without relying on seed-label assumptions.",
+      "accuracyRequirements": [
+        "Autoflowering cannabis is best understood as genetically influenced flowering behavior with reduced dependence on a short-day trigger. It is not evidence that flowering begins on one universal number of days after germination.",
+        "Genome-wide and comparative-genomics studies support heritable differences in flowering behavior and have identified genomic regions associated with autoflowering or flowering-time variation. Modern 2026 work across a large accession panel also identified markers that separated autoflowering material from photoperiod-sensitive classes.",
+        "Day-neutral is a response category, not a statement that light, temperature, water status, nutrition, root restriction, or stress cannot influence developmental rate and plant size."
+      ],
+      "requiredLabels": [
+        "autoflowering",
+        "day-neutral",
+        "photoperiod insensitivity",
+        "flowering-time locus",
+        "developmental age"
+      ],
+      "misconceptionGuards": [
+        "Every autoflower begins flowering on the same day after germination.",
+        "Day-neutral means environmental conditions cannot alter flowering time or plant size."
+      ],
+      "sourceAnchors": [
+        "Petit J, Salentijn EMJ, Paulo M-J, Denneboom C, Trindade LM. (2020). Genetic Architecture of Flowering Time and Sex Determination in Hemp (Cannabis sativa L.): A Genome-Wide Association Study. Frontiers in Plant Science 11:569958. doi:10.3389/fpls.2020.569958. Supports heritable flowering-time variation and day-neutral phenotypes in the studied hemp panel; marker associations remain population-specific.",
+        "Kurtz LE et al. (2023). Comparative genomics of flowering behavior in Cannabis sativa. Frontiers in Plant Science. Reviews genetic divergence associated with autoflowering and cautions that inheritance remains incompletely resolved.",
+        "Integrating temporal morphophysiological and genomic markers for precise classification of flowering time in cannabis (2026). A 145-accession study reported distinct developmental trajectories and autoflower-associated genomic markers, reinforcing that flowering class is measurable rather than a fixed-day rule."
+      ],
+      "altTextDraft": "Labeled anatomy for Autoflowering and Day-Neutral Phenotypes, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Autoflowering and Day-Neutral Phenotypes. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-203_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-203_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-205",
+      "lessonId": "THC-ENC-205",
+      "number": 205,
+      "title": "Inflorescence Architecture",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to understand the female cannabis inflorescence as an organized cluster of many reproductive flowers and supporting tissues, then document its position, density, and dimensions without confusing visual compactness with maturity, chemistry, or quality.",
+      "accuracyRequirements": [
+        "A harvested cannabis 'bud' or 'cola' is not one flower. It is a horticultural description of an inflorescence region containing many pistillate flowers, associated bracts and small leaves, supporting axes, stigmas, and glandular tissues.",
+        "Female cannabis develops solitary flowers and later denser axillary and terminal inflorescence structures. Branch order and canopy position influence the geometry and developmental environment of those reproductive sites.",
+        "Inflorescence shape and compactness vary strongly among genotypes and can also respond to light environment, spacing, architecture, temperature, nutrition, water status, and developmental timing."
+      ],
+      "requiredLabels": [
+        "inflorescence",
+        "pistillate flower",
+        "bract",
+        "stigma",
+        "floral density"
+      ],
+      "misconceptionGuards": [
+        "A cannabis bud is one giant flower.",
+        "The horticultural word 'cola' describes one precise botanical organ."
+      ],
+      "sourceAnchors": [
+        "Spitzer-Rimon B et al. (2019). Architecture and Florogenesis in Female Cannabis sativa Plants. Frontiers in Plant Science 10:350. Describes female cannabis architecture, solitary flowers, and inflorescence development.",
+        "Punja ZK et al. (2020). Hermaphroditism in Marijuana (Cannabis sativa L.) Inflorescences—Impact on Floral Morphology, Seed Formation, Progeny Sex Ratios, and Genetic Variation. Frontiers in Plant Science 11:718. Provides detailed reproductive morphology and inflorescence observations.",
+        "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834. Supports preserving canopy position when interpreting reproductive tissue and chemical outcomes."
+      ],
+      "altTextDraft": "Labeled anatomy for Inflorescence Architecture, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Inflorescence Architecture. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-205_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-205_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-206",
+      "lessonId": "THC-ENC-206",
+      "number": 206,
+      "title": "Early-Flower Stretch and Internode Elongation",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to explain the temporary increase in stem and internode elongation that can accompany the early reproductive transition, separate that response from later inflorescence condensation, and measure cultivar-specific stretch instead of relying on a universal multiplier.",
+      "accuracyRequirements": [
+        "Early flowering can include a transient period of rapid elongation rather than an immediate stop in vegetative growth. Recent controlled work in one commercial cannabis cultivar found a first short-day phase with accelerated elongation of young internodes followed by reduced elongation of newly formed internodes as a condensed inflorescence developed.",
+        "The response depends on which internodes were already present, which were expanding at the photoperiod transition, and which formed later. Treating whole-plant height change as if every internode responded identically hides this developmental pattern.",
+        "Photoperiod can influence architecture through hormonal and developmental signaling. In the cited single-cultivar study, short-day inflorescence development was associated with lower gibberellin and auxin levels at the shoot apex, while return to long days promoted renewed elongation and loss of condensed inflorescence architecture."
+      ],
+      "requiredLabels": [
+        "stretch",
+        "internode",
+        "elongation",
+        "gibberellin",
+        "inflorescence condensation"
+      ],
+      "misconceptionGuards": [
+        "Every cannabis plant doubles or triples in height after flowering begins.",
+        "Stretch means all internodes elongate by the same amount."
+      ],
+      "sourceAnchors": [
+        "Spitzer-Rimon B and colleagues. Inflorescence development in female cannabis plants is mediated by photoperiod and gibberellin. Horticulture Research. Controlled experiments in one commercial cultivar showed an early short-day elongation phase followed by reduced elongation of newly formed internodes and condensed inflorescence development.",
+        "The same study found return to long-day conditions increased elongation and disrupted condensed inflorescence architecture, supporting a developmental rather than purely calendar-based interpretation of stretch.",
+        "Because the study was cultivar-specific, its exact day numbers and hormone responses are not presented as universal production thresholds."
+      ],
+      "altTextDraft": "Labeled anatomy for Early-Flower Stretch and Internode Elongation, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Early-Flower Stretch and Internode Elongation. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-206_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-206_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-207",
+      "lessonId": "THC-ENC-207",
+      "number": 207,
+      "title": "Male Floral Development and Anthesis",
+      "visualType": "Process sequence",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to identify the progression of staminate cannabis flowers toward anthesis and pollen release, document male reproductive timing accurately, and separate visible floral maturity from assumptions about pollen quantity or viability.",
+      "accuracyRequirements": [
+        "Male cannabis inflorescences contain clusters of staminate flowers. As these flowers mature, their perianth opens, stamens become exposed, and anthers dehisce to release pollen.",
+        "Floral development is asynchronous across a plant. Some staminate flowers can be releasing pollen while younger flowers in the same inflorescence remain closed, so one observation should not be treated as the reproductive state of the entire plant.",
+        "Published cannabis observations show large pollen release from mature male flowers and report morning-biased anther opening or pollen release in some conditions, but the exact daily timing depends on genotype and environment and remains incompletely characterized."
+      ],
+      "requiredLabels": [
+        "staminate flower",
+        "anther",
+        "anthesis",
+        "dehiscence",
+        "pollen shed"
+      ],
+      "misconceptionGuards": [
+        "All male flowers on a cannabis plant open and shed pollen at the same time.",
+        "A closed pollen sac and an open pollen-shedding flower represent the same reproductive stage."
+      ],
+      "sourceAnchors": [
+        "Punja ZK et al. (2020). Hermaphroditism in Marijuana (Cannabis sativa L.) Inflorescences—Impact on Floral Morphology, Seed Formation, Progeny Sex Ratios, and Genetic Variation. Frontiers in Plant Science 11:718. Documents staminate flower and anther development and substantial pollen release from mature structures.",
+        "Nimmala M, Ross SD, Foroutan H. (2024). Cannabis pollen dispersal across the United States. Scientific Reports 14:20605. Reviews cannabis pollen production, wind dispersal, and limited evidence on diurnal release timing.",
+        "Gaudet D et al. (2020). Development and Optimization of a Germination Assay and Long-Term Storage for Cannabis sativa Pollen. Plants 9:665. Demonstrates that pollen developmental stage and measured germination are relevant to viability assessment."
+      ],
+      "altTextDraft": "Process sequence for Male Floral Development and Anthesis, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Male Floral Development and Anthesis. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-207_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-207_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-208",
+      "lessonId": "THC-ENC-208",
+      "number": 208,
+      "title": "Pollen Grain Structure and Viability",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to explain cannabis pollen as the male gametophyte, distinguish structural integrity from functional viability, and show why germination-based measurements are more informative than appearance alone.",
+      "accuracyRequirements": [
+        "Cannabis pollen is a living male gametophyte, not inert dust. Gaudet and colleagues documented bicellular Cannabis sativa pollen and developed an in-vitro germination assay that directly measures pollen-tube emergence under defined conditions.",
+        "Pollen appearance, stain uptake, non-abortion, and in-vitro germination are related but not interchangeable measurements. Later cannabis work comparing pollen-fitness methods found that different assays can produce different estimates, so a single visual or staining result should not be labeled absolute fertility.",
+        "Developmental stage matters. Cannabis pollen collected at different growth stages has shown different germination longevity, indicating that collection timing can influence measured performance even before storage conditions are considered."
+      ],
+      "requiredLabels": [
+        "pollen grain",
+        "exine",
+        "germination",
+        "viability",
+        "bicellular pollen"
+      ],
+      "misconceptionGuards": [
+        "Yellow or abundant pollen is automatically highly viable.",
+        "If a pollen grain looks intact under a microscope it must be capable of fertilization."
+      ],
+      "sourceAnchors": [
+        "Gaudet D, Yadav NS, Sorokin A, Bilichak A, Kovalchuk I. (2020). Development and Optimization of a Germination Assay and Long-Term Storage for Cannabis sativa Pollen. Plants 9(5):665. Identified bicellular cannabis pollen and developed a functional germination assay; pollen developmental stage affected longevity.",
+        "Methods for characterizing pollen fitness in Cannabis sativa L. PLOS ONE (2022). Compared pollen non-abortion, viability, and germination approaches and emphasized that different assays do not necessarily produce equivalent estimates.",
+        "Public wording separates visible morphology from functional germination and avoids presenting one laboratory assay percentage as a universal fertility cutoff."
+      ],
+      "altTextDraft": "Labeled anatomy for Pollen Grain Structure and Viability, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Pollen Grain Structure and Viability. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-208_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-208_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-209",
+      "lessonId": "THC-ENC-209",
+      "number": 209,
+      "title": "Pollen Release, Transport, and Deposition",
+      "visualType": "Concept diagram",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to explain how cannabis pollen moves from anthers through air to receiving surfaces, distinguish local contamination from long-distance atmospheric transport, and replace fixed isolation-distance claims with risk-based monitoring.",
+      "accuracyRequirements": [
+        "Cannabis is primarily wind pollinated. Once mature anthers release pollen, grains can be carried by ventilation or natural wind and later deposited on receptive flowers or other surfaces.",
+        "Pollen concentration generally declines with distance from a source, but the decline is not a simple fixed-radius boundary. Source size, release height, atmospheric stability, turbulence, wind direction, terrain, vegetation, buildings, and weather alter transport and deposition.",
+        "Large-scale modeling published in 2024 showed that cannabis pollen can participate in long-range atmospheric transport and that seasonal and meteorological conditions influence dispersal. The study supports treating cross-pollination risk as a probability distribution rather than a guaranteed safe distance."
+      ],
+      "requiredLabels": [
+        "anemophily",
+        "deposition",
+        "dispersal kernel",
+        "turbulence",
+        "source strength"
+      ],
+      "misconceptionGuards": [
+        "Cannabis pollen falls straight down near the male plant.",
+        "There is one universal isolation distance beyond which cross-pollination is impossible."
+      ],
+      "sourceAnchors": [
+        "Nimmala M., Ross S.D., Foroutan H. (2024). Cannabis pollen dispersal across the United States. Scientific Reports 14:20605. DOI 10.1038/s41598-024-70633-x. Supports meteorology-dependent windborne transport and long-range dispersal modeling; it does not provide a universal fertilization distance.",
+        "The study and cited field literature support treating cross-pollination risk as source-pathway-recipient probability rather than as one guaranteed isolation radius.",
+        "Deposition and airborne transport are not treated as proof of successful fertilization; pollen viability, stigma receptivity, and local conditions remain separate requirements."
+      ],
+      "altTextDraft": "Concept diagram for Pollen Release, Transport, and Deposition, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Pollen Release, Transport, and Deposition. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-209_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-209_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-210",
+      "lessonId": "THC-ENC-210",
+      "number": 210,
+      "title": "Female Floral Development and Stigma Receptivity",
+      "visualType": "Process sequence",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to describe development of pistillate cannabis flowers, explain the role of stigmas in receiving pollen, and separate visible stigma appearance from direct proof of reproductive receptivity or whole-flower maturity.",
+      "accuracyRequirements": [
+        "Female cannabis flowers are small pistillate flowers grouped within the inflorescence. Their exposed stigmatic branches are the structures most readily seen by growers, but they are only one part of a reproductive unit that also includes enclosed ovarian and ovular tissues.",
+        "Successful pollination begins when compatible viable pollen reaches a stigma under suitable physiological conditions. Adhesion and germination are followed by pollen-tube growth toward the ovule before fertilization can occur.",
+        "Stigma receptivity is a physiological trait, not simply a color category. Browning, curling, or age-related change can accompany development, pollination, injury, environmental exposure, or senescence, so visual stigma appearance alone cannot prove whether fertilization has occurred."
+      ],
+      "requiredLabels": [
+        "pistillate flower",
+        "stigma",
+        "style",
+        "ovary",
+        "receptivity"
+      ],
+      "misconceptionGuards": [
+        "White stigmas always mean maximum receptivity and brown stigmas always mean zero receptivity.",
+        "Stigma color alone can prove that a flower was pollinated."
+      ],
+      "sourceAnchors": [
+        "Punja ZK, Holmes JE. (2020). Hermaphroditism in Marijuana (Cannabis sativa L.) Inflorescences – Impact on Floral Morphology, Seed Formation, Progeny Sex Ratios, and Genetic Variation. Frontiers in Plant Science 11:718. doi:10.3389/fpls.2020.00718. Cannabis-specific floral morphology and seed-formation evidence; it does not define a universal stigma-receptivity window.",
+        "Wizenberg SB, Dang M, Campbell LG. (2022). Methods for characterizing pollen fitness in Cannabis sativa L. PLOS ONE 17(7):e0270799. doi:10.1371/journal.pone.0270799. Cannabis-specific evidence distinguishing pollen viability and non-abortion measures; successful reproduction requires competent pollen as well as receptive female tissue.",
+        "Gaudet D et al. (2020). Development and Optimization of a Germination Assay and Long-Term Storage for Cannabis sativa Pollen. Plants 9(5):665. doi:10.3390/plants9050665. Cannabis pollen germination evidence used for reproductive-mechanism context; visible stigma color alone is not treated as proof of fertilization or receptivity."
+      ],
+      "altTextDraft": "Process sequence for Female Floral Development and Stigma Receptivity, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Female Floral Development and Stigma Receptivity. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-210_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-210_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-211",
+      "lessonId": "THC-ENC-211",
+      "number": 211,
+      "title": "Fertilization and Early Embryo Development",
+      "visualType": "Process sequence",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to follow the reproductive sequence from compatible pollen germination through pollen-tube growth, fertilization, embryo and endosperm initiation, and early seed development without treating pollen contact as equivalent to completed fertilization.",
+      "accuracyRequirements": [
+        "Pollination and fertilization are separate events. Pollination places pollen on a receptive stigma; successful reproduction still requires pollen hydration and germination, pollen-tube growth, gamete delivery, fertilization, and continued seed development.",
+        "Cannabis is a flowering plant and follows the angiosperm pattern of double fertilization. The resulting embryo and supporting seed tissues develop inside the fertilized ovule while surrounding maternal tissues form the mature seed covering and associated fruit structures.",
+        "Not every deposited pollen grain produces a seed. Pollen viability, compatibility, stigma condition, pollen-tube performance, ovule status, environment, genotype, and later embryo survival can all affect the final outcome."
+      ],
+      "requiredLabels": [
+        "pollen tube",
+        "fertilization",
+        "double fertilization",
+        "embryo",
+        "endosperm"
+      ],
+      "misconceptionGuards": [
+        "Pollen touching a stigma means fertilization is complete.",
+        "Every viable pollen grain that lands on a female flower becomes a seed."
+      ],
+      "sourceAnchors": [
+        "Lipson Feder C et al. (2021). Fertilization Following Pollination Predominantly Decreases Phytocannabinoids Accumulation and Alters the Accumulation of Terpenoids in Cannabis Inflorescences. Frontiers in Plant Science 12:753847. Provides direct cannabis evidence that successful pollination/fertilization changes subsequent inflorescence development and chemistry.",
+        "Cannabis-specific pollen studies establish functional germination as a prerequisite distinct from simple grain presence; general angiosperm reproductive biology provides the conserved double-fertilization mechanism.",
+        "Exact pollen-tube and embryo-stage timing is not presented as universal because cultivar-resolved cannabis developmental datasets remain sparse."
+      ],
+      "altTextDraft": "Process sequence for Fertilization and Early Embryo Development, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Fertilization and Early Embryo Development. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-211_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-211_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-212",
+      "lessonId": "THC-ENC-212",
+      "number": 212,
+      "title": "Seedless Flower Production as Pollen Exclusion",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to explain seedless cannabis flower production as the biological consequence of preventing effective pollination and fertilization, and describe the documented developmental and chemical differences between fertilized and unfertilized inflorescences without turning them into universal potency claims.",
+      "accuracyRequirements": [
+        "Seedless cannabis flower is not a separate sex or botanical flower type. It results when pistillate flowers develop without successful fertilization, usually because viable pollen is excluded from receptive flowers.",
+        "Direct cannabis research has shown that fertilization can substantially reduce accumulation of many phytocannabinoids in the tested chemovars and can alter terpenoid accumulation. The magnitude and pattern were compound- and chemovar-dependent, so one study should not be converted into a universal percentage loss for every genotype.",
+        "Fertilization redirects reproductive development toward seed formation. Unfertilized flowers continue their own developmental program without investing in embryos and mature seeds, which contributes to the production differences observed between seeded and seedless inflorescences."
+      ],
+      "requiredLabels": [
+        "sinsemilla",
+        "pollen exclusion",
+        "fertilized flower",
+        "resource allocation",
+        "secondary metabolite"
+      ],
+      "misconceptionGuards": [
+        "Sinsemilla is a special female strain or sex category.",
+        "Starting with female plants guarantees seedless flowers."
+      ],
+      "sourceAnchors": [
+        "Lipson Feder C et al. (2021). Fertilization Following Pollination Predominantly Decreases Phytocannabinoids Accumulation and Alters the Accumulation of Terpenoids in Cannabis Inflorescences. Frontiers in Plant Science 12:753847. Directly compared fertilized and unfertilized cannabis inflorescences and found substantial phytocannabinoid reductions with more variable terpenoid responses.",
+        "Oregon State University Extension, Hemp sex-ed: A primer on pollination. Explains the production conflict between pollen-producing seed systems and pollen-exclusion flower systems and emphasizes unintended transfer risk.",
+        "Public wording avoids universal potency-loss percentages because fertilization responses were chemovar- and compound-dependent."
+      ],
+      "altTextDraft": "Labeled anatomy for Seedless Flower Production as Pollen Exclusion, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Seedless Flower Production as Pollen Exclusion. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-212_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-212_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-214",
+      "lessonId": "THC-ENC-214",
+      "number": 214,
+      "title": "Pollen Collection, Drying, and Storage",
+      "visualType": "Workflow",
+      "visualFamily": "measurement-workflow",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to explain why cannabis pollen storage depends on developmental stage, moisture management, temperature, packaging, and validated viability testing, and distinguish evidence-backed preservation from casual short-term handling folklore.",
+      "accuracyRequirements": [
+        "Cannabis pollen longevity depends on more than cold temperature. Developmental stage at collection, water content, desiccation method, storage temperature, container integrity, and handling after removal from storage all affect later function.",
+        "Gaudet and colleagues developed a cannabis pollen germination assay and demonstrated that pollen collected at different growth stages differed in longevity. They also reported a cryopreservation method combining pollen with baked whole-wheat flour, vacuum desiccation, and liquid-nitrogen storage that retained measurable germination after four months.",
+        "That successful laboratory protocol should not be simplified into 'freeze pollen and it lasts indefinitely.' Storage methods are system-specific, and the published study itself measured viability rather than assuming it from storage temperature."
+      ],
+      "requiredLabels": [
+        "desiccation",
+        "cryopreservation",
+        "hygroscopic",
+        "freeze-thaw cycle",
+        "viability assay"
+      ],
+      "misconceptionGuards": [
+        "Any cannabis pollen placed in a freezer will remain viable indefinitely.",
+        "Dry-looking pollen necessarily has the correct moisture content for storage."
+      ],
+      "sourceAnchors": [
+        "Gaudet D, Yadav NS, Sorokin A, Bilichak A, Kovalchuk I. (2020). Development and Optimization of a Germination Assay and Long-Term Storage for Cannabis sativa Pollen. Plants 9(5):665. Demonstrated developmental-stage differences in pollen longevity and retained germination after four months in a specific cryopreservation protocol.",
+        "Methods for characterizing pollen fitness in Cannabis sativa L. PLOS ONE (2022). Reinforces that pollen condition should be assessed with explicit fitness or germination methods rather than appearance alone.",
+        "Public wording does not present the published cryopreservation protocol as proof of indefinite viability under ordinary freezer storage."
+      ],
+      "altTextDraft": "Workflow for Pollen Collection, Drying, and Storage, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Pollen Collection, Drying, and Storage. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-214_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-214_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-215",
+      "lessonId": "THC-ENC-215",
+      "number": 215,
+      "title": "Pollen Containment and Decontamination",
+      "visualType": "Workflow",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to treat cannabis pollen control as a source-pathway-recipient problem, explain why airflow and handling can spread grains beyond the source plant, and establish evidence-bounded containment and cleanup records without claiming a perfect universal decontamination method.",
+      "accuracyRequirements": [
+        "Cannabis pollen is a mobile biological particle. Once shed, grains can move through outdoor wind, indoor ventilation, fans, pressure differences, worker movement, tools, clothing, containers, and direct contact with flowering plants.",
+        "Containment is strongest when it starts before anthesis and acts on several pathways at once. Removing or isolating a source after widespread pollen release cannot erase exposure that has already occurred.",
+        "Air filtration and particle capture can reduce airborne pollen, but filter performance depends on the actual airflow path, sealing, loading, maintenance, and particle capture characteristics. A nominal filter specification does not prove that a room or crop is pollen-free."
+      ],
+      "requiredLabels": [
+        "containment",
+        "cross-contamination",
+        "source-pathway-recipient model",
+        "particulate capture",
+        "verification"
+      ],
+      "misconceptionGuards": [
+        "Removing the male plant after pollen shed eliminates the pollination risk that already occurred.",
+        "A closed door guarantees pollen containment."
+      ],
+      "sourceAnchors": [
+        "Nimmala M, Ross SD, Foroutan H. (2024). Cannabis pollen dispersal across the United States. Scientific Reports 14:20605. Demonstrates meteorology-dependent airborne cannabis pollen transport and supports pathway-based rather than fixed-distance risk control.",
+        "Wizenberg SB, Weis AE, Campbell LG. (2020). Comparing methods for controlled capture and quantification of pollen in Cannabis sativa. Applications in Plant Sciences 8:e11389. Provides cannabis-specific evidence that airborne pollen can be deliberately captured and quantified with defined methods.",
+        "Oregon State University Extension's hemp pollination guidance identifies wind, insects, and mechanical transfer as pollen pathways and emphasizes incompatibility between nearby seed-producing and pollen-exclusion systems without mitigation."
+      ],
+      "altTextDraft": "Workflow for Pollen Containment and Decontamination, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Pollen Containment and Decontamination. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-215_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-215_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-216",
+      "lessonId": "THC-ENC-216",
+      "number": 216,
+      "title": "Seed Maturation and Harvest",
+      "visualType": "Process sequence",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to explain cannabis seed maturation as an asynchronous developmental process, distinguish visual maturity from tested seed quality, and establish harvest and sampling records that preserve reproductive history.",
+      "accuracyRequirements": [
+        "Cannabis seed maturation is not perfectly synchronized across an inflorescence. Seed-bearing hemp literature describes successive maturation along the reproductive structure, so mature, semi-mature, and immature seeds can coexist at one harvest date.",
+        "A 2025 Cannabis sativa study directly compared seeds collected at different maturity stages for germination and emergence performance, reinforcing that maturity stage affects later seed performance and should not be treated as a purely cosmetic distinction.",
+        "As seeds develop, reserve accumulation, embryo development, moisture status, and seed-coat characteristics change. External color and firmness can be useful field observations, but they do not by themselves measure germination capacity, vigor, genetic identity, or freedom from damage."
+      ],
+      "requiredLabels": [
+        "physiological maturity",
+        "asynchronous maturation",
+        "seed coat",
+        "germination percentage",
+        "seed lot"
+      ],
+      "misconceptionGuards": [
+        "All cannabis seeds on one plant mature at the same time.",
+        "Dark or striped seeds are automatically viable while pale seeds are automatically dead."
+      ],
+      "sourceAnchors": [
+        "Yılmaz G, Yıldırım C, Gür ND. (2025). Determination of Germination and Emergence Performance of Hemp (Cannabis sativa L.) Seeds at Different Maturity Stages. Turkish Journal of Agriculture - Food Science and Technology 13(1):175–180. Directly compared mature, semi-mature, and immature cannabis seed performance.",
+        "Review of Seed Hemp (Cannabis sativa L.) Harvesting Techniques and the Challenges of Harvesting Technologies for This Crop. Agronomy (2026). Describes successive/asynchronous seed maturation within hemp inflorescences and the harvest compromise it creates.",
+        "Public wording does not turn industrial-hemp harvest percentages into a universal maturity prescription for all cannabis seed crops."
+      ],
+      "altTextDraft": "Process sequence for Seed Maturation and Harvest, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Seed Maturation and Harvest. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-216_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-216_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-217",
+      "lessonId": "THC-ENC-217",
+      "number": 217,
+      "title": "Reproductive Stress and Intersex Monitoring",
+      "visualType": "Diagnostic decision tree",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to explain cannabis sex-expression plasticity and intersex reproductive structures as a genotype-by-development-by-environment phenomenon, and establish monitoring records that distinguish observation from unsupported single-cause claims.",
+      "accuracyRequirements": [
+        "Cannabis is commonly dioecious, but sex expression is plastic. Current reviews describe reproductive phenotype as the outcome of genetic architecture, hormonal signaling, developmental stage, chemical treatment, and environmental conditions rather than a single on/off environmental switch.",
+        "A 2026 review of cannabis hermaphroditism concluded that genotype, treatment regime, developmental stage, and environmental conditions interact to shape sexual phenotype. This means an observed intersex event should not automatically be attributed to one stress without comparative evidence.",
+        "Ethylene and gibberellin signaling are important components of cannabis sex expression. Controlled chemical manipulation of these pathways can intentionally alter reproductive phenotype, demonstrating that hormonal regulation is biologically capable of changing sex expression."
+      ],
+      "requiredLabels": [
+        "intersex expression",
+        "sexual plasticity",
+        "staminate structure",
+        "pistillate structure",
+        "genotype-by-environment interaction"
+      ],
+      "misconceptionGuards": [
+        "Every intersex cannabis flower is caused by light leaks.",
+        "A genetically female plant can never produce pollen-producing structures."
+      ],
+      "sourceAnchors": [
+        "Hermaphroditism in Cannabis sativa L.: Impacts, Inducers, and Industry Implications. Plants 2026, 15(11):1643. Reviews genomic, hormonal, developmental, treatment, and environmental contributions to cannabis sex-expression instability and emphasizes their interaction.",
+        "Alter H et al. (2024). Inflorescence development in female cannabis plants is mediated by photoperiod and gibberellin. Horticulture Research 11(11):uhae245. Provides direct cannabis evidence that photoperiod and gibberellin signaling strongly alter reproductive architecture and development.",
+        "Public wording avoids assigning a single-cause diagnosis to intersex expression from one environmental observation."
+      ],
+      "altTextDraft": "Diagnostic decision tree for Reproductive Stress and Intersex Monitoring, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Reproductive Stress and Intersex Monitoring. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-217_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-217_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-218",
+      "lessonId": "THC-ENC-218",
+      "number": 218,
+      "title": "Reversion and Reflowering Biology",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to explain how photoperiod-sensitive cannabis can reverse aspects of inflorescence development after return to long days, distinguish morphological reversion from a simple clock reset, and frame later reflowering as a new developmental transition influenced by plant history.",
+      "accuracyRequirements": [
+        "Direct cannabis experiments published in 2024 demonstrate that aspects of female inflorescence development are reversible. Plants returned from short-day to long-day conditions showed increased internode elongation, inflorescence disassembly, and resumption of long-day growth patterns.",
+        "The same study associated this architectural reversal with increased gibberellin GA4 and auxin levels in the shoot apex, while sustained short-day conditions supported the condensed flowering architecture. These results connect reversion to regulated developmental physiology rather than treating it as random malformed growth.",
+        "Reversion does not erase the plant's developmental history. Existing flowers and inflorescence tissues may senesce or remain while newly produced shoots adopt altered leaf, node, and branching patterns before more typical vegetative morphology returns."
+      ],
+      "requiredLabels": [
+        "reversion",
+        "reflowering",
+        "photoperiodic reversibility",
+        "inflorescence disassembly",
+        "developmental history"
+      ],
+      "misconceptionGuards": [
+        "Revegetation instantly converts every existing flower back into a vegetative shoot.",
+        "A reverted plant returns to exactly the same developmental state it had before flowering."
+      ],
+      "sourceAnchors": [
+        "Alter H et al. (2024). Inflorescence development in female cannabis plants is mediated by photoperiod and gibberellin. Horticulture Research 11(11):uhae245. Directly showed that returning short-day plants to long days increased GA4/auxin, disassembled inflorescence architecture, increased internode elongation, and restored long-day growth patterns.",
+        "The same study shows continuous short-day exposure was required to maintain typical condensed inflorescence architecture in the tested material, supporting a reversible photoperiod-regulated morphogenic model.",
+        "Public wording does not infer universal revegetation speed, cloning success, or yield advantages from the controlled photoperiod study."
+      ],
+      "altTextDraft": "Labeled anatomy for Reversion and Reflowering Biology, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Reversion and Reflowering Biology. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-218_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-218_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-219",
+      "lessonId": "THC-ENC-219",
+      "number": 219,
+      "title": "Flower Senescence and Maturity Indicators",
+      "visualType": "Labeled anatomy",
+      "visualFamily": "diagnostic-decision-tree",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to explain cannabis flower maturation and senescence as overlapping developmental processes, evaluate stigma and trichome appearance as useful but imperfect indicators, and prioritize genotype-specific measurement when harvest chemistry matters.",
+      "accuracyRequirements": [
+        "Cannabis inflorescences mature through coordinated but asynchronous changes in flowers, bracts, stigmas, glandular trichomes, metabolites, and supporting tissues. Different flowers and trichomes on the same inflorescence can occupy different developmental states at the same time.",
+        "Direct microscopy studies show that capitate-stalked trichomes change during flower development and senescence. In tested genotypes, maturation was associated with visible head-color changes, altered autofluorescence, head shrinkage or collapse, and eventual dehiscence, while genotype and plant age affected trichome number and developmental state.",
+        "The familiar clear-to-milky-to-amber trichome sequence has biological basis as a maturation-associated phenotype, but it is not a universal chemical meter. Cannabis research shows substantial genotype-dependent differences in the timing and distribution of these phenotypes, and trichomes continue to form asynchronously on developing bracts."
+      ],
+      "requiredLabels": [
+        "senescence",
+        "glandular trichome",
+        "capitate-stalked trichome",
+        "maturity indicator",
+        "harvest window"
+      ],
+      "misconceptionGuards": [
+        "A single amber-trichome percentage guarantees the same cannabinoid profile in every cultivar.",
+        "All trichomes on a cannabis flower mature at the same time."
+      ],
+      "sourceAnchors": [
+        "Punja ZK et al. (2023). Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high THC-containing cannabis (Cannabis sativa L.) inflorescences. Journal of Cannabis Research 5:12. Documents asynchronous trichome development, genotype/age effects, browning, senescence, collapse, and postharvest morphological changes.",
+        "Characterization of trichome phenotypes to assess maturation and flower development in Cannabis sativa L. by automatic trichome gland analysis. Smart Agricultural Technology 3 (2023):100111. Quantified clear, milky, and brown gland-head phenotypes across flowering time and multiple strains.",
+        "Determination of Optimal Harvest Time in Cannabis sativa L. Based upon Stigma Color Transition (2025). Compared stigma-color stages with LC-MS cannabinoid measurements across 25 genotypes and found the visual rule useful as an approximation for many, but not all, genotypes.",
+        "Public wording does not equate trichome or stigma color with a universal chemical endpoint."
+      ],
+      "altTextDraft": "Labeled anatomy for Flower Senescence and Maturity Indicators, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Flower Senescence and Maturity Indicators. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-219_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-219_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    },
+    {
+      "queueId": "ENC-VIS-228",
+      "lessonId": "THC-ENC-228",
+      "number": 228,
+      "title": "Olivetolic Acid Formation",
+      "visualType": "Process sequence",
+      "visualFamily": "mechanism-process-diagram",
+      "visualPriorityScore": 18,
+      "purpose": "Teach the learner to describe formation of the olivetolic-acid polyketide nucleus through tetraketide synthase and olivetolic acid cyclase, and distinguish established enzyme chemistry from unresolved intact-plant pathway control.",
+      "accuracyRequirements": [
+        "Olivetolic acid provides the aromatic polyketide nucleus used to form major pentyl cannabinoids. Its carbon skeleton is assembled from hexanoyl-CoA plus three malonyl-CoA extender units by the cannabis type III polyketide synthase commonly called tetraketide synthase.",
+        "TKS alone does not efficiently produce olivetolic acid because its linear polyketide intermediate can cyclize into alternative products. In 2012, Gagne and colleagues identified olivetolic acid cyclase from cannabis glandular-trichome transcriptomes and showed that TKS plus OAC is required to direct the characteristic C2-C7 aldol cyclization with carboxylate retention that forms olivetolic acid.",
+        "Structural work later resolved OAC as an unusual plant polyketide cyclase with a hydrophobic pocket and active-site geometry suited to the pentyl tetraketide substrate. This provides direct mechanistic evidence for cyclization rather than treating OAC as a pathway annotation inferred only from sequence."
+      ],
+      "requiredLabels": [
+        "olivetolic acid",
+        "tetraketide synthase",
+        "olivetolic acid cyclase",
+        "malonyl-CoA",
+        "aldol cyclization"
+      ],
+      "misconceptionGuards": [
+        "Olivetolic acid forms spontaneously from hexanoate in cannabis trichomes.",
+        "Tetraketide synthase alone performs all chemistry needed to make olivetolic acid efficiently."
+      ],
+      "sourceAnchors": [
+        "Gagne SJ, Stout JM, Liu E, Boubakir Z, Clark SM, Page JE. (2012). Identification of olivetolic acid cyclase from Cannabis sativa reveals a unique catalytic route to plant polyketides. PNAS 109:12811–12816. Demonstrated that cannabis TKS requires OAC to direct formation of olivetolic acid from the linear tetraketide intermediate.",
+        "Yang X et al. (2016). Structural basis for olivetolic acid formation by a polyketide cyclase from Cannabis sativa. FEBS Journal. Resolved OAC apo and OAC-bound structures and identified active-site features supporting its C2-C7 aldol cyclization mechanism.",
+        "Stout JM et al. (2012). The Plant Journal 71:353–365. Established the hexanoyl-CoA precursor context feeding the polyketide branch.",
+        "The controlled Volume 12 source explicitly separates established enzyme chemistry from unknown intact-crop control coefficients."
+      ],
+      "altTextDraft": "Process sequence for Olivetolic Acid Formation, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.",
+      "captionDraft": "Olivetolic Acid Formation. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.",
+      "targetFilename": "THC-ENC-228_teaching-visual-v1.png",
+      "targetRepositoryPath": "site/wordpress/assets/infographics/THC-ENC-228_teaching-visual-v1.png",
+      "requiredReviews": {
+        "science": "pending",
+        "accessibility": "pending",
+        "provenance": "pending",
+        "responsive": "pending",
+        "finalAssetQa": "pending"
+      }
+    }
+  ]
+}
