@@ -10,7 +10,7 @@ on:
       - main
     paths:
       - scripts/attach-wordpress-encyclopedia-visuals.mjs
-      - scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
+      - 'scripts/publish-wordpress-encyclopedia-*.mjs'
       - scripts/build-encyclopedia-full-publication-manifest.mjs
       - content/encyclopedia/review/owner-publication-authorization-2026-10-03.json
       - scripts/verify-wordpress-encyclopedia-full-live.mjs
@@ -18,7 +18,9 @@ on:
       - scripts/build-encyclopedia-teaching-visuals.mjs
       - scripts/build-encyclopedia-visual-production-queue.mjs
       - package.json
-      - site/wordpress/education/encyclopedia/volume03-visual-map.json
+      - 'site/wordpress/education/encyclopedia/**'
+      - '.github/workflows/wordpress-encyclopedia-visuals-production.yml'
+      - '.github/workflows/wordpress-encyclopedia-production.yml'
   workflow_dispatch:
 
 concurrency:
