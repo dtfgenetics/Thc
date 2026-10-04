@@ -24,7 +24,7 @@ async function verify(id){
       const html=await res.text();
       if(!res.ok) throw new Error(`HTTP ${res.status}`);
       if(!html.includes(`data-thc-encyclopedia-id="${id}"`)) throw new Error('missing canonical lesson marker');
-      if(!html.includes('<h2>Terms to know</h2>')) throw new Error('missing terms section');
+      if(!html.includes('Key concepts · Terms to know')) throw new Error('missing key concepts / terms section');
       verified+=1; return;
     }catch(error){last=String(error?.message||error); if(attempt<attempts) await sleep(1200*attempt);}
   }
