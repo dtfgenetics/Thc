@@ -54,7 +54,7 @@ async function wp(endpoint){
   throw lastError;
 }
 async function findPage(slug,parent=null){
-  const {body}=await wp(`/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=100`);
+  const {body}=await wp(`/pages?slug=${encodeURIComponent(slug)}&context=edit&status=publish&per_page=100`);
   const rows=Array.isArray(body)?body:[];
   return rows.find(x=>parent===null||Number(x.parent)===Number(parent))||null;
 }
