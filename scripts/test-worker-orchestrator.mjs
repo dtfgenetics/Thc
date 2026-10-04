@@ -15,6 +15,7 @@ import { inspectContractScope, validateAgentContract, verificationProfileFromCon
 import { inspectAcceptanceContract, normalizeAcceptanceCriterion } from './orchestrator/acceptance.mjs'
 import { classifyVerificationFailure } from './orchestrator/verification.mjs'
 import { applyRepairPlan, planRepair } from './orchestrator/repair.mjs'
+import { recordDeploymentComplete, recordLiveVerification, startProductionRelease } from './orchestrator/release.mjs'
 import { buildOperatorStatus } from './orchestrator/operator-status.mjs'
 
 const config = validateConfig({
@@ -705,3 +706,14 @@ assert.equal(blockPlan.state, 'BLOCKED')
 const exhausted = { ...repairJob, attempt:3 }
 const exhaustedPlan = planRepair(exhausted, testFailure, retryConfig)
 assert.equal(exhaustedPlan.state, 'QUARANTINED')
+
+
+const productionJob = newJob({ jobId:'prod-1', title:'ship it', state:'PRODUCTION_READY', productionImpact:true, productionTargets:['route:/learn/'], acceptanceCriteria:[{type:'production-live',target:'route:/learn/'}] })
+const deploying = startProductionRelease(productionJob,{workflowRunId:9001,sourceSha:'abc123',now:'2026-10-04T01:00:00.000Z'})
+assert.equal(deploying.state,'DEPLOYING')
+const live = recordDeploymentComplete(deploying,{workflowRunId:9001,conclusion:'success',now:'2026-10-04T01:05:00.000Z'})
+assert.equal(live.state,'LIVE_VERIFYING')
+const done = recordLiveVerification(live,{workflowRunId:9001,sourceSha:'abc123',checks:[{target:'/learn/',ok:true}],now:'2026-10-04T01:06:00.000Z'})
+assert.equal(done.state,'DONE')
+assert.throws(()=>recordLiveVerification(live,{workflowRunId:9001,sourceSha:'wrong',checks:[{target:'/learn/',ok:true}]}),/does not match release source/)
+assert.throws(()=>recordDeploymentComplete(deploying,{workflowRunId:9001,conclusion:'failure'}),/must be success/)
