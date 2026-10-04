@@ -4,6 +4,8 @@ import path from 'node:path';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 
 const root=process.cwd();
+const ownerAuthorizationPath=path.join(root,'content','encyclopedia','review','owner-publication-authorization-2026-10-03.json');
+const ownerAuthorization=JSON.parse(fs.readFileSync(ownerAuthorizationPath,'utf8'));
 const outPath=process.env.ENCYCLOPEDIA_FULL_BATCH_FILE||path.join(root,'site','wordpress','education','encyclopedia','full-420-production-batch.generated.json');
 const lessons=readCanonicalEncyclopediaLessons(root).sort((a,b)=>Number(a.number)-Number(b.number));
 if(lessons.length!==420) throw new Error(`Expected 420 canonical lessons; found ${lessons.length}.`);
@@ -12,18 +14,38 @@ const expected=Array.from({length:420},(_,i)=>`THC-ENC-${String(i+1).padStart(3,
 if(new Set(ids).size!==420||expected.some((id,i)=>ids[i]!==id)) throw new Error('Canonical lesson set must be ordered THC-ENC-001 through THC-ENC-420.');
 const authorizedLessons=[];
 const heldLessons=[];
+const ownerOverrideLessonIds=[];
 for(const lesson of lessons){
   if(!lesson.__path||!fs.existsSync(path.join(root,lesson.__path))) throw new Error(`${lesson.id}: canonical source path missing.`);
-  const publicationAuthorized=lesson.reviewControl?.publicationAuthorized ?? lesson.publicationAuthorized ?? false;
-  if(publicationAuthorized===true) authorizedLessons.push(lesson);
-  else heldLessons.push({id:lesson.id,reason:lesson.reviewControl?.websiteAction||'publication_not_authorized'});
+  const control=lesson.reviewControl||{};
+  const publicationAuthorized=control.publicationAuthorized ?? lesson.publicationAuthorized ?? false;
+  const releaseTimeReview=String(control.releaseTimeReview||'');
+  const explicitSafetyHold=control.safetyHold===true || lesson.safetyHold===true;
+  const eligibleForOwnerOverride=
+    ownerAuthorization.publicationAuthorized===true &&
+    ownerAuthorization.independentApproval===false &&
+    releaseTimeReview.startsWith(ownerAuthorization.eligibility?.requireReleaseTimeReviewPrefix||'completed_') &&
+    !explicitSafetyHold &&
+    control.independentApproval!==true;
+  if(publicationAuthorized===true){
+    authorizedLessons.push(lesson);
+  }else if(eligibleForOwnerOverride){
+    authorizedLessons.push(lesson);
+    ownerOverrideLessonIds.push(lesson.id);
+  }else{
+    heldLessons.push({id:lesson.id,reason:explicitSafetyHold?'explicit_safety_hold':(control.websiteAction||'publication_not_authorized')});
+  }
 }
 if(!authorizedLessons.length) throw new Error('No encyclopedia lessons are currently publication-authorized.');
+if(ownerOverrideLessonIds.length && ownerAuthorization.authorizedBy!=='project_owner') throw new Error('Owner override requires project_owner authorization.');
 const output={
   schemaVersion:1,
   batch:'full-420-canonical-sync',
   status:'owner_authorized_external_review_pending',
   publicationAuthorized:true,
+  ownerPublicationOverride:true,
+  ownerPublicationAuthorizationId:ownerAuthorization.authorizationId,
+  ownerOverrideLessonIds,
   generatedAt:new Date().toISOString(),
   source:{
     controlledCatalogueVersion:'Master Content Map v1.1',
@@ -34,9 +56,10 @@ const output={
   publicationAuthorizedLessonCount:authorizedLessons.length,
   heldLessonCount:heldLessons.length,
   heldLessons,
+  ownerOverrideLessonCount:ownerOverrideLessonIds.length,
   lessonFiles:authorizedLessons.map(x=>x.__path)
 };
 fs.mkdirSync(path.dirname(outPath),{recursive:true});
 fs.writeFileSync(outPath,JSON.stringify(output,null,2)+'\n');
-console.log(`Encyclopedia publication manifest: ${output.lessonFiles.length}/420 authorized lessons · ${output.heldLessonCount} held`);
+console.log(`Encyclopedia publication manifest: ${output.lessonFiles.length}/420 publishable lessons · ${output.ownerOverrideLessonCount} owner-authorized override(s) · ${output.heldLessonCount} held`);
 console.log(path.relative(root,outPath));

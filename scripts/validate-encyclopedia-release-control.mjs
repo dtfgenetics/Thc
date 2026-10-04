@@ -9,12 +9,20 @@ if (!manifest.batch || !Array.isArray(manifest.lessonFiles) || !manifest.lessonF
 }
 
 const reviewOnly = manifest.publicationAuthorized === false || manifest.status === 'blocked_external_review';
+const ownerOverrideIds=new Set(Array.isArray(manifest.ownerOverrideLessonIds)?manifest.ownerOverrideLessonIds:[]);
+if(ownerOverrideIds.size && manifest.ownerPublicationOverride!==true) throw new Error('Owner override lesson IDs require ownerPublicationOverride=true.');
 const records = [];
 for (const file of manifest.lessonFiles) {
   const lesson = JSON.parse(await readFile(file, 'utf8'));
   const control = lesson.reviewControl || {};
-  records.push({ id: lesson.id, file, publicationAuthorized: control.publicationAuthorized, externalReview: control.externalReview });
-  if (!reviewOnly && control.publicationAuthorized === false) {
+  const ownerOverride=ownerOverrideIds.has(lesson.id);
+  records.push({ id: lesson.id, file, publicationAuthorized: control.publicationAuthorized, externalReview: control.externalReview, ownerOverride });
+  if(ownerOverride){
+    if(!String(control.releaseTimeReview||'').startsWith('completed_')) throw new Error(`${lesson.id}: owner publication override requires completed releaseTimeReview`);
+    if(control.independentApproval===true) throw new Error(`${lesson.id}: owner override must not be used to represent independent approval`);
+    if(control.safetyHold===true||lesson.safetyHold===true) throw new Error(`${lesson.id}: explicit safety hold cannot be owner-overridden by this manifest`);
+  }
+  if (!reviewOnly && control.publicationAuthorized === false && !ownerOverride) {
     throw new Error(`${lesson.id} is blocked from publication by reviewControl.publicationAuthorized=false`);
   }
 }
@@ -28,4 +36,4 @@ if (reviewOnly) {
   process.exit(0);
 }
 
-console.log(`PUBLICATION-CONTROL PASS: ${manifest.batch}; ${records.length} lessons do not carry an explicit publication block.`);
+console.log(`PUBLICATION-CONTROL PASS: ${manifest.batch}; ${records.length} lessons publishable; ${records.filter(x=>x.ownerOverride).length} owner-authorized override(s); independent approval remains separate.`);
