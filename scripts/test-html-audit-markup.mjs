@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { stripNonRenderedMarkup } from './lib/html-audit-markup.mjs';
 
 const html=`<!doctype html>
@@ -17,4 +18,6 @@ assert.match(rendered,/href="\/visible\/"/);
 assert.doesNotMatch(rendered,/grow-planner/);
 assert.doesNotMatch(rendered,/template-only/);
 assert.doesNotMatch(rendered,/style title/);
+const visualAudit=await readFile(new URL('./audit-sitewide-visual-integrity.mjs',import.meta.url),'utf8');
+assert.match(visualAudit,/const h1=count\(rendered,\/<h1\\b\/gi\);/);
 console.log('html audit markup tests passed');
