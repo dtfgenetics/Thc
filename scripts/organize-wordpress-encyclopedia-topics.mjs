@@ -99,10 +99,10 @@ async function upsert({slug,title,content,excerptText}){
 }
 
 try{
+  // The Learning Center publisher is the sole owner of /learn/encyclopedia/.
+  // This organizer owns only subject-hub children so it cannot overwrite the
+  // searchable 420+ root experience after a lesson/topic publication run.
   for(const topic of active){await upsert({slug:topic.slug,title:topic.title,content:hubHtml(topic,articlesByTopic.get(topic.slug)),excerptText:`Browse published THC encyclopedia lessons for ${topic.title}.`});}
-  backups.push({id:encyclopedia.id,slug:encyclopedia.slug,title:encyclopedia.title?.raw||encyclopedia.title?.rendered||'',content:encyclopedia.content?.raw||'',excerpt:encyclopedia.excerpt?.raw||'',status:encyclopedia.status});
-  await wp(`/pages/${encyclopedia.id}`,{method:'POST',body:{title:'Cannabis Plant Science Encyclopedia',status:'publish',content:indexHtml(active,future,articlesByTopic),excerpt:`Browse ${articles.length} published THC plant-science lessons by topic.`,comment_status:'closed'}});
-  updated.push({id:encyclopedia.id,slug:'encyclopedia',link:encyclopedia.link});
 }catch(error){
   for(const b of [...backups].reverse()){
     try{await wp(`/pages/${b.id}`,{method:'POST',body:{title:b.title,content:b.content,excerpt:b.excerpt,status:b.status}});}catch{}
@@ -114,7 +114,7 @@ try{
 }
 
 await writeFile(path.join(backupDir,'pre-write-pages.json'),JSON.stringify(backups,null,2));
-const report={articleCount:articles.length,activeTopics:active.map(t=>({part:t.part,slug:t.slug,title:t.title,lessonCount:articlesByTopic.get(t.slug).length,visualCount:articlesByTopic.get(t.slug).filter(hasVisual).length})),futureTopics:future.map(t=>({part:t.part,slug:t.slug,title:t.title})),updated,created,backupDir,generatedAt:new Date().toISOString()};
+const report={articleCount:articles.length,rootOwner:'learning-center-publisher',rootPreserved:true,activeTopics:active.map(t=>({part:t.part,slug:t.slug,title:t.title,lessonCount:articlesByTopic.get(t.slug).length,visualCount:articlesByTopic.get(t.slug).filter(hasVisual).length})),futureTopics:future.map(t=>({part:t.part,slug:t.slug,title:t.title})),updated,created,backupDir,generatedAt:new Date().toISOString()};
 await writeFile(path.join(backupDir,'encyclopedia-topic-organization-report.json'),JSON.stringify(report,null,2));
 await writeFile(path.join(backupRoot,'latest-backup-path.txt'),backupDir+'\n');
 console.log(JSON.stringify(report,null,2));
