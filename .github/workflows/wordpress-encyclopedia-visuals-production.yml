@@ -141,6 +141,7 @@ jobs:
           echo "report=$report" >> "$GITHUB_OUTPUT"
           echo "count=$(node -p "require(process.argv[1]).lessonVisualsAttached" "$report")" >> "$GITHUB_OUTPUT"
           echo "reused=$(node -p "require(process.argv[1]).existingWordPressMediaReused" "$report")" >> "$GITHUB_OUTPUT"
+          echo "canonical=$(node -p "require(process.argv[1]).existingCanonicalRepositoryAssetsReused||0" "$report")" >> "$GITHUB_OUTPUT"
           echo "uploads=$(node -p "require(process.argv[1]).newMediaUploads" "$report")" >> "$GITHUB_OUTPUT"
 
       - name: Verify all publication-authorized visitor-facing lesson visuals
@@ -177,8 +178,9 @@ jobs:
           const marker=`data-thc-lesson-visual-id="${id}"`;
           const count=html.split(marker).length-1;
           if(count!==1) throw new Error(`${id}: expected one rendered visual marker, found ${count}`);
-          if(!html.includes('/wp-content/uploads/')) throw new Error(`${id}: rendered page has no WordPress upload image.`);
-          if(!html.includes(mediaUrl) && !html.toLowerCase().includes(mediaSlug.toLowerCase())) throw new Error(`${id}: expected mapped media is not rendered.`);
+          const allowedOrigin=mediaUrl.startsWith('https://dtfseeds.com/wp-content/uploads/')||mediaUrl.startsWith('https://raw.githubusercontent.com/dtfgenetics/Thc/main/site/wordpress/assets/infographics/');
+          if(!allowedOrigin) throw new Error(`${id}: mapped visual URL is outside approved production origins.`);
+          if(!html.includes(mediaUrl)) throw new Error(`${id}: expected mapped media URL is not rendered.`);
           console.log(`${id}: visitor visual verified`);
           NODE
                 then ok=1; break; fi
@@ -208,6 +210,7 @@ jobs:
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
           COUNT: ${{ steps.publish.outputs.count }}
           REUSED: ${{ steps.publish.outputs.reused }}
+          CANONICAL: ${{ steps.publish.outputs.canonical }}
           UPLOADS: ${{ steps.publish.outputs.uploads }}
         run: |
           {
@@ -220,6 +223,7 @@ jobs:
             echo "- Authorized-page visitor visual verification: **${VERIFY_OUTCOME:-not-run}**"
             echo "- Lesson visuals attached: **${COUNT:-0}**"
             echo "- Existing WordPress media reused: **${REUSED:-0}**"
+            echo "- Canonical repository assets reused: **${CANONICAL:-0}**"
             echo "- New media uploads: **${UPLOADS:-0}**"
             echo '- Review control: website publication and visual placement do not represent independent lesson approval.'
           } >> "$GITHUB_STEP_SUMMARY"
