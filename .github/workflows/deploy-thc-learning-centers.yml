@@ -256,6 +256,8 @@ jobs:
           grep -Fq 'data-dtf-learning-search-runtime="mu-v1"' "$search_live"
           grep -Fq 'data-dtf-learning-search-bootstrap="mu-v1"' "$search_live"
           grep -Fq 'dtf-learning/v1/index/search' "$search_live"
+          grep -Fq 'DTF-SERVER-SEARCH-FALLBACK' "$search_live"
+          grep -Fq 'data-dtf-server-fallback="search"' "$search_live"
 
           encyclopedia_live="$RUNNER_TEMP/learn-encyclopedia.html"
           curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
@@ -264,6 +266,9 @@ jobs:
           grep -Fq 'data-dtf-learning-search-runtime="mu-v1"' "$encyclopedia_live"
           grep -Fq 'data-dtf-learning-search-bootstrap="mu-v1"' "$encyclopedia_live"
           grep -Fq 'dtf-learning/v1/index/encyclopedia' "$encyclopedia_live"
+          grep -Fq 'DTF-SERVER-SEARCH-FALLBACK' "$encyclopedia_live"
+          grep -Fq 'data-dtf-server-fallback="encyclopedia"' "$encyclopedia_live"
+          grep -Fq 'All published encyclopedia lessons' "$encyclopedia_live"
 
           search_health="$RUNNER_TEMP/learning-search-health-final.json"
           curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 2 \
