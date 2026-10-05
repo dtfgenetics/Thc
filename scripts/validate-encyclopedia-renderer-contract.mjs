@@ -39,7 +39,9 @@ const required=[
   ['tablet breakpoint','@media(max-width:900px)'],
   ['horizontal table overflow','overflow-x:auto'],
   ['print/offline reading support','@media print'],
-  ['stable lesson visual anchor','<!-- THC-ENC-VISUAL-ANCHOR -->']
+  ['stable lesson visual anchor','<!-- THC-ENC-VISUAL-ANCHOR -->'],
+  ['durable lesson visual preservation marker','data-thc-lesson-visual-id='],
+  ['durable lesson visual figure fallback','lessonVisualFigurePattern']
 ];
 for(const [label,needle] of required)if(!src.includes(needle))errors.push('renderer missing '+label);
 if(src.includes('fake visual')||src.includes('placeholder teaching visual'))errors.push('renderer must not emit fake visual placeholders');

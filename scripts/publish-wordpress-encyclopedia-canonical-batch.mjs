@@ -204,16 +204,21 @@ async function allChildren(parent){
 }
 
 const backups=[];
-const lessonVisualPattern=/<!-- THC-ENC-VISUAL:THC-ENC-\d{3,} START -->[\s\S]*?<!-- THC-ENC-VISUAL:THC-ENC-\d{3,} END -->/i;
+const lessonVisualCommentPattern=/<!-- THC-ENC-VISUAL:THC-ENC-\d{3,} START -->[\s\S]*?<!-- THC-ENC-VISUAL:THC-ENC-\d{3,} END -->/i;
+const lessonVisualFigurePattern=/<figure\b[^>]*class=["'][^"']*\bthc-lesson-visual\b[^"']*["'][^>]*data-thc-lesson-visual-id=["']THC-ENC-\d{3,}["'][^>]*>[\s\S]*?<\/figure>/i;
+function existingLessonVisualBlock(raw){
+  const text=String(raw||'');
+  return text.match(lessonVisualCommentPattern)?.[0]||text.match(lessonVisualFigurePattern)?.[0]||null;
+}
 function preserveExistingLessonVisual(slug,existing,content){
   if(!/^thc-enc-\d{3,}$/.test(String(slug||''))||!existing) return content;
   const raw=String(existing.content?.raw||'');
-  const match=raw.match(lessonVisualPattern);
-  if(!match||String(content).includes('THC-ENC-VISUAL:')) return content;
+  const visual=existingLessonVisualBlock(raw);
+  if(!visual||String(content).includes('data-thc-lesson-visual-id=')) return content;
   const anchor='<!-- THC-ENC-VISUAL-ANCHOR -->';
   const idx=String(content).indexOf(anchor);
   if(idx<0) return content;
-  return String(content).slice(0,idx)+match[0]+'\n'+String(content).slice(idx);
+  return String(content).slice(0,idx)+visual+'\n'+String(content).slice(idx);
 }
 async function upsertPage({slug,title,parent,content,excerpt=''}){
   const existing=await findPage(slug,parent);
