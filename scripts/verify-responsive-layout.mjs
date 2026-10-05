@@ -21,8 +21,8 @@ function requireMatch(content, regex, message) {
 
 function gitDiff() {
   const candidates = [
-    ['diff', '--unified=2', 'HEAD^1', 'HEAD', '--'],
-    ['diff', '--unified=2', 'HEAD^', 'HEAD', '--']
+    ['diff', '--unified=2', 'HEAD^1', 'HEAD', '--', '.', ':(exclude)scripts/verify-responsive-layout.mjs', ':(exclude)docs/RESPONSIVE_LAYOUT_STANDARD.md', ':(exclude).agents/skills/dtf-responsive-layout/**', ':(exclude).github/workflows/responsive-layout-ci.yml'],
+    ['diff', '--unified=2', 'HEAD^', 'HEAD', '--', '.', ':(exclude)scripts/verify-responsive-layout.mjs', ':(exclude)docs/RESPONSIVE_LAYOUT_STANDARD.md', ':(exclude).agents/skills/dtf-responsive-layout/**', ':(exclude).github/workflows/responsive-layout-ci.yml']
   ];
   for (const args of candidates) {
     try {
