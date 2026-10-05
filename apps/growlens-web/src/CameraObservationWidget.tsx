@@ -22,6 +22,7 @@ import {
   type AuthenticatedSession,
 } from './remoteStore';
 import { createId, loadState, saveState } from './storage';
+import type { ObservationPlantLocation, ObservationSeverity, ObservationTissue } from './types';
 import {
   createGrowLensObservationArtifacts,
   publishGrowLensCanonicalObservation,
@@ -42,6 +43,9 @@ export default function CameraObservationWidget() {
   const modalRef = useModalFocusTrap<HTMLElement>(open, () => setOpen(false));
   const [plantId, setPlantId] = useState('');
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
+  const [severity, setSeverity] = useState<ObservationSeverity | ''>('');
+  const [locationOnPlant, setLocationOnPlant] = useState<ObservationPlantLocation | ''>('');
+  const [tissue, setTissue] = useState<ObservationTissue | ''>('');
   const [notes, setNotes] = useState('');
   const [processed, setProcessed] = useState<ProcessedImage | null>(null);
   const [previewUrl, setPreviewUrl] = useState('');
@@ -183,6 +187,9 @@ export default function CameraObservationWidget() {
         symptoms: selectedSymptoms,
         notes,
         candidateDifferentials: diagnosisResults.map((result) => result.cause),
+        severity,
+        locationOnPlant,
+        tissue,
         photoIds: [photoId],
         observedAt: capturedAt,
       }, current);
@@ -213,6 +220,9 @@ export default function CameraObservationWidget() {
       setSourceName('');
       setNotes('');
       setSelectedSymptoms([]);
+      setSeverity('');
+      setLocationOnPlant('');
+      setTissue('');
       setMessage(uploaded
         ? 'Observation saved locally and uploaded privately.'
         : 'Observation saved locally. Private upload remains pending.');
@@ -312,6 +322,9 @@ export default function CameraObservationWidget() {
                 <label className="camera-file-input">Photo<input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleFile} /><span>{busy ? 'Processing…' : 'Use camera or choose photo'}</span></label>
                 {previewUrl ? <figure className="camera-preview"><img src={previewUrl} alt="Prepared plant observation" /><figcaption>{sourceName} · metadata removed by re-encoding</figcaption></figure> : null}
                 <fieldset className="symptom-grid"><legend>Visible symptoms</legend>{symptomOptions.map(([code, label]) => <label className={selectedSymptoms.includes(code) ? 'symptom-option selected' : 'symptom-option'} key={code}><input type="checkbox" checked={selectedSymptoms.includes(code)} onChange={() => toggleSymptom(code)} /><span>{label}</span></label>)}</fieldset>
+                <label>Observed severity<select value={severity} onChange={(event) => setSeverity(event.target.value as ObservationSeverity | '')}><option value="">Not recorded</option><option value="mild">Mild</option><option value="moderate">Moderate</option><option value="severe">Severe</option></select></label>
+                <label>Location on plant<select value={locationOnPlant} onChange={(event) => setLocationOnPlant(event.target.value as ObservationPlantLocation | '')}><option value="">Not recorded</option><option value="new-growth">New growth</option><option value="upper-canopy">Upper canopy</option><option value="middle-canopy">Middle canopy</option><option value="lower-canopy">Lower canopy</option><option value="whole-plant">Whole plant</option><option value="flowers">Flowers</option><option value="root-zone">Root zone</option></select></label>
+                <label>Observed tissue<select value={tissue} onChange={(event) => setTissue(event.target.value as ObservationTissue | '')}><option value="">Not recorded</option><option value="leaf">Leaf</option><option value="stem">Stem</option><option value="flower">Flower</option><option value="root">Root</option><option value="whole-plant">Whole plant</option></select></label>
                 <label>Context notes<textarea rows={4} value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Location, progression, recent changes, pH/EC, pests, irrigation…" /></label>
                 <button className="primary-button" type="submit" disabled={busy || !processed}>{busy ? 'Saving…' : 'Save photo observation'}</button>
               </form>
