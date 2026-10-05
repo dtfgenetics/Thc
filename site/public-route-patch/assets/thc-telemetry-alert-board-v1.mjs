@@ -50,7 +50,8 @@ const cell=(doc,row,value)=>{
 export function mountTelemetryAlertBoard({
   container,
   getRecords=()=>[],
-  getRules=()=>[]
+  getRules=()=>[],
+  onEvaluated=()=>{}
 }={}){
   if(!container||typeof container.querySelector!=='function')throw new Error('Telemetry alert board requires a container.');
   container.innerHTML=
@@ -98,6 +99,7 @@ export function mountTelemetryAlertBoard({
       cell(doc,row,item.count);
       body.appendChild(row);
     }
+    try{onEvaluated(model)}catch(error){console.error('Telemetry alert evaluation callback failed.',error)}
     status.textContent=model.summary.active
       ? model.summary.active+' active alert'+(model.summary.active===1?'':'s')+'. Review the affected devices before changing conditions.'
       : model.summary.pending

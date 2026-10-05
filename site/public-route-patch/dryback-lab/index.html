@@ -23,7 +23,9 @@
 <section class="section panel"><h2>Irrigation / dryback history trend</h2><div class="fields"><div class="field"><label for="dryTrendSensor">Sensor / position</label><select id="dryTrendSensor"><option value="">All identifiers</option></select></div><div class="field"><label for="dryTrendMetric">Trend metric</label><select id="dryTrendMetric"><option value="dryback">Dryback</option><option value="rate">Dryback rate</option><option value="rootEc">Root-zone EC</option><option value="ecDelta">Root-feed EC delta</option><option value="shot">Shot size</option><option value="drainage">Drainage</option></select></div></div><div id="drybackChart" style="min-height:300px" aria-label="Saved irrigation and dryback history trend"></div><p class="muted" id="dryTrendStatus">Save repeated events to build a trend. Dryback view overlays the user-entered target band saved with each event; root EC view can overlay feed EC.</p></section>
 <section class="section panel"><h2>Recent irrigation events</h2><div class="table-wrap" tabindex="0" aria-label="Saved dryback events"><table><thead><tr><th>Time</th><th>Zone</th><th>Identifier</th><th>Steering</th><th>Event</th><th>Feed</th><th>Root EC</th><th>Dryback</th><th>Shot</th><th>Drainage</th></tr></thead><tbody id="dryRows"></tbody></table></div></section>
 <section class="section grid2"><div class="panel"><h2>Weight mode</h2><p class="muted">Use the same container, scale, plant position and reference definition. The low/reference weight is not automatically equivalent to “zero water.”</p></div><div class="panel"><h2>VWC mode</h2><p class="muted">When using a substrate sensor, enter VWC or the sensor’s consistent water-content value directly. Compare readings only when probe placement and substrate configuration remain comparable.</p></div></section>
+<section class="section panel" id="connected-substrate-provider"><h2>Connected substrate provider</h2><p class="muted">Read normalized VWC/EC telemetry through the same-origin provider gateway. Provider API keys remain server-side and are never entered into this page. The browser only performs read requests; loading telemetry updates the form and detector but never saves an irrigation event or controls hardware.</p><div class="fields"><div class="field"><label for="dryProviderSelect">Provider</label><select id="dryProviderSelect"><option value="">Choose configured provider</option></select></div><div class="field"><label for="dryProviderDevice">Device / sensor</label><select id="dryProviderDevice"><option value="">Choose device</option></select></div><div class="field"><label for="dryProviderInterval">Polling interval (seconds)</label><input id="dryProviderInterval" type="number" min="10" max="3600" step="10" value="60"></div></div><div class="toolbar"><button class="btn" id="refreshDryProviders" type="button">Refresh providers</button><button class="btn" id="loadDryProviderDevices" type="button">Load devices</button><button class="btn primary" id="loadDryProviderReading" type="button">Load latest reading</button><button class="btn" id="startDryProviderPolling" type="button">Start read-only polling</button><button class="btn" id="stopDryProviderPolling" type="button" disabled>Stop polling</button></div><div class="metric-grid section"><div class="metric"><b id="dryProviderSource">—</b><span>provider</span></div><div class="metric"><b id="dryProviderMetricCount">0</b><span>mapped metrics</span></div><div class="metric"><b id="dryProviderLastSeen">—</b><span>latest observation</span></div></div><div class="result" id="dryProviderStatus" aria-live="polite"><strong>No authenticated provider loaded.</strong><br><span class="muted">This requires the same-origin telemetry gateway to be deployed with provider credentials stored on the server.</span></div></section>
 <section class="section"><div id="liveToolAdapter"></div></section>
+<section class="section panel"><h2>Automatic irrigation-event candidates</h2><p class="muted">When live VWC packets arrive, the browser can flag a rapid water-content rise as a possible irrigation event. This is a detection aid only: it does not know applied volume, runoff, emitter state, or whether the rise came from irrigation, probe movement, re-seating, or another disturbance.</p><div class="fields"><div class="field"><label><input id="autoDetectIrrigation" type="checkbox" checked> Detect candidates from live VWC rise</label></div><div class="field"><label for="irrigationRiseThreshold">Minimum VWC rise (percentage points)</label><input id="irrigationRiseThreshold" type="number" min=".1" max="100" step=".1" value="2"></div><div class="field"><label for="irrigationCooldownMin">Minimum time between candidates per sensor (minutes)</label><input id="irrigationCooldownMin" type="number" min="0" max="1440" step="1" value="10"></div><div class="field"><label for="irrigationMaxGapMin">Maximum packet gap for rise detection (minutes)</label><input id="irrigationMaxGapMin" type="number" min="1" max="1440" step="1" value="30"></div></div><div class="metric-grid section"><div class="metric"><b id="detectedIrrigationCount">0</b><span>saved candidates</span></div><div class="metric"><b id="latestIrrigationRise">—</b><span>latest VWC rise pp</span></div><div class="metric"><b id="latestIrrigationDevice">—</b><span>latest identifier</span></div><div class="metric"><b id="latestIrrigationTime">—</b><span>latest event time</span></div></div><div class="table-wrap" tabindex="0" aria-label="Sensor-detected irrigation event candidates"><table><thead><tr><th>Time</th><th>Zone</th><th>Identifier</th><th>Previous VWC</th><th>Current VWC</th><th>Rise</th><th>Root EC</th></tr></thead><tbody id="detectedIrrigationRows"></tbody></table></div><div class="toolbar"><button class="btn" id="exportDetectedIrrigation" type="button">Export candidates CSV</button><button class="btn" id="clearDetectedIrrigation" type="button">Clear candidates</button></div><div class="result" id="detectedIrrigationStatus" aria-live="polite"><strong>Detection ready.</strong><br><span class="muted">The first packet from each sensor establishes a baseline. A later rise at or above your threshold creates a candidate after the per-sensor cooldown.</span></div></section>
 </main><footer><div class="shell">Teaching Healthy Cultivation · Educational decision-support. Preserve measurement method, units, time and context with every record.</div></footer><script src="/assets/thc-tool-suite-v1.js"></script><script src="/assets/vendor/uplot-1.6.32.min.js"></script><script type="module">
 import {collectManualCultivationMeasurement} from '/assets/thc-cultivation-data-ui-v1.mjs';
 import {drybackPercent,ratePerHour} from '/assets/thc-cultivation-math-v1.mjs';
@@ -113,12 +115,137 @@ restoreDryback.addEventListener('change',async event=>{const file=event.target.f
 saveSteeringTemplate.onclick=saveSteering;loadSteeringTemplate.onclick=loadSteering;deleteSteeringTemplate.onclick=deleteSteering;refreshSteeringTemplates();saveFcProfile.onclick=saveReferenceProfile;loadFcProfile.onclick=loadReferenceProfile;deleteFcProfile.onclick=deleteReferenceProfile;refreshFcProfiles();
 dryZoneFilter.addEventListener('change',draw);dryTrendSensor.addEventListener('change',()=>renderDryTrend(filteredEvents()));dryTrendMetric.addEventListener('change',()=>renderDryTrend(filteredEvents()));window.addEventListener('resize',()=>renderDryTrend(filteredEvents()));printDry.onclick=()=>window.print();clearDryback.onclick=()=>{if(!events.length&&!profiles.length&&!templates.length){dryOut.insertAdjacentHTML('beforeend','<p class="muted">No saved dryback workspace data to clear.</p>');return}if(!confirm('Clear all saved dryback events, profiles and steering templates on this device?'))return;events=[];profiles=[];templates=[];THC.save(key,events);THC.save(profileKey,profiles);THC.save(templateKey,templates);refreshFcProfiles();refreshSteeringTemplates();draw();dryOut.insertAdjacentHTML('beforeend','<p class="muted">Dryback workspace cleared.</p>')};reloadFeedContext.onclick=()=>{feed=THC.load(handoffKey,null);renderFeed()};clearFeedContext.onclick=()=>{THC.save(handoffKey,null);feed=null;renderFeed()};renderFeed();render();draw();applyAutoPhase();
 </script><script type="module">
-import {mountLiveToolAdapter} from '/assets/thc-live-tool-adapter-v1.mjs';
+import {mountLiveToolAdapter,applyPacketFields} from '/assets/thc-live-tool-adapter-v1.mjs';
+import {createProviderTelemetryClient} from '/assets/thc-provider-client-v1.mjs';
+import {detectIrrigationCandidates} from '/assets/thc-irrigation-event-detection-v1.mjs';
+const THC=window.THC,detectionKey='thc-dryback-detected-irrigation-v1',packetBuffers=new Map();
+let detected=(Array.isArray(THC.load(detectionKey,[]))?THC.load(detectionKey,[]):[]).filter(x=>x&&typeof x.observedAt==='string'&&Number.isFinite(Number(x.deltaVwc))).slice(-500);
+const detectionEls={
+ enabled:document.getElementById('autoDetectIrrigation'),
+ threshold:document.getElementById('irrigationRiseThreshold'),
+ cooldown:document.getElementById('irrigationCooldownMin'),
+ maxGap:document.getElementById('irrigationMaxGapMin'),
+ rows:document.getElementById('detectedIrrigationRows'),
+ status:document.getElementById('detectedIrrigationStatus'),
+ count:document.getElementById('detectedIrrigationCount'),
+ rise:document.getElementById('latestIrrigationRise'),
+ device:document.getElementById('latestIrrigationDevice'),
+ time:document.getElementById('latestIrrigationTime')
+};
+const esc=v=>THC.esc(String(v??''));
+function renderDetected(){
+  const latest=detected.at(-1);
+  detectionEls.count.textContent=String(detected.length);
+  detectionEls.rise.textContent=latest?THC.fmt(latest.deltaVwc,2):'—';
+  detectionEls.device.textContent=latest?latest.deviceId:'—';
+  detectionEls.time.textContent=latest?new Date(latest.observedAt).toLocaleString():'—';
+  detectionEls.rows.innerHTML=detected.slice(-30).reverse().map(x=>'<tr><td>'+esc(new Date(x.observedAt).toLocaleString())+'</td><td>'+esc(x.zone)+'</td><td>'+esc(x.deviceId)+'</td><td>'+THC.fmt(x.previousVwc,2)+'</td><td>'+THC.fmt(x.currentVwc,2)+'</td><td>+'+THC.fmt(x.deltaVwc,2)+' pp</td><td>'+(x.rootEc==null?'—':THC.fmt(x.rootEc,2))+'</td></tr>').join('');
+}
+function lastDetectionFor(deviceId){return detected.slice().reverse().find(x=>x.deviceId===deviceId)||null}
+function observeIrrigationCandidate(packet){
+  const vwc=Number(packet?.metrics?.vwc),deviceId=String(packet?.deviceId||document.getElementById('sensorId')?.value||'Unspecified'),observedAt=String(packet?.observedAt||new Date().toISOString());
+  if(!Number.isFinite(vwc)||!Number.isFinite(Date.parse(observedAt)))return;
+  const buffer=packetBuffers.get(deviceId)||[];
+  buffer.push({observedAt,deviceId,zone:packet?.zone||document.getElementById('zone')?.value||'',metrics:{vwc}});
+  buffer.splice(0,Math.max(0,buffer.length-40));
+  packetBuffers.set(deviceId,buffer);
+  if(!detectionEls.enabled.checked)return;
+  const found=detectIrrigationCandidates(buffer,{minRise:Math.max(.1,Number(detectionEls.threshold.value)||2),maxGapMinutes:Math.max(1,Number(detectionEls.maxGap.value)||30),mergeWindowMinutes:0}),candidate=found.at(-1);
+  if(!candidate||candidate.endAt!==observedAt)return;
+  const last=lastDetectionFor(deviceId),cooldownMs=Math.max(0,Number(detectionEls.cooldown.value)||0)*60000,nowMs=Date.parse(observedAt);
+  if(last&&nowMs-Date.parse(last.observedAt)<cooldownMs)return;
+  const rootEcRaw=packet?.metrics?.rootEc??packet?.metrics?.ec??packet?.metrics?.substrateEc,rootEc=Number.isFinite(Number(rootEcRaw))?Number(rootEcRaw):null;
+  const record={id:'irrigation-candidate-'+(crypto.randomUUID?crypto.randomUUID():Date.now()),observedAt,zone:String(candidate.zone||document.getElementById('zone')?.value||'Unspecified').slice(0,120),deviceId:deviceId.slice(0,120),previousVwc:candidate.beforeVwc,currentVwc:candidate.afterVwc,deltaVwc:candidate.rise,packetGapMinutes:candidate.gapMinutes,rootEc,source:'generic-live-vwc',status:'candidate'};
+  detected.push(record);detected=detected.slice(-500);THC.save(detectionKey,detected);renderDetected();
+  detectionEls.status.innerHTML='<strong>Possible irrigation event detected.</strong><br><span class="muted">'+esc(deviceId)+' rose '+THC.fmt(candidate.rise,2)+' VWC percentage points across '+THC.fmt(candidate.gapMinutes,1)+' minutes. Review telemetry and irrigation records before treating this as a confirmed event.</span>';
+}
+document.getElementById('exportDetectedIrrigation').onclick=()=>THC.csv('dryback-detected-irrigation-candidates.csv',['timestamp,zone,identifier,previous_vwc,current_vwc,delta_vwc_pp,root_ec,source,status',...detected.map(x=>[x.observedAt,x.zone,x.deviceId,x.previousVwc,x.currentVwc,x.deltaVwc,x.rootEc??'',x.source,x.status].map(v=>'"'+String(v).replaceAll('"','""')+'"').join(','))]);
+document.getElementById('clearDetectedIrrigation').onclick=()=>{if(!detected.length)return;if(!confirm('Clear all saved sensor-detected irrigation candidates?'))return;detected=[];THC.save(detectionKey,detected);renderDetected();detectionEls.status.innerHTML='<strong>Detected candidates cleared.</strong>'};
+renderDetected();
+const providerClient=createProviderTelemetryClient();
+const providerUi={
+  provider:document.getElementById('dryProviderSelect'),
+  device:document.getElementById('dryProviderDevice'),
+  interval:document.getElementById('dryProviderInterval'),
+  status:document.getElementById('dryProviderStatus'),
+  source:document.getElementById('dryProviderSource'),
+  metricCount:document.getElementById('dryProviderMetricCount'),
+  lastSeen:document.getElementById('dryProviderLastSeen'),
+  start:document.getElementById('startDryProviderPolling'),
+  stop:document.getElementById('stopDryProviderPolling')
+};
+let providerTimer=null;
+function setProviderStatus(message,strong=''){providerUi.status.innerHTML=(strong?'<strong>'+esc(strong)+'</strong><br>':'')+'<span class="muted">'+esc(message)+'</span>'}
+function applyProviderPacket(packet){
+  observeIrrigationCandidate(packet);
+  const applied=applyPacketFields(packet,'dryback',id=>document.getElementById(id));
+  if(packet?.zone)document.getElementById('zone').value=packet.zone;
+  if(packet?.deviceId)document.getElementById('sensorId').value=packet.deviceId;
+  if(packet?.observedAt){
+    const d=new Date(packet.observedAt);
+    if(Number.isFinite(d.getTime()))document.getElementById('eventTime').value=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  }
+  if(Number.isFinite(Number(packet?.metrics?.vwc)))document.getElementById('mode').value='vwc';
+  document.getElementById('mode').dispatchEvent(new Event('input',{bubbles:true}));
+  providerUi.source.textContent=packet?.sourceId||providerUi.provider.value||'provider';
+  providerUi.metricCount.textContent=String(Object.keys(packet?.metrics||{}).length);
+  providerUi.lastSeen.textContent=packet?.observedAt?new Date(packet.observedAt).toLocaleString():'—';
+  const useful=['vwc','ec'].filter(key=>Number.isFinite(Number(packet?.metrics?.[key])));
+  setProviderStatus('Loaded '+Object.keys(applied).length+' mapped field'+(Object.keys(applied).length===1?'':'s')+'. '+(useful.length?'Substrate metrics: '+useful.join(', ')+'. ':'No VWC/EC metric was present. ')+'Review the form before using Save event.','Provider reading loaded');
+  return packet;
+}
+async function refreshDryProviders(){
+  setProviderStatus('Checking same-origin provider gateway…','Loading providers');
+  try{
+    const providers=await providerClient.listProviders(),configured=providers.filter(x=>x?.configured);
+    providerUi.provider.innerHTML='<option value="">'+(configured.length?'Choose configured provider':'No configured providers')+'</option>'+configured.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.label||x.id)+'</option>').join('');
+    providerUi.source.textContent=configured.length?configured.length+' available':'—';
+    setProviderStatus(configured.length?configured.length+' configured provider'+(configured.length===1?' is':'s are')+' available.':'The gateway responded, but no provider is configured on the server.',configured.length?'Provider gateway ready':'No configured provider');
+    return configured;
+  }catch(error){setProviderStatus(error?.message||'Could not reach the provider gateway.','Provider gateway unavailable');return[]}
+}
+async function loadDryProviderDevices(){
+  if(!providerUi.provider.value){setProviderStatus('Choose a configured provider first.','Provider required');return[]}
+  setProviderStatus('Loading read-only provider device list…','Loading devices');
+  try{
+    const devices=await providerClient.listDevices(providerUi.provider.value);
+    providerUi.device.innerHTML='<option value="">'+(devices.length?'Choose device':'No devices found')+'</option>'+devices.map(x=>'<option value="'+esc(x.id)+'">'+esc((x.name||x.id)+(x.zone?' · '+x.zone:''))+'</option>').join('');
+    setProviderStatus(devices.length+' device'+(devices.length===1?'':'s')+' returned by the provider gateway.','Devices loaded');
+    return devices;
+  }catch(error){setProviderStatus(error?.message||'Could not load provider devices.','Device lookup failed');return[]}
+}
+async function loadDryProviderReading(){
+  const provider=providerUi.provider.value,device=providerUi.device.value;
+  if(!provider||!device){setProviderStatus('Choose both a provider and device first.','Provider device required');return null}
+  setProviderStatus('Requesting the latest normalized telemetry packet…','Loading reading');
+  try{return applyProviderPacket(await providerClient.getRecent(provider,device))}
+  catch(error){setProviderStatus(error?.message||'Could not load provider reading.','Provider read failed');return null}
+}
+function stopProviderPolling(){
+  if(providerTimer!==null)clearInterval(providerTimer);
+  providerTimer=null;providerUi.start.disabled=false;providerUi.stop.disabled=true;
+}
+function startProviderPolling(){
+  stopProviderPolling();
+  if(!providerUi.provider.value||!providerUi.device.value){setProviderStatus('Choose both a provider and device before polling.','Provider device required');return}
+  const seconds=Math.max(10,Math.min(3600,Number(providerUi.interval.value)||60));
+  void loadDryProviderReading();
+  providerTimer=setInterval(()=>{void loadDryProviderReading()},seconds*1000);
+  providerUi.start.disabled=true;providerUi.stop.disabled=false;
+  setProviderStatus('Read-only provider polling is active every '+seconds+' seconds. The page never auto-saves irrigation events.','Polling active');
+}
+document.getElementById('refreshDryProviders').onclick=()=>{void refreshDryProviders()};
+document.getElementById('loadDryProviderDevices').onclick=()=>{void loadDryProviderDevices()};
+document.getElementById('loadDryProviderReading').onclick=()=>{void loadDryProviderReading()};
+providerUi.start.onclick=startProviderPolling;
+providerUi.stop.onclick=()=>{stopProviderPolling();setProviderStatus('Provider polling stopped.','Polling stopped')};
+window.addEventListener('pagehide',stopProviderPolling);
 mountLiveToolAdapter({
   container:document.getElementById('liveToolAdapter'),
   tool:'dryback',
   zoneField:document.getElementById('zone'),
   title:'Live substrate / EC adapter',
+  onPacket:observeIrrigationCandidate,
   onApplied:({packet,applied})=>{
     if(packet?.deviceId)document.getElementById('sensorId').value=packet.deviceId;
     if(packet?.observedAt){
