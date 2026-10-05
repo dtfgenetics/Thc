@@ -19,6 +19,12 @@ const visuals = read('content/encyclopedia/visual-production-queue-v1.json');
 const approvedVisuals = fs.existsSync(path.join(root,'data','encyclopedia-visual-approved-assets.json'))
   ? read('data/encyclopedia-visual-approved-assets.json')
   : { assets: [] };
+const assessmentReviews = fs.existsSync(path.join(root,'data','encyclopedia-assessment-review-ledger.json'))
+  ? read('data/encyclopedia-assessment-review-ledger.json')
+  : { lessons: [] };
+const claimReviews = fs.existsSync(path.join(root,'data','encyclopedia-claim-review-ledger.json'))
+  ? read('data/encyclopedia-claim-review-ledger.json')
+  : { lessonSummary: {} };
 const sourceQueue = read('data/encyclopedia-source-resolution-queue.json');
 const evidencePriority = fs.existsSync(path.join(root,'data','encyclopedia-evidence-priority.json'))
   ? read('data/encyclopedia-evidence-priority.json')
@@ -33,6 +39,8 @@ const evidenceById = byId(evidence.lessons);
 const rationaleById = byId(rationales.lessons);
 const visualById = byId(visuals.items);
 const approvedVisualById = byId(approvedVisuals.assets);
+const assessmentReviewById = byId(assessmentReviews.lessons);
+const claimReviewSummaryById = new Map(Object.entries(claimReviews.lessonSummary || {}));
 const sourceById = byId(sourceQueue.lessons || sourceQueue.items || []);
 const priorityById = byId(evidencePriority.lessons || []);
 
@@ -51,13 +59,30 @@ const lessons = ids.map(id => {
   const r = rationaleById.get(id) || {};
   const v = visualById.get(id) || {};
   const av = approvedVisualById.get(id) || {};
+  const ar = assessmentReviewById.get(id) || {};
+  const cr = claimReviewSummaryById.get(id) || {};
   const q = sourceById.get(id) || {};
   const p = priorityById.get(id) || {};
 
   const contentComplete = s.contentContractComplete === true;
   const claimEvidenceMapped = Number(e?.evidence?.claimEvidenceCount || 0) > 0;
-  const claimEvidenceReviewState = String(e?.evidence?.reviewState || '');
-  const claimEvidenceReviewed = ['independent_science_review_complete','approved'].includes(claimEvidenceReviewState);
+  const legacyClaimEvidenceReviewState = String(e?.evidence?.reviewState || '');
+  const claimReviewCount = Number(cr.claimCount || 0);
+  const claimReviewCompleted = Number(cr.completed || 0);
+  const claimReviewApproved = Number(cr.approved || 0);
+  const claimReviewChangesRequested = Number(cr.changesRequested || 0);
+  const claimReviewRejected = Number(cr.rejected || 0);
+  const allClaimReviewsComplete = claimReviewCount > 0 && claimReviewCompleted === claimReviewCount;
+  const allClaimReviewsApproved = allClaimReviewsComplete && claimReviewApproved === claimReviewCount;
+  const legacyClaimEvidenceReviewed = ['independent_science_review_complete','approved'].includes(legacyClaimEvidenceReviewState);
+  const claimEvidenceReviewed = legacyClaimEvidenceReviewed || allClaimReviewsApproved;
+  const claimEvidenceReviewState = legacyClaimEvidenceReviewed
+    ? legacyClaimEvidenceReviewState
+    : allClaimReviewsApproved
+      ? 'independent_science_review_complete'
+      : claimReviewCompleted > 0
+        ? (claimReviewChangesRequested > 0 || claimReviewRejected > 0 ? 'independent_science_review_changes_required' : 'independent_science_review_in_progress')
+        : legacyClaimEvidenceReviewState;
   const claimEvidenceComplete = claimEvidenceMapped && claimEvidenceReviewed;
   const sourcesResolved = q.resolutionState === 'authority_links_available_claim_review_pending' || q.resolutionState === 'source_traceable_authority_review_pending';
   const approvedAssetPath=String(av.repositoryPath||'');
@@ -66,7 +91,16 @@ const lessons = ids.map(id => {
   const approvedAssetSha256=approvedAssetExists?crypto.createHash('sha256').update(fs.readFileSync(approvedAssetAbs)).digest('hex'):null;
   const approvedAssetIntegrity=approvedAssetExists && /^[a-f0-9]{64}$/i.test(String(av.sha256||'')) && approvedAssetSha256===String(av.sha256).toLowerCase();
   const visualApproved = Boolean(av.approvedAssetId) && av.assetQaStatus === 'approved' && av.publicationAuthorized === false && approvedAssetIntegrity;
-  const rationaleReviewed = r.reviewState === 'approved' || r.reviewState === 'independent_review_complete';
+  const legacyRationaleReviewed = r.reviewState === 'approved' || r.reviewState === 'independent_review_complete';
+  const assessmentReviewDecision = ar.decision || null;
+  const rationaleReviewed = legacyRationaleReviewed || assessmentReviewDecision === 'approved';
+  const rationaleReviewState = legacyRationaleReviewed
+    ? r.reviewState
+    : assessmentReviewDecision === 'approved'
+      ? 'independent_review_complete'
+      : assessmentReviewDecision
+        ? `independent_review_${assessmentReviewDecision}`
+        : r.reviewState || null;
   const publicationAuthorized = bool(s.publicationAuthorized) || bool(e?.publicationState?.publicationAuthorized);
 
   const blockers = [];
@@ -112,6 +146,15 @@ const lessons = ids.map(id => {
       claimEvidenceReviewState:claimEvidenceReviewState||null,
       claimEvidenceReviewed,
       claimEvidenceComplete,
+      claimReview:{
+        claimCount:claimReviewCount,
+        completed:claimReviewCompleted,
+        approved:claimReviewApproved,
+        changesRequested:claimReviewChangesRequested,
+        rejected:claimReviewRejected,
+        allComplete:allClaimReviewsComplete,
+        allApproved:allClaimReviewsApproved
+      },
       authoritativeSourceCount:arr(e?.evidence?.authoritativeSourceIds).length,
       unresolvedSourceRefs:arr(e?.sourceNotes?.unresolvedRefs),
       sourceTraceabilityState:q.resolutionState || null,
@@ -134,8 +177,12 @@ const lessons = ids.map(id => {
     assessment:{
       promptCount:arr(r.prompts).length,
       rationaleCount:arr(r.rationales).length,
-      reviewState:r.reviewState || null,
-      reviewed:rationaleReviewed
+      reviewState:rationaleReviewState,
+      reviewed:rationaleReviewed,
+      reviewerDecision:assessmentReviewDecision,
+      reviewerId:assessmentReviewDecision ? ar.reviewerId || null : null,
+      reviewerName:assessmentReviewDecision ? ar.reviewerName || null : null,
+      reviewedAt:assessmentReviewDecision ? ar.reviewedAt || null : null
     },
     practicalResources:{
       count:practicalCounts.get(id) || 0,
