@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-POST-002",
+  "title": "Moisture, Water Activity, Drying Uniformity, and Rate Workbook",
+  "lessonIds": [
+    "THC-ENC-346",
+    "THC-ENC-347",
+    "THC-ENC-348",
+    "THC-ENC-349",
+    "THC-ENC-350"
+  ],
+  "purpose": "Support defensible measurement of moisture content, water activity, equilibration, air/product conditions, airflow distribution, and drying-rate behavior.",
+  "sections": [
+    {
+      "id": "moisture-aw",
+      "supportsLesson": "THC-ENC-346",
+      "title": "Moisture Content and Water Activity Record",
+      "fields": [
+        "Sample ID",
+        "Moisture basis",
+        "Moisture method",
+        "aW instrument",
+        "Measurement temperature",
+        "Equilibration",
+        "Replicate",
+        "Storage condition",
+        "Microbial context"
+      ],
+      "decisionPrompt": "Are moisture content and water activity both measured and interpreted as distinct properties?"
+    },
+    {
+      "id": "sorption",
+      "supportsLesson": "THC-ENC-347",
+      "title": "Moisture Sorption and Equilibration Record",
+      "fields": [
+        "Sample form",
+        "Initial moisture",
+        "Initial aW",
+        "Temperature",
+        "RH",
+        "Adsorption/desorption history",
+        "Mass over time",
+        "Equilibrium criterion",
+        "Replicates",
+        "Cultivar"
+      ],
+      "decisionPrompt": "Has the sample reached a defensible equilibrium state, and does its moisture history matter to interpretation?"
+    },
+    {
+      "id": "air-product",
+      "supportsLesson": "THC-ENC-348",
+      "title": "Air and Product Condition Map",
+      "fields": [
+        "Sensor ID/location",
+        "Air temperature",
+        "Product temperature",
+        "Surface temperature",
+        "RH",
+        "Dew point",
+        "Wet load",
+        "Airflow",
+        "HVAC state",
+        "Condensation",
+        "Mass loss"
+      ],
+      "decisionPrompt": "Do product and air conditions reveal transition or condensation risk that room RH alone would miss?"
+    },
+    {
+      "id": "uniformity",
+      "supportsLesson": "THC-ENC-349",
+      "title": "Drying Uniformity Map",
+      "fields": [
+        "Room/rack map",
+        "Load mass",
+        "Spacing",
+        "Fan/HVAC/filter state",
+        "Airspeed method",
+        "Temperature/RH by zone",
+        "Sample mass curves",
+        "Final moisture by zone",
+        "Final aW by zone",
+        "Microbial/quality results"
+      ],
+      "decisionPrompt": "Which locations dry slowest or fastest, and what airflow/loading feature explains the pattern?"
+    },
+    {
+      "id": "drying-curve",
+      "supportsLesson": "THC-ENC-350",
+      "title": "Drying Curve and Rate Record",
+      "fields": [
+        "Scale/sensor ID",
+        "Verification",
+        "Sample geometry",
+        "Raw mass/time",
+        "Temperature/RH",
+        "Intervention events",
+        "Slope method",
+        "Moisture checks",
+        "aW checks",
+        "Endpoint",
+        "Release decision"
+      ],
+      "decisionPrompt": "Does the time series show normal progression, a stall, or an excessive rate requiring intervention?"
+    }
+  ],
+  "qualityRules": [
+    "Record basis, temperature, equilibration, and instrument identity for moisture/aW data.",
+    "Preserve time-series data rather than endpoint-only records.",
+    "Map spatial variation instead of assuming room uniformity.",
+    "Document all interventions on the same timeline as measurement changes."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  },
+  "status": "draft_for_review"
+}

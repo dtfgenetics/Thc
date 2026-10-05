@@ -1,0 +1,130 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-POST-003",
+  "title": "Chemistry Retention, Curing, and Microbial Risk Workbook",
+  "lessonIds": [
+    "THC-ENC-351",
+    "THC-ENC-352",
+    "THC-ENC-353",
+    "THC-ENC-354",
+    "THC-ENC-355"
+  ],
+  "purpose": "Track volatile and cannabinoid stability, curing definitions, container equilibration, and microbial-risk controls across postharvest handling.",
+  "sections": [
+    {
+      "id": "volatiles",
+      "supportsLesson": "THC-ENC-351",
+      "title": "Volatile Retention Record",
+      "fields": [
+        "Cultivar/tissue",
+        "Fresh mass",
+        "Dry mass",
+        "Analytical method",
+        "Individual volatiles",
+        "Absolute/relative basis",
+        "Drying conditions",
+        "Time",
+        "Handling",
+        "Storage",
+        "Sensory result",
+        "Uncertainty"
+      ],
+      "decisionPrompt": "Does the comparison measure actual volatile retention rather than concentration changes caused only by water loss?"
+    },
+    {
+      "id": "cannabinoids",
+      "supportsLesson": "THC-ENC-352",
+      "title": "Cannabinoid Stability Record",
+      "fields": [
+        "Initial/final mass",
+        "Initial/final moisture",
+        "Acid cannabinoids",
+        "Neutral cannabinoids",
+        "Total formula",
+        "Drying/storage conditions",
+        "Oxygen exposure",
+        "Light exposure",
+        "Sample form",
+        "Degradants",
+        "Replicates"
+      ],
+      "decisionPrompt": "Are apparent potency changes explained by chemistry, moisture basis, or both?"
+    },
+    {
+      "id": "curing-definition",
+      "supportsLesson": "THC-ENC-353",
+      "title": "Operational Curing Record",
+      "fields": [
+        "Start criteria",
+        "End criteria",
+        "Mass",
+        "Moisture",
+        "aW",
+        "Container",
+        "Headspace",
+        "Temperature",
+        "RH",
+        "Opening/mixing events",
+        "Cannabinoid result",
+        "Volatile result",
+        "Microbial result",
+        "Sensory result",
+        "Defects"
+      ],
+      "decisionPrompt": "Is curing defined by measurable conditions and acceptance criteria rather than an undefined waiting period?"
+    },
+    {
+      "id": "container-equilibration",
+      "supportsLesson": "THC-ENC-354",
+      "title": "Container Moisture Redistribution Record",
+      "fields": [
+        "Container ID",
+        "Lot",
+        "Fill mass",
+        "Fill volume",
+        "Flower size",
+        "Starting moisture/aW by location",
+        "Headspace temperature/RH",
+        "Opening/mixing",
+        "Condensation",
+        "Repeat samples",
+        "Release status"
+      ],
+      "decisionPrompt": "Is moisture distribution becoming more uniform without creating localized high-aW risk?"
+    },
+    {
+      "id": "microbial-risk",
+      "supportsLesson": "THC-ENC-355",
+      "title": "Drying/Curing Microbial Risk Record",
+      "fields": [
+        "Batch/source",
+        "Initial disease status",
+        "Initial microbial status",
+        "Drying conditions",
+        "Wetness/aW map",
+        "Visual/odor observations",
+        "Product temperature",
+        "Microbial method/count",
+        "Organism result",
+        "Mycotoxin result",
+        "Hold/disposition",
+        "CAPA"
+      ],
+      "decisionPrompt": "Does the evidence justify release, continued hold, investigation, or rejection?"
+    }
+  ],
+  "qualityRules": [
+    "Keep analytical method and sample basis constant across comparisons.",
+    "Do not equate concentration increase with chemical creation.",
+    "Define curing operationally before evaluating it.",
+    "Use qualified testing and hold controls when microbial risk is plausible."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  },
+  "status": "draft_for_review"
+}
