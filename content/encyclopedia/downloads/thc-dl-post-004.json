@@ -1,0 +1,136 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-POST-004",
+  "title": "Packaging, Storage, Sampling, and Release Review Workbook",
+  "lessonIds": [
+    "THC-ENC-356",
+    "THC-ENC-357",
+    "THC-ENC-358",
+    "THC-ENC-359",
+    "THC-ENC-360"
+  ],
+  "purpose": "Provide release-oriented records for package qualification, storage stability, aW instrument control, representative sampling, COA interpretation, deviations, and CAPA.",
+  "sections": [
+    {
+      "id": "packaging",
+      "supportsLesson": "THC-ENC-356",
+      "title": "Packaging Qualification Record",
+      "fields": [
+        "Material/layer/thickness",
+        "WVTR condition",
+        "OTR condition",
+        "Closure/seal",
+        "Fill/headspace",
+        "Light exposure",
+        "Temperature/RH",
+        "Transport condition",
+        "Time-series chemistry",
+        "aW",
+        "Microbes",
+        "Physical defects"
+      ],
+      "decisionPrompt": "Does the complete package system protect the real product under intended storage and transport conditions?"
+    },
+    {
+      "id": "storage",
+      "supportsLesson": "THC-ENC-357",
+      "title": "Storage Stability Record",
+      "fields": [
+        "Temperature",
+        "Light",
+        "Oxygen/headspace",
+        "Package",
+        "Product form",
+        "Storage time",
+        "Excursions",
+        "Cannabinoids",
+        "Volatiles",
+        "Degradants",
+        "Moisture",
+        "aW",
+        "Microbes",
+        "Sensory/physical defects"
+      ],
+      "decisionPrompt": "Which storage variable best explains observed quality change over time?"
+    },
+    {
+      "id": "aw-control",
+      "supportsLesson": "THC-ENC-358",
+      "title": "Water-Activity Instrument Control Record",
+      "fields": [
+        "Instrument/model/serial",
+        "Firmware",
+        "Method",
+        "Standard lot",
+        "Expected standard value",
+        "Observed standard value",
+        "Sample position/preparation/mass",
+        "Measurement temperature",
+        "Equilibration",
+        "Duplicate result",
+        "Maintenance",
+        "Disposition"
+      ],
+      "decisionPrompt": "Are instrument and sample controls strong enough for the aW result to support release decisions?"
+    },
+    {
+      "id": "sampling-coa",
+      "supportsLesson": "THC-ENC-359",
+      "title": "Product Sampling and COA Interpretation Record",
+      "fields": [
+        "Batch definition/mass",
+        "Sampling frame",
+        "Increment map",
+        "Sampler/time",
+        "Product state",
+        "Composite/homogenization",
+        "Container/transport",
+        "Laboratory/method",
+        "Results",
+        "Measurement uncertainty",
+        "Retained sample",
+        "Repeat criteria",
+        "Release decision"
+      ],
+      "decisionPrompt": "Does the sample design support inference about the whole batch, and are COA limits interpreted with method uncertainty?"
+    },
+    {
+      "id": "deviation",
+      "supportsLesson": "THC-ENC-360",
+      "title": "Postharvest Deviation and Release Review",
+      "fields": [
+        "Deviation ID",
+        "Lot",
+        "Time/location",
+        "Limit",
+        "Actual result",
+        "Containment",
+        "Affected material",
+        "Exposed material",
+        "Investigation",
+        "Additional tests",
+        "Risk/uncertainty",
+        "CAPA",
+        "CAPA effectiveness",
+        "Disposition",
+        "Approver",
+        "Release date"
+      ],
+      "decisionPrompt": "Has the deviation been contained, investigated, and resolved with enough evidence for an authorized disposition?"
+    }
+  ],
+  "qualityRules": [
+    "Qualify the whole package system, not material specifications alone.",
+    "Retain storage excursions and raw stability data.",
+    "Treat sampling design as part of analytical validity.",
+    "Do not release material until deviation, uncertainty, and CAPA decisions are documented."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  },
+  "status": "draft_for_review"
+}
