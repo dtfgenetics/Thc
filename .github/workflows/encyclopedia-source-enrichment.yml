@@ -25,9 +25,9 @@ concurrency:
 jobs:
   enrich:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     env:
-      ENCYCLOPEDIA_SOURCE_ENRICH_LIMIT: 250
+      ENCYCLOPEDIA_SOURCE_ENRICH_LIMIT: 1000
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
