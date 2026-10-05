@@ -1,15 +1,20 @@
 {
-  "version": "seed-man-visual-runtime-v1",
+  "version": "seed-man-visual-runtime-v2",
   "reference": {
     "title": "Seed Man visual asset package",
-    "intent": "Translate the approved reference boards into deterministic runtime keys instead of filename-coupled rendering.",
-    "style": ["lush", "high-contrast", "readable-silhouettes", "2.5d-platformer", "bright-elemental-vfx"],
-    "characterContract": "approved-green-armored-plant-hero-v1"
+    "intent": "Translate the locked classic Seed Man target and five authored worlds into deterministic runtime keys while preserving an explicit transition from temporary flat masters to final layered rendering.",
+    "style": ["flat-2d-character", "thick-outline", "readable-silhouettes", "authored-world-art", "bright-elemental-vfx"],
+    "characterContract": "classic-seed-man-oval-v1",
+    "currentCharacterStatus": "temporary-green-armored-replacement-pending",
+    "activeWorldRenderer": "seed-man-authored-flat-background-v1",
+    "worldRendererTarget": "seed-man-three-world-v2",
+    "finalWorldLayerCount": 7
   },
   "worlds": {
     "greenhouse-valley": {
       "label": "Greenhouse Valley",
       "accent": "#69e55b",
+      "transitionBackground": "world.greenhouse-valley.background",
       "layers": [
         {"key":"sky","depth":-80,"parallax":0.04},
         {"key":"far-bg","depth":-60,"parallax":0.14},
@@ -19,58 +24,53 @@
         {"key":"foreground","depth":20,"parallax":1.08},
         {"key":"vfx","depth":40,"parallax":1}
       ],
-      "materials": ["grass", "dirt", "stone", "metal"],
-      "setPieces": ["glass-domes", "waterfalls", "greenhouse-frames", "giant-trees", "hanging-vines"],
+      "materials": ["grass", "dirt", "wood", "metal"],
+      "setPieces": ["glass-domes", "irrigation-lines", "trellises", "cultivation-beds", "distant-hills"],
       "requiredFx": ["leaf-motes", "water-mist", "collect-burst", "checkpoint-glow"]
     },
     "forest-ruins": {
       "label": "Forest Ruins",
       "accent": "#38c96a",
+      "transitionBackground": "world.forest-ruins.background",
       "layers": ["sky", "far-bg", "mid-bg", "near-bg", "gameplay", "foreground", "vfx"],
-      "materials": ["grass", "dirt", "stone"],
-      "setPieces": ["ancient-columns", "roots", "collapsed-bridges", "giant-canopy"]
+      "materials": ["grass", "dirt", "stone", "wood"],
+      "setPieces": ["ancient-columns", "giant-roots", "collapsed-bridges", "temple-canopy", "shafts-of-light"]
     },
     "desert-canyon": {
       "label": "Desert Canyon",
       "accent": "#ff8b42",
+      "transitionBackground": "world.desert-canyon.background",
       "layers": ["sky", "far-bg", "mid-bg", "near-bg", "gameplay", "foreground", "vfx"],
       "materials": ["sand", "stone", "metal"],
-      "setPieces": ["mesas", "arches", "ruins", "heat-vents"]
+      "setPieces": ["red-mesas", "sandstone-arches", "solar-towers", "updrafts", "heat-haze"]
     },
     "frozen-peaks": {
       "label": "Frozen Peaks",
       "accent": "#54cfff",
+      "transitionBackground": "world.frozen-peaks.background",
       "layers": ["sky", "far-bg", "mid-bg", "near-bg", "gameplay", "foreground", "vfx"],
       "materials": ["ice", "stone", "metal"],
-      "setPieces": ["ice-spires", "floating-ice", "frost-caves", "snow-gusts"]
+      "setPieces": ["ice-spires", "crystal-caverns", "frozen-bridges", "glacier-gate", "snow-gusts"]
     },
     "eco-city": {
       "label": "Eco City",
       "accent": "#70f27b",
+      "transitionBackground": "world.eco-city.background",
       "layers": ["sky", "far-bg", "mid-bg", "near-bg", "gameplay", "foreground", "vfx"],
       "materials": ["grass", "metal", "stone"],
-      "setPieces": ["eco-towers", "waterfalls", "solar-structures", "green-transit"]
+      "setPieces": ["grow-towers", "conveyors", "reactor-pipes", "rooftop-cultivation", "stormy-skyline"]
     }
   },
   "player": {
+    "targetCharacter": "classic-seed-man-oval-v1",
     "phenotypes": {
-      "plant": {"durationMs":0,"projectile":"plant-shot","vfx":"plant-aura"},
-      "fire": {"durationMs":30000,"projectile":"fire-shot","vfx":"fire-aura"},
-      "electric": {"durationMs":30000,"projectile":"electric-shot","vfx":"electric-aura"},
-      "ice": {"durationMs":30000,"projectile":"ice-shot","vfx":"ice-aura"}
+      "plant": {"durationMs":0,"projectile":"plant-shot","effect":"pierce","vfx":"plant-aura"},
+      "fire": {"durationMs":30000,"projectile":"fire-shot","effect":"burn","vfx":"fire-aura"},
+      "electric": {"durationMs":30000,"projectile":"electric-shot","effect":"chain","chainTargets":3,"vfx":"electric-aura"},
+      "ice": {"durationMs":30000,"projectile":"ice-shot","effect":"freeze","freezeSeconds":1.8,"vfx":"ice-aura"}
     },
-    "animations": {
-      "idle": {"minFrames":6},
-      "run": {"minFrames":8},
-      "jump": {"minFrames":3},
-      "fall": {"minFrames":2},
-      "land": {"minFrames":4},
-      "crouch": {"minFrames":2},
-      "attack": {"minFrames":6},
-      "hurt": {"minFrames":4},
-      "victory": {"minFrames":8},
-      "transform": {"minFrames":10}
-    }
+    "requiredAnimations": ["idle", "walk", "run", "jump", "fall", "land", "attack", "hit", "victory"],
+    "animationStatus": "classic-family-needed"
   },
   "enemyFamilies": {
     "plant": {"drop":"plant","telegraph":"green-leaf-energy"},
@@ -79,22 +79,24 @@
     "ice": {"drop":"ice","telegraph":"cyan-crystals"}
   },
   "bosses": [
-    {"key":"overgrown-guardian","world":"greenhouse-valley","phenotype":"plant"},
-    {"key":"scorchroot-titan","world":"desert-canyon","phenotype":"fire"},
-    {"key":"frostbite-colossus","world":"frozen-peaks","phenotype":"ice"},
-    {"key":"eco-sentinel","world":"eco-city","phenotype":"electric"}
+    {"key":"overgrown-guardian","world":"greenhouse-valley","phases":3},
+    {"key":"ancient-dryad","world":"forest-ruins","phases":3},
+    {"key":"scorchroot-titan","world":"desert-canyon","phases":3},
+    {"key":"frostbite-colossus","world":"frozen-peaks","phases":3},
+    {"key":"eco-sentinel","world":"eco-city","phases":3},
+    {"key":"blight-king","world":"eco-city","phases":4,"finalBoss":true,"weaknessCycle":["plant","fire","electric","ice"]}
   ],
   "hud": {
     "fixedToCamera": true,
-    "required": ["portrait", "health", "energy", "lives", "seed-count", "phenotype-slots", "pause"]
+    "required": ["seeds", "progress", "jumps", "phenotype", "falls", "time", "best", "pause", "restart"]
   },
   "assetPolicy": {
     "publicApiUsesManifestKeys": true,
     "allowRawFilenameReferences": false,
-    "modelFormat": "glb",
-    "textureFormats": ["webp", "png"],
-    "atlasMetadata": "json",
+    "textureFormats": ["png", "webp"],
     "collisionOwnedBySimulation": true,
-    "rendererOwnsGameplayState": false
+    "rendererOwnsGameplayState": false,
+    "temporaryFlattenedWorldBackgroundsAllowed": true,
+    "finalLayeredWorldsRequired": true
   }
 }
