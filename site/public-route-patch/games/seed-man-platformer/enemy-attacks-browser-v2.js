@@ -2,10 +2,19 @@
 
 (async () => {
   const VERSION = 'seed-man-enemy-attacks-browser-v2';
+  const BOSS_BEHAVIOR_VERSION = 'seed-man-boss-attacks-v1';
   const HIT_INVULN = 0.85;
-  const RESPAWN_ATTACK_GRACE = 0.65;
   const attackApi = await import('./enemy-attacks.js');
   const { createEnemyAttackState, stepEnemyAttack, advanceEnemyProjectile, overlapsRect } = attackApi;
+
+  const BOSS_ATTACK_PATTERNS=Object.freeze({
+    'overgrown-guardian':Object.freeze(['ground-wave','burst-shot','radial-burst']),
+    'ancient-dryad':Object.freeze(['aimed-shot','radial-burst','blink-strike']),
+    'scorchroot-titan':Object.freeze(['ground-wave','burst-shot','radial-burst']),
+    'frostbite-colossus':Object.freeze(['aimed-shot','burst-shot','ground-wave']),
+    'eco-sentinel':Object.freeze(['burst-shot','radial-burst','blink-strike']),
+    'blight-king':Object.freeze(['ground-wave','radial-burst','blink-strike','radial-burst'])
+  });
 
   let attackers=[];
   let attackStates=new Map();
@@ -15,41 +24,42 @@
   let activeLevelId='';
   let simTime=0;
   let hitsTaken=0;
-  let recoveryGrace=0;
 
   const enemyRuntime=()=>window.__SEED_MAN_V20_ENEMY_RUNTIME__;
+
+  function patternFor(enemy){
+    const set=BOSS_ATTACK_PATTERNS[enemy?.archetype];
+    if(!set)return enemy?.attackPattern||'contact';
+    const phase=Math.max(1,Math.min(set.length,Number(enemy.phase)||1));
+    return set[phase-1];
+  }
 
   function resetAttacks(){
     activeLevelId=typeof level!=='undefined'?(level?.id||''):'';
     const factory=enemyRuntime()?.buildAttackers;
-    attackers=typeof factory==='function'?factory(level).map((enemy,index)=>({...enemy,baseY:enemy.y,dir:index%2?-1:1,phase:1,defeated:false})):[];
+    attackers=typeof factory==='function'?factory(level).map((enemy,index)=>({...enemy,baseY:enemy.y,dir:index%2?-1:1,phase:Number(enemy.phase)||1,defeated:false,attackPattern:patternFor(enemy)})):[];
     attackStates=new Map(attackers.map((enemy,index)=>[enemy.id,createEnemyAttackState(enemy,{initialDelay:0.7+index*0.14})]));
-    hostileProjectiles=[];hostileHitboxes=[];telegraphs=new Map();simTime=0;hitsTaken=0;recoveryGrace=0;
+    hostileProjectiles=[];hostileHitboxes=[];telegraphs=new Map();simTime=0;
     document.documentElement.dataset.seedManEnemyAttacks=VERSION;
-  }
-
-  function clearTransientAttacks(grace=RESPAWN_ATTACK_GRACE){
-    hostileProjectiles=[];
-    hostileHitboxes=[];
-    telegraphs.clear();
-    recoveryGrace=Math.max(recoveryGrace,Math.max(0,Number(grace)||0));
+    document.documentElement.dataset.seedManBossAttacks=BOSS_BEHAVIOR_VERSION;
   }
 
   function syncCombatState(){
     const snapshot=window.__SPROUT_COMBAT_BROWSER__?.snapshot?.();
-    if(!snapshot)return false;
+    if(!snapshot)return;
     const byId=new Map(snapshot.enemies.map((enemy)=>[enemy.id,enemy]));
     for(const attacker of attackers){
-      const live=byId.get(attacker.id);
-      attacker.combatSynced=Boolean(live);
-      if(!live)continue;
+      const live=byId.get(attacker.id);if(!live)continue;
       attacker.defeated=Boolean(live.defeated);
-      for(const key of ['x','y','minX','maxX','width','height','speed']){
-        if(Number.isFinite(Number(live[key])))attacker[key]=Number(live[key]);
+      if(live.phase)attacker.phase=Number(live.phase)||1;
+      const nextPattern=patternFor(attacker);
+      if(nextPattern!==attacker.attackPattern){
+        attacker.attackPattern=nextPattern;
+        attackStates.set(attacker.id,createEnemyAttackState(attacker,{initialDelay:.32}));
+        telegraphs.delete(attacker.id);
+        window.dispatchEvent(new CustomEvent('seedman:boss-attack-pattern',{detail:{boss:attacker.archetype,phase:attacker.phase,pattern:nextPattern}}));
       }
-      attacker.phase=Math.max(1,Number(live.phase)||attacker.phase||1);
     }
-    return true;
   }
 
   function moveAttacker(enemy,dt){
@@ -65,38 +75,12 @@
     if(enemy.movement==='flying'||enemy.flying)enemy.y=enemy.baseY+Math.sin(simTime*2.4+enemy.x*0.006)*(enemy.elite?32:24);
   }
 
-  function applyPlayerHit(next,source,damage,kind='attack'){
+  function knockbackPlayer(next,source,damage){
     next.power=next.power||{};
     if((Number(next.power.invulnerableTimer)||0)>0)return false;
-    const stateApi=window.__SEED_MAN_PLAYER_STATE__;
-    let result=stateApi?.applyDamage?.(next,damage);
-    if(!result){
-      const maxHealth=Math.max(1,Number(next.maxHealth)||3);
-      const health=Number.isFinite(Number(next.health))?Number(next.health):maxHealth;
-      const amount=Math.max(1,Math.round(Number(damage)||1));
-      next.maxHealth=maxHealth;next.health=Math.max(0,health-amount);
-      result={accepted:true,defeated:next.health<=0,damage:amount,health:next.health};
-    }
-    if(!result.accepted)return false;
-
-    next.enemyAttackHits=(next.enemyAttackHits||0)+1;
-    hitsTaken+=1;
-    if(result.defeated){
-      window.__SEED_MAN_BASE_RUNTIME__?.respawnPlayer?.(next);
-      stateApi?.restoreHealth?.(next);
-      next.power=next.power||{};
-      next.power.invulnerableTimer=Math.max(HIT_INVULN,Number(next.power.invulnerableTimer)||0);
-      if(typeof setTemporaryObjective==='function')setTemporaryObjective('Knocked out · recovered at checkpoint','retry',1400);
-      window.dispatchEvent(new CustomEvent('seedman:player-defeated',{detail:{damage:result.damage,kind,levelId:activeLevelId}}));
-      return true;
-    }
-
     const dir=(next.x+next.width/2)<(source.x+source.width/2)?-1:1;
     next.power.invulnerableTimer=HIT_INVULN;
-    next.state='hurt';next.vx=dir*Math.min(460,320+Math.max(0,Number(result.damage)-1)*55);next.vy=-280;next.grounded=false;
-    if(typeof setTemporaryObjective==='function')setTemporaryObjective(`Hit · ${next.health} / ${next.maxHealth} health`,'hurt',850);
-    window.dispatchEvent(new CustomEvent('seedman:player-hit',{detail:{damage:result.damage,health:next.health,maxHealth:next.maxHealth,kind,levelId:activeLevelId}}));
-    return true;
+    next.state='hurt';next.vx=dir*Math.min(460,320+Math.max(0,Number(damage)-1)*55);next.vy=-280;next.grounded=false;next.enemyAttackHits=(next.enemyAttackHits||0)+1;hitsTaken+=1;return true;
   }
 
   function stepAttackRuntime(next,dt){
@@ -104,30 +88,33 @@
     const current=typeof level!=='undefined'?(level?.id||''):'';
     if(current!==activeLevelId)resetAttacks();
     simTime+=step;syncCombatState();
-    if(recoveryGrace>0){
-      recoveryGrace=Math.max(0,recoveryGrace-step);
-      return;
-    }
     for(const enemy of attackers){
-      if(!enemy.combatSynced)moveAttacker(enemy,step);
-      if(enemy.defeated)continue;
-      if(overlapsRect(enemy,next)&&applyPlayerHit(next,enemy,enemy.role==='boss'?2:1,'contact')&&recoveryGrace>0)return;
+      moveAttacker(enemy,step);if(enemy.defeated)continue;
       const state=attackStates.get(enemy.id)||createEnemyAttackState(enemy,{initialDelay:0.5});
       const result=stepEnemyAttack(state,enemy,next,step);attackStates.set(enemy.id,result.state);
-      for(const event of result.events){if(event.type==='enemy-attack-telegraph')telegraphs.set(enemy.id,{pattern:event.pattern,until:simTime+event.duration});if(event.type==='enemy-attack-released')telegraphs.delete(enemy.id);}
+      for(const event of result.events){
+        if(event.type==='enemy-attack-telegraph')telegraphs.set(enemy.id,{pattern:event.pattern,until:simTime+event.duration});
+        if(event.type==='enemy-attack-released')telegraphs.delete(enemy.id);
+      }
       hostileProjectiles.push(...result.projectiles);hostileHitboxes.push(...result.hitboxes.map((hitbox)=>({...hitbox,remaining:hitbox.duration})));
     }
     const worldWidth=typeof level!=='undefined'?(level?.worldWidth||8000):8000;
     hostileProjectiles=hostileProjectiles.map((projectile)=>advanceEnemyProjectile(projectile,step)).filter((projectile)=>projectile.lifetime>0&&projectile.x>-120&&projectile.x<worldWidth+120);
-    for(const projectile of hostileProjectiles){if(projectile.hit||!overlapsRect(projectile,next))continue;if(applyPlayerHit(next,projectile,projectile.damage,'projectile')){projectile.hit=true;if(recoveryGrace>0)return;}}
+    for(const projectile of hostileProjectiles){if(projectile.hit||!overlapsRect(projectile,next))continue;if(knockbackPlayer(next,projectile,projectile.damage))projectile.hit=true;}
     hostileProjectiles=hostileProjectiles.filter((projectile)=>!projectile.hit);
-    for(const hitbox of hostileHitboxes){hitbox.remaining=Math.max(0,hitbox.remaining-step);if(hitbox.type==='ground-wave')hitbox.x+=(Number(hitbox.speed)||0)*step;if(!hitbox.hit&&overlapsRect(hitbox,next)&&applyPlayerHit(next,hitbox,hitbox.damage,'hitbox')){hitbox.hit=true;if(recoveryGrace>0)return;}}
+    for(const hitbox of hostileHitboxes){hitbox.remaining=Math.max(0,hitbox.remaining-step);if(hitbox.type==='ground-wave')hitbox.x+=(Number(hitbox.speed)||0)*step;if(!hitbox.hit&&overlapsRect(hitbox,next)&&knockbackPlayer(next,hitbox,hitbox.damage))hitbox.hit=true;}
     hostileHitboxes=hostileHitboxes.filter((hitbox)=>hitbox.remaining>0&&!hitbox.hit);
   }
 
   function drawAttacks(){
     if(typeof ctx==='undefined'||typeof cameraX==='undefined')return;ctx.save();
-    for(const enemy of attackers){const telegraph=telegraphs.get(enemy.id);if(!telegraph||telegraph.until<=simTime||enemy.defeated)continue;const x=enemy.x-cameraX+enemy.width/2;const y=enemy.y+enemy.height/2;ctx.strokeStyle='rgba(255,202,97,.92)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y,Math.max(enemy.width,enemy.height)*(0.72+Math.abs(Math.sin(simTime*15))*0.18),0,Math.PI*2);ctx.stroke();}
+    for(const enemy of attackers){
+      const telegraph=telegraphs.get(enemy.id);if(!telegraph||telegraph.until<=simTime||enemy.defeated)continue;
+      const x=enemy.x-cameraX+enemy.width/2;const y=enemy.y+enemy.height/2;
+      ctx.strokeStyle=enemy.role==='boss'?'rgba(255,230,126,.98)':'rgba(255,202,97,.92)';ctx.lineWidth=enemy.role==='boss'?4:3;
+      ctx.beginPath();ctx.arc(x,y,Math.max(enemy.width,enemy.height)*(0.72+Math.abs(Math.sin(simTime*15))*0.18),0,Math.PI*2);ctx.stroke();
+      if(enemy.role==='boss'){ctx.fillStyle='rgba(255,255,255,.92)';ctx.font='800 10px system-ui';ctx.textAlign='center';ctx.fillText(String(telegraph.pattern||enemy.attackPattern).toUpperCase().replaceAll('-',' '),x,y-Math.max(enemy.width,enemy.height)*.75);}
+    }
     for(const projectile of hostileProjectiles){ctx.fillStyle='#ffb45f';ctx.shadowBlur=10;ctx.shadowColor='#ff7f4d';ctx.beginPath();ctx.arc(projectile.x-cameraX+projectile.width/2,projectile.y+projectile.height/2,6,0,Math.PI*2);ctx.fill();}
     for(const hitbox of hostileHitboxes){ctx.globalAlpha=.34;ctx.fillStyle=hitbox.type==='blink-strike'?'#cf9cff':'#ff8b62';ctx.fillRect(hitbox.x-cameraX,hitbox.y,hitbox.width,hitbox.height);ctx.globalAlpha=1;}
     ctx.restore();
@@ -140,7 +127,12 @@
     const baseReset=reset;reset=function seedManEnemyAttackV2Reset(){baseReset();resetAttacks();};return true;
   }
 
-  window.addEventListener('seedman:player-respawned',()=>clearTransientAttacks());
   resetAttacks();const installed=installHooks();
-  window.__SPROUT_ENEMY_ATTACKS_BROWSER__=Object.freeze({version:VERSION,installed,snapshot:()=>({version:VERSION,levelId:activeLevelId,hitsTaken,attackers:attackers.map(({id,name,archetype,attackPattern,defeated,phenotype,phenotypeForm})=>({id,name,archetype,attackPattern,defeated,phenotype,phenotypeForm})),projectiles:hostileProjectiles.length,hitboxes:hostileHitboxes.length,recoveryGrace})});
+  window.__SPROUT_ENEMY_ATTACKS_BROWSER__=Object.freeze({
+    version:VERSION,
+    bossBehaviorVersion:BOSS_BEHAVIOR_VERSION,
+    installed,
+    bossPatterns:BOSS_ATTACK_PATTERNS,
+    snapshot:()=>({version:VERSION,bossBehaviorVersion:BOSS_BEHAVIOR_VERSION,levelId:activeLevelId,hitsTaken,attackers:attackers.map(({id,name,archetype,attackPattern,defeated,phenotype,phenotypeForm,phase})=>({id,name,archetype,attackPattern,defeated,phenotype,phenotypeForm,phase})),projectiles:hostileProjectiles.length,hitboxes:hostileHitboxes.length})
+  });
 })();
