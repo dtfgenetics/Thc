@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import process from 'node:process';
 import { collectPublicLessonIds } from './lib/academy-public-scope.mjs';
+import { lessonAssetBlocks, assetIdFromBlock } from './lib/academy-public-assets.mjs';
 
 const site = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const user = process.env.WP_API_USERNAME || '';
@@ -35,11 +36,7 @@ async function sourceJson(rel) {
   return response.json();
 }
 function expectedAssetIds(lesson) {
-  return (lesson?.content?.blocks || []).flatMap(block => {
-    if (block?.type === 'image' && block.assetId && (block.src || block.url)) return [block.assetId];
-    if (block?.type === 'resource' && block.extensions?.assetId && block.href) return [block.extensions.assetId];
-    return [];
-  });
+  return [...new Set(lessonAssetBlocks(lesson).map(assetIdFromBlock).filter(Boolean))];
 }
 async function anonymousHtml(route, label) {
   let last = '';
