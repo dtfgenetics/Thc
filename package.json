@@ -211,6 +211,7 @@
     "build:encyclopedia-teaching-visuals": "node scripts/build-encyclopedia-teaching-visuals.mjs",
     "games:agents:queue": "node scripts/generate-autonomous-playtest-work-queue.mjs",
     "games:agents:queue-check": "node scripts/generate-autonomous-playtest-work-queue.mjs --check",
-    "encyclopedia:visual-approved-assets": "node scripts/build-encyclopedia-visual-approved-assets.mjs"
+    "encyclopedia:visual-approved-assets": "node scripts/build-encyclopedia-visual-approved-assets.mjs",
+    "verify:responsive": "node scripts/verify-responsive-layout.mjs"
   }
 }
