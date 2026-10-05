@@ -6,6 +6,7 @@ on:
       - games/seed-man-platformer/data/seed-man-art-manifest-v1.json
       - games/seed-man-platformer/data/campaign-20-v1.json
       - games/seed-man-platformer/src/render/art-registry.mjs
+      - games/seed-man-platformer/src/render/visual-runtime-v2.mjs
       - games/seed-man-platformer/test/art-registry.test.mjs
       - games/seed-man-platformer/test/campaign-20.test.mjs
       - games/seed-man-platformer/package.json
@@ -17,6 +18,7 @@ on:
       - games/seed-man-platformer/data/seed-man-art-manifest-v1.json
       - games/seed-man-platformer/data/campaign-20-v1.json
       - games/seed-man-platformer/src/render/art-registry.mjs
+      - games/seed-man-platformer/src/render/visual-runtime-v2.mjs
       - games/seed-man-platformer/test/art-registry.test.mjs
       - games/seed-man-platformer/test/campaign-20.test.mjs
       - games/seed-man-platformer/package.json
@@ -35,10 +37,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Lock approved art source of truth
+      - name: Lock repaired art source of truth
         run: |
           node games/seed-man-platformer/test/art-registry.test.mjs
           node games/seed-man-platformer/test/campaign-20.test.mjs
+          node games/seed-man-platformer/test/approved-art-loader.test.mjs
       - name: Reject legacy visual ownership
         shell: bash
         run: |
@@ -46,19 +49,36 @@ jobs:
           manifest=games/seed-man-platformer/data/seed-man-art-manifest-v1.json
           public_manifest=site/public-route-patch/games/seed-man-platformer/data/seed-man-art-manifest-v1.json
           registry=games/seed-man-platformer/src/render/art-registry.mjs
+          runtime=games/seed-man-platformer/src/render/visual-runtime-v2.mjs
           grep -Fq '"authoritative": true' "$manifest"
           grep -Fq '"proceduralFallbackAllowed": false' "$manifest"
           grep -Fq '"legacyAtlasFallbackAllowed": false' "$manifest"
-          grep -Fq 'green-armored-plant-hero' "$manifest"
-          grep -Fq '"id": "seed-man-approved-art-v2"' "$manifest"
+          grep -Fq '"id": "seed-man-art-manifest-v3"' "$manifest"
+          grep -Fq '"sourceOfTruth": "classic-seed-man-oval-v1"' "$manifest"
+          grep -Fq '"characterReference": "classic-seed-man-oval-v1"' "$manifest"
+          grep -Fq '"currentCharacterAtlasStatus": "temporary-green-armored-replacement-pending"' "$manifest"
+          grep -Fq '"worldRendererTarget": "seed-man-three-world-v2"' "$manifest"
+          grep -Fq '"worldFallbackRenderer": "seed-man-authored-flat-background-v1"' "$manifest"
+          grep -Fq '"finalWorldLayerCount": 7' "$manifest"
           grep -Fq '"ui.vfx.cover"' "$manifest"
-          grep -Fq "APPROVED_ART_MANIFEST_ID = 'seed-man-approved-art-v2'" "$registry"
+          grep -Fq "APPROVED_ART_MANIFEST_ID = 'seed-man-art-manifest-v3'" "$registry"
+          grep -Fq "APPROVED_ART_SOURCE = 'classic-seed-man-oval-v1'" "$registry"
           grep -Fq "character.seedman.atlas" "$registry"
           grep -Fq "const WORLD_ORDER = Object.freeze(['greenhouse-valley', 'forest-ruins', 'desert-canyon', 'frozen-peaks', 'eco-city']);" "$registry"
           grep -Fq "const WORLD_ALIASES = Object.freeze({ 'frozen-peak': 'frozen-peaks' });" "$registry"
           grep -Fq "const REQUIRED_IMAGE_ASSETS = Object.freeze(['character.seedman.atlas','enemy.atlas','boss.atlas','platform.atlas']);" "$registry"
           grep -Fq "const REQUIRED_RENDER_ASSETS = Object.freeze(['cover.main','ui.vfx.cover']);" "$registry"
+          grep -Fq 'seed-man-visual-runtime-v4-transition' "$runtime"
+          grep -Fq 'activeWorldRenderer:registry.worldFallbackRenderer' "$runtime"
+          grep -Fq 'worldRendererTarget:registry.worldRendererTarget' "$runtime"
           cmp "$manifest" "$public_manifest"
+          for world in greenhouse-valley forest-ruins desert-canyon frozen-peaks eco-city; do
+            grep -Fq "assets/worlds/${world}-bg-v1.png" "$manifest"
+            test -s "games/seed-man-platformer/assets/worlds/${world}-bg-v1.png"
+            test -s "site/public-route-patch/games/seed-man-platformer/assets/worlds/${world}-bg-v1.png"
+          done
+          ! grep -Fq '"id": "seed-man-approved-art-v2"' "$manifest"
+          ! grep -Fq '"sourceOfTruth": "approved-showcase-2026-09-08"' "$manifest"
       - name: Lock 20-level final-boss contract
         shell: bash
         run: |
