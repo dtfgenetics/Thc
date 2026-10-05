@@ -80,5 +80,18 @@
     "version": 1,
     "header": "X-DTF-Game-Protocol",
     "migrationPolicy": "Missing header is accepted during v1 migration; explicit incompatible versions receive HTTP 409."
+  },
+  "liveOps": {
+    "maintenanceEnv": "DTF_BURN_BUDS_MAINTENANCE_MODE",
+    "multiplayerEnabledEnv": "DTF_BURN_BUDS_MULTIPLAYER_ENABLED",
+    "healthAction": "api.php?action=health",
+    "operationalMetrics": [
+      "requests",
+      "create",
+      "join",
+      "state",
+      "fire",
+      "chat"
+    ]
   }
 }
