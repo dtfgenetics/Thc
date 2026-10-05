@@ -5,6 +5,7 @@ import { effectiveLessonAssessment, buildLessonAnswerRationalesV1 } from './lib/
 import { learnerFacingWorkedExampleFor } from './lib/encyclopedia-worked-examples.mjs';
 import { encyclopediaStructuredDataHtml } from './lib/encyclopedia-structured-data.mjs';
 import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
+import { preserveExistingLessonVisual } from './lib/encyclopedia-visual-preservation.mjs';
 
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const user=process.env.WP_API_USERNAME;
@@ -204,26 +205,10 @@ async function allChildren(parent){
 }
 
 const backups=[];
-const lessonVisualCommentPattern=/<!-- THC-ENC-VISUAL:THC-ENC-\d{3,} START -->[\s\S]*?<!-- THC-ENC-VISUAL:THC-ENC-\d{3,} END -->/i;
-const lessonVisualFigurePattern=/<figure\b[^>]*class=["'][^"']*\bthc-lesson-visual\b[^"']*["'][^>]*data-thc-lesson-visual-id=["']THC-ENC-\d{3,}["'][^>]*>[\s\S]*?<\/figure>/i;
-function existingLessonVisualBlock(raw){
-  const text=String(raw||'');
-  return text.match(lessonVisualCommentPattern)?.[0]||text.match(lessonVisualFigurePattern)?.[0]||null;
-}
-function preserveExistingLessonVisual(slug,existing,content){
-  if(!/^thc-enc-\d{3,}$/.test(String(slug||''))||!existing) return content;
-  const raw=String(existing.content?.raw||'');
-  const visual=existingLessonVisualBlock(raw);
-  if(!visual||String(content).includes('data-thc-lesson-visual-id=')) return content;
-  const anchor='<!-- THC-ENC-VISUAL-ANCHOR -->';
-  const idx=String(content).indexOf(anchor);
-  if(idx<0) return content;
-  return String(content).slice(0,idx)+visual+'\n'+String(content).slice(idx);
-}
 async function upsertPage({slug,title,parent,content,excerpt=''}){
   const existing=await findPage(slug,parent);
   if(existing) backups.push(existing);
-  content=preserveExistingLessonVisual(slug,existing,content);
+  content=preserveExistingLessonVisual({slug,existingRaw:String(existing?.content?.raw||''),content});
   const payload={slug,title,status:'publish',parent,content,excerpt,comment_status:'closed'};
 
   if(existing){

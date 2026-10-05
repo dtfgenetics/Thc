@@ -163,6 +163,11 @@ for (const result of results) {
     if (result.slug === 'encyclopedia') {
       if (!html.includes('aria-label="Static encyclopedia directory"')) throw new Error(`Rendered static encyclopedia directory missing on ${result.url}`);
       if (!html.includes('THC-ENC-420')) throw new Error(`Static encyclopedia fallback does not prove the completed THC-ENC-420 publication floor on ${result.url}`);
+      for (const topic of encyclopediaIndex.topics || []) {
+        if (!topic?.slug || Number(topic.publishedCount || 0) < 1) continue;
+        const hubRoute=`/learn/encyclopedia/${topic.slug}/`;
+        if (!html.includes(hubRoute)) throw new Error(`Published Encyclopedia root is missing subject hub link ${hubRoute}`);
+      }
     }
     if (result.slug === 'search' && !html.includes('aria-label="Browse education without search"')) {
       throw new Error(`Rendered static education-search directory missing on ${result.url}`);
