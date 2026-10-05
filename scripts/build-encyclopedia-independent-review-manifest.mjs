@@ -71,12 +71,12 @@ const rows=arr(readiness.lessons).map(row=>{
         assetQaStatus:v.assetQaStatus||null,
         requestedDecision:visualCandidates.length?'science_accessibility_rights_and_asset_qa':'produce_asset_then_review',
         reviewerDecision:vr.decision??null,
-        reviewerId:vr.reviewerId??null,
-        reviewerName:vr.reviewerName??null,
-        reviewedAt:vr.reviewedAt??null,
-        reviewNotes:vr.reviewNotes??null,
-        reviewChecks:vr.checks??null,
-        reviewSourcePacket:vr.sourcePacket??null
+        reviewerId:vr.decision?vr.reviewerId??null:null,
+        reviewerName:vr.decision?vr.reviewerName??null:null,
+        reviewedAt:vr.decision?vr.reviewedAt??null:null,
+        reviewNotes:vr.decision?vr.reviewNotes??null:null,
+        reviewChecks:vr.decision?vr.checks??null:null,
+        reviewSourcePacket:vr.decision?vr.sourcePacket??null:null
       },
       publication:{
         currentlyAuthorized:Boolean(row.publication?.authorized),
