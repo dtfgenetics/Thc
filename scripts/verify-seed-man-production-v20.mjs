@@ -6,16 +6,21 @@ const read=(rel)=>fs.readFileSync(path.join(root,rel),'utf8');
 const exists=(rel)=>fs.existsSync(path.join(root,rel));
 const requireFile=(rel)=>{const p=path.join(root,rel);if(!exists(rel)||fs.statSync(p).size===0)throw new Error(`Missing production file: ${rel}`);return p;};
 const requireWebp=(rel)=>{const p=requireFile(rel);const b=fs.readFileSync(p);if(b.subarray(0,4).toString('ascii')!=='RIFF'||b.subarray(8,12).toString('ascii')!=='WEBP')throw new Error(`Invalid WebP asset: ${rel}`);return b.length;};
+const requirePng=(rel)=>{const p=requireFile(rel);const b=fs.readFileSync(p);const sig='89504e470d0a1a0a';if(b.subarray(0,8).toString('hex')!==sig)throw new Error(`Invalid PNG asset: ${rel}`);return b.length;};
 
+const expectedWorlds=['greenhouse-valley','forest-ruins','desert-canyon','frozen-peaks','eco-city'];
+const worldBackgrounds=expectedWorlds.map((world)=>`assets/worlds/${world}-bg-v1.png`);
 const required=[
-  'index.html','app.js','canvas-compat-v1.js','player-state-v20.js','campaign-v20-runtime.js','campaign-ui-v20.js',
+  'index.html','app.js','canvas-compat-v1.js','release-truth-v1.js','player-state-v20.js','campaign-v20-runtime.js','campaign-ui-v20.js',
   'approved-art-core-v1.js','approved-art-runtime-v1.js','seed-man-production-art.js','three-world-v1.js','three-world-adapter-v1.js',
   'v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js','enemy-attacks.js','input-guard-v1.js','seed-man.css',
   'assets/approved/seed-man-character-atlas-v2.webp','assets/approved/seed-man-enemy-boss-atlas-v1.webp','assets/approved/seed-man-platform-atlas-v1.webp',
+  ...worldBackgrounds,
   'data/campaign.json','data/levels-20-v1.json','data/seed-man-art-manifest-v1.json','data/enemy-catalog-v1.json','data/boss-catalog-v1.json'
 ];
 required.forEach(requireFile);
 for(const rel of ['assets/approved/seed-man-character-atlas-v2.webp','assets/approved/seed-man-enemy-boss-atlas-v1.webp','assets/approved/seed-man-platform-atlas-v1.webp'])requireWebp(rel);
+for(const rel of worldBackgrounds)requirePng(rel);
 
 const retired=[
   'data/level-01.json','data/levels-02-11.json','data/levels-12-15.json','campaign-v1.js','gameplay-v2.js','physics.mjs','campaign-combat-v20.js','campaign-progress-v20.js','campaign-runtime-v20.js',
@@ -37,20 +42,30 @@ if(levels.levels?.length!==20)throw new Error('Level catalog must contain 20 lev
 for(let i=1;i<=20;i+=1)if(!levels.levels.some((level)=>level.order===i))throw new Error(`Missing level order ${i}`);
 const finale=levels.levels.find((level)=>level.order===20);
 if(finale?.boss!=='blight-king'||!finale?.mechanics?.includes('final-gauntlet'))throw new Error('Level 20 finale contract is incomplete');
-const expectedWorlds=['greenhouse-valley','forest-ruins','desert-canyon','frozen-peaks','eco-city'];
 if(JSON.stringify(campaign.worlds.map((world)=>world.visualWorldKey))!==JSON.stringify(expectedWorlds))throw new Error('Campaign visual-world ordering mismatch');
 if(Object.keys(enemies.common||{}).length!==10||Object.keys(enemies.phenotypeCarriers||{}).length!==3)throw new Error('Enemy roster must contain 10 common enemies and 3 phenotype carriers');
 
-if(art.schemaVersion!==3||art.id!=='seed-man-approved-art-v2'||art.sourceOfTruth!=='approved-showcase-2026-09-08')throw new Error('Approved art manifest identity mismatch');
+if(art.schemaVersion!==4||art.id!=='seed-man-art-manifest-v3'||art.sourceOfTruth!=='classic-seed-man-oval-v1')throw new Error('Seed Man art manifest identity mismatch');
 if(art.masterAtlas)throw new Error('Corrupt master atlas must not exist in production art manifest');
-if(art.policy?.characterReference!=='green-armored-plant-hero'||art.policy?.worldRenderer!=='seed-man-three-world-v2')throw new Error('Approved character/world renderer contract mismatch');
-for(const key of ['character.seedman.atlas','enemy.atlas','boss.atlas','platform.atlas'])if(!art.assets?.[key]?.src)throw new Error(`Missing standalone approved image asset: ${key}`);
-for(const world of expectedWorlds){const asset=art.assets?.[`world.${world}.background`];if(asset?.renderer!=='seed-man-three-world-v2'||asset?.world!==world)throw new Error(`Missing renderer-backed world: ${world}`);}
+if(art.policy?.characterReference!=='classic-seed-man-oval-v1')throw new Error('Classic Seed Man must be the authoritative character target');
+if(art.policy?.currentCharacterAtlasStatus!=='temporary-green-armored-replacement-pending')throw new Error('Current character atlas must remain explicitly temporary');
+if(art.policy?.worldRendererTarget!=='seed-man-three-world-v2'||art.policy?.worldFallbackRenderer!=='seed-man-authored-flat-background-v1')throw new Error('World renderer transition contract mismatch');
+if(art.policy?.finalWorldLayerCount!==7)throw new Error('Final world layer target must remain seven layers per world');
+for(const key of ['character.seedman.atlas','enemy.atlas','boss.atlas','platform.atlas'])if(!art.assets?.[key]?.src)throw new Error(`Missing registered image asset: ${key}`);
+if(art.assets?.['character.seedman.atlas']?.targetCharacterReference!=='classic-seed-man-oval-v1')throw new Error('Temporary character atlas is not pointed at the classic Seed Man target');
+for(const world of expectedWorlds){
+  const asset=art.assets?.[`world.${world}.background`];
+  if(!asset?.src?.endsWith(`${world}-bg-v1.png`)||asset?.renderer!=='seed-man-authored-flat-background-v1'||asset?.world!==world||asset?.temporaryFlattened!==true)throw new Error(`Missing authored transition world background: ${world}`);
+  for(const role of ['sky','far-bg','mid-bg','near-bg','gameplay','foreground','vfx']){
+    const layer=art.assets?.[`world.${world}.${role}`];
+    if(layer?.renderer!=='seed-man-three-world-v2'||layer?.world!==world||layer?.status!=='needed')throw new Error(`Missing final layered-world target: ${world}.${role}`);
+  }
+}
 for(const form of ['plant','fire','electric','ice'])if(!art.phenotypes?.includes(form))throw new Error(`Missing phenotype form: ${form}`);
 
 const index=read('index.html');
-for(const marker of ['20260909-v20-runtime-v5','20-Level Campaign','three-world-v1.js','three-world-adapter-v1.js','campaign-v20-runtime.js','campaign-ui-v20.js','v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js','player-state-v20.js'])if(!index.includes(marker))throw new Error(`Public index missing production marker: ${marker}`);
-for(const stale of ['id="seed-man-level"','Seed Man: Sprout Run','Greenhouse Gauntlet','campaign-v1.js','gameplay-v2.js','combat-browser-v1.js','enemy-attacks-browser-v1.js'])if(index.includes(stale))throw new Error(`Legacy public marker remains: ${stale}`);
+for(const marker of ['20260913-v20-runtime-repair-v2','20-Level Campaign','AUTHORED WORLD ART','release-truth-v1.js','three-world-v1.js','three-world-adapter-v1.js','campaign-v20-runtime.js','campaign-ui-v20.js','v20-enemy-runtime.js','combat-browser-v2.js','enemy-attacks-browser-v2.js','player-state-v20.js'])if(!index.includes(marker))throw new Error(`Public index missing production marker: ${marker}`);
+for(const stale of ['approved green-armored character art','APPROVED ART · THREE.JS WORLDS','data-seed-man-approved-art=','id="seed-man-level"','Seed Man: Sprout Run','Greenhouse Gauntlet','campaign-v1.js','gameplay-v2.js','combat-browser-v1.js','enemy-attacks-browser-v1.js'])if(index.includes(stale))throw new Error(`Legacy or misleading public marker remains: ${stale}`);
 const threeBundleIndex=index.indexOf('three-world-v1.js');
 const threeAdapterIndex=index.indexOf('three-world-adapter-v1.js');
 const campaignIndex=index.indexOf('campaign-v20-runtime.js');
@@ -64,23 +79,25 @@ const three=read('three-world-v1.js');
 if(!three.includes('SeedManThreeWorld')||!three.includes('seed-man-three-public-v3')||!three.includes('seed-man-three-world-v2'))throw new Error('Public Three.js world bundle is not the generated v3 production bundle');
 if(fs.statSync(path.join(root,'three-world-v1.js')).size<250000)throw new Error('Public Three.js world bundle is unexpectedly small; compatibility stub detected');
 const bootstrap=read('canvas-compat-v1.js');
-for(const marker of ['seed-man-runtime-health-v20','campaignTarget: 20','legacyDynamicLoader: false','legacyCanvasMonkeyPatch: false'])if(!bootstrap.includes(marker))throw new Error(`Runtime health bridge missing marker: ${marker}`);
+for(const marker of ['seed-man-runtime-health-v21','seed-man-authored-flat-background-v1','seed-man-runtime-mechanics-v1','legacyDynamicLoader: false','legacyCanvasMonkeyPatch: false'])if(!bootstrap.includes(marker))throw new Error(`Runtime repair bridge missing marker: ${marker}`);
 for(const stale of ['loadScript(', 'HTMLCanvasElement?.prototype', 'proto.getContext=', "document.createElement('script')"])if(bootstrap.includes(stale))throw new Error(`Retired runtime bootstrap behavior remains: ${stale}`);
 
+const truth=read('release-truth-v1.js');
+for(const marker of ['seed-man-release-truth-v1','classic-seed-man-oval-v1','AUTHORED WORLD ART'])if(!truth.includes(marker))throw new Error(`Release truth guard missing marker: ${marker}`);
 const inputGuard=read('input-guard-v1.js');
 for(const marker of ['seed-man-input-guard-v20','protect-native-interactive-keyboard-behavior','legacySignatureRuntime:false'])if(!inputGuard.includes(marker))throw new Error(`Input guard missing v20 marker: ${marker}`);
 for(const stale of ['seed-man-signature-features-v1','nursery-night-shift','reservoir-run','root-zone-rumble','trichome-transit','weak-point stomps','power-ups'])if(inputGuard.includes(stale))throw new Error(`Retired signature/input runtime remains: ${stale}`);
 
 const core=read('approved-art-core-v1.js');
-for(const marker of ['seed-man-approved-art-core-v4','seed-man-character-atlas-v2.webp','seed-man-enemy-boss-atlas-v1.webp','seed-man-platform-atlas-v1.webp',"worldRenderer:'seed-man-three-world-v2'"])if(!core.includes(marker))throw new Error(`Approved art core missing marker: ${marker}`);
+for(const marker of ['seed-man-art-core-v5','classic-seed-man-oval-v1','temporary-green-armored-replacement-pending','seed-man-authored-flat-background-v1','finalWorldLayerTarget:7','.png'])if(!core.includes(marker))throw new Error(`Art core missing transition marker: ${marker}`);
 if(core.includes('seed-man-approved-master-atlas-v1.webp'))throw new Error('Corrupt master atlas remains in public art core');
 const renderer=read('seed-man-production-art.js');
-for(const marker of ['approved-showcase-2026-09-08','green-armored-plant-hero','fallbackAllowed:false'])if(!renderer.includes(marker))throw new Error(`Approved renderer missing marker: ${marker}`);
+for(const marker of ['classic-seed-man-transition-v1','classic-seed-man-oval-v1','temporary-legacy-replacement-pending','fallbackAllowed:false'])if(!renderer.includes(marker))throw new Error(`Character transition renderer missing marker: ${marker}`);
 const combat=read('combat-browser-v2.js');
-for(const marker of ['seed-man-combat-browser-v2','syncBossState','seedman:boss-defeated'])if(!combat.includes(marker))throw new Error(`Combat runtime missing progression marker: ${marker}`);
+for(const marker of ['seed-man-combat-browser-v2','syncBossState','seedman:boss-defeated','pierceRemaining','chainTargets:3','freezeSeconds:1.8','resolveStomp'])if(!combat.includes(marker))throw new Error(`Combat runtime missing repaired behavior marker: ${marker}`);
 for(const retiredPhenotype of ['solar-flare','static-haze','frost-resin','hydro-surge','terpene-tempest','vine-lash','mycelium-mind','rootbreaker','trichome-crystal','gravity-haze'])if(combat.includes(retiredPhenotype))throw new Error(`Retired phenotype remains: ${retiredPhenotype}`);
 if(!read('player-state-v20.js').includes('seed-man-player-state-v20'))throw new Error('Canonical player-state-v20 marker is missing');
 if(!read('v20-enemy-runtime.js').includes('seed-man-v20-enemy-runtime-v2'))throw new Error('Canonical v20 enemy runtime marker is missing');
 if(!read('enemy-attacks-browser-v2.js').includes('seed-man-enemy-attacks-browser-v2'))throw new Error('Canonical enemy attack runtime marker is missing');
 
-console.log(JSON.stringify({ok:true,release:'20260909-v20-runtime-v5',campaignId:campaign.id,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',approvedArt:true,worldRenderer:'seed-man-three-world-v2',worldAdapter:'explicit',runtimeBridge:'health-only',playerState:'v20',combatRuntime:'v2',inputGuard:'v20',legacyDynamicLoaderRemoved:true,legacyCanvasMonkeyPatchRemoved:true,legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));
+console.log(JSON.stringify({ok:true,release:'20260913-v20-runtime-repair-v2',campaignId:campaign.id,levels:20,worlds:5,bosses:6,enemies:10,phenotypeCarriers:3,finalBoss:'blight-king',characterTarget:'classic-seed-man-oval-v1',currentCharacterAsset:'temporary-green-armored-replacement-pending',worldPresentation:'authored-flat-transition-png',worldRendererTarget:'seed-man-three-world-v2',runtimeBridge:'repair-v21',playerState:'v20',combatRuntime:'v2-repaired',inputGuard:'v20',legacyDynamicLoaderRemoved:true,legacyCanvasMonkeyPatchRemoved:true,legacySproutRunRemoved:true,corruptAssetsRemoved:true,retiredArtifactsRemoved:retired.length}));
