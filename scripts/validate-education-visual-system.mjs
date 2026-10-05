@@ -115,7 +115,10 @@ assert(encyclopediaVisualPublisher.includes('storedContentVerified:false'),'Ency
 assert(encyclopediaVisualPublisher.includes('mutation.storedContentVerified=true'),'Encyclopedia visual publisher must only mark stored-content verification after the authenticated read passes');
 assert(encyclopediaVisualPublisher.includes('WordPress stored-content verification is missing the mapped media URL.'),'Encyclopedia visual publisher must reject stored content that loses the mapped media URL');
 assert(encyclopediaVisualPublisher.includes('WordPress stored-content verification lost the canonical lesson identity marker.'),'Encyclopedia visual publisher must preserve canonical lesson identity during visual writes');
-assert(encyclopediaVisualPublisher.includes('const transientStatuses=new Set([429,500,502,503,504])'),'Encyclopedia visual publisher must retain bounded retry handling for transient WordPress failures');
+const transientSetMatch=encyclopediaVisualPublisher.match(/const\s+transientStatuses\s*=\s*new Set\(\[([^\]]+)\]\)/);
+const transientStatusesFound=new Set((transientSetMatch?.[1]||'').split(',').map(x=>Number(x.trim())).filter(Number.isFinite));
+for(const status of [429,500,502,503,504]) assert(transientStatusesFound.has(status),`Encyclopedia visual publisher retry set is missing required transient HTTP ${status}`);
+assert(/const\s+maxAttempts\s*=\s*retrySafe\s*\?\s*\d+\s*:\s*1/.test(encyclopediaVisualPublisher),'Encyclopedia visual publisher must retain a bounded retry-attempt cap for retry-safe WordPress requests');
 assert(encyclopediaVisualPublisher.includes('ENCYCLOPEDIA_VISUAL_PREFLIGHT_CONCURRENCY'),'Encyclopedia visual publisher must retain bounded-concurrency page preflight');
 assert(encyclopediaVisualPublisher.includes('recoverUploadedMedia'),'Encyclopedia visual publisher must recover duplicate-aware media uploads after ambiguous transient failures');
 assert(encyclopediaVisualPublisher.includes('AbortSignal.timeout(60_000)'),'Encyclopedia visual publisher must bound WordPress request time');
