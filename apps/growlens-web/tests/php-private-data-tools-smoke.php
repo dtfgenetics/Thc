@@ -83,6 +83,7 @@ $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 mkdir($_SERVER['DOCUMENT_ROOT'], 0700, true);
 
 require_once $apiRoot . DIRECTORY_SEPARATOR . '_images.php';
+require_once $apiRoot . DIRECTORY_SEPARATOR . '_state-v2.php';
 
 $userId = 'user-' . str_repeat('a', 32);
 $email = 'restore-smoke@example.com';
@@ -100,7 +101,7 @@ try {
     growlens_atomic_write_json(growlens_user_path($userId), $user);
     growlens_atomic_write_json(growlens_email_index_path($email), ['userId' => $userId]);
 
-    $state = growlens_empty_state();
+    $state = growlens_v2_default_state();
     $state['spaces'][] = [
         'id' => 'space-restore-smoke',
         'name' => 'Restore smoke space',
@@ -136,7 +137,7 @@ try {
     ]);
 
     $sessionToken = str_repeat('b', 64);
-    growlens_atomic_write_json(growlens_session_path($sessionToken), [
+    growlens_atomic_write_json(growlens_session_path_from_token($sessionToken), [
         'userId' => $userId,
         'csrfToken' => str_repeat('c', 43),
         'createdAt' => $now,
@@ -163,7 +164,7 @@ try {
         'createdAt' => $now
     ]);
 
-    $rateDirectory = growlens_path('rate');
+    $rateDirectory = growlens_private_root() . DIRECTORY_SEPARATOR . 'rate';
     file_put_contents($rateDirectory . DIRECTORY_SEPARATOR . 'excluded-rate.json', '{}');
     @chmod($rateDirectory . DIRECTORY_SEPARATOR . 'excluded-rate.json', 0600);
     file_put_contents(growlens_path('data', $userId . '.account.lock'), 'excluded');

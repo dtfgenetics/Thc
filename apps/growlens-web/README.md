@@ -33,7 +33,7 @@ GrowLens is a mobile-first, local-first cultivation management PWA. It is isolat
 - Optional conflict-safe active-page auto-sync with an IndexedDB intent queue
 - Account export, logout, and password-confirmed deletion
 - Guarded Hostinger deployment, private-data snapshots, and recovery-audit tooling
-- PHP, unit, and Playwright desktop/mobile tests
+- PHP backend smoke tests, Vitest unit/contract tests, responsive-layout/accessibility tests, and guarded live acceptance
 
 ## Local-first behavior
 
@@ -110,7 +110,7 @@ npm ci
 npm run dev:growlens
 npm run test:growlens
 npm run build:growlens
-npm run test:e2e:growlens
+npm run test:growlens:live-client
 npm run verify:growlens
 ```
 
