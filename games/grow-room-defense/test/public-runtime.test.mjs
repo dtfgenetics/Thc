@@ -16,6 +16,9 @@ assert.match(bootstrap, /import\('\.\/runtime\.mjs'\)/, 'app.js must delegate to
 assert.ok(bootstrap.length < 1500, 'app.js must remain a thin compatibility bootstrap');
 
 assert.match(runtime, /from '\.\/engine\.mjs';/, 'browser runtime must import canonical public engine');
+assert.match(runtime, /from '\/games\/shared-platform\/index\.mjs';/, 'runtime must use shared clipboard helper');
+assert.doesNotMatch(runtime, /async function copyText\(/, 'runtime must not duplicate clipboard fallback');
+assert.match(runtime, /copied\.ok/, 'runtime must honor shared clipboard result contract');
 for (const forbidden of [
   'function createGame(',
   'function applyAction(',
