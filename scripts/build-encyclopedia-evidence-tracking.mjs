@@ -39,6 +39,12 @@ const lessons = readCanonicalEncyclopediaLessons(root);
 const sourceQueuePath = path.join(root, 'data', 'encyclopedia-source-resolution-queue.json');
 const sourceQueue = fs.existsSync(sourceQueuePath) ? readJson(sourceQueuePath) : { references: [] };
 const sourceReferenceById = new Map(arr(sourceQueue.references).map(row => [row.referenceId, row]));
+const sourceQueueLessonById = new Map(arr(sourceQueue.lessons).map(row => [row.lessonId, row]));
+const currentTraceableRefsForLesson = lessonId => arr(sourceQueueLessonById.get(lessonId)?.sourceReferenceIds)
+  .filter(refId => {
+    const ref = sourceReferenceById.get(refId);
+    return ref?.traceabilityRequired !== false && ref?.traceable === true;
+  });
 
 const volumeSources = [];
 for (const volumeInfo of discoverEncyclopediaVolumes(root)) {
@@ -77,7 +83,9 @@ for (const batch of batches) {
       evidenceId: item.evidenceId,
       batchId: batch.batchId,
       sourceIds: arr(item.sourceIds),
-      sourceReferenceIds: arr(item.sourceReferenceIds),
+      sourceReferenceIds: batch.sourceReferenceMode === 'lesson_traceable_at_build'
+        ? currentTraceableRefsForLesson(item.lessonId)
+        : arr(item.sourceReferenceIds),
       claimType: item.claimType,
       reviewState: item.reviewState
     });
