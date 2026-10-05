@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { resolveResourceSet } from './resources.mjs'
 import { resolveVerificationProfile } from './routing.mjs'
-import { resolveCanonicalRepository } from './repositories.mjs'
+import { resolveCanonicalRepository, resolveProjectRepository } from './repositories.mjs'
 
 const PLAN_MARKER_RE = /<!-- worker-plan:(\{.*?\}) -->/s
 
@@ -109,23 +109,10 @@ export function workerKindFromIssue(issue, config) {
   return 'code'
 }
 
-export function priorityRank(issue, config, now = new Date()) {
+export function priorityRank(issue, config) {
   const labels = new Set((issue.labels || []).map(labelName))
   const index = (config.priorities || []).findIndex((label) => labels.has(label))
-  const baseRank = index === -1 ? (config.priorities || []).length : index
-  const agingDays = Number(config.scheduling?.agingDaysPerPriorityBoost || 0)
-  if (!agingDays || !issue.created_at) return baseRank
-  const ageMs = Math.max(0, new Date(now).getTime() - new Date(issue.created_at).getTime())
-  const boosts = Math.floor(ageMs / (agingDays * 86_400_000))
-  return Math.max(0, baseRank - boosts)
-}
-
-export function claimReadiness(claim, config) {
-  const reasons = []
-  if (config.scheduling?.requireAcceptanceCriteria && claim.acceptanceCriteria.length === 0) reasons.push('missing-acceptance-criteria')
-  if (config.scheduling?.requireVerificationProfile && !claim.verificationProfile) reasons.push('missing-verification-profile')
-  if (claim.externalRepository && !claim.dispatchable) reasons.push('external-executor-required')
-  return { ready: reasons.length === 0, reasons }
+  return index === -1 ? (config.priorities || []).length : index
 }
 
 export function buildClaim(issue, config) {
@@ -136,9 +123,12 @@ export function buildClaim(issue, config) {
   const digest = createHash('sha1').update(`${id}:${issue.title || ''}`).digest('hex').slice(0, 7)
   const branch = `${prefix}/${project}/${slug(issue.title, 32)}-i${id}-${digest}`
   const metadata = planMetadataFromIssue(issue)
+  const inferredProjectOwner = !metadata.canonicalDomain && !metadata.targetRepository
+    ? resolveProjectRepository(project)
+    : null
   const owner = resolveCanonicalRepository({
     canonicalDomain: metadata.canonicalDomain,
-    explicitRepository: metadata.targetRepository,
+    explicitRepository: metadata.targetRepository || inferredProjectOwner?.repository || null,
     controlRepository: config.controlRepository || 'dtfgenetics/Thc',
   })
 
@@ -238,7 +228,6 @@ export function planClaims(issues, activeClaims, config, satisfiedDependencies =
 
   for (const claim of candidates) {
     if (selected.length >= available) break
-    if (!claimReadiness(claim, config).ready) continue
 
     if (!dependenciesSatisfied(claim.dependencies, satisfiedDependencies)) continue
 
