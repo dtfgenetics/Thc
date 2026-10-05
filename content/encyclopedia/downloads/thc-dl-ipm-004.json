@@ -1,0 +1,133 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-IPM-004",
+  "title": "Biological Control, Compliance, Isolation, CAPA, and IPM Audit Workbook",
+  "lessonIds": [
+    "THC-ENC-336",
+    "THC-ENC-337",
+    "THC-ENC-338",
+    "THC-ENC-339",
+    "THC-ENC-340"
+  ],
+  "purpose": "Support biological-control evaluation, pesticide compliance documentation, isolation/waste handling, CAPA, and whole-program IPM audits.",
+  "sections": [
+    {
+      "id": "biocontrol",
+      "supportsLesson": "THC-ENC-336",
+      "title": "Biological Control Deployment Record",
+      "fields": [
+        "Target pest/pathogen",
+        "Agent/product",
+        "Life stage targeted",
+        "Supplier/lot",
+        "Arrival condition",
+        "Release/application date",
+        "Release location",
+        "Environmental compatibility",
+        "Other-control compatibility",
+        "Pre-count",
+        "Post-count",
+        "Establishment observation",
+        "Outcome"
+      ],
+      "decisionPrompt": "Was the biological control matched to target biology, timing, and crop environment, and did monitoring show a useful effect?"
+    },
+    {
+      "id": "pesticide-compliance",
+      "supportsLesson": "THC-ENC-337",
+      "title": "Pesticide Label and Resistance-Management Record",
+      "fields": [
+        "Product name",
+        "EPA/state registration reference if applicable",
+        "Label version/date",
+        "Crop/site allowed",
+        "Target pest",
+        "Application authorized by label",
+        "Worker-protection requirements",
+        "Environmental restrictions",
+        "Resistance group",
+        "Prior same-group uses",
+        "Decision/approver",
+        "Post-treatment monitoring"
+      ],
+      "decisionPrompt": "Is the proposed use explicitly lawful and label-compliant, and does the resistance plan avoid unnecessary repeated selection pressure?"
+    },
+    {
+      "id": "isolation-waste",
+      "supportsLesson": "THC-ENC-338",
+      "title": "Isolation, Removal, and Waste Record",
+      "fields": [
+        "Affected plant/material ID",
+        "Reason",
+        "Isolation location",
+        "Containment method",
+        "Removal route",
+        "Waste container",
+        "Waste destination",
+        "Personnel/PPE",
+        "Cleaning after removal",
+        "Neighboring-plant check",
+        "Release of area"
+      ],
+      "decisionPrompt": "Did removal contain biological risk without creating a new transfer pathway?"
+    },
+    {
+      "id": "capa",
+      "supportsLesson": "THC-ENC-339",
+      "title": "Plant-Health CAPA Record",
+      "fields": [
+        "Problem/deviation",
+        "Containment",
+        "Immediate correction",
+        "Evidence collected",
+        "Contributing causes",
+        "Root-cause confidence",
+        "Corrective action",
+        "Preventive action",
+        "Owner",
+        "Due date",
+        "Effectiveness metric",
+        "Verification date",
+        "Closure"
+      ],
+      "decisionPrompt": "Did CAPA reduce recurrence risk, or did it only correct the visible event?"
+    },
+    {
+      "id": "audit",
+      "supportsLesson": "THC-ENC-340",
+      "title": "IPM Program Audit",
+      "fields": [
+        "Audit period",
+        "Prevention controls",
+        "Monitoring completeness",
+        "Identification quality",
+        "Decision records",
+        "Intervention records",
+        "Compliance",
+        "Outcome trends",
+        "Recurring failures",
+        "Open CAPAs",
+        "Training gaps",
+        "Record gaps",
+        "Improvement actions",
+        "Owner/date"
+      ],
+      "decisionPrompt": "Which recurring failure shows that the IPM system needs redesign rather than another isolated treatment?"
+    }
+  ],
+  "qualityRules": [
+    "Do not provide pesticide rates outside controlling labels.",
+    "Record biological-control compatibility and follow-up counts.",
+    "Keep isolation/waste movement traceable.",
+    "Close CAPA only after effectiveness verification.",
+    "Audit trends and recurring failures, not merely record presence."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  },
+  "status": "draft_for_review"
+}
