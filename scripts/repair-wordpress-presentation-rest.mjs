@@ -16,7 +16,7 @@ const headers = {
   Authorization: auth,
   Accept: 'application/json',
   'Content-Type': 'application/json',
-  'User-Agent': 'DTFSeeds-Presentation-Repair/1.2'
+  'User-Agent': 'DTFSeeds-Presentation-Repair/1.1'
 };
 
 function rawText(value) {
@@ -41,18 +41,17 @@ async function request(path, options = {}) {
   return body;
 }
 
-// Canonical V6 visitor-facing primary navigation.
+// Keep this in the exact approved visitor-facing order. Diagnostic intentionally owns /tools/.
 const canonicalNavigation = [
   ['Home', '/'],
   ['Seeds', '/seeds/'],
   ['Learn', '/learn/'],
   ['Courses', '/courses/'],
-  ['Tools', '/tools/'],
+  ['Diagnostic', '/tools/'],
   ['Games', '/games/'],
   ['Community', '/community/'],
   ['Shop', '/shop/']
 ];
-const obsoletePrimaryLabels = ['Genetics', 'Tools'];
 
 function navBlockContent(items) {
   return items.map(([label, url]) =>
@@ -64,8 +63,8 @@ const footerContent = `<!-- wp:group {"tagName":"footer","layout":{"type":"const
 <footer class="wp-block-group">
 <!-- wp:heading {"level":3} --><h3 class="wp-block-heading">DTF Genetics</h3><!-- /wp:heading -->
 <!-- wp:paragraph --><p>Dream the Future. Genetics, cultivation education, practical tools, original games, and community.</p><!-- /wp:paragraph -->
-<!-- wp:paragraph --><p><a href="/">Home</a> · <a href="/seeds/">Seeds</a> · <a href="/learn/">Learn</a> · <a href="/courses/">Courses</a> · <a href="/tools/">Tools</a> · <a href="/games/">Games</a> · <a href="/community/">Community</a> · <a href="/shop/">Shop</a></p><!-- /wp:paragraph -->
-<!-- wp:paragraph --><p><a href="/gallery/">Gallery</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a></p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><a href="/">Home</a> · <a href="/seeds/">Seeds</a> · <a href="/learn/">Learn</a> · <a href="/courses/">Courses</a> · <a href="/tools/">Diagnostic</a> · <a href="/games/">Games</a> · <a href="/community/">Community</a> · <a href="/shop/">Shop</a></p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><a href="/journal/">Journal</a> · <a href="/gallery/">Gallery</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a></p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p><a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join the DTF / Teaching Healthy Cultivation Discord</a></p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p>© 2026 DTF Genetics. All rights reserved.</p><!-- /wp:paragraph -->
 </footer>
@@ -107,7 +106,7 @@ if (!Array.isArray(navigations)) throw new Error('Unexpected navigation response
 const staleNavigations = navigations.filter((nav) => {
   const slug = String(nav?.slug || '');
   const content = rawText(nav?.content).toLowerCase();
-  return slug === 'navigation' || slug.startsWith('ai-menu') || content.includes('blog') || content.includes('knowledge') || content.includes('"label":"genetics"') || content.includes('"label":"tools"');
+  return slug === 'navigation' || slug.startsWith('ai-menu') || content.includes('blog') || content.includes('knowledge');
 });
 await writeFile(join(backupDir, 'navigation-before.json'), `${JSON.stringify(staleNavigations, null, 2)}\n`, 'utf8');
 
@@ -119,7 +118,7 @@ for (const nav of staleNavigations) {
     body: JSON.stringify({ content: canonicalNavContent, status: 'publish' })
   });
   navigationResults.push({ id: updated.id, slug: updated.slug, status: updated.status, modified: updated.modified });
-  console.log(`Updated navigation ${nav.id} (${nav.slug}) to V6.`);
+  console.log(`Updated navigation ${nav.id} (${nav.slug}).`);
 }
 await writeFile(join(backupDir, 'navigation-after.json'), `${JSON.stringify(navigationResults, null, 2)}\n`, 'utf8');
 
@@ -139,12 +138,7 @@ for (const nav of verifiedTargets) {
   }
   for (const required of canonicalNavigation.map(([label]) => label)) {
     if (!content.includes(`\"label\":\"${required}\"`) && !content.includes(`"label":"${required}"`)) {
-      throw new Error(`Navigation verification failed for ${nav.id}; required V6 ${required} link missing`);
-    }
-  }
-  for (const obsolete of obsoletePrimaryLabels) {
-    if (content.includes(`\"label\":\"${obsolete}\"`) || content.includes(`"label":"${obsolete}"`)) {
-      throw new Error(`Navigation verification failed for ${nav.id}; obsolete primary label ${obsolete} remains`);
+      throw new Error(`Navigation verification failed for ${nav.id}; required ${required} link missing`);
     }
   }
 }
@@ -156,7 +150,6 @@ const summary = {
   footerTemplatePartId: footer.id,
   footerWpId: footer.wp_id || null,
   footerChanged,
-  navigationVersion: 'v6',
   navigationRecordsMatched: staleNavigations.length,
   navigationRecordsUpdated: navigationResults.length,
   canonicalNavigation: canonicalNavigation.map(([label,url]) => ({label,url})),
@@ -166,8 +159,7 @@ const summary = {
     footerFakeMarkersRemoved: true,
     officialDiscordPresent: true,
     staleBlogKnowledgeNavigationRemoved: true,
-    canonicalV6NavigationPresent: true,
-    obsoletePrimaryNavigationAbsent: true
+    canonicalNavigationPresent: true
   }
 };
 await writeFile(join(backupDir, 'presentation-repair-result.json'), `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
