@@ -84,7 +84,20 @@ describe('GrowLens canonical observation producer', () => {
   });
 
   it('publishes the canonical record as a browser event for downstream consumers', () => {
-    const dispatch = vi.spyOn(window, 'dispatchEvent');
+    const dispatchEvent = vi.fn();
+    class TestCustomEvent<T = unknown> {
+      readonly type: string;
+      readonly detail: T;
+
+      constructor(type: string, init: { detail: T }) {
+        this.type = type;
+        this.detail = init.detail;
+      }
+    }
+
+    vi.stubGlobal('window', { dispatchEvent });
+    vi.stubGlobal('CustomEvent', TestCustomEvent);
+
     const { canonicalRecord } = createGrowLensObservationArtifacts({
       id: 'observation-abcdefgh',
       plantId: null,
@@ -97,10 +110,10 @@ describe('GrowLens canonical observation producer', () => {
 
     publishGrowLensCanonicalObservation(canonicalRecord);
 
-    expect(dispatch).toHaveBeenCalledTimes(1);
-    const event = dispatch.mock.calls[0]?.[0] as CustomEvent;
+    expect(dispatchEvent).toHaveBeenCalledTimes(1);
+    const event = dispatchEvent.mock.calls[0]?.[0] as { type: string; detail: unknown };
     expect(event.type).toBe(CANONICAL_OBSERVATION_EVENT);
     expect(event.detail).toEqual(canonicalRecord);
-    dispatch.mockRestore();
+    vi.unstubAllGlobals();
   });
 });
