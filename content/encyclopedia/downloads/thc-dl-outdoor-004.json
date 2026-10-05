@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-OUTDOOR-004",
+  "title": "Outdoor Ecology, Pollen, Protected Climate, and Weather Response Workbook",
+  "lessonIds": [
+    "THC-ENC-376",
+    "THC-ENC-377",
+    "THC-ENC-378",
+    "THC-ENC-379",
+    "THC-ENC-380"
+  ],
+  "purpose": "Provide decision records for outdoor IPM ecology, pollen drift, greenhouse climate, high tunnels, and structured weather response.",
+  "sections": [
+    {
+      "id": "arthropod-ecology",
+      "supportsLesson": "THC-ENC-376",
+      "title": "Pest and Beneficial Scouting Record",
+      "fields": [
+        "Date/weather",
+        "Field/zone",
+        "Plant part",
+        "Scouting method",
+        "Pest stage/count",
+        "Injury",
+        "Crop stage",
+        "Predator/parasitoid/pollinator",
+        "Specimen/image ID",
+        "Trend",
+        "Threshold basis",
+        "Action",
+        "Outcome"
+      ],
+      "decisionPrompt": "Does pest trend and injury justify action after beneficial activity is considered?"
+    },
+    {
+      "id": "pollen-risk",
+      "supportsLesson": "THC-ENC-377",
+      "title": "Pollen Drift Risk Record",
+      "fields": [
+        "Crop/line/sex system",
+        "Potential source locations",
+        "Source area",
+        "Male/monoecious/feral observations",
+        "Flowering overlap",
+        "Wind direction/speed",
+        "Atmospheric stability",
+        "Distance",
+        "Topography/barriers",
+        "Pollen monitoring",
+        "Seed set",
+        "Affected lots",
+        "Corrective action"
+      ],
+      "decisionPrompt": "What combination of source strength, overlap, wind, and distance makes unwanted pollination plausible?"
+    },
+    {
+      "id": "greenhouse-climate",
+      "supportsLesson": "THC-ENC-378",
+      "title": "Greenhouse Climate Control Record",
+      "fields": [
+        "Outside temperature/RH/dew point",
+        "Inside temperature/RH/dew point",
+        "Solar radiation/DLI",
+        "Vent position",
+        "Fan state",
+        "Airflow map",
+        "Shade deployment",
+        "Heating/cooling/dehumidification",
+        "Irrigation",
+        "Leaf wetness",
+        "Canopy temperature",
+        "Condensation",
+        "Disease observations",
+        "Alarm/action"
+      ],
+      "decisionPrompt": "Which control is limiting moisture or heat removal under current crop load?"
+    },
+    {
+      "id": "tunnel",
+      "supportsLesson": "THC-ENC-379",
+      "title": "High-Tunnel Performance Record",
+      "fields": [
+        "Structure dimensions/orientation",
+        "Cover material/age",
+        "Anchoring",
+        "Vent/side positions",
+        "Inside/outside temperature",
+        "Inside/outside RH",
+        "DLI",
+        "Wind",
+        "Soil temperature/moisture/salts",
+        "Crop density/cultivar",
+        "Rain exclusion",
+        "Disease",
+        "Yield/quality",
+        "Storm response"
+      ],
+      "decisionPrompt": "Is the tunnel solving the intended constraint without creating a larger climate or disease problem?"
+    },
+    {
+      "id": "weather-response",
+      "supportsLesson": "THC-ENC-380",
+      "title": "Weather Response and Recovery Record",
+      "fields": [
+        "Event ID/type",
+        "Forecast source/time",
+        "Trigger",
+        "Authority",
+        "Affected blocks",
+        "Pre-event conditions",
+        "Actions",
+        "Measured weather",
+        "Power/water/irrigation status",
+        "Injury/contamination/disease",
+        "Photos/samples",
+        "Holds",
+        "Repairs",
+        "CAPA",
+        "Release decision"
+      ],
+      "decisionPrompt": "Did the response reduce risk, and what should change before the next event?"
+    }
+  ],
+  "qualityRules": [
+    "Use trend-based IPM records, not presence-only treatment decisions.",
+    "Keep pollen-risk observations spatially and temporally explicit.",
+    "Compare inside and outside protected-environment conditions.",
+    "Close weather events with recovery, CAPA, and release records."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  },
+  "status": "draft_for_review"
+}

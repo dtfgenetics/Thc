@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-OUTDOOR-001",
+  "title": "Site, Climate, and Light Planning Workbook",
+  "lessonIds": [
+    "THC-ENC-361",
+    "THC-ENC-362",
+    "THC-ENC-363",
+    "THC-ENC-364",
+    "THC-ENC-365"
+  ],
+  "purpose": "Provide a traceable planning record for site suitability, seasonal flowering, weather baselines, microclimates, shade, and outdoor light exposure.",
+  "sections": [
+    {
+      "id": "site-decision",
+      "supportsLesson": "THC-ENC-361",
+      "title": "Site Suitability Decision",
+      "fields": [
+        "Site ID and boundaries",
+        "Lawful production goal",
+        "Soil and contamination concerns",
+        "Water source and reliability",
+        "Slope/aspect",
+        "Access and utilities",
+        "Neighboring land use",
+        "Flood/frost history",
+        "Unresolved risks",
+        "Decision and approver"
+      ],
+      "decisionPrompt": "Which limiting factor is most likely to make this site unsuitable or require professional assessment?"
+    },
+    {
+      "id": "flowering-calendar",
+      "supportsLesson": "THC-ENC-362",
+      "title": "Seasonal Flowering Record",
+      "fields": [
+        "Latitude/longitude",
+        "Cultivar/source",
+        "Propagation mode",
+        "Transplant date",
+        "Sunrise/sunset",
+        "Civil twilight",
+        "Artificial night light",
+        "First preflower",
+        "First sustained flower",
+        "Sex expression",
+        "Frost date",
+        "Harvest date"
+      ],
+      "decisionPrompt": "Does the observed flowering response match the local daylength history for this cultivar?"
+    },
+    {
+      "id": "weather-baseline",
+      "supportsLesson": "THC-ENC-363",
+      "title": "Climate and Weather Baseline",
+      "fields": [
+        "Reference station",
+        "Normal period",
+        "Site sensor IDs",
+        "Calibration check",
+        "Temperature",
+        "RH/dew point",
+        "Rainfall",
+        "Wind/gusts",
+        "Solar radiation/DLI",
+        "Leaf wetness",
+        "Extreme events",
+        "Missing data"
+      ],
+      "decisionPrompt": "Which recent condition differs most from the long-term planning baseline?"
+    },
+    {
+      "id": "microclimate-map",
+      "supportsLesson": "THC-ENC-364",
+      "title": "Microclimate Mapping Record",
+      "fields": [
+        "Elevation",
+        "Slope/aspect",
+        "Horizon obstruction",
+        "Wind barriers",
+        "Night temperature transect",
+        "Frost locations",
+        "Dew/leaf-wetness duration",
+        "Canopy temperature",
+        "Soil temperature",
+        "Drainage path"
+      ],
+      "decisionPrompt": "Where does the site create repeatable cold, wet, hot, or wind-exposed risk zones?"
+    },
+    {
+      "id": "outdoor-light",
+      "supportsLesson": "THC-ENC-365",
+      "title": "Outdoor Light and Shade Record",
+      "fields": [
+        "Date/location",
+        "Sun-path obstruction",
+        "Sensor/model",
+        "Calibration",
+        "PPFD interval",
+        "Calculated DLI",
+        "Cloud/smoke",
+        "Structure film or shade",
+        "Canopy position",
+        "Leaf temperature",
+        "Irrigation status"
+      ],
+      "decisionPrompt": "Does integrated light exposure explain the crop response better than a single midday reading?"
+    }
+  ],
+  "qualityRules": [
+    "Record methods and locations so observations can be repeated.",
+    "Separate long-term climate baselines from current weather.",
+    "Do not use one cultivar's flowering response as a universal calendar.",
+    "Preserve spatial variation instead of averaging away risk zones."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  },
+  "status": "draft_for_review"
+}

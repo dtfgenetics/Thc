@@ -1,0 +1,136 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-OUTDOOR-002",
+  "title": "Soil, Root Zone, Transplant, Irrigation, and Mulch Workbook",
+  "lessonIds": [
+    "THC-ENC-366",
+    "THC-ENC-367",
+    "THC-ENC-368",
+    "THC-ENC-369",
+    "THC-ENC-370"
+  ],
+  "purpose": "Provide field-ready records for soil preparation, rooting systems, acclimation, irrigation uniformity, and soil-surface management.",
+  "sections": [
+    {
+      "id": "soil-baseline",
+      "supportsLesson": "THC-ENC-366",
+      "title": "Field Soil Baseline",
+      "fields": [
+        "Sampling zones",
+        "Depth",
+        "Cores per composite",
+        "Profile description",
+        "Texture",
+        "Bulk density/penetration",
+        "Infiltration",
+        "Drainage",
+        "pH",
+        "EC",
+        "Organic matter",
+        "Nutrients",
+        "Metals/residues when indicated",
+        "Amendment rate",
+        "Post-treatment verification"
+      ],
+      "decisionPrompt": "What measured constraint should be corrected before planting?"
+    },
+    {
+      "id": "rooting-system",
+      "supportsLesson": "THC-ENC-367",
+      "title": "Rooting System Comparison",
+      "fields": [
+        "System type",
+        "Dimensions/volume",
+        "Media or soil recipe",
+        "Drainage outlets",
+        "Moisture by depth",
+        "Temperature by depth",
+        "Irrigation frequency",
+        "Root distribution",
+        "Runoff/drainage",
+        "Anchorage",
+        "Disease observations"
+      ],
+      "decisionPrompt": "Which rooting system best controls the site's limiting factors?"
+    },
+    {
+      "id": "transplant",
+      "supportsLesson": "THC-ENC-368",
+      "title": "Transplant and Acclimation Record",
+      "fields": [
+        "Plant ID",
+        "Source/age/node",
+        "Propagation environment",
+        "Root-ball condition",
+        "Acclimation dates",
+        "Light exposure",
+        "Wind exposure",
+        "Transplant date/time",
+        "Weather",
+        "Soil/media moisture",
+        "Irrigation",
+        "Wilting/burn",
+        "Growth restart",
+        "Mortality"
+      ],
+      "decisionPrompt": "Was transplant stress caused mainly by root handling, water status, light, wind, or temperature?"
+    },
+    {
+      "id": "irrigation",
+      "supportsLesson": "THC-ENC-369",
+      "title": "Irrigation Uniformity and Scheduling Record",
+      "fields": [
+        "Zone",
+        "Soil/root depth",
+        "Rainfall",
+        "Pre/post moisture",
+        "System pressure",
+        "Emitter specification",
+        "Measured emitter flow",
+        "Run time",
+        "Applied volume/depth",
+        "Distribution metric",
+        "Runoff/drainage",
+        "Salinity",
+        "Maintenance",
+        "Crop response"
+      ],
+      "decisionPrompt": "Is poor crop uniformity consistent with measured irrigation nonuniformity?"
+    },
+    {
+      "id": "surface-management",
+      "supportsLesson": "THC-ENC-370",
+      "title": "Mulch and Cover-Crop Record",
+      "fields": [
+        "Material/species/source",
+        "Application/seeding rate",
+        "Thickness/coverage",
+        "Termination",
+        "Soil temperature",
+        "Soil moisture",
+        "Infiltration",
+        "Irrigation position",
+        "Weeds",
+        "Pests/rodents",
+        "Disease",
+        "Nutrient tests",
+        "Fire/contamination check"
+      ],
+      "decisionPrompt": "Is the surface treatment delivering its intended benefit without adding a larger risk?"
+    }
+  ],
+  "qualityRules": [
+    "Use representative soil and irrigation samples.",
+    "Keep amendment, irrigation, and crop-response records linked by date and zone.",
+    "Do not infer root-zone status from surface appearance alone.",
+    "Record unintended pest, disease, salinity, and fire effects."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  },
+  "status": "draft_for_review"
+}

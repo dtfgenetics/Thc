@@ -1,0 +1,130 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-OUTDOOR-003",
+  "title": "Weather Stress, Disease, Contamination, and Wildlife Workbook",
+  "lessonIds": [
+    "THC-ENC-371",
+    "THC-ENC-372",
+    "THC-ENC-373",
+    "THC-ENC-374",
+    "THC-ENC-375"
+  ],
+  "purpose": "Support traceable decisions for wind, heat/drought, wet-weather disease risk, smoke/dust events, and vertebrate damage.",
+  "sections": [
+    {
+      "id": "wind",
+      "supportsLesson": "THC-ENC-371",
+      "title": "Wind and Structural Support Record",
+      "fields": [
+        "Wind station/height",
+        "Gust/direction",
+        "Terrain/barriers",
+        "Plant dimensions",
+        "Support specification",
+        "Anchor depth",
+        "Tie positions",
+        "Wet-canopy condition",
+        "Damage location/type",
+        "Repairs",
+        "Post-event inspection"
+      ],
+      "decisionPrompt": "Did failure originate in wind exposure, plant architecture, anchorage, or support design?"
+    },
+    {
+      "id": "heat-drought",
+      "supportsLesson": "THC-ENC-372",
+      "title": "Heat and Drought Stress Record",
+      "fields": [
+        "Air temperature",
+        "Leaf temperature",
+        "Soil temperature",
+        "RH/VPD",
+        "Solar radiation/DLI",
+        "Wind",
+        "Soil moisture by depth",
+        "Irrigation/pressure",
+        "Plant water-status observations",
+        "EC/salinity",
+        "Symptom distribution",
+        "Recovery"
+      ],
+      "decisionPrompt": "Which measurement best distinguishes atmospheric heat load from root-zone water limitation?"
+    },
+    {
+      "id": "wetness-disease",
+      "supportsLesson": "THC-ENC-373",
+      "title": "Rain, Dew, and Flower-Disease Record",
+      "fields": [
+        "Rain amount/intensity/time",
+        "Dew point",
+        "Wetness duration",
+        "Cultivar",
+        "Flower density",
+        "Temperature/RH",
+        "Wind/drying time",
+        "Injury/pests",
+        "Symptoms/odor",
+        "Sample method",
+        "Hold/disposition"
+      ],
+      "decisionPrompt": "Does wetness duration and flower architecture support a disease-risk hypothesis that requires sampling or hold action?"
+    },
+    {
+      "id": "particulate-event",
+      "supportsLesson": "THC-ENC-374",
+      "title": "Smoke and Dust Event Record",
+      "fields": [
+        "Event source/time",
+        "AQI/PM source",
+        "Wind/rain",
+        "Visible ash/dust",
+        "Crop stage",
+        "Exposure duration",
+        "Worker restrictions",
+        "Water/soil impacts",
+        "Photographs",
+        "Sample map",
+        "Chain of custody",
+        "Analyte panel",
+        "Results",
+        "Disposition"
+      ],
+      "decisionPrompt": "What evidence is required before exposed crop can be released, held, or rejected?"
+    },
+    {
+      "id": "wildlife",
+      "supportsLesson": "THC-ENC-375",
+      "title": "Wildlife Damage and Exclusion Record",
+      "fields": [
+        "Damage type",
+        "Damage height/distribution",
+        "Tracks/droppings/camera",
+        "Species confidence",
+        "Time",
+        "Crop stage",
+        "Attractants/habitat",
+        "Fence/net specification",
+        "Gate/ground gaps",
+        "Inspection",
+        "Repair",
+        "Non-target injury",
+        "Lawful authority"
+      ],
+      "decisionPrompt": "Does the evidence support the suspected species and the selected exclusion method?"
+    }
+  ],
+  "qualityRules": [
+    "Separate worker-safety decisions from crop-quality decisions.",
+    "Use measurements and samples rather than visual assumptions when contamination or disease is plausible.",
+    "Document weather-event timing and crop stage.",
+    "Use lawful, non-target-conscious wildlife exclusion."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  },
+  "status": "draft_for_review"
+}
