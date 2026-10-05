@@ -1,4 +1,8 @@
 # Shared DTF runtime modules must use a JavaScript MIME type for strict ES-module loading.
+# Keep this policy scoped to /assets/ so WordPress-owned routes remain unaffected.
 <IfModule mod_mime.c>
   AddType application/javascript .js .mjs
+</IfModule>
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
 </IfModule>
