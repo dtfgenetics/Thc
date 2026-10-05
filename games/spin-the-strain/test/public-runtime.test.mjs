@@ -21,6 +21,9 @@ assert.equal(publicEngine, canonicalEngine, 'public engine.mjs must exactly matc
 assert.match(app, /import\('\.\/runtime\.mjs'\)/, 'app.js must delegate to runtime.mjs');
 assert.ok(app.length < 1500, 'app.js must remain a thin compatibility bootstrap');
 assert.match(runtime, /from '\.\/engine\.mjs';/, 'runtime must import the canonical public engine');
+assert.match(runtime, /from '\/games\/shared-platform\/index\.mjs';/, 'runtime must use shared clipboard helper');
+assert.doesNotMatch(runtime, /async function copyText\(/, 'runtime must not duplicate clipboard fallback');
+assert.match(runtime, /copied\.ok/, 'runtime must honor shared clipboard result contract');
 assert.doesNotMatch(runtime, /fetch\(['"]\.\/data\/wheels\.json/i, 'runtime must not fetch wheel JSON at runtime');
 assert.match(runtime, /function readEmbeddedData\(/, 'runtime must read embedded data');
 assert.match(runtime, /function validateData\(/, 'runtime must validate embedded data');
@@ -44,9 +47,6 @@ assert.match(runtime, /event\.key === 's' \|\| event\.key === 'S'/, 'S keyboard 
 assert.match(runtime, /globalThis\.crypto\?\.getRandomValues/, 'random code generation must tolerate missing crypto APIs');
 assert.match(runtime, /globalThis\.history\?\.replaceState/, 'history mutation must be guarded');
 assert.match(runtime, /function prefersReducedMotion\(/, 'reduced-motion lookup must be guarded');
-assert.match(runtime, /navigator\.clipboard\?\.writeText/, 'share behavior must tolerate unavailable clipboard APIs');
-assert.match(runtime, /async function copyText\(/, 'share behavior must expose a clipboard fallback helper');
-assert.match(runtime, /document\.execCommand\?\.\('copy'\) === true/, 'share behavior must retain a legacy clipboard fallback');
 assert.match(runtime, /Copy failed\. Share wheel/, 'share failure must preserve the full manual challenge path');
 
 assert.match(css, /\.segment-label::after\{content:attr\(data-short\)/, 'mobile wheel must render compact category abbreviations');
