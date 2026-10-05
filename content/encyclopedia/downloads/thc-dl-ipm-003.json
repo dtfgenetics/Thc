@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-IPM-003",
+  "title": "Scouting, Identification, Threshold, Cultural, and Physical Control Workbook",
+  "lessonIds": [
+    "THC-ENC-331",
+    "THC-ENC-332",
+    "THC-ENC-333",
+    "THC-ENC-334",
+    "THC-ENC-335"
+  ],
+  "purpose": "Provide repeatable scouting and identification records and document evidence-bounded decisions for thresholds, cultural controls, and mechanical/physical interventions.",
+  "sections": [
+    {
+      "id": "scouting",
+      "supportsLesson": "THC-ENC-331",
+      "title": "Representative Scouting Route",
+      "fields": [
+        "Route ID",
+        "Date/time",
+        "Zone",
+        "Plant count examined",
+        "Plant parts examined",
+        "Trap count/location",
+        "Pest/disease observations",
+        "Beneficial observations",
+        "Denominator",
+        "Hotspot map",
+        "Trend",
+        "Next inspection"
+      ],
+      "decisionPrompt": "Does the route provide representative coverage and enough denominator data to detect change over time?"
+    },
+    {
+      "id": "identification",
+      "supportsLesson": "THC-ENC-332",
+      "title": "Identification Escalation Record",
+      "fields": [
+        "Observation",
+        "Photo/magnification",
+        "Suspected identity",
+        "Alternative identities",
+        "Reference comparison",
+        "Specimen/sample ID",
+        "Collection location",
+        "Laboratory referral",
+        "Result",
+        "Confidence",
+        "Management consequence"
+      ],
+      "decisionPrompt": "Is identification confidence high enough for the proposed action, or should the case escalate?"
+    },
+    {
+      "id": "threshold",
+      "supportsLesson": "THC-ENC-333",
+      "title": "Threshold and Tolerance Decision Record",
+      "fields": [
+        "Target organism/problem",
+        "Monitoring result",
+        "Crop stage",
+        "Injury level",
+        "Vector/disease risk",
+        "Crop value",
+        "Beneficial organisms",
+        "Trend",
+        "Uncertainty",
+        "Decision criterion source",
+        "Action/no-action decision",
+        "Review date"
+      ],
+      "decisionPrompt": "Does the evidence justify action under this crop and risk context without pretending a universal Cannabis threshold exists?"
+    },
+    {
+      "id": "cultural",
+      "supportsLesson": "THC-ENC-334",
+      "title": "Cultural Control Evaluation",
+      "fields": [
+        "Target problem",
+        "Host/cultivar factor",
+        "Spacing/density",
+        "Irrigation practice",
+        "Fertility context",
+        "Sanitation",
+        "Weed/alternate-host context",
+        "Timing change",
+        "Environmental change",
+        "Tradeoff",
+        "Outcome metric"
+      ],
+      "decisionPrompt": "Did the cultural change make establishment or disease development less favorable without creating a larger crop problem?"
+    },
+    {
+      "id": "physical",
+      "supportsLesson": "THC-ENC-335",
+      "title": "Mechanical and Physical Control Record",
+      "fields": [
+        "Target",
+        "Control type",
+        "Barrier/trap/removal/pruning/isolation method",
+        "Scale",
+        "Timing",
+        "Crop stage",
+        "Pre-count/injury",
+        "Post-count/injury",
+        "Non-target effect",
+        "Labor",
+        "Repeat need",
+        "Outcome"
+      ],
+      "decisionPrompt": "Was the physical intervention matched to target biology and verified with measurable follow-up?"
+    }
+  ],
+  "qualityRules": [
+    "Always retain denominator and location data in scouting.",
+    "Record differential diagnoses, not only the favored identification.",
+    "Document the source and context for any decision criterion.",
+    "Measure outcomes after cultural or physical controls."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  },
+  "status": "draft_for_review"
+}
