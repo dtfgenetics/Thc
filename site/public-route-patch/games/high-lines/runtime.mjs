@@ -101,7 +101,7 @@ function highLinesAgentFillRegion(regionId) {
   const normalized = String(regionId ?? '');
   const region = [...ui.art.querySelectorAll('[data-region]')].find((candidate) => candidate.dataset.region === normalized);
   if (!region) throw new Error(`Unsupported High Lines region: ${regionId}`);
-  region.click();
+  region.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   return true;
 }
 
