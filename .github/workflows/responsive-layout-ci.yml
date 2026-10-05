@@ -1,0 +1,35 @@
+name: Responsive Layout CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'apps/**'
+      - 'scripts/**'
+      - 'games/**'
+      - 'docs/RESPONSIVE_LAYOUT_STANDARD.md'
+      - '.agents/skills/dtf-responsive-layout/**'
+      - 'AGENTS.md'
+      - 'package.json'
+      - '.github/workflows/responsive-layout-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  responsive-layout:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Syntax-check responsive verifier
+        run: node --check scripts/verify-responsive-layout.mjs
+
+      - name: Verify responsive layout contract
+        run: node scripts/verify-responsive-layout.mjs
