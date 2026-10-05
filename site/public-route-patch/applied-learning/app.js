@@ -1,4 +1,4 @@
-const SOURCE_SHA='9ce4c11da8f7749775e2b886d57c303ea6723a61';
+const SOURCE_SHA='ea7b3c7e6d62a51c1b37f332bacc85897d49e5aa';
 
 const data=await fetch('./data.json',{cache:'no-store'}).then(response=>{
   if(!response.ok) throw new Error('Applied Learning data unavailable');
