@@ -25,8 +25,7 @@ const hasReviewerEvidence=task=>
   task?.reviewedAt!=null||
   task?.reviewNotes!=null||
   task?.reviewerName!=null||
-  task?.reviewChecks!=null||
-  task?.reviewSourcePacket!=null;
+  task?.reviewChecks!=null;
 
 if(rows.length!==registryState.totalCount) errors.push(`Expected ${registryState.totalCount} review rows; found ${rows.length}`);
 if(new Set(rows.map(x=>x.lessonId)).size!==rows.length) errors.push('Review rows must have unique lesson IDs.');
