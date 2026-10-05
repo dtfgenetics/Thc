@@ -17,6 +17,9 @@ on:
       - 'scripts/test-generate-game-registry-docs.mjs'
       - 'scripts/test-dtf-game-development-skill.mjs'
       - 'scripts/test-game-registry-preflight.mjs'
+      - 'scripts/verify-public-game-portfolio.mjs'
+      - 'scripts/summarize-public-game-evidence.mjs'
+      - '.github/workflows/verify-public-game-portfolio.yml'
       - '.agents/skills/dtf-game-development/SKILL.md'
       - '.agents/skills/dtf-game-location-resolver/SKILL.md'
       - 'package.json'
@@ -54,5 +57,7 @@ jobs:
           node scripts/test-dtf-game-development-skill.mjs
           node scripts/test-game-registry-preflight.mjs
           node scripts/test-game-registry-guidance.mjs
+          node --check scripts/verify-public-game-portfolio.mjs
+          node --check scripts/summarize-public-game-evidence.mjs
           npm run games:locations:check
           npm run verify:game-scope
