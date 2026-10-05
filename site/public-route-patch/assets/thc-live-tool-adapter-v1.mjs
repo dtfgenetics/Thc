@@ -39,6 +39,7 @@ export function mountLiveToolAdapter({
   zoneField=null,
   title='Live sensor adapter',
   staleMinutes=10,
+  onPacket=()=>{},
   onApplied=()=>{}
 }={}){
   if(!container||typeof container.querySelector!=='function')throw new Error('Live tool adapter requires a container.');
@@ -136,6 +137,7 @@ export function mountLiveToolAdapter({
 
   const receivePacket=current=>{
     packet=current;
+    onPacket(current);
     updateStatusBoard(current,{connectionState:telemetryFreshness(current,{staleAfterMs:Math.max(1,Number(stale.value)||10)*60*1000}).state==='stale'?'Stale':'Live data'});
     if(autoApply.checked){
       const applied=applyCurrent(current,{announce:false});

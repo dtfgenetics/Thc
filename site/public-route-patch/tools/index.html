@@ -309,21 +309,72 @@
   const status=document.getElementById('toolSearchStatus');
   const groups=[...document.querySelectorAll('#expanded-tools .tool-group')];
   if(!input||!status||!groups.length)return;
-  const cards=groups.flatMap(group=>[...group.querySelectorAll('.measure-panel article')].map(card=>({group,card,text:card.textContent.toLowerCase()})));
+  const searchAliases={
+    '/water-quality-lab/':'water report source water tap well municipal ro alkalinity hardness calcium magnesium sodium chloride ions lab chemistry',
+    '/fertigation-lab/':'fertilizer nutrients feed recipe salts stock solution nutrient mix source water elemental ppm ec formulation',
+    '/dryback-lab/':'irrigation dryback runoff drainage vwc substrate moisture crop steering shot field capacity root ec sensor',
+    '/substrate-calculator/':'media substrate soil coco peat perlite container pot volume bags blend mix',
+    '/dilution-calculator/':'dilution dilute concentrate stock c1v1 solution mixing ratio',
+    '/unit-converter/':'convert conversion celsius fahrenheit liters gallons centimeters inches ec microsiemens airflow cfm',
+    '/environment-control/':'environment room climate temperature humidity vpd co2 leaf temperature light root zone stress sensor',
+    '/dew-point/':'dew point condensation surface moisture mold humidity leaf temperature',
+    '/co2-ventilation/':'ventilation airflow fan exhaust intake cfm ach air changes co2 room volume',
+    '/photoperiod-planner/':'photoperiod light schedule timer sunrise sunset dawn dusk flowering hours daylength solar',
+    '/root-zone-temperature/':'root zone roots temperature probe irrigation solution ec sensor substrate',
+    '/ppfd-chart/':'ppfd par epar dli light map heatmap quantum sensor canopy photon fixture lighting',
+    '/ipm-scout/':'ipm pest pests bugs insects mites thrips fungus disease scout scouting trap counts plant health',
+    '/dry-cure-lab/':'dry cure drying curing harvest postharvest water activity humidity dew point storage weight loss',
+    '/grow-planner/':'grow plan calendar lifecycle schedule seedling veg vegetative flower flowering harvest dates crop',
+    '/plant-growth-tracker/':'growth plant height nodes canopy branches morphology phenotype measurements trend',
+    '/breeder-pedigree/':'breeding breeder genetics lineage pedigree genealogy parents cross generations selection phenotype',
+    '/thc-grow-doc/':'diagnosis diagnose symptoms yellow leaves spots deficiency toxicity pest disease photo plant health problem'
+  };
+  const cards=groups.flatMap(group=>[...group.querySelectorAll('.measure-panel article')].map((card,order)=>{
+    const link=card.querySelector('a[href]'),href=link?.getAttribute('href')||'',title=(card.querySelector('strong')?.textContent||'').trim();
+    return {group,card,order,href,title,titleLower:title.toLowerCase(),text:card.textContent.toLowerCase(),aliases:(searchAliases[href]||'').toLowerCase()};
+  }));
+  function scoreCard(item,query){
+    if(!query)return 1;
+    const tokens=query.split(/\s+/).filter(Boolean);
+    let score=0;
+    const phrase=query;
+    if(item.titleLower===phrase)score+=80;
+    else if(item.titleLower.includes(phrase))score+=40;
+    if(item.aliases.includes(phrase))score+=24;
+    if(item.text.includes(phrase))score+=12;
+    for(const token of tokens){
+      let matched=false;
+      if(item.titleLower.includes(token)){score+=16;matched=true}
+      if(item.href.includes(token)){score+=10;matched=true}
+      if(item.aliases.includes(token)){score+=8;matched=true}
+      if(item.text.includes(token)){score+=4;matched=true}
+      if(!matched)return 0;
+    }
+    return score;
+  }
   function apply(){
-    const q=input.value.trim().toLowerCase();
-    let shown=0;
-    for(const {card,text} of cards){
-      const match=!q||text.includes(q);
-      card.classList.toggle('tool-hidden',!match);
-      if(match)shown++;
-    }
+    const q=input.value.trim().toLowerCase().replace(/\s+/g,' ');
+    const scored=cards.map(item=>({...item,score:scoreCard(item,q)}));
+    const visible=scored.filter(item=>!q||item.score>0);
+    for(const item of scored)item.card.classList.toggle('tool-hidden',q&&item.score<=0);
     for(const group of groups){
-      const visible=[...group.querySelectorAll('.measure-panel article')].some(card=>!card.classList.contains('tool-hidden'));
-      group.classList.toggle('tool-hidden',!visible);
-      if(q&&visible)group.open=true;
+      const groupItems=scored.filter(item=>item.group===group);
+      const panel=group.querySelector('.measure-panel');
+      if(q&&panel){
+        groupItems.slice().sort((a,b)=>b.score-a.score||a.order-b.order).forEach(item=>panel.appendChild(item.card));
+      }else if(panel){
+        groupItems.slice().sort((a,b)=>a.order-b.order).forEach(item=>panel.appendChild(item.card));
+      }
+      const hasVisible=groupItems.some(item=>!q||item.score>0);
+      group.classList.toggle('tool-hidden',!hasVisible);
+      if(q&&hasVisible)group.open=true;
     }
-    status.textContent=q?shown+' matching tool'+(shown===1?'':'s'):cards.length+' tools shown';
+    if(!q){
+      status.textContent=cards.length+' tools shown';
+      return;
+    }
+    const best=visible.slice().sort((a,b)=>b.score-a.score||a.order-b.order)[0];
+    status.textContent=visible.length?(visible.length+' matching tool'+(visible.length===1?'':'s')+(best?' · best: '+best.title:'')):'No matching tools';
   }
   input.addEventListener('input',apply);
   input.addEventListener('search',apply);
