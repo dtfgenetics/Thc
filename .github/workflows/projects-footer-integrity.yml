@@ -1,0 +1,59 @@
+name: Projects Footer Integrity
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/verify-projects-footer.mjs
+      - scripts/test-projects-footer.mjs
+      - site/public-route-patch/projects/index.html
+      - .github/workflows/projects-footer-integrity.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/verify-projects-footer.mjs
+      - scripts/test-projects-footer.mjs
+      - .github/workflows/projects-footer-integrity.yml
+  workflow_run:
+    workflows:
+      - Deploy DTFSeeds Public Suite via WordPress V2
+      - Reconcile DTFSeeds Public Route Serving
+    branches: [main]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: projects-footer-integrity-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/test-projects-footer.mjs
+
+  live:
+    if: github.event_name != 'pull_request'
+    needs: regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Assert one canonical footer on ordinary and fresh Projects URLs
+        run: node scripts/verify-projects-footer.mjs
