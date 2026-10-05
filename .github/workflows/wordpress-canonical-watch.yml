@@ -50,8 +50,6 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: main
 
       - uses: actions/setup-node@v4
         with:
@@ -70,9 +68,16 @@ jobs:
           node --check scripts/validate-woocommerce-reconciliation.mjs
           node scripts/validate-genetics-commerce.mjs
           node scripts/validate-woocommerce-reconciliation.mjs
-          for slug in home seeds learn community shop gallery about contact; do
+          for slug in home learn shop; do
             test -s "site/wordpress/pages/$slug.html"
             grep -Fq '<h1' "site/wordpress/pages/$slug.html"
+          done
+          # Render-model contract: WordPress supplies the sole canonical page-title H1
+          # for these routes; stored body fragments must not add a duplicate H1.
+          for slug in seeds community gallery about contact; do
+            test -s "site/wordpress/pages/$slug.html"
+            ! grep -Fq '<h1' "site/wordpress/pages/$slug.html"
+            grep -Fq '<h2' "site/wordpress/pages/$slug.html"
           done
           test -s site/wordpress/products/genetics.json
           test -s site/wordpress/products/woocommerce-reconciliation.json
