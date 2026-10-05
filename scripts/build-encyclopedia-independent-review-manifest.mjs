@@ -16,18 +16,28 @@ const visuals=read('content/encyclopedia/visual-production-queue-v1.json');
 const visualReviewLedger=fs.existsSync(path.join(root,'data','encyclopedia-visual-review-ledger.json'))
   ? read('data/encyclopedia-visual-review-ledger.json')
   : {lessons:[]};
+const assessmentReviewLedger=fs.existsSync(path.join(root,'data','encyclopedia-assessment-review-ledger.json'))
+  ? read('data/encyclopedia-assessment-review-ledger.json')
+  : {lessons:[]};
+const claimReviewLedger=fs.existsSync(path.join(root,'data','encyclopedia-claim-review-ledger.json'))
+  ? read('data/encyclopedia-claim-review-ledger.json')
+  : {lessonSummary:{}};
 
 const byId=rows=>new Map(arr(rows).map(row=>[row.id||row.lessonId,row]));
 const evidenceById=byId(evidence.lessons);
 const rationaleById=byId(rationales.lessons);
 const visualById=byId(visuals.items);
 const visualReviewById=byId(visualReviewLedger.lessons);
+const assessmentReviewById=byId(assessmentReviewLedger.lessons);
+const claimReviewSummaryById=new Map(Object.entries(claimReviewLedger.lessonSummary||{}));
 
 const rows=arr(readiness.lessons).map(row=>{
   const e=evidenceById.get(row.id)||{};
   const r=rationaleById.get(row.id)||{};
   const v=visualById.get(row.id)||{};
   const vr=visualReviewById.get(row.id)||{};
+  const ar=assessmentReviewById.get(row.id)||{};
+  const cr=claimReviewSummaryById.get(row.id)||{};
   const evidenceCount=Number(e?.evidence?.claimEvidenceCount||0);
   const visualCandidates=arr(v.canonicalAssetPaths);
   return {
@@ -43,7 +53,14 @@ const rows=arr(readiness.lessons).map(row=>{
         mapped:evidenceCount>0,
         claimEvidenceCount:evidenceCount,
         authoritativeSourceIds:arr(e?.evidence?.authoritativeSourceIds),
-        currentReviewState:e?.evidence?.reviewState||null,
+        currentReviewState:row.evidence?.claimEvidenceReviewState||e?.evidence?.reviewState||null,
+        claimReviewSummary:{
+          claimCount:Number(cr.claimCount||0),
+          completed:Number(cr.completed||0),
+          approved:Number(cr.approved||0),
+          changesRequested:Number(cr.changesRequested||0),
+          rejected:Number(cr.rejected||0)
+        },
         requestedDecision:evidenceCount>0?'independent_science_review':'complete_evidence_mapping_then_review',
         reviewerDecision:null,
         reviewerId:null,
@@ -54,12 +71,15 @@ const rows=arr(readiness.lessons).map(row=>{
         required:true,
         promptCount:arr(r.prompts).length,
         rationaleCount:arr(r.rationales).length,
-        currentReviewState:r.reviewState||null,
+        currentReviewState:row.assessment?.reviewState||r.reviewState||null,
         requestedDecision:'independent_assessment_and_science_review',
-        reviewerDecision:null,
-        reviewerId:null,
-        reviewedAt:null,
-        reviewNotes:null
+        reviewerDecision:ar.decision??null,
+        reviewerId:ar.decision?ar.reviewerId??null:null,
+        reviewerName:ar.decision?ar.reviewerName??null:null,
+        reviewedAt:ar.decision?ar.reviewedAt??null:null,
+        reviewNotes:ar.decision?ar.reviewNotes??null:null,
+        reviewChecks:ar.decision?ar.checks??null:null,
+        reviewSourcePacket:ar.decision?ar.sourcePacket??null:null
       },
       teachingVisual:{
         required:true,
@@ -146,6 +166,11 @@ const summary={
   generatedReviewerDecisions:0,
   importedVisualReviewerDecisions:rows.filter(x=>Boolean(x.reviewTasks.teachingVisual.reviewerDecision)).length,
   importedVisualApprovals:rows.filter(x=>x.reviewTasks.teachingVisual.reviewerDecision==='approved').length,
+  importedAssessmentReviewerDecisions:rows.filter(x=>Boolean(x.reviewTasks.assessmentRationales.reviewerDecision)).length,
+  importedAssessmentApprovals:rows.filter(x=>x.reviewTasks.assessmentRationales.reviewerDecision==='approved').length,
+  reviewedClaimCandidates:Number(claimReviewLedger.summary?.completed||0),
+  approvedClaimCandidates:Number(claimReviewLedger.summary?.approved||0),
+  totalClaimCandidates:Number(claimReviewLedger.summary?.claimCount||0),
   reviewBatchSize,
   reviewBatchCount:reviewBatches.length
 };
@@ -155,7 +180,7 @@ const output={
   artifactId:'thc-encyclopedia-independent-review-manifest',
   generatedBy:'scripts/build-encyclopedia-independent-review-manifest.mjs',
   scope:`Reviewer handoff for all ${registryState.totalCount} registered THC-ENC lessons. This artifact enumerates review work but never makes reviewer decisions.`, 
-  reviewBoundary:'Generated content may prepare evidence, rationale, visual, accessibility, rights, QA, and release-review tasks. Independent reviewer identity, decision, date, and notes must come from an external review action and must never be synthesized by this builder. Validated external visual-review decisions may be projected from data/encyclopedia-visual-review-ledger.json.',
+  reviewBoundary:'Generated content may prepare evidence, rationale, visual, accessibility, rights, QA, and release-review tasks. Independent reviewer identity, decision, date, and notes must come from an external review action and must never be synthesized by this builder. Validated external assessment and visual decisions may be projected from their review ledgers; claim-review progress is projected only as claim-level counts and never collapsed into a synthetic lesson-level reviewer decision.',
   summary,
   reviewBatches,
   lessons:rows
