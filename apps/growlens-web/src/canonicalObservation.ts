@@ -1,4 +1,4 @@
-import type { DiaryEntry, GrowLensState, Observation } from './types';
+import type { DiaryEntry, GrowLensState, Observation, ObservationPlantLocation, ObservationSeverity, ObservationTissue } from './types';
 
 export const CANONICAL_OBSERVATION_EVENT = 'growlens:canonical-observation';
 
@@ -24,6 +24,9 @@ export type GrowLensCanonicalObservationRecord = {
   values: {
     symptoms: string[];
     candidateDifferentials: string[];
+    severity?: ObservationSeverity;
+    locationOnPlant?: ObservationPlantLocation;
+    tissue?: ObservationTissue;
     notes?: string;
   };
   mediaRefs: Array<{
@@ -48,6 +51,9 @@ type ObservationInput = {
   symptoms: string[];
   notes: string;
   candidateDifferentials: string[];
+  severity?: ObservationSeverity | '';
+  locationOnPlant?: ObservationPlantLocation | '';
+  tissue?: ObservationTissue | '';
   photoIds: string[];
   observedAt: string;
 };
@@ -73,6 +79,9 @@ export function createGrowLensObservationArtifacts(
   const candidateDifferentials = cleanList(input.candidateDifferentials);
   const photoIds = cleanList(input.photoIds, 24, 240);
   const notes = cleanText(input.notes, 4000);
+  const severity = input.severity || undefined;
+  const locationOnPlant = input.locationOnPlant || undefined;
+  const tissue = input.tissue || undefined;
   const observedAt = new Date(input.observedAt).toISOString();
 
   const observation: Observation = {
@@ -81,6 +90,9 @@ export function createGrowLensObservationArtifacts(
     symptoms,
     notes,
     possibleCauses: candidateDifferentials,
+    ...(severity ? { severity } : {}),
+    ...(locationOnPlant ? { locationOnPlant } : {}),
+    ...(tissue ? { tissue } : {}),
     photoIds,
     createdAt: observedAt,
   };
@@ -117,6 +129,9 @@ export function createGrowLensObservationArtifacts(
     values: {
       symptoms,
       candidateDifferentials,
+      ...(severity ? { severity } : {}),
+      ...(locationOnPlant ? { locationOnPlant } : {}),
+      ...(tissue ? { tissue } : {}),
       ...(notes ? { notes } : {}),
     },
     mediaRefs: photoIds.map((ref) => ({
