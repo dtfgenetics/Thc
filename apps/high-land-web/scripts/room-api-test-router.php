@@ -18,7 +18,8 @@ $allowed = [
     'join-room.php',
     'get-room.php',
     'update-room.php',
-    'append-event.php'
+    'append-event.php',
+    'health.php'
 ];
 
 if (!in_array($endpoint, $allowed, true)) {
