@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import process from 'node:process';
 import { setDefaultResultOrder } from 'node:dns';
@@ -14,11 +14,29 @@ const rulesPath = process.env.RETIRED_VISUAL_RULES || join(process.cwd(), 'site/
 const backupRoot = process.env.BACKUP_ROOT || '/tmp/dtf-retired-visual-scrub';
 const timestamp = new Date().toISOString().replace(/[-:.]/g, '').replace('Z', 'Z');
 const backupDir = join(backupRoot, `retired-visual-scrub-${timestamp}`);
+const encyclopediaVisualMapRoot = join(process.cwd(), 'site', 'wordpress', 'education', 'encyclopedia');
+
+async function loadCuratedApprovedVisualFilenames() {
+  const approved = new Set();
+  let names = [];
+  try { names = await readdir(encyclopediaVisualMapRoot); } catch { return approved; }
+  for (const name of names.filter((value) => /^volume\d+-visual-map\.json$/i.test(value)).sort()) {
+    const doc = JSON.parse(await readFile(join(encyclopediaVisualMapRoot, name), 'utf8'));
+    if (doc?.schemaVersion !== 1 || !Array.isArray(doc.items)) throw new Error(`Invalid curated encyclopedia visual map: ${name}`);
+    for (const item of doc.items) {
+      const assetPath = String(item?.assetPath || '');
+      if (!/^THC-ENC-\d{3}_.+\.(?:png|jpe?g|webp)$/i.test(assetPath)) throw new Error(`${name}: invalid curated assetPath for ${item?.id || 'unknown'}`);
+      approved.add(assetPath.toLowerCase());
+    }
+  }
+  return approved;
+}
 
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 await mkdir(backupDir, { recursive: true });
 
 const rules = JSON.parse(await readFile(rulesPath, 'utf8'));
+const curatedApprovedVisualFilenames = await loadCuratedApprovedVisualFilenames();
 const approvalMarker = String(rules.approvalMarker || 'DTF_APPROVED_PUBLIC_VISUAL').toLowerCase();
 const retireRegex = (rules.retireRegex || []).map((value) => new RegExp(value, 'i'));
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
@@ -44,9 +62,19 @@ function normalizeText(value = '') {
 const normalizedApprovalMarker = normalizeText(approvalMarker);
 const retireContains = (rules.retireTextContains || []).map(normalizeText).filter(Boolean);
 
+function containsCuratedApprovedVisual(value) {
+  const raw = String(value || '');
+  if (!raw || curatedApprovedVisualFilenames.size === 0) return false;
+  let decoded = raw;
+  try { decoded = decodeURIComponent(raw); } catch {}
+  const lower = decoded.toLowerCase();
+  return [...curatedApprovedVisualFilenames].some((filename) => lower.includes(filename));
+}
+
 function isRetiredText(value) {
   const raw = String(value || '');
   if (!raw) return false;
+  if (containsCuratedApprovedVisual(raw)) return false;
   const rawLower = raw.toLowerCase();
   const normalized = normalizeText(raw);
   if (rawLower.includes(approvalMarker) || (normalizedApprovalMarker && normalized.includes(normalizedApprovalMarker))) return false;
@@ -131,7 +159,9 @@ function mediaText(item) {
 }
 
 function isRetiredMedia(item) {
-  return isRetiredText(mediaText(item));
+  const text = mediaText(item);
+  if (containsCuratedApprovedVisual(text)) return false;
+  return isRetiredText(text);
 }
 
 async function fetchAll(path, { limitPages = 100 } = {}) {
@@ -384,6 +414,7 @@ const report = {
   deleteRetiredMedia,
   policySchemaVersion: rules.schemaVersion || null,
   approvalMarker: rules.approvalMarker || null,
+  curatedApprovedVisualCount: curatedApprovedVisualFilenames.size,
   mediaInspected: media.length,
   retiredMediaMatched: retired.length,
   directPatternRemovals: totalDirectPatternRemovals,
