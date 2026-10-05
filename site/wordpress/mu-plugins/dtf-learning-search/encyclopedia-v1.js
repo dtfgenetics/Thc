@@ -4,6 +4,7 @@ import {explainSearchMatch} from './thc-search-explain-v1.js';
 const q=document.querySelector('[data-q]');
 const clear=document.querySelector('[data-clear]');
 const topicsHost=document.querySelector('[data-topics]');
+const topicHubsHost=document.querySelector('[data-topic-hubs]');
 const library=document.querySelector('[data-library]');
 const statusText=document.querySelector('[data-status-text]');
 const formatHost=document.querySelector('[data-format-filters]');
@@ -50,6 +51,7 @@ function filtered(){
 }
 function renderTopics(){
  topicsHost.innerHTML=payload.topics.map(t=>'<button class="topic" type="button" data-part="'+t.part+'" aria-pressed="'+String(activePart===Number(t.part))+'"><span class="topic-num">Part '+String(t.part).padStart(2,'0')+' · '+t.range[0]+'–'+t.range[1]+'</span><h3>'+esc(t.title)+'</h3><p>'+esc(t.description)+'</p><div class="topic-meta">'+t.publishedCount+' published · '+t.count+' registered</div></button>').join('');
+ if(topicHubsHost)topicHubsHost.innerHTML=payload.topics.filter(t=>Number(t.publishedCount||0)>0&&t.slug).map(t=>'<a href="/learn/encyclopedia/'+encodeURIComponent(t.slug)+'/">Part '+String(t.part).padStart(2,'0')+' · '+esc(t.title)+'</a>').join('');
  for(const button of topicsHost.querySelectorAll('[data-part]')){
   button.addEventListener('click',()=>{
    const part=Number(button.dataset.part);
