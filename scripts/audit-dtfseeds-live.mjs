@@ -41,7 +41,7 @@ const routes = [
   },
   {
     key: 'tools', path: '/tools/', minimumText: 600,
-    requiredText: ['Two primary workflows. One connected tool suite.', 'THC GrowLens', 'THC Grow Doc'],
+    requiredText: ['Measure it. Document it. Diagnose with context.', 'THC GrowLens', 'THC Grow Doc'],
     requiredLinks: ['/seeds/', '/shop/', '/growlens/', '/thc-grow-doc/']
   },
   {
@@ -56,6 +56,7 @@ const routes = [
   { key: 'gallery', path: '/gallery/', minimumText: 250 },
   { key: 'about', path: '/about/', minimumText: 300 },
   { key: 'contact', path: '/contact/', minimumText: 250, requiredText: ['Discord'] },
+  { key: 'journal', path: '/journal/', minimumText: 650, requiredText: ['DTF Journal', 'A changelog, not a duplicate library.'], requiredLinks: ['/seeds/', '/learn/', '/tools/', '/games/', '/community/'] },
   {
     key: 'yellow-leaves', path: '/yellow-leaves/', minimumText: 1000,
     requiredText: ['Yellow leaves are a symptom, not a diagnosis']
