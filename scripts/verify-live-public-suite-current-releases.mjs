@@ -1,7 +1,11 @@
+import fs from 'node:fs';
+
 const baseUrl = String(process.env.DTF_SITE_URL || 'https://dtfseeds.com').replace(/\/+$/, '');
 const attemptCount = Number(process.env.DTF_LIVE_VERIFY_ATTEMPTS || 6);
 const retryDelayMs = Number(process.env.DTF_LIVE_VERIFY_DELAY_MS || 5000);
 const runId = process.env.GITHUB_RUN_ID || Date.now();
+const appliedLearningRevision = fs.readFileSync('site/public-route-patch/applied-learning/source-revision.txt','utf8').match(/^commit=([0-9a-f]{40})$/m)?.[1];
+if(!appliedLearningRevision) throw new Error('Applied Learning source revision is missing or invalid.');
 
 const routes = [
   {
@@ -62,13 +66,13 @@ const routes = [
     markers: [
       'THC Applied Learning Lab',
       'Development Preview',
-      '9ce4c11da8f7749775e2b886d57c303ea6723a61'
+      appliedLearningRevision
     ],
     assets: [
       {
         path: 'app.js',
         markers: [
-          "SOURCE_SHA='9ce4c11da8f7749775e2b886d57c303ea6723a61'",
+          `SOURCE_SHA='${appliedLearningRevision}'`,
           'data.json',
           'ppfd*hours*3600/1_000_000',
           'systems-tool-select'
@@ -77,7 +81,7 @@ const routes = [
       {
         path: 'data.json',
         markers: [
-          '"sourceSha": "9ce4c11da8f7749775e2b886d57c303ea6723a61"',
+          `\"sourceSha\": \"${appliedLearningRevision}\"`,
           'ALGRAPH-ACADEMY-SEED-001',
           'ALMEAS-SENSOR-PLACEMENT-001',
           'ALCALC-DLI-001',
