@@ -94,7 +94,7 @@ Belongs here: storefront presentation, product discovery, cart/account entry poi
 
 ## Company and support routes
 
-`/gallery/`, `/about/`, and `/contact/` are valid public pages but are not primary-navigation peers. They belong in footer/support navigation and contextual links.
+`/journal/`, `/gallery/`, `/about/`, and `/contact/` are valid public pages but are not primary-navigation peers. Journal records dated DTF changes and points to durable sources; all four belong in footer/support navigation and contextual links.
 
 Account, Cart, Search, and other utility actions are also separate from the eight primary destinations.
 

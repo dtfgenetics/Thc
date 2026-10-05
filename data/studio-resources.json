@@ -122,6 +122,17 @@
       ]
     },
     {
+      "id": "page.journal",
+      "kind": "page",
+      "prefixes": [],
+      "exactPaths": [
+        "site/wordpress/pages/journal.html"
+      ],
+      "productionTargets": [
+        "route:/journal/"
+      ]
+    },
+    {
       "id": "page.community",
       "kind": "page",
       "prefixes": [],

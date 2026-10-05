@@ -18,6 +18,7 @@ This document defines the single-writer rule for public DTFSeeds routes. A route
 | `/gallery/` | Canonical WordPress publisher | Editorial/media presentation. |
 | `/about/` | Canonical WordPress publisher | Editorial root. |
 | `/contact/` | Canonical WordPress publisher | Editorial root. |
+| `/journal/` | Canonical WordPress publisher | Dated release/change record that links to durable genetics, education, diagnostic, game, and community sources. |
 | `/seeds/` and `/seeds/*` | Dedicated genetics library publisher | Sole writer for genetics library and line pages. Generic WordPress and commerce-visual scripts must not rewrite these routes. |
 | `/learn/plant-health/`, `/learn/cultivation-science/`, `/learn/symptoms/`, `/learn/tools/`, `/learn/sources/` | Dtf420 migration static overlay (public) + THC education expansion publisher (WordPress backing records) | Public child pages remain served by the reviewed migration overlay for now. The expansion publisher may maintain safe WordPress backing records and verify public content, but must not become a competing public route writer. |
 | `/learn/search/` | WordPress THC Learning Search publisher + MU-plugin runtime | Full WordPress-owned search page, indexes, and search runtime. Dtf420 must not stage or shadow this route. |
