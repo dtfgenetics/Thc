@@ -229,6 +229,7 @@ button:focus-visible,.button:focus-visible,input:focus-visible,.action-card:focu
   }
 }
 
+
 /* High Life career path v4 — make the player's full three-era branch visible. */
 .career-path-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:.35rem 0 .85rem}
 .career-path-era{display:grid;gap:.18rem;min-width:0;padding:.7rem .75rem;border:1px solid var(--line);border-radius:12px;background:rgba(5,20,13,.55)}
