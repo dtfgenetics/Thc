@@ -39,8 +39,8 @@ async function canonicalMediaIdentity(assetPath){
 }
 
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-const transientStatuses=new Set([429,500,502,503,504]);
-const writeDelayMs=Math.max(0,Number(process.env.ENCYCLOPEDIA_VISUAL_WP_WRITE_DELAY_MS||100));
+const transientStatuses=new Set([403,408,425,429,500,502,503,504]);
+const writeDelayMs=Math.max(0,Number(process.env.ENCYCLOPEDIA_VISUAL_WP_WRITE_DELAY_MS||600));
 async function request(endpoint,{method='GET',body}={}){
   const retrySafe=method==='GET'||(method==='POST'&&/^\/(?:pages|media)\/\d+$/.test(endpoint))||(method==='DELETE'&&/^\/media\/\d+/.test(endpoint));
   const maxAttempts=retrySafe?7:1;
@@ -62,14 +62,14 @@ async function request(endpoint,{method='GET',body}={}){
       const message=`${method} ${endpoint} failed ${res.status}: ${typeof parsed==='string'?parsed.slice(0,900):JSON.stringify(parsed).slice(0,900)}`;
       if(!retrySafe||!transientStatuses.has(res.status)||attempt===maxAttempts) throw new Error(message);
       const retryAfter=Number(res.headers.get('retry-after')||0);
-      const delay=retryAfter>0?retryAfter*1000:Math.min(15_000,750*(2**(attempt-1)));
+      const delay=retryAfter>0?Math.min(60_000,retryAfter*1000):Math.min(30_000,1500*(2**(attempt-1)));
       console.warn(`${message} · retrying attempt ${attempt+1}/${maxAttempts} after ${delay}ms`);
       await sleep(delay);
     }catch(error){
       lastError=error;
       const retryableNetwork=retrySafe&&(error?.name==='TimeoutError'||error?.name==='AbortError'||/fetch failed|ECONNRESET|ETIMEDOUT|socket/i.test(String(error?.message||error)));
       if(!retryableNetwork||attempt===maxAttempts) throw error;
-      const delay=Math.min(15_000,750*(2**(attempt-1)));
+      const delay=Math.min(30_000,1500*(2**(attempt-1)));
       console.warn(`${method} ${endpoint} network error: ${String(error?.message||error)} · retrying attempt ${attempt+1}/${maxAttempts} after ${delay}ms`);
       await sleep(delay);
     }
