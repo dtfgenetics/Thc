@@ -7,6 +7,9 @@ on:
       - site/deployment/release-lanes.json
       - scripts/plan-dtfseeds-release.mjs
       - scripts/run-workflow-and-wait.sh
+      - scripts/build-release-observability.mjs
+      - scripts/test-release-observability.mjs
+      - configuration/release-observability-contract.json
       - .github/workflows/dtfseeds-production-gateway.yml
       - .github/workflows/dtfseeds-production-gateway-ci.yml
   workflow_dispatch:
@@ -32,6 +35,9 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/plan-dtfseeds-release.mjs
+          node --check scripts/build-release-observability.mjs
+          node scripts/test-release-observability.mjs
+          node -e "JSON.parse(require('fs').readFileSync('configuration/release-observability-contract.json','utf8'))"
           bash -n scripts/run-workflow-and-wait.sh
           node -e "JSON.parse(require('fs').readFileSync('site/deployment/release-lanes.json','utf8'))"
           grep -Fq 'concurrency:' .github/workflows/dtfseeds-production-gateway.yml
@@ -39,6 +45,9 @@ jobs:
           grep -Fq 'continue-on-error: true' .github/workflows/dtfseeds-production-gateway.yml
           grep -Fq 'Refuse stale queued release' .github/workflows/dtfseeds-production-gateway.yml
           grep -Fq 'Join trusted WordPress production handoff' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'Build release observability ledger' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'actions/attest@v4' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'attestations: write' .github/workflows/dtfseeds-production-gateway.yml
 
       - name: Verify pinned workflow dispatch tracking
         shell: bash
