@@ -9,7 +9,7 @@ const REQUIRED_WORLDS = Object.freeze([
 const WORLD_ALIASES = Object.freeze({ 'frozen-peak': 'frozen-peaks' });
 const REQUIRED_PHENOTYPES = Object.freeze(['plant', 'fire', 'electric', 'ice']);
 const REQUIRED_LAYER_KEYS = Object.freeze(['sky', 'far-bg', 'mid-bg', 'near-bg', 'gameplay', 'foreground', 'vfx']);
-const APPROVED_CHARACTER_CONTRACT = 'approved-green-armored-plant-hero-v1';
+const CHARACTER_TARGET = 'classic-seed-man-oval-v1';
 
 function assert(condition, message) {
   if (!condition) throw new Error(`Seed Man visual runtime: ${message}`);
@@ -21,8 +21,8 @@ function canonicalWorldKey(worldKey) {
 
 export function validateVisualRuntime(config) {
   assert(config && typeof config === 'object', 'config must be an object');
-  assert(config.version === 'seed-man-visual-runtime-v1', 'unsupported version');
-  assert(config.reference?.characterContract === APPROVED_CHARACTER_CONTRACT, 'character contract must match approved production hero');
+  assert(['seed-man-visual-runtime-v1','seed-man-visual-runtime-v2'].includes(config.version), 'unsupported version');
+  assert(config.reference?.characterContract === CHARACTER_TARGET, 'character contract must match classic Seed Man target');
 
   for (const worldKey of REQUIRED_WORLDS) {
     const world = config.worlds?.[worldKey];
@@ -81,5 +81,9 @@ export const VISUAL_RUNTIME_CONTRACT = Object.freeze({
   requiredPhenotypes: REQUIRED_PHENOTYPES,
   requiredLayers: REQUIRED_LAYER_KEYS,
   phenotypeDurationMs: 30000,
-  characterContract: APPROVED_CHARACTER_CONTRACT
+  characterContract: CHARACTER_TARGET,
+  currentCharacterStatus:'temporary-green-armored-replacement-pending',
+  activeWorldRenderer:'seed-man-authored-flat-background-v1',
+  worldRendererTarget:'seed-man-three-world-v2',
+  finalWorldLayerCount:7
 });
