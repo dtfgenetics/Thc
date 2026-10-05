@@ -24,6 +24,7 @@
 - Tokens render on board-path coordinates rather than in a detached UI area.
 - Multiplayer requires player names and room/invite flow.
 - Website room API compatibility is pinned to semantic API version `1.1.0`. Explicitly different versions are incompatible; version-less legacy room snapshots are accepted only as a migration fallback.
+- Online-room live ops use `HIGH_LAND_MAINTENANCE_MODE=true` for maintenance and `HIGH_LAND_MULTIPLAYER_ENABLED=false` as an emergency multiplayer kill switch. `api/health.php` remains available for API version, availability, stored-room count, and operation metrics.
 - HIT/action cards, skip-turn rules, finish/win logic, reverse-turn logic, and background-audio mute behavior must remain testable.
 - Board artwork and HIT-card artwork must come from approved Drive assets or explicitly approved new originals.
 
