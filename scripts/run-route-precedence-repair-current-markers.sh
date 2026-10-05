@@ -4,6 +4,7 @@ set -euo pipefail
 script="scripts/repair-wordpress-route-precedence.mjs"
 test -s "$script"
 test -s scripts/wordpress-ipv4-fetch-bootstrap.mjs
+# Current-main replay trigger: restore canonical WordPress route ownership after downstream publisher drift.
 
 python3 - "$script" <<'PY'
 from pathlib import Path
