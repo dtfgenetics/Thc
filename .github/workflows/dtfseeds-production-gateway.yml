@@ -21,6 +21,8 @@ on:
 permissions:
   actions: write
   contents: write
+  id-token: write
+  attestations: write
 
 jobs:
   plan:
@@ -370,6 +372,7 @@ jobs:
           [[ "$failures" -eq 0 ]]
 
       - name: Advance successful production checkpoint
+        id: checkpoint
         if: >-
           steps.freshness.outputs.current == 'true' &&
           steps.verify_freshness.outputs.current == 'true' &&
@@ -393,6 +396,56 @@ jobs:
               .addHeading('Production checkpoint')
               .addRaw(`Advanced ${process.env.CHECKPOINT_TAG} to ${sha}. Future automatic releases will include every production-owned change after this commit.`)
               .write();
+
+      - name: Build release observability ledger
+        id: release_observability
+        if: always()
+        env:
+          RELEASE_SOURCE_SHA: ${{ github.sha }}
+          RELEASE_RUN_ID: ${{ github.run_id }}
+          RELEASE_RUN_ATTEMPT: ${{ github.run_attempt }}
+          RELEASE_EVENT_NAME: ${{ github.event_name }}
+          RELEASE_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'auto' }}
+          RELEASE_PLAN_JSON: ${{ needs.plan.outputs.plan }}
+          RELEASE_FRESHNESS: ${{ steps.freshness.outputs.current }}
+          RELEASE_VERIFY_FRESHNESS: ${{ steps.verify_freshness.outputs.current }}
+          RELEASE_WANT_WORDPRESS: ${{ needs.plan.outputs.wordpress }}
+          RELEASE_WANT_EDUCATION: ${{ needs.plan.outputs.education }}
+          RELEASE_WANT_HARVEST_OUTDOOR: ${{ needs.plan.outputs.harvest_outdoor }}
+          RELEASE_WANT_PUBLIC: ${{ needs.plan.outputs.public_suite }}
+          RELEASE_WP_PUBLISH: ${{ steps.wp_production.outcome }}
+          RELEASE_WP_VERIFY: ${{ steps.wp_verify.outcome }}
+          RELEASE_EDU_PUBLISH: ${{ steps.education_publish.outcome }}
+          RELEASE_EDU_VERIFY: ${{ steps.education_verify.outcome }}
+          RELEASE_HARVEST_OUTDOOR_PUBLISH: ${{ steps.harvest_outdoor_publish.outcome }}
+          RELEASE_HARVEST_OUTDOOR_VERIFY: ${{ steps.harvest_outdoor_verify.outcome }}
+          RELEASE_PUBLIC_PUBLISH: ${{ steps.public_publish.outcome }}
+          RELEASE_PUBLIC_VERIFY: ${{ steps.public_verify.outcome }}
+          RELEASE_ENFORCE_OUTCOME: ${{ steps.enforce.outcome }}
+          RELEASE_CHECKPOINT_OUTCOME: ${{ steps.checkpoint.outcome }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          node scripts/build-release-observability.mjs --check --output=artifacts/release-observability.json
+          sha256sum artifacts/release-observability.json > artifacts/release-observability.sha256
+
+      - name: Upload release observability ledger
+        if: always() && steps.release_observability.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-release-observability-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            artifacts/release-observability.json
+            artifacts/release-observability.sha256
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Attest release observability ledger
+        if: always() && steps.release_observability.outcome == 'success'
+        uses: actions/attest@v4
+        with:
+          subject-path: artifacts/release-observability.json
 
   no_deploy:
     name: No production-owned changes
