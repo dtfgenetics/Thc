@@ -7,8 +7,6 @@ on:
     paths:
       - 'scripts/normalize-wordpress-premium-page-titles.mjs'
       - 'scripts/wordpress-transient-fetch-bootstrap.mjs'
-      - 'site/wordpress/pages/community.html'
-      - 'site/wordpress/pages/gallery.html'
       - '.github/workflows/wordpress-premium-title-normalization.yml'
   workflow_run:
     workflows:
