@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "THC 420-lesson Encyclopedia",
-  "recordedAt": "2026-10-04T01:00:00Z",
+  "recordedAt": "2026-10-05T01:03:00Z",
   "livePublication": {
     "complete": true,
     "lessonCount": 420,
@@ -11,24 +11,36 @@
     "searchIndexesPublished": true,
     "visitorVerificationPassed": true,
     "workflow": {
-      "name": "Repair THC Encyclopedia Missing Production Lessons",
-      "runId": 37169545266,
-      "jobId": 111339508404,
-      "sourceCommit": "0fe2562b60796f009c1a5c77ed9062cee36534f9",
-      "conclusion": "success"
+      "name": "Publish Approved THC Encyclopedia Visuals to WordPress Production",
+      "runId": 37249418885,
+      "jobId": 111573792403,
+      "sourceCommit": "f5a94b6a190107be937726d7d997af74ece3b382",
+      "conclusion": "success",
+      "canonicalAuthorizedPageSync": "success",
+      "canonicalRouteVerification": "420/420",
+      "visualMapValidation": "success",
+      "visualAttachment": "20/20 curated Volume 03 lesson visuals",
+      "visitorVisualVerification": "THC-ENC-041 through THC-ENC-060 all passed"
+    },
+    "independentVisitorVerification": {
+      "checkedAt": "2026-10-05T01:03:00Z",
+      "scope": "THC-ENC-041 through THC-ENC-060",
+      "result": "20/20 rendered exactly one lesson-specific figure with the expected THC-ENC visual identity and mapped canonical image URL",
+      "errors": 0
     }
   },
   "repositoryValidation": {
     "canonicalLessons": "420/420",
     "substantiveFindings": 0,
     "assessmentCoverage": "420/420 lessons have unique effective v2 reasoning, misconception, and applied-verification checks",
-    "publicationControl": "forward-only floor through THC-ENC-420"
+    "publicationControl": "forward-only floor through THC-ENC-420",
+    "visualProduction": "20 curated Volume 03 visuals are published and visitor-verified; remaining uncurated raster candidates remain review-controlled"
   },
   "separateQualityBacklog": {
     "independentScienceReview": "pending where not recorded; publication does not imply independent approval",
     "assessmentRationaleIndependentReview": "pending",
-    "claimLevelEvidenceExpansion": "in progress / review-pending",
-    "teachingVisuals": "separate production and approval lane; do not block canonical text publication"
+    "claimLevelEvidenceExpansion": "420/420 lessons have claim-evidence coverage; independent science/applicability review remains pending",
+    "teachingVisuals": "20 curated Volume 03 visuals published; remaining uncurated candidates require controlled review before promotion"
   },
-  "rule": "Do not regress current-production-batch.json below THC-ENC-420. Repair or replay work must use separate repair manifests."
+  "rule": "Do not regress current-production-batch.json below THC-ENC-420. Preserve permanent THC-ENC IDs, curated visual review boundaries, and immutable production evidence."
 }
