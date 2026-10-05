@@ -28,6 +28,7 @@ on:
       - site/public-route-patch/games/phenoquest/**
       - site/public-route-patch/games/crossword/source-revision.txt
       - scripts/validate-crossword-release-source.mjs
+      - scripts/build-canonical-sitemap.mjs
       - scripts/lib/sitewide-header-template-v6.mjs
       - scripts/lib/sitewide-footer-template-v6.mjs
       - scripts/apply-sitewide-header.mjs
@@ -108,6 +109,17 @@ jobs:
           npm run verify:portfolio
           node scripts/validate-public-navigation.mjs
           grep -Fq '23 playable browser games' site/public-route-patch/games/index.html
+
+      - name: Build canonical sitemap inventory
+        run: |
+          set -euo pipefail
+          node scripts/build-canonical-sitemap.mjs
+          test -s site/public-route-patch/sitemap.xml
+          test "$(grep -c '<url>' site/public-route-patch/sitemap.xml)" -ge 480
+          grep -Fq 'https://dtfseeds.com/learn/encyclopedia/thc-enc-001/' site/public-route-patch/sitemap.xml
+          grep -Fq 'https://dtfseeds.com/learn/encyclopedia/thc-enc-420/' site/public-route-patch/sitemap.xml
+          grep -Fq 'https://dtfseeds.com/atlas/' site/public-route-patch/sitemap.xml
+          grep -Fq 'https://dtfseeds.com/tools/' site/public-route-patch/sitemap.xml
 
       - name: Validate cultivation reference tools
         run: |
