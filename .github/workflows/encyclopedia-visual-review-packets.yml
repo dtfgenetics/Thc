@@ -8,6 +8,8 @@ on:
     paths:
       - 'content/encyclopedia/evidence/**'
       - 'content/encyclopedia/visual-production-batches/**'
+      - 'review/encyclopedia-visuals/**'
+      - 'docs/ENCYCLOPEDIA_VISUAL_REVIEW_HANDOFF.md'
       - 'scripts/build-encyclopedia-visual-review-packets.mjs'
       - 'scripts/validate-encyclopedia-visual-review-packets.mjs'
       - 'scripts/import-encyclopedia-visual-review-decisions.mjs'
