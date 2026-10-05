@@ -1,0 +1,488 @@
+import fs from "node:fs";
+import path from "node:path";
+
+const root = process.cwd();
+const failures = [];
+const warnings = [];
+
+function read(rel) {
+  const file = path.join(root, rel);
+  if (!fs.existsSync(file)) {
+    failures.push(`Missing required responsive file: ${rel}`);
+    return "";
+  }
+  return fs.readFileSync(file, "utf8");
+}
+
+function requireMatch(content, regex, message) {
+  if (!regex.test(content)) failures.push(message);
+}
+
+const responsivePath = "site/wordpress/assets/responsive-layout-v1.css";
+const responsive = read(responsivePath);
+
+requireMatch(
+  responsive,
+  /--dtf-layout-gutter\s*:\s*clamp\(/,
+  "Shared responsive CSS must keep a fluid page gutter token."
+);
+requireMatch(
+  responsive,
+  /--dtf-layout-touch\s*:\s*44px/,
+  "Shared responsive CSS must keep the 44px minimum touch target token."
+);
+requireMatch(
+  responsive,
+  /@media\s*\(min-width:\s*701px\)\s*and\s*\(max-width:\s*1120px\)/,
+  "Shared responsive CSS must keep the deliberate tablet/compact band (701–1120px)."
+);
+requireMatch(
+  responsive,
+  /@media\s*\(max-width:\s*900px\)/,
+  "Shared responsive CSS must keep the intermediate 900px composition breakpoint."
+);
+requireMatch(
+  responsive,
+  /@media\s*\(max-width:\s*700px\)/,
+  "Shared responsive CSS must keep the phone breakpoint at 700px."
+);
+requireMatch(
+  responsive,
+  /@media\s*\(max-width:\s*420px\)/,
+  "Shared responsive CSS must keep the small-phone breakpoint at 420px."
+);
+requireMatch(
+  responsive,
+  /minmax\(0\s*,\s*1fr\)/,
+  "Shared responsive CSS must use shrink-safe grid columns (minmax(0,1fr))."
+);
+requireMatch(
+  responsive,
+  /min-width\s*:\s*0/,
+  "Shared responsive CSS must preserve min-width:0 overflow protection."
+);
+requireMatch(
+  responsive,
+  /overflow-x\s*:\s*auto/,
+  "Shared responsive CSS must preserve local horizontal scrolling for dense content."
+);
+requireMatch(
+  responsive,
+  /100dvh/,
+  "Shared responsive CSS must account for dynamic mobile viewport height (100dvh)."
+);
+
+const docs = read("docs/RESPONSIVE_LAYOUT_STANDARD.md");
+const headerTemplate = read("scripts/lib/sitewide-header-template.mjs");
+const courseUi = read("scripts/enhance-wordpress-learning-hub-course1-ui-v3.mjs");
+const toolsHub = read("site/public-route-patch/tools/index.html");
+const gamesHub = read("site/public-route-patch/games/index.html");
+const visualV1 = read("site/design-system/dtf-visual-v1.css");
+const touchTargetFiles = [
+  ["apps/growlens-web/src/account.css", [/\.account-tabs button[^}]*min-height:\s*(?:3\d|4[0-3])px/]],
+  ["apps/high-land-web/src/highLandUiV2.css", [/\.player-select button[^}]*min-height:\s*(?:3\d|4[0-3])px/]],
+  ["scripts/publish-wordpress-interface-v7.mjs", [/\.dtf-shell-menu[^}]*min-height:(?:3\d|4[0-3])px/, /\.dtf-shell-nav a[^}]*min-height:(?:3\d|4[0-3])px/]],
+  ["scripts/style-wordpress-woocommerce-archive.mjs", [/woocommerce-ordering select[^}]*min-height:(?:3\d|4[0-3])px/]],
+  ["scripts/publish-wordpress-tech1-courses-2-7-v2.mjs", [/\.t1c-nav a[^}]*min-height:(?:3\d|4[0-3])px/, /\.t1c-crumbs a[^}]*min-height:(?:3\d|4[0-3])px/]],
+  ["scripts/publish-wordpress-tech2-courses-1-8.mjs", [/\.t2c-crumbs a[^}]*min-height:(?:3\d|4[0-3])px/]],
+  ["scripts/publish-wordpress-certification-catalog-v6.mjs", [/\.dc6-jump a[^}]*min-height:(?:3\d|4[0-3])px/]],
+  ["site/public-route-patch/games/strain-showdown/runtime-v2.css", [/#restartButton[^}]*min-height:(?:3\d|4[0-3])px/]],
+  ["site/public-route-patch/games/high-iq/high-iq-v3-3.css", [/\.high-iq-hero \.actions a[^}]*min-height:(?:3\d|4[0-3])px/]],
+];
+
+const growLensAccount = read("apps/growlens-web/src/account.css");
+const productionHighIq = read("site/public-route-patch/games/high-iq/high-iq-v3-4.css");
+const phTool = read("site/public-route-patch/ph-meter/index.html");
+const tdsTool = read("site/public-route-patch/tds-meter/index.html");
+const vpdTool = read("site/public-route-patch/vpd-chart/index.html");
+const productionStrainShowdown = read("site/public-route-patch/games/strain-showdown/runtime-v4.css");
+const burnBudsV4 = read("site/public-route-patch/games/protect-the-plants/gameplay-v4.css");
+const strainMatchV2 = read("site/public-route-patch/games/strain-match/strain-match-v2.css");
+const trichomeTrialsV2 = read("site/public-route-patch/games/trichome-trials/trichome-trials-v2.css");
+const harvestHustleV2 = read("site/public-route-patch/games/harvest-hustle/harvest-hustle-v2.css");
+const growRoomDefenseV2 = read("site/public-route-patch/games/grow-room-defense/grow-room-defense-v2.css");
+const highLifeV2 = read("site/public-route-patch/games/high-life/high-life-v2.css");
+const highLinesCss = read("site/public-route-patch/games/high-lines/high-lines.css");
+const highLinesV2 = read("site/public-route-patch/games/high-lines/high-lines-v2.css");
+const budOrBluffBase = read("site/public-route-patch/games/bud-or-bluff/styles.css");
+const gatewayV7 = read("site/public-route-patch/assets/dtf-gateway-v7.css");
+const atlasV3 = read("site/public-route-patch/atlas/atlas-v3.css");
+const atlasV4 = read("site/public-route-patch/atlas/atlas-v4.css");
+const anatomyIndexCss = read("site/public-route-patch/atlas/atlas-anatomy-index-v1.css");
+const atlasInspectionCss = read("site/public-route-patch/atlas/atlas-inspection-fixes.css");
+const phenoQuestCss = read("site/public-route-patch/games/phenoquest/style.css");
+const infographicsPage = read("site/public-route-patch/learn/infographics/index.html");
+const tech1Courses = read("scripts/publish-wordpress-tech1-courses-2-7-v2.mjs");
+const tech2Courses = read("scripts/publish-wordpress-tech2-courses-1-8.mjs");
+const course1Layout = read("scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs");
+const certificationCatalogV6 = read("scripts/publish-wordpress-certification-catalog-v6.mjs");
+const academyV2 = read("scripts/publish-wordpress-academy-v2.mjs");
+const learnTaskNavV5 = read("scripts/publish-wordpress-learn-task-nav-v5.mjs");
+const beginnerCourseV5 = read("scripts/publish-wordpress-beginner-course-v5.mjs");
+const learningExperienceV3 = read("scripts/rebuild-wordpress-learning-experience-v3.mjs");
+const publicLearningCenterWave3 = read("scripts/build-public-learning-center-wave3.mjs");
+const learnVisualV4 = read("scripts/rebuild-wordpress-learn-visual-v4.mjs");
+const diagnosticCaseLabV2 = read("scripts/publish-wordpress-diagnostic-case-lab-v2.mjs");
+const shopStorefrontV5 = read("scripts/polish-wordpress-shop-storefront-v5.mjs");
+const commerceArchiveV4 = read("scripts/polish-wordpress-commerce-archive-v4.mjs");
+const canonicalVisualSite = read("scripts/rebuild-wordpress-visual-site.mjs");
+const visualPolishV3 = read("scripts/polish-wordpress-visual-site-v3.mjs");
+const geneticsVisualsV4 = read("scripts/polish-wordpress-genetics-visuals-v4.mjs");
+const visualLibraryResponsiveFiles = [
+  "scripts/publish-wordpress-approved-visual-library.mjs",
+  "scripts/rebuild-wordpress-infographic-gallery.mjs",
+];
+
+const advancedCourseResponsiveFiles = [
+  "scripts/publish-wordpress-genetics-evidence-v6.mjs",
+  "scripts/publish-wordpress-plant-health-biological-control-v1.mjs",
+  "scripts/publish-wordpress-plant-health-emerging-pathogens-v1.mjs",
+  "scripts/publish-wordpress-outdoor-v6-owner-only.mjs",
+];
+
+const visualAtlasResponsiveFiles = [
+  "scripts/publish-wordpress-lighting-visual-atlas-v6.mjs",
+  "scripts/publish-wordpress-water-root-zone-visuals-v6.mjs",
+  "scripts/publish-wordpress-plant-biology-visual-atlas-v6.mjs",
+  "scripts/publish-wordpress-environment-vpd-visual-atlas-v6.mjs",
+  "scripts/publish-wordpress-evidence-measurement-visual-atlas-v6.mjs",
+  "scripts/publish-wordpress-lifecycle-propagation-visual-atlas-v6.mjs",
+  "scripts/publish-wordpress-outdoor-chapter-visuals-v1.mjs",
+];
+
+const v6CourseResponsiveFiles = [
+  "scripts/publish-wordpress-lighting-v6-final.mjs",
+  "scripts/publish-wordpress-plant-health-ipm-v6.mjs",
+  "scripts/publish-wordpress-water-root-zone-v6-final.mjs",
+  "scripts/publish-wordpress-environment-vpd-v6-final.mjs",
+  "scripts/publish-wordpress-plant-biology-v6-final.mjs",
+  "scripts/publish-wordpress-nutrition-media-v6-final.mjs",
+  "scripts/publish-wordpress-harvest-outdoor-v6-final.mjs",
+  "scripts/publish-wordpress-lifecycle-propagation-v6-final.mjs",
+];
+if (!/height:\s*100dvh/.test(growLensAccount) || !/max-height:\s*100dvh/.test(growLensAccount)) {
+  failures.push("GrowLens account drawer must remain bounded to the dynamic viewport height.");
+}
+if (!/@media\s*\(orientation:\s*landscape\)\s*and\s*\(max-height:\s*560px\)/.test(productionHighIq)) {
+  failures.push("Production High IQ must keep a short-landscape gameplay layout in the active v3.4 stylesheet.");
+}
+if (!/@media\s*\(orientation:\s*landscape\)\s*and\s*\(max-height:\s*560px\)/.test(productionStrainShowdown)) {
+  failures.push("Production Strain Showdown must keep a short-landscape gameplay layout in runtime-v4.css.");
+}
+if (/@media\s*\(max-width:\s*720px\)/.test(productionStrainShowdown)) {
+  failures.push("Production Strain Showdown must use the canonical 700px phone band, not the legacy 720px breakpoint.");
+}
+for (const [label, source, legacyPattern] of [
+  ["Burn Buds", burnBudsV4, /@media\s*\(max-width:\s*720px\)|@media\(max-width:720px\)/],
+  ["Strain Match", strainMatchV2, /@media\(max-width:820px\)/],
+  ["Trichome Trials", trichomeTrialsV2, /@media\(max-width:(?:820|640)px\)/],
+  ["Harvest Hustle", harvestHustleV2, /@media\(max-width:(?:980|640)px\)/],
+  ["Grow Room Defense", growRoomDefenseV2, /@media\(max-width:(?:980|760)px\)/],
+  ["High Life", highLifeV2, /@media\(max-width:650px\)/],
+  ["High Lines base", highLinesCss, /@media\(max-width:(?:980|650)px\)/],
+  ["High Lines visual", highLinesV2, /@media\(max-width:(?:980|650)px\)/],
+  ["Bud or Bluff base", budOrBluffBase, /@media\(max-width:(?:1050|720)px\)/],
+  ["PhenoQuest", phenoQuestCss, /@media\s*\(max-width:\s*640px\)/],
+  ["Infographics", infographicsPage, /@media\(max-width:620px\)/],
+]) {
+  if (legacyPattern.test(source)) failures.push(`${label} reintroduced legacy breakpoints outside the shared 900/700 bands.`);
+}
+for (const [label, source, legacyPattern] of [
+  ["pH tool", phTool, /@media\(max-width:(?:820|600)px\)/],
+  ["TDS tool", tdsTool, /@media\(max-width:(?:820|600)px\)/],
+  ["VPD tool", vpdTool, /@media\(max-width:(?:850|600)px\)/],
+]) {
+  if (legacyPattern.test(source)) failures.push(`${label} reintroduced legacy breakpoints outside the shared 900/700 bands.`);
+  if (!/\.nav a\{[^}]*min-height:44px/.test(source)) failures.push(`${label} navigation must keep a 44px touch target.`);
+  if (!/\.tabs a\{[^}]*min-height:44px/.test(source)) failures.push(`${label} tool tabs must keep a 44px touch target.`);
+}
+
+if (/\.scale-track a\{[^}]*min-height:(?:3\d|4[0-3])px/.test(atlasInspectionCss) || !/\.scale-track a\{[^}]*min-height:44px/.test(atlasInspectionCss)) {
+  failures.push("Atlas inspection scale links must keep a 44px touch target in the compact inspector layout.");
+}
+if (/@media\(max-width:620px\)/.test(anatomyIndexCss)) {
+  failures.push("Atlas anatomy index must use the canonical 700px phone band.");
+}
+if (/\.anatomy-index-card button,.anatomy-index-card a\{[^}]*min-height:(?:3\d|4[0-3])px/.test(anatomyIndexCss) || !/\.anatomy-index-card button,.anatomy-index-card a\{[^}]*min-height:44px/.test(anatomyIndexCss)) {
+  failures.push("Atlas anatomy index actions must keep a 44px touch target.");
+}
+
+if (/@media\(max-width:(?:1180|820)px\)/.test(atlasV4)) {
+  failures.push("Atlas v4 composition must use canonical 1120/900 bands; compact component breakpoints may remain separate.");
+}
+if (/@media\(max-width:(?:1200|940|680|620)px\)/.test(atlasV3)) {
+  failures.push("Atlas v3 base layout must use canonical 1120/900/700 bands.");
+}
+if (/100vh/.test(atlasV3)) {
+  failures.push("Atlas v3 base layout must use dynamic viewport height.");
+}
+
+if (/@media\(max-width:720px\)/.test(gatewayV7)) {
+  failures.push("Shared gateway must use the canonical 700px phone band for page composition.");
+}
+if (/\.button\{[^}]*min-height:(?:3\d|4[0-3])px/.test(gatewayV7) || /\.primary-nav a\{[^}]*min-height:(?:3\d|4[0-3])px/.test(gatewayV7)) {
+  failures.push("Shared gateway controls must keep the 44px touch-target floor.");
+}
+if (/main\{[^}]*min-height:[^}]*\bvh\b/.test(gatewayV7)) {
+  failures.push("Shared gateway main sizing must use dynamic viewport units.");
+}
+
+if (/100vh/.test(budOrBluffBase)) {
+  failures.push("Bud or Bluff base shell must use 100dvh rather than 100vh.");
+}
+if (/overflow-x\s*:\s*hidden/.test(budOrBluffBase)) {
+  failures.push("Bud or Bluff base shell must not hide page-level horizontal overflow.");
+}
+
+if (!/\.hub-back\{[^}]*min-height:44px/.test(phenoQuestCss) || !/safe-area-inset-top/.test(phenoQuestCss)) {
+  failures.push("PhenoQuest back navigation must remain touch-safe and top-safe-area aware.");
+}
+if (!/\.search a\{[^}]*min-height:44px/.test(infographicsPage)) {
+  failures.push("Infographics search action must keep a 44px touch target.");
+}
+if (/@media\(max-width:640px\)/.test(certificationCatalogV6)) {
+  failures.push("Certification catalog v6 must use the canonical 700px phone band instead of the legacy 640px breakpoint.");
+}
+if (/@media\(max-width:(?:1050|800|620)px\)/.test(academyV2)) {
+  failures.push("Academy v2 must use canonical 1120/900/700 bands.");
+}
+if (/@media\(max-width:(?:980|820|620)px\)/.test(learnTaskNavV5)) {
+  failures.push("Learn task navigation v5 must use canonical 900/700 bands.");
+}
+if (/@media\(max-width:620px\)/.test(beginnerCourseV5)) {
+  failures.push("Beginner course v5 must use the canonical 700px phone band.");
+}
+if (/@media\(max-width:(?:980|620)px\)/.test(learningExperienceV3)) {
+  failures.push("Learning experience v3 must use canonical 900/700 bands.");
+}
+if (/@media\(max-width:640px\)/.test(publicLearningCenterWave3)) {
+  failures.push("Public learning center wave 3 must use the canonical 700px phone band.");
+}
+if (/@media\(max-width:(?:980|640)px\)/.test(learnVisualV4)) {
+  failures.push("Learn Visual v4 must use canonical 900/700 bands.");
+}
+if (/@media\(max-width:(?:980|650)px\)/.test(diagnosticCaseLabV2)) {
+  failures.push("Diagnostic Case Lab v2 must use canonical 900/700 bands.");
+}
+if (/@media\(max-width:(?:880|600)px\)/.test(shopStorefrontV5)) {
+  failures.push("Shop Storefront v5 must use canonical 900/700 bands.");
+}
+if (/@media\(max-width:720px\)/.test(commerceArchiveV4)) {
+  failures.push("Commerce archive v4 must use the canonical 700px phone band.");
+}
+if (/@media\(max-width:(?:980|640)px\)/.test(canonicalVisualSite)) {
+  failures.push("Canonical visual site must use canonical 900/700 bands.");
+}
+if (/@media\(min-width:981px\)|@media\(max-width:(?:980|720)px\)/.test(visualPolishV3)) {
+  failures.push("Visual polish v3 must use canonical 901+/900/700 bands.");
+}
+if (/@media\(max-width:(?:980|660)px\)/.test(geneticsVisualsV4)) {
+  failures.push("Genetics Visuals v4 must use canonical 900/700 bands.");
+}
+for (const rel of v6CourseResponsiveFiles) {
+  const source = read(rel);
+  if (/@media\(max-width:(?:920|620)px\)/.test(source)) {
+    failures.push(`${rel} V6 course publisher reintroduced legacy 920/620 responsive bands.`);
+  }
+}
+for (const rel of visualLibraryResponsiveFiles) {
+  const source = read(rel);
+  if (/@media\(max-width:620px\)/.test(source)) {
+    failures.push(`${rel} visual library publisher reintroduced legacy 620px phone band.`);
+  }
+}
+for (const rel of advancedCourseResponsiveFiles) {
+  const source = read(rel);
+  if (/@media\(max-width:(?:920|820|620)px\)/.test(source)) {
+    failures.push(`${rel} advanced course publisher reintroduced legacy responsive bands.`);
+  }
+}
+for (const rel of visualAtlasResponsiveFiles) {
+  const source = read(rel);
+  if (/@media\(max-width:(?:860|760|600)px\)/.test(source)) {
+    failures.push(`${rel} visual atlas publisher reintroduced legacy responsive bands.`);
+  }
+}
+if (!/\.tools-card\{[^}]*max-height:calc\(100dvh - 104px\)[^}]*overflow-y:auto/.test(growRoomDefenseV2)) {
+  failures.push("Grow Room Defense sticky tools panel must remain bounded to the dynamic viewport height.");
+}
+
+if (/@media\(max-width:(?:760|640)px\)/.test(tech1Courses)) {
+  failures.push("Technician I courses must use canonical 700px phone band.");
+}
+if (/@media\(max-width:(?:880|620)px\)/.test(tech2Courses)) {
+  failures.push("Technician II courses must use canonical 900/700 tablet and phone bands.");
+}
+
+for (const [label, source] of [
+  ["Tech 1 course navigation", tech1Courses],
+  ["Tech 2 course navigation", tech2Courses],
+  ["Course 1 navigation", course1Layout],
+]) {
+  if (/position:\s*fixed/.test(source) && !/safe-area-inset-bottom/.test(source)) {
+    failures.push(`${label} uses fixed mobile navigation without bottom safe-area protection.`);
+  }
+}
+
+const leafAtlasPages = [
+  "site/public-route-patch/atlas/leaf-module/stomata/index.html",
+  "site/public-route-patch/atlas/leaf-module/chlorosis/index.html",
+  "site/public-route-patch/atlas/leaf-module/necrosis/index.html",
+  "site/public-route-patch/atlas/leaf-module/leaf-curl/index.html",
+  "site/public-route-patch/atlas/leaf-module/pest-damage/index.html",
+  "site/public-route-patch/atlas/leaf-module/leaf-anatomy/index.html",
+  "site/public-route-patch/atlas/leaf-module/transpiration/index.html",
+  "site/public-route-patch/atlas/leaf-module/photosynthesis/index.html",
+  "site/public-route-patch/atlas/leaf-module/environmental-stress/index.html",
+  "site/public-route-patch/atlas/leaf-module/nutrient-symptoms/index.html",
+];
+for (const rel of leafAtlasPages) {
+  const source = read(rel);
+  if (!/\.nav a(?:,\.button)?\{[^}]*min-height:44px/.test(source)) {
+    failures.push(`${rel} must keep 44px touch-safe Leaf Atlas navigation.`);
+  }
+}
+
+const dynamicViewportFiles = [
+  "apps/growlens-web/src/backup.css",
+  "apps/growlens-web/src/camera.css",
+  "apps/growlens-web/src/routines.css",
+  "apps/growlens-web/src/reports.css",
+  "apps/growlens-web/src/photo-comparison.css",
+  "apps/growlens-web/src/styles.css",
+  "apps/high-land-web/src/styles.css",
+  "scripts/apply-wordpress-learning-hub-course1-layout-v4.mjs",
+  "site/public-route-patch/games/high-lines/high-lines.css",
+  "site/public-route-patch/games/phenoquest/style.css",
+  "site/public-route-patch/games/pheno-draft/pheno-draft.css",
+  "site/public-route-patch/games/strain-match/strain-match-v2.css",
+];
+
+if (/lhv3[\s\S]{0,1500}100vh/.test(headerTemplate)) {
+  failures.push("Course sticky rails must use 100dvh, not 100vh.");
+}
+if (/@media\s*\(max-width:\s*950px\)/.test(courseUi)) {
+  failures.push("Course UI must not reintroduce the legacy 950px collapse breakpoint; use the canonical 900px band.");
+}
+const forbiddenLegacy = [
+  ["Tools hub", toolsHub, /@media\s*\(max-width:\s*(?:980|680)px\)/],
+  ["Games hub", gamesHub, /@media\s*\(max-width:\s*(?:1050|780)px\)/],
+  ["DTF visual v1", visualV1, /@media\s*\(max-width:\s*(?:980|640)px\)/],
+];
+for (const [label, source, pattern] of forbiddenLegacy) {
+  if (pattern.test(source)) failures.push(`${label} reintroduced a legacy responsive breakpoint that conflicts with the shared bands.`);
+}
+for (const rel of dynamicViewportFiles) {
+  const source = read(rel);
+  if (/100vh/.test(source)) {
+    failures.push(`${rel} uses 100vh; responsive shells and panels must use 100dvh so mobile browser chrome cannot clip content.`);
+  }
+}
+for (const [rel, patterns] of touchTargetFiles) {
+  const source = read(rel);
+  for (const pattern of patterns) {
+    if (pattern.test(source)) failures.push(`${rel} contains an interactive control below the 44px touch-target floor.`);
+  }
+}
+
+const toolsTabletBlock = toolsHub.match(/@media\s*\(max-width:\s*900px\)\s*\{([\s\S]*?)\}\s*\/\* Shared phone breakpoint/);
+if (toolsTabletBlock && /\.tool-chooser\s*\{[^}]*grid-template-columns\s*:\s*1fr/.test(toolsTabletBlock[1])) {
+  failures.push("Tools hub must keep the tool chooser multi-column through tablet widths; collapse it at the phone band instead.");
+}
+
+const gamesTabletBlock = gamesHub.match(/@media\s*\(max-width:\s*900px\)\s*\{([\s\S]*?)\}\s*\/\* Shared phone breakpoint/);
+if (gamesTabletBlock && /\.grid\.two[^}]*grid-template-columns\s*:\s*1fr/.test(gamesTabletBlock[1])) {
+  failures.push("Games hub must not collapse the library grid to one column at tablet width.");
+}
+requireMatch(
+  docs,
+  /360\s*[×x]\s*800/,
+  "Responsive standard must retain the phone QA matrix."
+);
+requireMatch(
+  docs,
+  /768\s*[×x]\s*1024/,
+  "Responsive standard must retain the tablet QA matrix."
+);
+requireMatch(
+  docs,
+  /1440\s*[×x]\s*900/,
+  "Responsive standard must retain the desktop QA matrix."
+);
+requireMatch(docs, /844\s*[×x]\s*390/, "Responsive standard must retain the landscape-phone QA case.");
+
+const criticalHtml = [
+  "site/public-route-patch/tools/index.html",
+  "site/public-route-patch/games/index.html",
+  "site/public-route-patch/games/high-iq/index.html",
+  "site/public-route-patch/atlas/index.html",
+  "site/public-route-patch/terpene-atlas/index.html",
+];
+
+for (const rel of criticalHtml) {
+  const html = read(rel);
+  if (!html) continue;
+  if (!/<meta\s+name=["']viewport["'][^>]*width=device-width/i.test(html)) {
+    failures.push(`${rel} is missing a responsive viewport meta tag.`);
+  }
+}
+
+const localCssRoots = [
+  "site/public-route-patch",
+  "apps/growlens-web",
+  "apps/high-land-web",
+];
+
+const breakpointPattern = /@media[^\{]*(?:max-width|min-width)\s*:\s*(\d+)px/gi;
+const unusualCounts = new Map();
+
+function walk(dir) {
+  if (!fs.existsSync(dir)) return [];
+  const out = [];
+  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, ent.name);
+    if (ent.isDirectory()) out.push(...walk(full));
+    else if (ent.isFile() && /\.css$/i.test(ent.name)) out.push(full);
+  }
+  return out;
+}
+
+for (const relRoot of localCssRoots) {
+  for (const file of walk(path.join(root, relRoot))) {
+    const css = fs.readFileSync(file, "utf8");
+    let match;
+    while ((match = breakpointPattern.exec(css))) {
+      const width = Number(match[1]);
+      if (![420, 700, 900, 1120, 1121].includes(width)) {
+        const nearby = css.slice(Math.max(0, match.index - 220), match.index);
+        const documentedException = /responsive-exception\s*:/i.test(nearby);
+        if (documentedException) continue;
+        const rel = path.relative(root, file).replaceAll("\\", "/");
+        const key = `${rel}:${width}`;
+        unusualCounts.set(key, (unusualCounts.get(key) || 0) + 1);
+      }
+    }
+  }
+}
+
+if (unusualCounts.size) {
+  const examples = [...unusualCounts.keys()].slice(0, 20);
+  warnings.push(
+    "Local component breakpoints outside the canonical shared bands exist. They are allowed only for documented content-driven reasons. Review when touching these files:\n  - " +
+      examples.join("\n  - ") +
+      (unusualCounts.size > examples.length ? `\n  - …and ${unusualCounts.size - examples.length} more` : "")
+  );
+}
+
+if (warnings.length) {
+  console.warn("\nResponsive verifier warnings:");
+  for (const warning of warnings) console.warn(`- ${warning}`);
+}
+
+if (failures.length) {
+  console.error("\nResponsive verifier failed:");
+  for (const failure of failures) console.error(`- ${failure}`);
+  process.exit(1);
+}
+
+console.log("Responsive layout contract verified.");
