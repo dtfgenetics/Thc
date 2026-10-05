@@ -30,6 +30,7 @@ const els = {
 
 let cards = [];
 let families = [];
+let effectCatalog = null;
 let state = null;
 let selectedHandIndex = null;
 let currentPlayerFamily = null;
@@ -155,7 +156,7 @@ function startNewMatch(playerFamily, cpuFamily = null) {
   clearRestartArm();
   currentPlayerFamily = playerFamily;
   currentCpuFamily = cpuFamily || chooseCpuFamily(playerFamily);
-  state = createGame({ cards, playerFamily, cpuFamily: currentCpuFamily, seed: nextMatchSeed() });
+  state = createGame({ cards, effectCatalog, playerFamily, cpuFamily: currentCpuFamily, seed: nextMatchSeed() });
   selectedHandIndex = null;
   cpuRunning = false;
   els.resultOverlay.hidden = true;
@@ -179,6 +180,7 @@ function cardMarkup(card, { unit = false, side = 'player', lane = -1, handIndex 
     <div class="card-head"><div class="card-stage"><span>Stage ${card.stage}</span><span>${card.stage === 1 ? 'Base' : card.stage === 2 ? 'Select' : 'Elite'}</span></div><h3>${card.name}</h3></div>
     <div class="card-art" aria-hidden="true"></div>
     <div class="card-body"><div class="stat-box">Vigor<b>${vigorText}</b></div><div class="stat-box">Power<b>${card.power}</b></div><div class="stat-box role-tag">Role<b>${card.roleTag.replaceAll('-', ' ')}</b></div></div>
+    <div class="ability-text"><strong>${card.abilityName}</strong><span>${card.effectRulesText}</span></div>
     ${unit ? `<div class="unit-footer"><span>${card.nameSource === 'DTF Genetics catalog' ? 'DTF Genetics' : familyName(card.family)}</span>${shield}</div>` : ''}
     ${unit && side === 'player' ? `<button class="attack-button" type="button" data-attack-lane="${lane}" ${canAttack ? '' : 'disabled'}>Attack lane ${lane + 1}</button>` : ''}
   </article>`;
@@ -460,14 +462,16 @@ els.soundButton.addEventListener('click', () => {
 });
 
 async function loadLegacyData() {
-  const [familiesResponse, ...rosterResponses] = await Promise.all([
+  const [familiesResponse, effectsResponse, ...rosterResponses] = await Promise.all([
     fetch('./data/families.json', { cache: 'no-store', credentials: 'same-origin' }),
+    fetch('./data/effect-profiles.json', { cache: 'no-store', credentials: 'same-origin' }),
     ...FAMILY_IDS.map((id) => fetch(`./data/roster/${id}.json`, { cache: 'no-store', credentials: 'same-origin' }))
   ]);
-  if (!familiesResponse.ok || rosterResponses.some((response) => !response.ok)) throw new Error('Game data failed to load.');
+  if (!familiesResponse.ok || !effectsResponse.ok || rosterResponses.some((response) => !response.ok)) throw new Error('Game data failed to load.');
   const loadedFamilies = await familiesResponse.json();
+  const loadedEffects = await effectsResponse.json();
   const rosterGroups = await Promise.all(rosterResponses.map((response) => response.json()));
-  return { families: loadedFamilies, cards: rosterGroups.flat(), source: 'backup roster' };
+  return { families: loadedFamilies, effects: loadedEffects, cards: rosterGroups.flat(), source: 'backup roster' };
 }
 
 async function loadGameData() {
@@ -475,10 +479,10 @@ async function loadGameData() {
     const response = await fetch('./data/browser-bundle.json', { cache: 'no-store', credentials: 'same-origin' });
     if (!response.ok) throw new Error(`bundle HTTP ${response.status}`);
     const bundle = await response.json();
-    if (bundle.schemaVersion !== 1 || bundle.cardCount !== 96 || bundle.familyCount !== 8 || bundle.cards?.length !== 96 || bundle.families?.length !== 8) {
+    if (bundle.schemaVersion !== 2 || bundle.cardCount !== 96 || bundle.familyCount !== 8 || bundle.cards?.length !== 96 || bundle.families?.length !== 8 || bundle.effects?.activeInBrowserRules !== true || bundle.effects?.profiles?.length !== 24) {
       throw new Error('canonical browser bundle is incomplete');
     }
-    return { families: bundle.families, cards: bundle.cards, source: 'ready' };
+    return { families: bundle.families, effects: bundle.effects, cards: bundle.cards, source: 'ready' };
   } catch (error) {
     console.warn('Strain Showdown primary roster bundle unavailable; using backup roster data.', error);
     return loadLegacyData();
@@ -490,6 +494,7 @@ async function boot() {
     const loaded = await loadGameData();
     families = loaded.families;
     cards = loaded.cards;
+    effectCatalog = loaded.effects;
     const ids = new Set(families.map((family) => family.id));
     if (cards.length !== 96 || families.length !== 8 || FAMILY_IDS.some((id) => !ids.has(id))) throw new Error('Canonical roster is incomplete.');
     for (const familyId of FAMILY_IDS) {
@@ -497,7 +502,7 @@ async function boot() {
     }
     renderRecord();
     renderFamilyChoices();
-    if (els.runtimeStatus) els.runtimeStatus.textContent = '96 cards · 8 families · Ready';
+    if (els.runtimeStatus) els.runtimeStatus.textContent = '96 cards · 24 active abilities · Ready';
   } catch (error) {
     if (els.runtimeStatus) els.runtimeStatus.textContent = 'Roster unavailable';
     els.familyGrid.innerHTML = `<div class="intro-panel"><h2>Game data could not load.</h2><p>${error.message}</p></div>`;
