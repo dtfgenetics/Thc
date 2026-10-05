@@ -4,16 +4,19 @@ import fs from 'node:fs';
 const targetPath='site/wordpress/education/encyclopedia-deployment-target.json';
 const registryPath='data/project-execution-registry.json';
 const appsPath='site/deployment/public-apps.json';
+const gapRegisterPath='docs/ENCYCLOPEDIA_CONTENT_GAP_REGISTER.md';
 const errors=[];
 
 if(!fs.existsSync(targetPath)) errors.push('missing encyclopedia deployment target');
 if(!fs.existsSync(registryPath)) errors.push('missing project execution registry');
 if(!fs.existsSync(appsPath)) errors.push('missing public apps registry');
+if(!fs.existsSync(gapRegisterPath)) errors.push('missing encyclopedia content gap register');
 
 if(!errors.length){
   const target=JSON.parse(fs.readFileSync(targetPath,'utf8'));
   const registry=JSON.parse(fs.readFileSync(registryPath,'utf8'));
   const apps=JSON.parse(fs.readFileSync(appsPath,'utf8'));
+  const gapRegister=fs.readFileSync(gapRegisterPath,'utf8');
 
   if(target.schemaVersion!==1) errors.push('deployment target schemaVersion must equal 1');
   if(target.id!=='encyclopedia-production-target-v1') errors.push('deployment target id mismatch');
@@ -21,6 +24,8 @@ if(!errors.length){
   if(!/^[0-9a-f]{40}$/.test(target.sourceSha||'')) errors.push('deployment target must use a full lowercase 40-character SHA');
   if(target.integrationRepository!=='dtfgenetics/Thc') errors.push('integrationRepository mismatch');
   if(target.integrationMode!=='controlled-publication-integration') errors.push('integrationMode mismatch');
+  const documentedPin=`dtfgenetics/thc-grow-hub@${target.sourceSha}`;
+  if(!gapRegister.includes(documentedPin)) errors.push('content gap register canonical source pin is stale; expected '+documentedPin);
 
   const project=(registry.projects||[]).find(row=>row.id==='encyclopedia');
   if(!project) errors.push('project execution registry is missing encyclopedia project');
