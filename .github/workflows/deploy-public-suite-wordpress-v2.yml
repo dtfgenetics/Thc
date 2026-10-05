@@ -17,6 +17,7 @@ on:
       - site/public-route-patch/**
       - site/deployment/public-apps.json
       - site/deployment/release-resources.json
+      - scripts/build-canonical-sitemap.mjs
       - scripts/package-public-suite-wordpress.py
       - scripts/package-public-suite-wordpress-resource-aware.py
       - scripts/public_suite_resource_ownership.py
@@ -133,6 +134,7 @@ jobs:
           [[ -n "$build_json" ]] || { echo 'Current artifact does not contain dtf-build.json.' >&2; exit 1; }
           suite_root="$(dirname "$build_json")"
           required=(
+            sitemap.xml
             games/index.html
             games/high-land/index.html
             games/high-iq/index.html
@@ -244,6 +246,7 @@ jobs:
               assert len(names)==len(set(names)), 'duplicate ZIP entries'
               assert names.count('.dtf-suite-manifest.json')==1
               required={
+                  'sitemap.xml',
                   'atlas/index.html',
                   'atlas/atlas-anatomy-index-v1.js',
                   'atlas/atlas-anatomy-index-v1.css',
@@ -358,6 +361,18 @@ jobs:
           set -euo pipefail
           node "$RUNNER_TEMP/deploy-public-suite-v2.mjs" "$DTF_SUITE_ARCHIVE" | tee "$RUNNER_TEMP/deploy-result.log"
           grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/deploy-result.log"
+
+      - name: Verify canonical sitemap publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          sitemap="$(curl -fsSL --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache, no-store, max-age=0' "https://dtfseeds.com/sitemap.xml?dtf_sitemap_verify=${GITHUB_RUN_ID}")"
+          count="$(grep -o '<url>' <<<"$sitemap" | wc -l | tr -d ' ')"
+          test "$count" -ge 480 || { echo "Canonical sitemap is too small: $count URLs" >&2; exit 1; }
+          grep -Fq 'https://dtfseeds.com/learn/encyclopedia/thc-enc-001/' <<<"$sitemap"
+          grep -Fq 'https://dtfseeds.com/learn/encyclopedia/thc-enc-420/' <<<"$sitemap"
+          grep -Fq 'https://dtfseeds.com/atlas/' <<<"$sitemap"
+          grep -Fq 'https://dtfseeds.com/tools/' <<<"$sitemap"
 
       - name: Promote canonical public game routes
         id: promote_routes
