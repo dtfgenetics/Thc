@@ -122,7 +122,7 @@ jobs:
               --branch main \
               --limit 40 \
               --json databaseId,headSha,status,conclusion,createdAt \
-              --jq '.[] | select(.headSha == env.GITHUB_SHA and (.conclusion == "success" or .status == "in_progress" or .status == "queued")) | .databaseId' \
+              --jq ".[] | select(.headSha == \"$GITHUB_SHA\" and (.conclusion == \"success\" or .status == \"in_progress\" or .status == \"queued\")) | .databaseId" \
               | head -n 1
           }
 
