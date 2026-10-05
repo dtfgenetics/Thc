@@ -16,7 +16,6 @@
   .site-header nav{display:flex;grid-template-columns:none}
   .hero h1{font-size:clamp(2.15rem,12vw,2.7rem)}
 }
-
 @media(hover:none),(pointer:coarse){
   .game-card:hover{transform:none}
   .button:hover{transform:none}
