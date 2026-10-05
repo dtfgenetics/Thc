@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-IPM-001",
+  "title": "IPM Prevention, Zoning, Intake, and Personnel Control Workbook",
+  "lessonIds": [
+    "THC-ENC-321",
+    "THC-ENC-322",
+    "THC-ENC-323",
+    "THC-ENC-324",
+    "THC-ENC-325"
+  ],
+  "purpose": "Provide traceable records for IPM prevention priorities, clean-to-dirty workflow, plant intake/quarantine, personnel controls, and crop-contact sanitation.",
+  "sections": [
+    {
+      "id": "ipm-plan",
+      "supportsLesson": "THC-ENC-321",
+      "title": "IPM Prevention and Monitoring Plan",
+      "fields": [
+        "Crop/zone",
+        "Known risks",
+        "Prevention measures",
+        "Monitoring method",
+        "Monitoring frequency",
+        "Identification method",
+        "Decision criterion",
+        "Preferred lower-risk controls",
+        "Verification metric",
+        "Review date"
+      ],
+      "decisionPrompt": "Is the program acting on prevention and measured trends rather than calendar treatment?"
+    },
+    {
+      "id": "zoning",
+      "supportsLesson": "THC-ENC-322",
+      "title": "Facility Zoning and Movement Map",
+      "fields": [
+        "Zone ID",
+        "Cleanliness/risk class",
+        "Entry route",
+        "Exit route",
+        "Personnel sequence",
+        "Tool/cart sequence",
+        "Plant-material route",
+        "Waste route",
+        "Transfer controls",
+        "Observed breach",
+        "Corrective action"
+      ],
+      "decisionPrompt": "Where can people, tools, carts, plants, or waste carry risk from higher-risk to cleaner zones?"
+    },
+    {
+      "id": "intake",
+      "supportsLesson": "THC-ENC-323",
+      "title": "Plant Intake and Quarantine Record",
+      "fields": [
+        "Source",
+        "Lot/plant IDs",
+        "Arrival date",
+        "Source records",
+        "Receiving inspection",
+        "Quarantine location",
+        "Pest findings",
+        "Disease symptoms",
+        "Testing performed",
+        "Observation period",
+        "Release criteria",
+        "Release/hold/reject decision"
+      ],
+      "decisionPrompt": "Is there enough evidence to release incoming plants without exposing established production?"
+    },
+    {
+      "id": "personnel",
+      "supportsLesson": "THC-ENC-324",
+      "title": "Personnel Entry and Clothing Control Record",
+      "fields": [
+        "Entry point",
+        "Work sequence",
+        "Hand hygiene",
+        "Footwear control",
+        "Clothing/PPE change",
+        "Glove use",
+        "Restricted-zone entry",
+        "Plant-contact sequence",
+        "Deviation",
+        "Corrective action"
+      ],
+      "decisionPrompt": "Does personnel workflow reduce transfer opportunity while remaining practical and consistently followed?"
+    },
+    {
+      "id": "surface-sanitation",
+      "supportsLesson": "THC-ENC-325",
+      "title": "Tool, Bench, and Container Sanitation Record",
+      "fields": [
+        "Item/surface",
+        "Pre-clean condition",
+        "Physical cleaning method",
+        "Sanitation/disinfection product reference",
+        "Label/manufacturer instruction reference",
+        "Wet/contact-time verification",
+        "Rinse/dry requirement",
+        "Compatibility issue",
+        "Verification result",
+        "Release to service"
+      ],
+      "decisionPrompt": "Was visible contamination removed before the sanitation/disinfection step, and was the validated procedure actually followed?"
+    }
+  ],
+  "qualityRules": [
+    "Separate prevention, monitoring, identification, intervention, and verification steps.",
+    "Do not infer outbreak source from personnel movement alone.",
+    "Use product labels/manufacturer instructions rather than invented disinfectant rates.",
+    "Preserve quarantine and release decisions with evidence."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  },
+  "status": "draft_for_review"
+}
