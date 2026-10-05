@@ -1,4 +1,3 @@
-// Production replay trigger: publish merged navigation and learning UX to WordPress-owned routes.
 import dns from 'node:dns';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -42,7 +41,8 @@ const pageDefinitions = [
   ['gallery', 'Gallery'],
   ['about', 'About DTF Genetics'],
   ['contact', 'Contact DTF Genetics'],
-  ['blog', 'DTF Field Notes & Updates']
+  ['blog', 'DTF Field Notes & Updates'],
+  ['journal', 'DTF Journal']
 ];
 
 const legacyPostTitles = [

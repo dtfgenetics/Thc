@@ -27,7 +27,7 @@ command -v "$WP_BIN" >/dev/null
 # WordPress owns only the editorial/root pages below. /seeds/ and /seeds/*
 # belong exclusively to the dedicated genetics publisher. /games/ and
 # /games/high-iq/ belong to the static public application suite.
-required_files=(home learn community shop gallery about contact blog)
+required_files=(home learn community shop gallery about contact blog journal)
 for slug in "${required_files[@]}"; do
   file="$CONTENT_DIR/$slug.html"
   [[ -s "$file" ]] || { echo "Missing or empty content file: $file"; exit 1; }
@@ -73,7 +73,7 @@ resolve_page_id() {
   printf '%s' "$ids"
 }
 
-page_slugs=(home learn community shop gallery about contact blog)
+page_slugs=(home learn community shop gallery about contact blog journal)
 page_titles=(
   "DTF Genetics | Dream the Future"
   "Teaching Healthy Cultivation"
@@ -83,6 +83,7 @@ page_titles=(
   "About DTF Genetics"
   "Contact DTF Genetics"
   "DTF Field Notes & Updates"
+  "DTF Journal"
 )
 
 declare -A PAGE_IDS=()
