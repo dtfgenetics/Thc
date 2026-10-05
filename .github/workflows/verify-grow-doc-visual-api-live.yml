@@ -64,7 +64,12 @@ jobs:
       - name: Validate live visual API verifier
         run: node --check scripts/verify-grow-doc-visual-api-live.mjs
 
+      - name: Verify visual-observation contract on pull requests
+        if: github.event_name == 'pull_request'
+        run: node scripts/verify-grow-doc-visual-api-live.mjs --contract-only
+
       - name: Verify production visual-observation service
+        if: github.event_name != 'pull_request'
         run: node scripts/verify-grow-doc-visual-api-live.mjs
 
       - name: Upload sanitized visual API evidence
