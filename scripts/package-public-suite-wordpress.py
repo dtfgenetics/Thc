@@ -173,6 +173,7 @@ if len(external_targets) != len(set(external_targets)):
 
 allowed = [
     "dtf-build.json",
+    "sitemap.xml",
     "data/research/evidence/latest.json",
     "games/index.html",
     "games/dtf-route.css",
@@ -287,6 +288,7 @@ if len(registered_local_game_targets) != len(set(registered_local_game_targets))
 
 required = [
     "dtf-build.json",
+    "sitemap.xml",
     "data/research/evidence/latest.json",
     "ph-meter/index.html",
     "tds-meter/index.html",
