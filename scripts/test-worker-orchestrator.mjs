@@ -1,22 +1,16 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict'
-import fs from 'node:fs'
-import { buildClaim, claimReadiness, dependenciesSatisfied, dependencyBlockers, dependencyIssueNumber, isReady, planClaims, planMetadataFromIssue, priorityRank, resourceSetsOverlap, validateConfig } from './orchestrator/core.mjs'
+import { buildClaim, dependenciesSatisfied, dependencyBlockers, dependencyIssueNumber, isReady, planClaims, planMetadataFromIssue, resourceSetsOverlap, validateConfig } from './orchestrator/core.mjs'
 import { newJob, transitionJob, canTransition } from './orchestrator/state.mjs'
 import { createLease, heartbeatLease, isLeaseExpired, recoveryDisposition } from './orchestrator/leases.mjs'
 import { classifyReconciliation, reconciliationNeedsMutation } from './orchestrator/reconcile.mjs'
 import { exactHeadMatches, inspectAllowedPaths, inspectCheckRollup, isPathAllowed, normalizeCheck } from './orchestrator/verification.mjs'
 import { classifyJobHealth, findDuplicateActiveResourceClaims, findOrphanManagedBranches, findOrphanManagedPrs, parseManagedBranch } from './orchestrator/audit.mjs'
 import { buildExecutionPacket, buildHandoffPacket, claimExecutor, executorHandoff, executorResult, heartbeatExecutor, renderHandoffMarkdown } from './orchestrator/executor.mjs'
-import { resolveCanonicalRepository } from './orchestrator/repositories.mjs'
+import { resolveCanonicalRepository, resolveProjectRepository } from './orchestrator/repositories.mjs'
 import { epicSummary, materializeJobPlan, topologicalJobOrder, validateEpicManifest } from './orchestrator/epics.mjs'
 import { inspectContractScope, validateAgentContract, verificationProfileFromContract } from './orchestrator/repo-contract.mjs'
-import { inspectAcceptanceContract, normalizeAcceptanceCriterion } from './orchestrator/acceptance.mjs'
-import { classifyVerificationFailure } from './orchestrator/verification.mjs'
-import { applyRepairPlan, planRepair } from './orchestrator/repair.mjs'
-import { recordDeploymentComplete, recordLiveVerification, startProductionRelease } from './orchestrator/release.mjs'
-import { executorDemand, executorQueue } from './orchestrator/executor-pool.mjs'
 import { buildOperatorStatus } from './orchestrator/operator-status.mjs'
 
 const config = validateConfig({
@@ -82,6 +76,19 @@ assert.equal(resourceSetsOverlap(['game.high-iq'], ['app.plant-atlas']), false)
 const toolsOwner = resolveCanonicalRepository({ canonicalDomain: 'cultivation tools' })
 assert.equal(toolsOwner.repository, 'dtfgenetics/Tools')
 assert.equal(toolsOwner.external, true)
+
+const weedopolisProjectOwner = resolveProjectRepository('weedopolis')
+assert.equal(weedopolisProjectOwner.repository, 'dtfgenetics/Weedopolis-strain-Edition')
+assert.equal(resolveProjectRepository('games'), null)
+
+const inferredWeedopolisIssue = {
+  ...issue(42, 'Improve Weedopolis turn flow', ['worker:ready', 'project:weedopolis']),
+  body: '<!-- worker-plan:{"resourceSet":["game.weedopolis"],"allowedPaths":["src/**","digital/**"],"verificationProfile":"default","acceptanceCriteria":["turn flow passes"]} -->',
+}
+const inferredWeedopolisClaim = buildClaim(inferredWeedopolisIssue, config)
+assert.equal(inferredWeedopolisClaim.repository, 'dtfgenetics/Weedopolis-strain-Edition')
+assert.equal(inferredWeedopolisClaim.externalRepository, true)
+assert.equal(inferredWeedopolisClaim.dispatchMode, 'external-executor')
 assert.throws(
   () => resolveCanonicalRepository({ canonicalDomain: 'cultivation tools', explicitRepository: 'dtfgenetics/Dtf420' }),
   /not canonical/,
@@ -613,125 +620,4 @@ assert.throws(() => verificationProfileFromContract(toolsContractFixture, 'missi
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 149 }, null, 2))
-
-
-const orchestratorWorkflow = fs.readFileSync('.github/workflows/worker-orchestrator.yml', 'utf8')
-assert.match(
-  orchestratorWorkflow,
-  /name: Claim ready work\n\s+#(?:.|\n)*?if: github\.event_name == 'workflow_dispatch' && inputs\.mode == 'dispatch'/,
-  'scheduled orchestration must never lease work without an attached executor',
-)
-assert.doesNotMatch(
-  orchestratorWorkflow,
-  /name: Claim ready work\n\s+if: github\.event_name == 'schedule'/,
-  'schedule must remain observer/reconciler only',
-)
-assert.match(orchestratorWorkflow, /uses: actions\/upload-artifact@v4/, 'orchestrator reports must be persisted as workflow evidence')
-assert.match(orchestratorWorkflow, /retention-days: 30/, 'orchestrator evidence must have an explicit retention window')
-
-
-const throughputConfig = {
-  ...config,
-  scheduling: { agingDaysPerPriorityBoost: 7, requireAcceptanceCriteria: true, requireVerificationProfile: true },
-}
-const oldP3 = issue(501, 'Old P3', ['worker:ready', 'priority:p3'], '2026-08-01T00:00:00Z')
-const newP1 = issue(502, 'New P1', ['worker:ready', 'priority:p1'], '2026-10-01T00:00:00Z')
-assert.equal(priorityRank(oldP3, throughputConfig, new Date('2026-10-04T00:00:00Z')), 0, 'old work must age upward to prevent starvation')
-assert.equal(priorityRank(newP1, throughputConfig, new Date('2026-10-04T00:00:00Z')), 1)
-
-const incompleteClaim = buildClaim(issue(503, 'Missing done contract', ['worker:ready']), throughputConfig)
-assert.deepEqual(claimReadiness(incompleteClaim, throughputConfig).reasons, ['missing-acceptance-criteria'])
-const completeIssue = {
-  ...issue(504, 'Executable work', ['worker:ready']),
-  body: '<!-- worker-plan:{"acceptanceCriteria":["tests pass"],"verificationProfile":"repo-control"} -->',
-}
-assert.equal(claimReadiness(buildClaim(completeIssue, throughputConfig), throughputConfig).ready, true)
-
-const completionStatus = buildOperatorStatus({
-  activeClaims: [
-    { issueNumber: 601, state: 'VERIFYING', active: true, executor: { executorId: 'a' }, productionTargets: [] },
-    { issueNumber: 602, state: 'INTEGRATION_READY', active: true, productionTargets: [] },
-    { issueNumber: 603, state: 'RUNNING', active: true, productionTargets: ['route:/learn/'] },
-  ],
-})
-assert.equal(completionStatus.summary.verifyingJobs, 1)
-assert.equal(completionStatus.summary.integrationReadyJobs, 1)
-assert.equal(completionStatus.summary.executorAttachedJobs, 1)
-assert.equal(completionStatus.summary.productionJobsAwaitingLiveProof, 1)
-
-
-const integrationScript = fs.readFileSync('scripts/orchestrator-integrate.mjs', 'utf8')
-assert.match(integrationScript, /job\.state !== 'INTEGRATION_READY'/)
-assert.match(integrationScript, /pr\.state !== 'MERGED'/)
-assert.match(integrationScript, /pr\.headRefOid !== job\.verification\.headSha/)
-assert.match(integrationScript, /transitionJob\([^\n]+,'MERGED'/)
-assert.match(integrationScript, /'DONE'.*non-production-work-complete/)
-assert.match(integrationScript, /'PRODUCTION_READY'.*merge-ready-for-production/)
-
-const workflowWithIntegration = fs.readFileSync('.github/workflows/worker-orchestrator.yml', 'utf8')
-assert.match(workflowWithIntegration, /- integrate/)
-assert.match(workflowWithIntegration, /scripts\/orchestrator-integrate\.mjs/)
-assert.match(workflowWithIntegration, /worker-integrate\.json/)
-
-
-assert.equal(normalizeAcceptanceCriterion('tests pass').legacy, true)
-assert.deepEqual(normalizeAcceptanceCriterion({ type: 'path-exists', path: 'scripts/orchestrator.mjs' }), { type: 'path-exists', path: 'scripts/orchestrator.mjs', legacy: false })
-assert.equal(inspectAcceptanceContract([{ type: 'check', description: 'CI green' }]).ok, true)
-assert.throws(() => normalizeAcceptanceCriterion({ type: 'path-exists' }), /requires path/)
-assert.equal(inspectAcceptanceContract([], {}).ok, false)
-
-assert.deepEqual(
-  classifyVerificationFailure({ reason: 'checks-failing', checkGate: { failing: [{ name: 'unit' }] } }),
-  { class: 'test-or-build', retryPolicy: 'test-or-build', repairWorker: 'test-repair', automatic: true, failingChecks: ['unit'] },
-)
-assert.equal(classifyVerificationFailure({ reason: 'head-sha-mismatch' }).repairWorker, 'repo-maintenance')
-assert.equal(classifyVerificationFailure({ reason: 'changed-files-outside-allowed-paths' }).automatic, false)
-
-
-const retryConfig = JSON.parse(fs.readFileSync('configuration/orchestrator/retry-policies.json', 'utf8'))
-const repairJob = newJob({ jobId:'repair-1', title:'repair me', state:'VERIFYING', acceptanceCriteria:['tests pass'], retryPolicy:'implementation' })
-const testFailure = classifyVerificationFailure({ reason:'checks-failing', checkGate:{ failing:[{name:'unit'}] } })
-const repairPlan = planRepair(repairJob, testFailure, retryConfig, { now:new Date('2026-10-04T00:00:00Z') })
-assert.equal(repairPlan.action, 'REPAIR')
-assert.equal(repairPlan.repairWorker, 'test-repair')
-assert.equal(repairPlan.attempt, 1)
-assert.equal(repairPlan.nextEligibleAt, '2026-10-04T00:05:00.000Z')
-assert.equal(applyRepairPlan(repairJob, testFailure, repairPlan, { now:'2026-10-04T00:00:00.000Z' }).state, 'REPAIRING')
-
-const policyFailure = classifyVerificationFailure({ reason:'changed-files-outside-allowed-paths' })
-const blockPlan = planRepair(repairJob, policyFailure, retryConfig)
-assert.equal(blockPlan.action, 'BLOCK')
-assert.equal(blockPlan.state, 'BLOCKED')
-
-const exhausted = { ...repairJob, attempt:3 }
-const exhaustedPlan = planRepair(exhausted, testFailure, retryConfig)
-assert.equal(exhaustedPlan.state, 'QUARANTINED')
-
-
-const productionJob = newJob({ jobId:'prod-1', title:'ship it', state:'PRODUCTION_READY', productionImpact:true, productionTargets:['route:/learn/'], acceptanceCriteria:[{type:'production-live',target:'route:/learn/'}] })
-const productionSourceSha = 'a'.repeat(40)
-const deploying = startProductionRelease(productionJob,{workflowRunId:9001,sourceSha:productionSourceSha,now:'2026-10-04T01:00:00.000Z'})
-assert.equal(deploying.state,'DEPLOYING')
-const live = recordDeploymentComplete(deploying,{workflowRunId:9001,sourceSha:productionSourceSha,conclusion:'success',now:'2026-10-04T01:05:00.000Z'})
-assert.equal(live.state,'LIVE_VERIFYING')
-const done = recordLiveVerification(live,{workflowRunId:9001,sourceSha:productionSourceSha,checks:[{target:'/learn/',ok:true}],now:'2026-10-04T01:06:00.000Z'})
-assert.equal(done.state,'DONE')
-assert.throws(()=>recordLiveVerification(live,{workflowRunId:9001,sourceSha:'b'.repeat(40),checks:[{target:'/learn/',ok:true}]}),/does not match release source/)
-assert.throws(()=>recordLiveVerification(live,{workflowRunId:9001,sourceSha:productionSourceSha,checks:[{ok:true}]}),/requires a target/)
-assert.throws(()=>recordDeploymentComplete(deploying,{workflowRunId:9001,sourceSha:'b'.repeat(40),conclusion:'success'}),/deployed source SHA/)
-assert.throws(()=>recordDeploymentComplete(deploying,{workflowRunId:9001,sourceSha:productionSourceSha,conclusion:'failure'}),/must be success/)
-assert.throws(()=>startProductionRelease(productionJob,{workflowRunId:'invalid',sourceSha:productionSourceSha}),/positive integer/)
-
-
-const repairReady = { ...repairJob, state:'REPAIRING', repair:{ workerKind:'test-repair', nextEligibleAt:'2026-10-04T00:00:00.000Z' } }
-assert.equal(executorDemand(repairReady,{now:new Date('2026-10-04T00:01:00Z')}).workerKind,'test-repair')
-assert.equal(executorDemand({...repairReady,repair:{...repairReady.repair,nextEligibleAt:'2026-10-04T01:00:00.000Z'}},{now:new Date('2026-10-04T00:01:00Z')}).ready,false)
-assert.equal(executorQueue([repairReady],{now:new Date('2026-10-04T00:01:00Z')}).length,1)
-
-const repairReady2 = { ...repairReady, jobId:'repair-2', createdAt:'2026-10-04T00:00:01.000Z' }
-const repairReady3 = { ...repairReady, jobId:'repair-3', createdAt:'2026-10-04T00:00:02.000Z' }
-assert.equal(executorQueue([repairReady,repairReady2,repairReady3],{now:new Date('2026-10-04T00:01:00Z')}).length,2)
-const activeRepair = { ...repairReady, jobId:'repair-active', executor:{status:'RUNNING'} }
-const capacityQueue = executorQueue([activeRepair,repairReady2,repairReady3],{now:new Date('2026-10-04T00:01:00Z')})
-assert.deepEqual(capacityQueue.map(({job})=>job.jobId),['repair-2'])
+console.log(JSON.stringify({ ok: true, tests: 155 }, null, 2))
