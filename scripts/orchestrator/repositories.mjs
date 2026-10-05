@@ -15,6 +15,31 @@ export function repositoryEntry(repo, config = loadRepositoryRegistry()) {
   return (config.repositories || []).find((entry) => entry.repo === repo) || null
 }
 
+export function loadProjectRegistry(path = 'data/project-registry.json') {
+  const config = JSON.parse(readFileSync(path, 'utf8'))
+  if (!String(config.schema_version || '').startsWith('1.')) throw new Error('project registry schema_version must be 1.x')
+  if (!Array.isArray(config.projects)) throw new Error('project registry requires projects')
+  return config
+}
+
+export function resolveProjectRepository(projectId, {
+  projectConfig = loadProjectRegistry(),
+  repositoryConfig = loadRepositoryRegistry(),
+} = {}) {
+  const id = normalize(projectId)
+  if (!id || id === 'general') return null
+  const project = (projectConfig.projects || []).find((entry) => normalize(entry.id) === id)
+  if (!project?.repo) return null
+  const entry = repositoryEntry(project.repo, repositoryConfig)
+  if (!entry || !['canonical', 'standalone_canonical'].includes(entry.status)) return null
+  return {
+    projectId: project.id,
+    repository: project.repo,
+    project,
+    entry,
+  }
+}
+
 export function resolveCanonicalRepository({
   canonicalDomain = null,
   explicitRepository = null,
