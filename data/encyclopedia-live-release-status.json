@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "THC 420-lesson Encyclopedia",
-  "recordedAt": "2026-10-05T01:03:00Z",
+  "recordedAt": "2026-10-05T01:27:19Z",
   "livePublication": {
     "complete": true,
     "lessonCount": 420,
@@ -12,21 +12,35 @@
     "visitorVerificationPassed": true,
     "workflow": {
       "name": "Publish Approved THC Encyclopedia Visuals to WordPress Production",
-      "runId": 37249418885,
-      "jobId": 111573792403,
-      "sourceCommit": "f5a94b6a190107be937726d7d997af74ece3b382",
+      "runId": 37250762694,
+      "jobId": 111577713282,
+      "sourceCommit": "b5b7cd5c4c40f51a9ad9833baf16b1c809a352d1",
       "conclusion": "success",
       "canonicalAuthorizedPageSync": "success",
       "canonicalRouteVerification": "420/420",
-      "visualMapValidation": "success",
+      "visualMapValidation": "20 approved canonical rasters; 400 uncurated/generated candidates held; 0 missing",
       "visualAttachment": "20/20 curated Volume 03 lesson visuals",
       "visitorVisualVerification": "THC-ENC-041 through THC-ENC-060 all passed"
     },
     "independentVisitorVerification": {
-      "checkedAt": "2026-10-05T01:03:00Z",
+      "checkedAfter": "2026-10-05T01:27:19Z",
       "scope": "THC-ENC-041 through THC-ENC-060",
-      "result": "20/20 rendered exactly one lesson-specific figure with the expected THC-ENC visual identity and mapped canonical image URL",
+      "result": "20/20 retained exactly one lesson-specific figure and expected companion caption after the corrected sitewide retired-visual scrub completed",
       "errors": 0
+    },
+    "persistenceVerification": {
+      "guardWorkflow": "Enforce DTFSeeds Retired Visual Guard",
+      "runId": 37250558695,
+      "runAttempt": 2,
+      "jobId": 111579491737,
+      "conclusion": "success",
+      "curatedApprovedVisualCount": 20,
+      "retiredMediaMatched": 0,
+      "directPatternRemovals": 0,
+      "visualContainerRemovals": 0,
+      "contentItemsChanged": 0,
+      "deletedMediaCount": 0,
+      "result": "Curated THC-ENC-041–060 figures survived the post-publication sitewide retirement scrub."
     }
   },
   "repositoryValidation": {
@@ -34,7 +48,7 @@
     "substantiveFindings": 0,
     "assessmentCoverage": "420/420 lessons have unique effective v2 reasoning, misconception, and applied-verification checks",
     "publicationControl": "forward-only floor through THC-ENC-420",
-    "visualProduction": "20 curated Volume 03 visuals are published and visitor-verified; remaining uncurated raster candidates remain review-controlled"
+    "visualProduction": "20 curated Volume 03 visuals are published, workflow-verified, independently verified, and persistence-verified after the sitewide retirement scrub; remaining uncurated raster candidates remain review-controlled"
   },
   "separateQualityBacklog": {
     "independentScienceReview": "pending where not recorded; publication does not imply independent approval",
@@ -42,5 +56,5 @@
     "claimLevelEvidenceExpansion": "420/420 lessons have claim-evidence coverage; independent science/applicability review remains pending",
     "teachingVisuals": "20 curated Volume 03 visuals published; remaining uncurated candidates require controlled review before promotion"
   },
-  "rule": "Do not regress current-production-batch.json below THC-ENC-420. Preserve permanent THC-ENC IDs, curated visual review boundaries, and immutable production evidence."
+  "rule": "Do not regress current-production-batch.json below THC-ENC-420. Preserve permanent THC-ENC IDs, curated visual review boundaries, stable visual anchors, exact curated retirement exemptions, and immutable production/persistence evidence."
 }
