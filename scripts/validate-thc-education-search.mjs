@@ -89,6 +89,10 @@ if(!errors.length){
    if(!expected||row.route!==expected) errors.push((row.id||'<missing-id>')+': published encyclopedia route must be '+(expected||'<valid permanent-ID route>')+' not '+(row.route||'<missing>'));
  }
  if(/href="\/encyclopedia\//.test(encyclopediaPage)) errors.push('static encyclopedia directory contains legacy /encyclopedia/ lesson links');
+ for(const topic of encyclopediaIndex.topics||[]){
+   const href='/learn/encyclopedia/'+String(topic.slug||'').trim()+'/';
+   if(!topic.slug||!encyclopediaPage.includes(`href="${href}"`)) errors.push(`static encyclopedia directory missing direct topic hub link: ${href}`);
+ }
  const missingStaticRoutes=publishedRows.filter(row=>!encyclopediaPage.includes('href="'+row.route+'"'));
  if(missingStaticRoutes.length) errors.push('static encyclopedia directory missing '+missingStaticRoutes.length+' published lesson routes; first '+missingStaticRoutes.slice(0,3).map(x=>x.id).join(', '));
  if(!fallbackBuilder.includes('Static education fallbacks built')) errors.push('static education fallback builder contract missing');
