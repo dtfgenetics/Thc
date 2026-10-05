@@ -1,0 +1,52 @@
+name: Enrich THC Encyclopedia Source Candidates
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 13 * * 0'
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/build-encyclopedia-source-resolution-queue.mjs
+      - scripts/enrich-encyclopedia-source-resolution-candidates.mjs
+      - scripts/validate-encyclopedia-source-resolution-enrichment.mjs
+      - content/encyclopedia/evidence/**
+      - content/encyclopedia/volume-*/source-register.json
+      - .github/workflows/encyclopedia-source-enrichment.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: encyclopedia-source-enrichment
+  cancel-in-progress: true
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ENCYCLOPEDIA_SOURCE_ENRICH_LIMIT: 250
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build canonical source queue
+        run: |
+          node scripts/build-encyclopedia-source-resolution-queue.mjs
+          node scripts/validate-encyclopedia-source-resolution-queue.mjs
+      - name: Enrich unresolved scholarly citations
+        run: |
+          node scripts/enrich-encyclopedia-source-resolution-candidates.mjs
+          node scripts/validate-encyclopedia-source-resolution-enrichment.mjs
+      - name: Upload reviewer candidate package
+        uses: actions/upload-artifact@v4
+        with:
+          name: encyclopedia-source-enrichment-${{ github.run_id }}
+          path: |
+            data/encyclopedia-source-resolution-queue.json
+            data/encyclopedia-source-resolution-enrichment.json
+          if-no-files-found: error
+          retention-days: 30
