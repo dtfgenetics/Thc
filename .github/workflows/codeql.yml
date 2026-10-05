@@ -24,10 +24,11 @@ jobs:
       matrix:
         language:
           - javascript-typescript
+          - python
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
