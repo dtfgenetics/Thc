@@ -141,7 +141,7 @@ jobs:
 
           verify '/' 'data-dtf-layout="home-v3"' wordpress
           verify '/learn/' 'data-dtf-layout="learn-v3"' wordpress
-          verify '/learn/infographics/' 'Visual plant science and cultivation library.' wordpress
+          verify '/learn/infographics/' 'data-dtf-approved-visual-library="v1"' wordpress
           verify '/learn/start-here/' 'Learn the plant before chasing the fix.' wordpress
           verify '/seeds/' 'data-dtf-genetics-library="2026"' wordpress
           verify '/seeds/mango-bubbles/' 'data-dtf-genetics-line="mango-bubbles"' wordpress

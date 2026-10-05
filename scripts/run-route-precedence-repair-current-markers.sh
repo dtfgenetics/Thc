@@ -27,12 +27,12 @@ for old, new in replacements.items():
 checks_old = '''  const checks = [
     ['/', 'data-dtf-layout="home-v3"'],
     ['/learn/', 'data-dtf-layout="learn-v3"'],
-    ['/learn/infographics/', 'Visual plant science and cultivation library.'],
+    ['/learn/infographics/', 'data-dtf-approved-visual-library="v1"'],
   ];'''
 checks_new = '''  const checks = [
     ['/', 'data-dtf-layout="home-v3"'],
     ['/learn/', 'data-dtf-layout="learn-v3"'],
-    ['/learn/infographics/', 'Visual plant science and cultivation library.'],
+    ['/learn/infographics/', 'data-dtf-approved-visual-library="v1"'],
     ['/learn/start-here/', 'Learn the plant before chasing the fix.'],
     ['/seeds/', 'data-dtf-genetics-library="2026"'],
     ['/seeds/mango-bubbles/', 'data-dtf-genetics-line="mango-bubbles"'],
