@@ -75,3 +75,7 @@ button,.hub-link,.family-choice{touch-action:manipulation;-webkit-tap-highlight-
   .lane.valid-target,.card.selected,.family-choice:focus-visible{outline:3px solid Highlight}
   .lane.valid-target::after,.card.selected::after{border:1px solid ButtonText}
 }
+
+.ability-text{display:grid;gap:.18rem;padding:.48rem .55rem;border-top:1px solid rgba(255,255,255,.08);background:rgba(4,18,20,.42)}
+.ability-text strong{color:#f4d77c;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase}
+.ability-text span{color:var(--muted,#b9c9c3);font-size:.68rem;line-height:1.35}
