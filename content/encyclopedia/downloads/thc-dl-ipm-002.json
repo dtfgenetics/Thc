@@ -1,0 +1,123 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-IPM-002",
+  "title": "Disinfection, Irrigation Hygiene, Exclusion, Environment, and Scouting Workbook",
+  "lessonIds": [
+    "THC-ENC-326",
+    "THC-ENC-327",
+    "THC-ENC-328",
+    "THC-ENC-329",
+    "THC-ENC-330"
+  ],
+  "purpose": "Support validated sanitation sequences, irrigation hygiene, structural exclusion, environmental disease prevention, and risk-zone monitoring.",
+  "sections": [
+    {
+      "id": "clean-disinfect",
+      "supportsLesson": "THC-ENC-326",
+      "title": "Cleaning vs Disinfection Sequence Record",
+      "fields": [
+        "Surface/item",
+        "Soil/debris present",
+        "Cleaning step",
+        "Rinse if required",
+        "Disinfectant reference",
+        "Application method",
+        "Contact-time requirement",
+        "Actual wet/contact time",
+        "Post-step condition",
+        "Verification"
+      ],
+      "decisionPrompt": "Was the surface physically cleaned before relying on disinfection?"
+    },
+    {
+      "id": "contact-time",
+      "supportsLesson": "THC-ENC-327",
+      "title": "Disinfectant Contact-Time Verification",
+      "fields": [
+        "Product/label reference",
+        "Target surface",
+        "Target organism/context",
+        "Pre-clean status",
+        "Concentration/formulation per label",
+        "Application time",
+        "Required contact time",
+        "Observed wet duration",
+        "Surface compatibility",
+        "Corrective action"
+      ],
+      "decisionPrompt": "Did the actual prepared surface remain treated for the required labeled contact time?"
+    },
+    {
+      "id": "irrigation-hygiene",
+      "supportsLesson": "THC-ENC-328",
+      "title": "Water-System Hygiene Record",
+      "fields": [
+        "Water source",
+        "Reservoir ID",
+        "Recirculation status",
+        "Line/zone",
+        "Hose end condition",
+        "Emitter condition",
+        "Biofilm observation",
+        "Maintenance date",
+        "Targeted test",
+        "Treatment reference",
+        "Post-maintenance verification"
+      ],
+      "decisionPrompt": "Does the water system show a transfer pathway that requires maintenance, testing, or validated treatment?"
+    },
+    {
+      "id": "exclusion",
+      "supportsLesson": "THC-ENC-329",
+      "title": "Pest Exclusion Inspection",
+      "fields": [
+        "Doors",
+        "Vents",
+        "Screens",
+        "Seals",
+        "Penetrations",
+        "Loading/receiving area",
+        "Exterior vegetation/debris",
+        "Trap findings",
+        "Airflow/access impact",
+        "Repair priority",
+        "Repair verification"
+      ],
+      "decisionPrompt": "Which structural entry point presents the highest preventable pest-entry risk?"
+    },
+    {
+      "id": "environment",
+      "supportsLesson": "THC-ENC-330",
+      "title": "Environmental Disease-Risk Record",
+      "fields": [
+        "Zone",
+        "Temperature",
+        "RH/dew point",
+        "Condensation",
+        "Air movement",
+        "Plant density",
+        "Irrigation timing",
+        "Root-zone moisture",
+        "Leaf wetness",
+        "Disease observations",
+        "Intervention",
+        "Outcome"
+      ],
+      "decisionPrompt": "Which measured environmental factor is most plausibly increasing disease pressure in this zone?"
+    }
+  ],
+  "qualityRules": [
+    "Follow product-specific instructions for chemical sanitation.",
+    "Treat microbial detections as context requiring interpretation, not automatic disease proof.",
+    "Verify structural repairs and environmental changes with follow-up monitoring.",
+    "Record representative risk zones, not only convenient sensor locations."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  },
+  "status": "draft_for_review"
+}
