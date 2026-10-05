@@ -1,0 +1,133 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-POST-001",
+  "title": "Harvest Decision, Segregation, and Trim Workbook",
+  "lessonIds": [
+    "THC-ENC-341",
+    "THC-ENC-342",
+    "THC-ENC-343",
+    "THC-ENC-344",
+    "THC-ENC-345"
+  ],
+  "purpose": "Provide traceable records for harvest maturity, harvest-unit selection, sanitation and segregation, trim timing, and initial drying-process characterization.",
+  "sections": [
+    {
+      "id": "maturity",
+      "supportsLesson": "THC-ENC-341",
+      "title": "Harvest Maturity Decision",
+      "fields": [
+        "Genotype/batch",
+        "Product objective",
+        "Flowering milestone",
+        "Plant/flower sample positions",
+        "Trichome protocol",
+        "Stigma observations",
+        "Cannabinoid sample",
+        "Volatile sample",
+        "Disease/seed status",
+        "Weather risk",
+        "Postharvest capacity",
+        "Decision",
+        "Approver"
+      ],
+      "decisionPrompt": "Do the combined biological, analytical, disease, weather, and capacity signals support harvest now?"
+    },
+    {
+      "id": "harvest-unit",
+      "supportsLesson": "THC-ENC-342",
+      "title": "Whole-Plant vs Branch Harvest Record",
+      "fields": [
+        "Harvest unit ID",
+        "Method",
+        "Cut sequence",
+        "Plant/branch position",
+        "Wet mass",
+        "Stem fraction",
+        "Handling damage",
+        "Load spacing",
+        "Drying-zone assignment",
+        "Drying curve",
+        "Labor",
+        "Yield",
+        "Grade"
+      ],
+      "decisionPrompt": "Which harvest-unit method produced the best balance of traceability, handling, drying uniformity, and quality?"
+    },
+    {
+      "id": "segregation",
+      "supportsLesson": "THC-ENC-343",
+      "title": "Harvest Sanitation and Batch Segregation Record",
+      "fields": [
+        "Room",
+        "Batch/sub-batch",
+        "Personnel",
+        "Tools/equipment",
+        "Cleaning verification",
+        "Harvest start/end",
+        "Container/rack IDs",
+        "Transfers",
+        "Spills/mix-ups",
+        "Holds",
+        "Waste",
+        "Sample IDs",
+        "Release status"
+      ],
+      "decisionPrompt": "Can every harvested unit be traced through each transfer without identity or sanitation ambiguity?"
+    },
+    {
+      "id": "trim",
+      "supportsLesson": "THC-ENC-344",
+      "title": "Wet vs Dry Trim Comparison",
+      "fields": [
+        "Trim definition",
+        "Trim timing",
+        "Leaf/flower/stem mass",
+        "Wet/dry state",
+        "Handling events",
+        "Trichome/fragment loss",
+        "Drying curve",
+        "Chemistry",
+        "Microbial result",
+        "Labor",
+        "Grade",
+        "Rejects"
+      ],
+      "decisionPrompt": "Which trimming approach performs better under matched batch conditions without confounding drying or handling differences?"
+    },
+    {
+      "id": "drying-transfer",
+      "supportsLesson": "THC-ENC-345",
+      "title": "Drying Heat and Mass Transfer Record",
+      "fields": [
+        "Wet mass",
+        "Air temperature",
+        "Product temperature",
+        "Surface temperature",
+        "RH",
+        "Dew point",
+        "Airflow",
+        "Rack/location",
+        "Load density",
+        "Mass over time",
+        "HVAC/dehumidifier state",
+        "Final moisture",
+        "Final aW"
+      ],
+      "decisionPrompt": "Does the drying profile show stable moisture removal without spatial stalls, condensation, or over-drying?"
+    }
+  ],
+  "qualityRules": [
+    "Use representative sample positions and retain raw observations.",
+    "Keep harvest and drying identities linked across transfers.",
+    "Do not use one visual maturity cue as the sole release basis.",
+    "Define trimming and harvest-unit methods precisely before comparing outcomes."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  },
+  "status": "draft_for_review"
+}
