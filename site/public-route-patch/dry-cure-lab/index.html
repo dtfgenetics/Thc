@@ -14,33 +14,6 @@ import {mountLiveToolAdapter} from '/assets/thc-live-tool-adapter-v1.mjs';
 import {dewPoint,saturationVaporPressure} from '/assets/thc-cultivation-math-v1.mjs';
 const THC=window.THC,$=id=>document.getElementById(id),aw=$('aw'),dryCureOut=$('dryCureOut'),dryHistory=$('dryHistory'),saveCheckpoint=$('saveCheckpoint'),lotId=$('lotId'),harvestDate=$('harvestDate'),dryNotes=$('dryNotes'),saveHarvestGrowLens=$('saveHarvestGrowLens'),exportDryCure=$('exportDryCure'),dryTrendLot=$('dryTrendLot'),dryTrendMetric=$('dryTrendMetric'),dryTrendChart=$('dryTrendChart'),dryTrendStatus=$('dryTrendStatus'),clearDryCure=$('clearDryCure');
 const key='thc-dry-cure-checkpoints-v1',programKey='thc-dry-cure-programs-v1';
-function normalizeDryCheckpoint(x){
- if(!x||typeof x!=='object'||typeof x.at!=='string'||!Number.isFinite(Date.parse(x.at)))return null;
- const s=Number(x.s),cur=Number(x.cur),hrs=Number(x.hrs),t=Number(x.t),rh=Number(x.rh),awValue=x.aw==null||x.aw===''?null:Number(x.aw);
- if(!Number.isFinite(s)||s<=0||!Number.isFinite(cur)||cur<0||cur>s||!Number.isFinite(hrs)||hrs<=0||!Number.isFinite(t)||t<-273.15||!Number.isFinite(rh)||rh<1||rh>100||(awValue!==null&&(!Number.isFinite(awValue)||awValue<0||awValue>1)))return null;
- let dewPointC;try{dewPointC=dewPoint(t,rh)}catch{return null}
- const loss=(s-cur)/s*100,day=loss/(hrs/24),pt=x.programTarget&&typeof x.programTarget==='object'?x.programTarget:null;
- let programTarget=null,programDelta=null;
- if(pt){
-   const tempC=Number(pt.tempC),targetDew=Number(pt.dewPointC),targetRh=Number(pt.rh);
-   if(Number.isFinite(tempC)&&tempC>=-273.15&&Number.isFinite(targetDew)&&targetDew>=-273.15&&Number.isFinite(targetRh)&&targetRh>=0&&targetRh<=100){
-     programTarget={tempC,dewPointC:targetDew,rh:targetRh};
-     programDelta={tempC:t-tempC,dewPointC:dewPointC-targetDew,rh:rh-targetRh};
-   }
- }
- return{...x,s,cur,hrs,t,rh,aw:awValue,loss,day,dewPointC,lot:String(x.lot||'Unspecified').slice(0,120),harvestDate:String(x.harvestDate||'').slice(0,20),notes:String(x.notes||'').slice(0,1200),programName:String(x.programName||'Dry / cure program').slice(0,120),programStage:String(x.programStage||'').slice(0,40),transitionMode:x.transitionMode==='step'?'step':'slope',programTarget,programDelta,at:String(x.at)}
-}
-function normalizeDryProgram(x){
- if(!x||typeof x!=='object'||!Array.isArray(x.stages))return null;
- const expected=['Dry','Cure','Store'],stages=[];
- for(const name of expected){
-   const src=x.stages.find(s=>String(s?.name)===name);if(!src)return null;
-   const hours=Number(src.hours),tempC=Number(src.tempC),dewPointC=Number(src.dewPointC);
-   if(!Number.isFinite(hours)||hours<0||!Number.isFinite(tempC)||tempC<-273.15||!Number.isFinite(dewPointC)||dewPointC<-273.15||dewPointC>tempC)return null;
-   stages.push({name,hours,tempC,dewPointC,rh:rhFromDew(tempC,dewPointC)});
- }
- return{...x,id:String(x.id||('dryprog-'+(crypto.randomUUID?crypto.randomUUID():Date.now()))),name:String(x.name||'Dry / cure program').slice(0,120),transition:x.transition==='step'?'step':'slope',stages,savedAt:String(x.savedAt||new Date().toISOString())}
-}
 let checkpoints=(Array.isArray(THC.load(key,[]))?THC.load(key,[]):[]).map(normalizeDryCheckpoint).filter(Boolean),programs=(Array.isArray(THC.load(programKey,[]))?THC.load(programKey,[]):[]).map(normalizeDryProgram).filter(Boolean);
 function values(){const s=Number($('startW').value),cur=Number($('currentW').value),hrs=Number($('elapsed').value),t=Number($('dt').value),rh=Number($('drh').value),awValue=aw.value===''?null:Number(aw.value),valid=Number.isFinite(s)&&s>0&&Number.isFinite(cur)&&cur>=0&&cur<=s&&Number.isFinite(hrs)&&hrs>0&&Number.isFinite(t)&&t>=-273.15&&Number.isFinite(rh)&&rh>=1&&rh<=100&&(awValue===null||(Number.isFinite(awValue)&&awValue>=0&&awValue<=1)),loss=valid?(s-cur)/s*100:NaN,day=valid?loss/(hrs/24):NaN;return {valid,s,cur,hrs,t,rh,loss,day,aw:awValue}}
 function activeProgramTarget(hours){const stages=programStages(),mode=transitionMode.value;let elapsed=Math.max(0,Number(hours)||0),cursor=0;for(let i=0;i<stages.length;i++){const stage=stages[i],duration=Math.max(0,Number(stage.hours)||0),end=cursor+duration;if(duration===0&&i<stages.length-1){cursor=end;continue}if(elapsed<=end||i===stages.length-1){if(mode==='slope'&&duration>0&&i<stages.length-1){const f=Math.max(0,Math.min(1,(elapsed-cursor)/duration)),next=stages[i+1];return{name:stage.name,progress:f,tempC:stage.tempC+(next.tempC-stage.tempC)*f,dewPointC:stage.dewPointC+(next.dewPointC-stage.dewPointC)*f,rh:rhFromDew(stage.tempC+(next.tempC-stage.tempC)*f,stage.dewPointC+(next.dewPointC-stage.dewPointC)*f)}}return{name:stage.name,progress:duration?Math.max(0,Math.min(1,(elapsed-cursor)/duration)):1,tempC:stage.tempC,dewPointC:stage.dewPointC,rh:stage.rh}}cursor=end}return{name:'Store',progress:1,...stages.at(-1)}}

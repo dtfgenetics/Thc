@@ -2,3 +2,6 @@
 <IfModule mod_mime.c>
   AddType application/javascript .js .mjs
 </IfModule>
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+</IfModule>

@@ -41,8 +41,13 @@ package_allowed = literal_collection(PACKAGE, "allowed")
 bridge_shared = literal_collection(BRIDGE, "SHARED_EXACT_FILES")
 
 mime_policy = ASSET_ROOT / ".htaccess"
-if not mime_policy.is_file() or "AddType application/javascript .js .mjs" not in mime_policy.read_text():
+if not mime_policy.is_file():
+    raise SystemExit("shared assets MIME policy is missing")
+mime_text = mime_policy.read_text()
+if "AddType application/javascript .js .mjs" not in mime_text:
     raise SystemExit("shared assets MIME policy must serve .js and .mjs as application/javascript")
+if 'X-Content-Type-Options "nosniff"' not in mime_text:
+    raise SystemExit("shared assets MIME policy must enforce nosniff")
 
 package_exact = {
     path
