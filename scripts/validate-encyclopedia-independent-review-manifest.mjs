@@ -20,13 +20,13 @@ const visualLedgerById=new Map((Array.isArray(visualLedger.lessons)?visualLedger
 
 const sameJson=(a,b)=>JSON.stringify(a??null)===JSON.stringify(b??null);
 const hasReviewerEvidence=task=>
-  task?.reviewerDecision!==null||
-  task?.reviewerId!==null||
-  task?.reviewedAt!==null||
-  task?.reviewNotes!==null||
-  task?.reviewerName!==null||
-  task?.reviewChecks!==null||
-  task?.reviewSourcePacket!==null;
+  task?.reviewerDecision!=null||
+  task?.reviewerId!=null||
+  task?.reviewedAt!=null||
+  task?.reviewNotes!=null||
+  task?.reviewerName!=null||
+  task?.reviewChecks!=null||
+  task?.reviewSourcePacket!=null;
 
 if(rows.length!==registryState.totalCount) errors.push(`Expected ${registryState.totalCount} review rows; found ${rows.length}`);
 if(new Set(rows.map(x=>x.lessonId)).size!==rows.length) errors.push('Review rows must have unique lesson IDs.');
