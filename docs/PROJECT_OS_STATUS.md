@@ -9,7 +9,7 @@ Generated from canonical repository state on 2026-10-05 UTC.
 | Lane | State | Current evidence / next gate |
 | --- | --- | --- |
 | Encyclopedia | **Infrastructure closed** | 420/420 canonical routes, 21/21 topic hubs, search indexes published, visitor verification passed, Volume 03 curated visuals persisted after retirement scrub |
-| Tools | **Live availability verified** | 23/23 canonical routes resolve live; #1909 is the remaining runtime/MIME closure gate |
+| Tools | **Production closed** | 23/23 canonical routes verified live; runtime/MIME closure #1909 merged; THC mirror pinned to Tools `c4a7025…`. Issue #90 is an operational speed enhancement for event-driven sync, not a production blocker. |
 | GrowLens | **Integration verification** | #1914 replays the canonical observation producer on current main |
 | Release observability | **Merged** | #1911 adds release ledger, hashes, and artifact attestations |
 | Security | **Enabled** | CodeQL security-extended across canonical repos; Python coverage added to Thc and Academy |

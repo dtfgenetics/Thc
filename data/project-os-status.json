@@ -46,13 +46,15 @@
       ]
     },
     "tools": {
-      "state": "live-availability-verified",
+      "state": "production-closed",
       "evidence": {
         "canonicalRoutes": 23,
-        "liveAvailabilityVerified": "23/23"
+        "liveAvailabilityVerified": "23/23",
+        "canonicalMirrorPinned": "c4a7025316875d32028fa7530cb898b2c81c98ce",
+        "runtimeMimeClosure": "PR #1909 merged"
       },
-      "active": [
-        "PR #1909 cultivation runtime/MIME closure final CI"
+      "remainingOperationalEnhancement": [
+        "Issue #90: optional event-driven Tools → Thc dispatch remains blocked on a least-privilege cross-repository credential; scheduled sync remains the verified recovery path"
       ]
     },
     "growLens": {
