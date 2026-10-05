@@ -110,17 +110,52 @@ jobs:
           PY
           php -l "$RUNNER_TEMP/dtf-suite-v2.php"
 
-      - name: Build current public suite artifact
+      - name: Reuse or build current public suite artifact
         id: current_build
         shell: bash
         run: |
           set -euo pipefail
-          run_url="$(gh workflow run build-dtfseeds-public-suite.yml --ref main)"
-          run_id="${run_url##*/}"
-          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse public-suite build run from: $run_url" >&2; exit 1; }
+
+          find_run() {
+            gh run list \
+              --workflow build-dtfseeds-public-suite.yml \
+              --branch main \
+              --limit 40 \
+              --json databaseId,headSha,status,conclusion,createdAt \
+              --jq '.[] | select(.headSha == env.GITHUB_SHA and (.conclusion == "success" or .status == "in_progress" or .status == "queued")) | .databaseId' \
+              | head -n 1
+          }
+
+          run_id=""
+          for attempt in {1..12}; do
+            run_id="$(find_run || true)"
+            [[ "$run_id" =~ ^[0-9]+$ ]] && break
+            echo "No reusable Public Suite build for $GITHUB_SHA yet (attempt $attempt/12)."
+            sleep 5
+          done
+
+          if [[ ! "$run_id" =~ ^[0-9]+$ ]]; then
+            run_url="$(gh workflow run build-dtfseeds-public-suite.yml --ref main)"
+            run_id="${run_url##*/}"
+            [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse public-suite build run from: $run_url" >&2; exit 1; }
+            echo "Dispatched Public Suite build: $run_id"
+          else
+            echo "Reusing Public Suite build for exact commit $GITHUB_SHA: $run_id"
+          fi
+
+          if ! gh run watch "$run_id" --exit-status; then
+            replacement="$(find_run || true)"
+            if [[ "$replacement" =~ ^[0-9]+$ && "$replacement" != "$run_id" ]]; then
+              echo "Build $run_id was superseded; reusing replacement $replacement for $GITHUB_SHA."
+              run_id="$replacement"
+              gh run watch "$run_id" --exit-status
+            else
+              exit 1
+            fi
+          fi
+
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-          echo "Current public-suite build run: $run_id"
-          gh run watch "$run_id" --exit-status
+          echo "Qualified current public-suite build run: $run_id"
 
       - name: Download current validated Public Suite artifact
         id: suite
