@@ -29,6 +29,9 @@ describe('GrowLens canonical observation producer', () => {
       symptoms: ['leaf-curl', ' leaf-curl ', 'chlorosis'],
       notes: '  Progressed over two days.  ',
       candidateDifferentials: ['Heat stress', 'Root-zone stress'],
+      severity: 'moderate',
+      locationOnPlant: 'upper-canopy',
+      tissue: 'leaf',
       photoIds: ['photo-12345678'],
       observedAt,
     }, state);
@@ -37,6 +40,9 @@ describe('GrowLens canonical observation producer', () => {
       id: 'observation-12345678',
       symptoms: ['leaf-curl', 'chlorosis'],
       possibleCauses: ['Heat stress', 'Root-zone stress'],
+      severity: 'moderate',
+      locationOnPlant: 'upper-canopy',
+      tissue: 'leaf',
       photoIds: ['photo-12345678'],
     });
     expect(result.diary).toMatchObject({
@@ -64,6 +70,7 @@ describe('GrowLens canonical observation producer', () => {
       },
     });
     expect(result.canonicalRecord.values.candidateDifferentials).toEqual(['Heat stress', 'Root-zone stress']);
+    expect(result.canonicalRecord.values).toMatchObject({ severity: 'moderate', locationOnPlant: 'upper-canopy', tissue: 'leaf' });
     expect(result.canonicalRecord.mediaRefs).toHaveLength(1);
   });
 
