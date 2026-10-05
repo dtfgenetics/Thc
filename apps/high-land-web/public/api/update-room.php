@@ -8,6 +8,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     api_send_json(['ok' => false, 'error' => 'POST required.'], 405);
 }
 
+api_require_multiplayer_available();
+api_record_operation('update');
+
 $data = api_read_json_body();
 $roomCode = api_clean_room_code($data['roomCode'] ?? $data['room'] ?? '');
 $playerId = api_clean_string($data['playerId'] ?? '', 80);
