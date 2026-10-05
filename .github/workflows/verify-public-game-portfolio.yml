@@ -1,0 +1,36 @@
+name: Verify Public Game Portfolio
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 9 * * *"
+  workflow_run:
+    workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify registry public routes
+        run: node scripts/verify-public-game-portfolio.mjs
+      - name: Upload machine-readable evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-game-live-evidence
+          path: artifacts/game-live-evidence.json
+          if-no-files-found: error
+      - name: Summarize
+        if: always()
+        run: |
+          if [[ -f artifacts/game-live-evidence.json ]]; then
+            node scripts/summarize-public-game-evidence.mjs >> "$GITHUB_STEP_SUMMARY"
+          fi
