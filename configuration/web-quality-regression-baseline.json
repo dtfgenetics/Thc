@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "workflowRunId": 37237389247,
+    "artifactId": 11316426796,
+    "measuredAt": "2026-10-04T21:50:15Z"
+  },
+  "policy": {
+    "maxRegression": {
+      "performance": 0.05,
+      "accessibility": 0.01,
+      "best-practices": 0.01,
+      "seo": 0.01
+    },
+    "absoluteFloors": {
+      "performance": 0.5,
+      "accessibility": 0.89,
+      "best-practices": 0.93,
+      "seo": 0.92
+    }
+  },
+  "routes": {
+    "/": {"performance":0.93,"accessibility":0.96,"best-practices":0.96,"seo":0.92},
+    "/about/": {"performance":0.93,"accessibility":0.96,"best-practices":0.96,"seo":0.92},
+    "/community/": {"performance":0.93,"accessibility":0.96,"best-practices":0.96,"seo":0.92},
+    "/contact/": {"performance":0.93,"accessibility":0.96,"best-practices":0.96,"seo":0.92},
+    "/gallery/": {"performance":0.93,"accessibility":0.96,"best-practices":0.96,"seo":0.92},
+    "/games/": {"performance":1,"accessibility":1,"best-practices":0.96,"seo":1},
+    "/games/high-land/": {"performance":0.63,"accessibility":1,"best-practices":0.96,"seo":1},
+    "/games/kush-kings-chess/": {"performance":1,"accessibility":0.89,"best-practices":0.96,"seo":1},
+    "/games/thc-u-know/": {"performance":1,"accessibility":1,"best-practices":0.96,"seo":1},
+    "/games/weedopolis/": {"performance":0.8,"accessibility":0.99,"best-practices":0.93,"seo":1},
+    "/learn/": {"performance":0.92,"accessibility":0.96,"best-practices":0.96,"seo":0.92},
+    "/seeds/": {"performance":0.55,"accessibility":0.91,"best-practices":0.96,"seo":0.92},
+    "/shop/": {"performance":0.72,"accessibility":0.94,"best-practices":0.96,"seo":0.92},
+    "/thc-grow-doc": {"performance":0.5,"accessibility":1,"best-practices":0.93,"seo":1}
+  }
+}
