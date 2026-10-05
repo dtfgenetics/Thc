@@ -80,8 +80,8 @@
     }
   ],
   "summary": {
-    "gameCount": 30,
-    "compliantCount": 24,
+    "gameCount": 31,
+    "compliantCount": 25,
     "debtCount": 6,
     "gamesWithDebt": 6
   },
@@ -685,6 +685,25 @@
         "networkProfile": "local",
         "contentProfile": "database-driven",
         "performanceProfile": "tiny-ui",
+        "securityProfile": "local",
+        "accessibilityProfile": "text-ui",
+        "autonomousPlaytestProfile": "planned"
+      },
+      "compliant": true,
+      "debt": []
+    },
+    {
+      "id": "pheno-hunter",
+      "title": "Pheno Hunter",
+      "releaseStatus": "public-unverified",
+      "profile": {
+        "gameplayProfile": "casual-puzzle",
+        "rendererProfile": "dom",
+        "sessionProfile": "short",
+        "persistenceProfile": "none",
+        "networkProfile": "share-code",
+        "contentProfile": "static",
+        "performanceProfile": "dom-game",
         "securityProfile": "local",
         "accessibilityProfile": "text-ui",
         "autonomousPlaytestProfile": "planned"
