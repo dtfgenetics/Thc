@@ -22,6 +22,10 @@ import {
   type AuthenticatedSession,
 } from './remoteStore';
 import { createId, loadState, saveState } from './storage';
+import {
+  createGrowLensObservationArtifacts,
+  publishGrowLensCanonicalObservation,
+} from './canonicalObservation';
 
 function readableError(error: unknown): string {
   return error instanceof Error ? error.message : 'The photo action failed.';
@@ -173,29 +177,22 @@ export default function CameraObservationWidget() {
     try {
       await putPhoto(asset);
       const current = loadState();
-      const plant = current.plants.find((candidate) => candidate.id === plantId);
+      const artifacts = createGrowLensObservationArtifacts({
+        id: observationId,
+        plantId: plantId || null,
+        symptoms: selectedSymptoms,
+        notes,
+        candidateDifferentials: diagnosisResults.map((result) => result.cause),
+        photoIds: [photoId],
+        observedAt: capturedAt,
+      }, current);
       const next = {
         ...current,
-        observations: [...current.observations, {
-          id: observationId,
-          plantId: plantId || null,
-          symptoms: selectedSymptoms,
-          notes: notes.trim(),
-          possibleCauses: diagnosisResults.map((result) => result.cause),
-          photoIds: [photoId],
-          createdAt: capturedAt,
-        }],
-        diary: [...current.diary, {
-          id: createId('entry'),
-          plantId: plantId || null,
-          cycleId: plant?.cycleId || null,
-          type: 'photo' as const,
-          title: plant ? `Photo observation · ${plant.name}` : 'Photo observation',
-          notes: notes.trim() || selectedSymptoms.join(', '),
-          createdAt: capturedAt,
-        }],
+        observations: [...current.observations, artifacts.observation],
+        diary: [...current.diary, artifacts.diary],
       };
       saveState(next);
+      publishGrowLensCanonicalObservation(artifacts.canonicalRecord);
 
       let uploaded = false;
       const activeSession = await resolveAuthenticatedSession();
