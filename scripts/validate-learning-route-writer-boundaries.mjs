@@ -8,6 +8,29 @@ const encyclopediaPublisher=fs.readFileSync('scripts/publish-wordpress-encyclope
 const topicOrganizer=fs.readFileSync('scripts/organize-wordpress-encyclopedia-topics.mjs','utf8');
 const errors=[];
 
+const rootWriterContracts = [
+  ['scripts/update-wordpress-learn-learning-center.mjs','Learning Centers root guard','APPLY_LEARNING_CENTER_ROOT'],
+  ['scripts/rebuild-wordpress-learn-visual-v4.mjs','retired standalone Learn V4 guard','APPLY_LEARN_V4'],
+  ['scripts/publish-wordpress-learn-task-nav-v5.mjs','retired Task Nav V5 guard','APPLY_LEARN_TASK_NAV_V5'],
+  ['scripts/ensure-learn-infographic-entry.mjs','retired Learn infographic injector guard',null]
+];
+for (const [writer,label,applyToken] of rootWriterContracts) {
+  const source=fs.readFileSync(writer,'utf8');
+  if (/method\s*:\s*['"]POST['"]/.test(source)) errors.push(`${label} regained a WordPress POST write path`);
+  if (applyToken && new RegExp(`process\\.env\\.${applyToken}\\b`).test(source)) errors.push(`${label} regained active ${applyToken} runtime control`);
+}
+
+const workflowContracts = [
+  ['.github/workflows/deploy-thc-learning-centers.yml','APPLY_LEARNING_CENTER_ROOT'],
+  ['.github/workflows/wordpress-learn-visual-v4-production.yml','APPLY_LEARN_V4'],
+  ['.github/workflows/wordpress-learn-task-nav-v5.yml','APPLY_LEARN_TASK_NAV_V5']
+];
+for (const [workflow,token] of workflowContracts) {
+  const source=fs.readFileSync(workflow,'utf8');
+  const activeAssignment=new RegExp(`^\\s*${token}:\\s*['"]?true['"]?\\s*$`,'m');
+  if(activeAssignment.test(source)) errors.push(`${workflow} regained active standalone Learn-root apply assignment: ${token}`);
+}
+
 const slugs=(source)=>[...source.matchAll(/\{\s*slug:\s*'([^']+)'/g)].map(m=>m[1]);
 const genericSlugs=new Set(slugs(generic));
 const expansionSlugs=new Set(slugs(expansion));
