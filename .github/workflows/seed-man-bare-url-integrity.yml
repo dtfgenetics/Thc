@@ -78,22 +78,61 @@ jobs:
             check_contains "$tmp/seed-man-production-art.js" 'fallbackAllowed:false'
           }
 
-          ok=0
-          for attempt in {1..12}; do
-            status="$(curl -sS --connect-timeout 10 --max-time 35 --location --dump-header "$headers" -o "$body" -w '%{http_code}' "$base" || true)"
-            if [[ "$status" == 200 ]] && fetch_assets "${GITHUB_RUN_ID:-manual}-$attempt" && verify_downloaded_contract; then
-              ok=1
-              break
-            fi
-            echo "Seed Man bare URL not current yet on attempt $attempt (HTTP $status)."
+          fetch_page_with_transient_retry() {
+            local attempt status rc
+            for attempt in 1 2 3; do
+              set +e
+              status="$(curl -sS --connect-timeout 10 --max-time 35 --location --dump-header "$headers" -o "$body" -w '%{http_code}' "$base")"
+              rc=$?
+              set -e
+
+              if (( rc != 0 )); then
+                if (( attempt < 3 )); then
+                  echo "Transient Seed Man page fetch failure on attempt $attempt (curl exit $rc); retrying." >&2
+                  sleep $((attempt * 3))
+                  continue
+                fi
+                echo "Seed Man page remained unreachable after $attempt attempts (curl exit $rc)." >&2
+                return 1
+              fi
+
+              if [[ "$status" == 200 ]]; then
+                return 0
+              fi
+
+              if [[ "$status" == 429 || "$status" =~ ^5[0-9][0-9]$ ]]; then
+                if (( attempt < 3 )); then
+                  echo "Transient Seed Man HTTP $status on attempt $attempt; retrying." >&2
+                  sleep $((attempt * 3))
+                  continue
+                fi
+                echo "Seed Man page remained transiently unavailable after $attempt attempts (HTTP $status)." >&2
+                return 1
+              fi
+
+              echo "Deterministic Seed Man HTTP failure: $status" >&2
+              return 2
+            done
+            return 1
+          }
+
+          if ! fetch_page_with_transient_retry; then
+            echo '--- response headers ---'
+            cat "$headers" || true
+            exit 1
+          fi
+
+          if ! fetch_assets "${GITHUB_RUN_ID:-manual}"; then
+            echo 'Seed Man asset fetch failed after curl bounded retries.' >&2
+            exit 1
+          fi
+
+          if ! verify_downloaded_contract; then
+            echo 'Seed Man live content failed the canonical contract. Deterministic content mismatches are not retried.' >&2
             grep -E 'dtf-seed-man-release|data-seed-ui-release|data-seed-man-approved-art|player-state-v20|combat-browser-v2|Original browser vertical slice|20260830-r4' "$body" || true
-            sleep $((attempt * 3))
-          done
+            exit 1
+          fi
 
           echo '--- response headers ---'
           cat "$headers" || true
-          if [[ "$ok" != 1 ]]; then
-            echo 'Seed Man bare URL did not converge on canonical player-state v20, campaign v3, combat v2, approved art core v4, and current v5 UI.' >&2
-            exit 1
-          fi
           echo 'Bare Seed Man URL serves canonical player-state v20, campaign v3, combat v2, approved art core v4, and current v5 UI.'
