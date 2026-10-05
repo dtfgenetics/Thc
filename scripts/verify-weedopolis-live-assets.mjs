@@ -62,8 +62,16 @@ function makeUrl(relative = '') {
   return url;
 }
 
+function isTransientNetworkError(error) {
+  const code = error?.cause?.code || error?.code || '';
+  if (['ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT', 'EAI_AGAIN', 'ENOTFOUND', 'UND_ERR_CONNECT_TIMEOUT', 'UND_ERR_HEADERS_TIMEOUT', 'UND_ERR_SOCKET'].includes(code)) return true;
+  if (error?.name === 'AbortError' || error?.name === 'TimeoutError' || error?.name === 'TypeError') return true;
+  return /timeout|timed out|fetch failed|socket|network/i.test(String(error?.message || ''));
+}
+
 async function fetchStrict(relative, accept = '*/*') {
   let lastError = null;
+  const label = relative || 'index.html';
   for (let attempt = 1; attempt <= attempts; attempt++) {
     const url = makeUrl(relative);
     const controller = new AbortController();
@@ -79,17 +87,38 @@ async function fetchStrict(relative, accept = '*/*') {
           'User-Agent': 'DTFSeeds-Weedopolis-Live-Asset-Audit/2.0',
         },
       });
-      if (response.status !== 200) throw new Error(`${relative || 'index.html'} returned HTTP ${response.status}`);
-      if (response.headers.has('location')) throw new Error(`${relative || 'index.html'} returned a redirect location`);
-      return response;
+
+      if (response.status === 200) {
+        if (response.headers.has('location')) throw new Error(`${label} returned a redirect location`);
+        return response;
+      }
+
+      const transientHttp = response.status === 429 || response.status >= 500;
+      if (!transientHttp) {
+        throw new Error(`${label} returned deterministic HTTP ${response.status}`);
+      }
+
+      lastError = new Error(`${label} returned transient HTTP ${response.status}`);
+      if (attempt < attempts) {
+        console.warn(`${lastError.message}; retrying (${attempt}/${attempts}).`);
+        await new Promise(resolve => setTimeout(resolve, 1500 * attempt));
+        continue;
+      }
+      throw lastError;
     } catch (error) {
+      if (/deterministic HTTP|redirect location/.test(String(error?.message || ''))) throw error;
+      if (!isTransientNetworkError(error) && !/transient HTTP/.test(String(error?.message || ''))) throw error;
       lastError = error;
-      if (attempt < attempts) await new Promise(resolve => setTimeout(resolve, 1500 * attempt));
+      if (attempt < attempts) {
+        console.warn(`Transient ${label} fetch failure on attempt ${attempt}: ${error?.message || error}. Retrying.`);
+        await new Promise(resolve => setTimeout(resolve, 1500 * attempt));
+        continue;
+      }
     } finally {
       clearTimeout(timer);
     }
   }
-  throw lastError || new Error(`Unable to fetch ${relative || 'index.html'}`);
+  throw lastError || new Error(`Unable to fetch ${label}`);
 }
 
 async function verifyWebp(path, minBytes, label) {
