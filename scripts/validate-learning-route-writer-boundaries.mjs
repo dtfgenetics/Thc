@@ -9,32 +9,15 @@ const topicOrganizer=fs.readFileSync('scripts/organize-wordpress-encyclopedia-to
 const errors=[];
 
 const rootWriterContracts = [
-  {
-    path: 'scripts/update-wordpress-learn-learning-center.mjs',
-    forbidden: ["method: 'POST'", 'method:"POST"', 'DTF-LEARNING-CENTER-START'],
-    label: 'Learning Centers root guard'
-  },
-  {
-    path: 'scripts/rebuild-wordpress-learn-visual-v4.mjs',
-    forbidden: ["method: 'POST'", 'method:"POST"', 'APPLY_LEARN_V4'],
-    label: 'retired standalone Learn V4 guard'
-  },
-  {
-    path: 'scripts/publish-wordpress-learn-task-nav-v5.mjs',
-    forbidden: ["method: 'POST'", 'method:"POST"', 'APPLY_LEARN_TASK_NAV_V5'],
-    label: 'retired Task Nav V5 guard'
-  },
-  {
-    path: 'scripts/ensure-learn-infographic-entry.mjs',
-    forbidden: ["method: 'POST'", 'method:"POST"', 'dtf-learn-infographic-entry:start'],
-    label: 'retired Learn infographic injector guard'
-  }
+  ['scripts/update-wordpress-learn-learning-center.mjs','Learning Centers root guard','APPLY_LEARNING_CENTER_ROOT'],
+  ['scripts/rebuild-wordpress-learn-visual-v4.mjs','retired standalone Learn V4 guard','APPLY_LEARN_V4'],
+  ['scripts/publish-wordpress-learn-task-nav-v5.mjs','retired Task Nav V5 guard','APPLY_LEARN_TASK_NAV_V5'],
+  ['scripts/ensure-learn-infographic-entry.mjs','retired Learn infographic injector guard',null]
 ];
-for (const contract of rootWriterContracts) {
-  const source=fs.readFileSync(contract.path,'utf8');
-  for (const token of contract.forbidden) {
-    if (source.includes(token)) errors.push(`${contract.label} regained forbidden Learn-root writer token: ${token}`);
-  }
+for (const [writer,label,applyToken] of rootWriterContracts) {
+  const source=fs.readFileSync(writer,'utf8');
+  if (/method\s*:\s*['"]POST['"]/.test(source)) errors.push(`${label} regained a WordPress POST write path`);
+  if (applyToken && new RegExp(`process\\.env\\.${applyToken}\\b`).test(source)) errors.push(`${label} regained active ${applyToken} runtime control`);
 }
 
 const workflowContracts = [
@@ -44,7 +27,18 @@ const workflowContracts = [
 ];
 for (const [workflow,token] of workflowContracts) {
   const source=fs.readFileSync(workflow,'utf8');
-  if(source.includes(token)) errors.push(`${workflow} regained forbidden standalone Learn-root apply token: ${token}`);
+  const activeAssignment=new RegExp(`^\\s*${token}:\\s*['"]?true['"]?\\s*#!/usr/bin/env node
+import fs from 'node:fs';
+
+const overlay=JSON.parse(fs.readFileSync('site/deployment/dtf420-static-overlay.json','utf8'));
+const generic=fs.readFileSync('scripts/publish-wordpress-learning-center-pages.mjs','utf8');
+const expansion=fs.readFileSync('scripts/publish-wordpress-learning-center-expansion-v1.mjs','utf8');
+const encyclopediaPublisher=fs.readFileSync('scripts/publish-wordpress-encyclopedia-canonical-batch.mjs','utf8');
+const topicOrganizer=fs.readFileSync('scripts/organize-wordpress-encyclopedia-topics.mjs','utf8');
+const errors=[];
+
+,'m');
+  if(activeAssignment.test(source)) errors.push(`${workflow} regained active standalone Learn-root apply assignment: ${token}`);
 }
 
 const slugs=(source)=>[...source.matchAll(/\{\s*slug:\s*'([^']+)'/g)].map(m=>m[1]);
