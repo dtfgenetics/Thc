@@ -10,6 +10,7 @@ const publicRoot = path.join(repoRoot, 'site', 'public-route-patch', 'games', 's
 export function buildBrowserBundle() {
   const manifest = JSON.parse(fs.readFileSync(path.join(dataRoot, 'roster-manifest.json'), 'utf8'));
   const families = JSON.parse(fs.readFileSync(path.join(dataRoot, 'families.json'), 'utf8'));
+  const effectCatalog = JSON.parse(fs.readFileSync(path.join(dataRoot, 'effect-profiles.json'), 'utf8'));
   const cards = manifest.files.flatMap((file) => JSON.parse(fs.readFileSync(path.join(dataRoot, file), 'utf8')));
 
   if (manifest.cardCount !== 96 || cards.length !== manifest.cardCount) {
@@ -26,12 +27,18 @@ export function buildBrowserBundle() {
     if (familyCards.length !== 12) throw new Error(`Expected 12 ${familyId} cards, found ${familyCards.length}.`);
   }
 
+  if (effectCatalog.activeInBrowserRules !== true || effectCatalog.status !== 'runtime-active' || effectCatalog.profiles?.length !== 24) {
+    throw new Error('Active Strain Showdown effect catalog is incomplete.');
+  }
+
   const bundle = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     rosterVersion: manifest.rosterVersion,
+    effectVersion: effectCatalog.version,
     cardCount: manifest.cardCount,
     familyCount: manifest.families.length,
     families,
+    effects: effectCatalog,
     cards
   };
 
