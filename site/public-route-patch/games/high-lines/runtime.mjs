@@ -10,7 +10,8 @@ import {
   fillRegion,
   undoFill,
   findHiddenObject,
-  resetArtwork
+  resetArtwork,
+  createAgentObservation
 } from './engine.mjs';
 
 const SAVE_SCHEMA_VERSION = 1;
@@ -55,6 +56,38 @@ let restoredOnLoad = false;
 let zoom = 1;
 let resetArmed = false;
 let resetTimer = null;
+
+const HIGH_LINES_AGENT_VERSION = 'high-lines-observable-v1';
+
+function highLinesAgentSnapshot() {
+  if (!data || !state) {
+    return {
+      version: HIGH_LINES_AGENT_VERSION,
+      gameId: 'high-lines',
+      ready: false,
+      phase: 'loading',
+      capabilities: ['snapshot']
+    };
+  }
+  return createAgentObservation(state, data);
+}
+
+function installHighLinesObservableAgentBridge() {
+  const api = Object.freeze({
+    version: HIGH_LINES_AGENT_VERSION,
+    snapshot: highLinesAgentSnapshot
+  });
+  Object.defineProperty(globalThis, '__HIGH_LINES_AGENT__', {
+    value: api,
+    enumerable: false,
+    configurable: false,
+    writable: false
+  });
+  document.documentElement.dataset.highLinesAgentBridge = HIGH_LINES_AGENT_VERSION;
+  return api;
+}
+
+installHighLinesObservableAgentBridge();
 
 function saveKeyForCode(code) {
   const normalized = normalizeSceneCode(code);

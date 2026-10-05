@@ -162,3 +162,49 @@ export function resetArtwork(inputState, data) {
   state.complete = false;
   return state;
 }
+
+export function createAgentObservation(inputState, data) {
+  requireData(data);
+  const state = inputState ? clone(inputState) : null;
+  if (!state) {
+    return {
+      version: 'high-lines-observable-v1',
+      gameId: 'high-lines',
+      ready: false,
+      phase: 'loading',
+      capabilities: ['snapshot']
+    };
+  }
+
+  const scene = sceneMap(data).get(state.sceneId);
+  if (!scene) throw new Error(`Unknown scene: ${state.sceneId}`);
+  const progress = progressForState(state, data);
+
+  return {
+    version: 'high-lines-observable-v1',
+    gameId: 'high-lines',
+    ready: true,
+    phase: state.complete ? 'complete' : 'active',
+    scene: {
+      id: scene.id,
+      title: scene.title ?? scene.id,
+      prompt: state.prompt,
+      regionCount: scene.regions.length,
+      hiddenObjectCount: scene.hiddenObjects.length
+    },
+    selectedColorId: state.selectedColorId,
+    fills: { ...(state.fills ?? {}) },
+    progress: {
+      colored: progress.colored,
+      totalRegions: progress.totalRegions,
+      foundHidden: progress.found,
+      totalHidden: progress.totalHidden,
+      percent: progress.percent,
+      complete: progress.complete
+    },
+    score: state.score,
+    undoDepth: Array.isArray(state.undoStack) ? state.undoStack.length : 0,
+    capabilities: ['snapshot']
+  };
+}
+
