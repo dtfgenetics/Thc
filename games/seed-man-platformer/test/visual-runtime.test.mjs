@@ -29,12 +29,17 @@ validateVisualRuntime(config);
 assert.deepEqual(Object.keys(config.worlds).sort(), [...VISUAL_RUNTIME_CONTRACT.requiredWorlds].sort());
 assert.deepEqual(Object.keys(config.player.phenotypes).sort(), [...VISUAL_RUNTIME_CONTRACT.requiredPhenotypes].sort());
 assert.deepEqual(Object.keys(VISUAL_WORLD_PALETTES).sort(), [...VISUAL_WORLD_KEYS].sort());
-assert.equal(VISUAL_RUNTIME_CONTRACT.characterContract, 'approved-green-armored-plant-hero-v1');
+assert.equal(VISUAL_RUNTIME_CONTRACT.characterContract, 'classic-seed-man-oval-v1');
+assert.equal(VISUAL_RUNTIME_CONTRACT.currentCharacterStatus, 'temporary-green-armored-replacement-pending');
+assert.equal(VISUAL_RUNTIME_CONTRACT.activeWorldRenderer, 'seed-man-authored-flat-background-v1');
+assert.equal(VISUAL_RUNTIME_CONTRACT.worldRendererTarget, 'seed-man-three-world-v2');
+assert.equal(VISUAL_RUNTIME_CONTRACT.finalWorldLayerCount, 7);
 
 const greenhouse = getWorldVisual(config, 'greenhouse-valley');
 assert.equal(greenhouse.label, 'Greenhouse Valley');
 assert.ok(greenhouse.materials.includes('grass'));
 assert.ok(greenhouse.requiredFx.includes('water-mist'));
+assert.equal(greenhouse.transitionBackground, 'world.greenhouse-valley.background');
 
 const plan = buildParallaxPlan(config, 'greenhouse-valley');
 assert.equal(plan.length, 7);
@@ -44,6 +49,13 @@ assert.ok(plan.find((layer) => layer.key === 'mid-bg').parallax < plan.find((lay
 
 for (const phenotypeKey of ['fire', 'electric', 'ice']) assert.equal(getPhenotypeVisual(config, phenotypeKey).durationMs, 30000);
 assert.equal(getPhenotypeVisual(config, 'plant').durationMs, 0);
+assert.equal(getPhenotypeVisual(config, 'plant').effect, 'pierce');
+assert.equal(getPhenotypeVisual(config, 'electric').chainTargets, 3);
+assert.equal(getPhenotypeVisual(config, 'ice').freezeSeconds, 1.8);
+assert.equal(config.bosses.length, 6);
+assert.equal(config.bosses.at(-1).key, 'blight-king');
+assert.equal(config.bosses.at(-1).finalBoss, true);
+assert.deepEqual(config.bosses.at(-1).weaknessCycle, ['plant','fire','electric','ice']);
 
 const campaignMap = getCampaignVisualWorldMap();
 assert.equal(campaignMap['Greenhouse District'], 'greenhouse-valley');
@@ -72,6 +84,9 @@ assert.equal(createVisualSceneStyle('frozen-peak').worldKey, 'frozen-peaks');
 const invalid = structuredClone(config);
 invalid.assetPolicy.allowRawFilenameReferences = true;
 assert.throws(() => validateVisualRuntime(invalid), /raw filename references are forbidden/);
+const invalidCharacter=structuredClone(config);
+invalidCharacter.reference.characterContract='approved-green-armored-plant-hero-v1';
+assert.throws(()=>validateVisualRuntime(invalidCharacter),/classic Seed Man target/);
 assert.throws(() => getVisualWorldPalette('not-a-world'), /Unknown Seed Man visual world palette/);
 
-console.log('seed-man visual runtime contract: ok');
+console.log('seed-man classic visual runtime transition contract: ok');
