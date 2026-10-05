@@ -43,9 +43,16 @@ jobs:
         run: node --check scripts/verify-crossword-live.mjs
 
       - name: Verify live Crossword app and puzzle data
+        if: github.event_name != 'pull_request'
         env:
           SITE: https://dtfseeds.com
         run: node scripts/verify-crossword-live.mjs
+
+      - name: Explain pre-deploy pull-request verification
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "Live exact-revision verification is intentionally deferred until after the protected deployment workflow succeeds."
+          echo "Pull requests still validate the verifier syntax and the source revision through Validate Crossword Release Source."
 
       - name: Summarize
         if: always()
