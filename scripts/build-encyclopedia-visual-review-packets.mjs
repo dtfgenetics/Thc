@@ -16,7 +16,20 @@ const preById=new Map((pre.candidates||[]).map(x=>[x.lessonId,x]));
 const promoById=new Map((promo.items||[]).map(x=>[x.lessonId,x]));
 
 fs.mkdirSync(outDir,{recursive:true});
-for(const file of fs.readdirSync(outDir)) if(/^batch-\d{3}\.(?:json|md)$/i.test(file)) fs.unlinkSync(path.join(outDir,file));
+
+const preservedReviewInputByLesson=new Map();
+for(const file of fs.readdirSync(outDir).filter(x=>/^(?:batch-\d{3}|produced-review-\d{3})\.json$/i.test(x))){
+  const prior=JSON.parse(fs.readFileSync(path.join(outDir,file),'utf8'));
+  for(const item of prior.items||[]){
+    const reviewInput=item.reviewInput||{};
+    const hasReviewerInput=Object.values(reviewInput).some(value=>value!==null&&value!=='');
+    if(hasReviewerInput) preservedReviewInputByLesson.set(item.lessonId,reviewInput);
+  }
+}
+
+for(const file of fs.readdirSync(outDir)) {
+  if(/^(?:batch-\d{3}|produced-review-\d{3})\.(?:json|md)$/i.test(file)) fs.unlinkSync(path.join(outDir,file));
+}
 
 const batchFiles=fs.readdirSync(batchesDir).filter(x=>/^batch-\d{3}\.json$/i.test(x)).sort();
 const index=[];
@@ -43,7 +56,7 @@ for(const file of batchFiles){
         claimEvidenceIds:ev.evidence?.claimEvidenceIds||[],
         reviewState:ev.evidence?.reviewState||null
       },
-      reviewInput:{
+      reviewInput:preservedReviewInputByLesson.get(item.lessonId)||{
         decision:null,
         reviewerId:null,
         reviewerName:null,
@@ -113,7 +126,7 @@ const producedRows=producedVisuals.filter(item=>!covered.has(item.lessonId)).map
     lessonId:item.lessonId,title:item.title,visualFamily:item.visualFamily,purpose:item.purpose,
     candidateAssetPaths:item.canonicalAssetPaths||[],candidateCount:Number(item.assetCandidateCount||0),
     evidence:{claimEvidenceCount:Number(ev.evidence?.claimEvidenceCount||0),authoritativeSourceIds:ev.evidence?.authoritativeSourceIds||[],claimEvidenceIds:ev.evidence?.claimEvidenceIds||[],reviewState:ev.evidence?.reviewState||null},
-    reviewInput:{decision:null,reviewerId:null,reviewerName:null,reviewedAt:null,reviewNotes:null,scienceAccuracy:null,labelingAccuracy:null,misconceptionSafety:null,accessibilityQuality:null,provenanceRights:null,responsiveLegibility:null}
+    reviewInput:preservedReviewInputByLesson.get(item.lessonId)||{decision:null,reviewerId:null,reviewerName:null,reviewedAt:null,reviewNotes:null,scienceAccuracy:null,labelingAccuracy:null,misconceptionSafety:null,accessibilityQuality:null,provenanceRights:null,responsiveLegibility:null}
   };
 });
 if(producedRows.length){
@@ -125,4 +138,4 @@ if(producedRows.length){
 }
 const total=index.reduce((n,x)=>n+x.itemCount,0);
 fs.writeFileSync(path.join(outDir,'index.json'),JSON.stringify({schemaVersion:'1.0.0',batchCount:index.length,candidateCount:total,existingRasterReviewCount:producedRows.length,productionBriefReviewCount:total-producedRows.length,batches:index},null,2)+'\n');
-console.log(`Built ${index.length} independent-review packets covering ${total} visual candidates/briefs, including ${producedRows.length} existing raster candidates.`);
+console.log(`Built ${index.length} independent-review packets covering ${total} visual candidates/briefs, including ${producedRows.length} existing raster candidates; preserved reviewer input for ${preservedReviewInputByLesson.size} lesson(s).`);
