@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "id": "dtf-release-observability-v1",
+  "site": "https://dtfseeds.com",
+  "checkpointTag": "dtfseeds-production",
+  "stages": [
+    {
+      "id": "source",
+      "order": 1,
+      "exactShaRequired": true,
+      "description": "Canonical source revision selected for the release run."
+    },
+    {
+      "id": "tested",
+      "order": 2,
+      "exactShaRequired": false,
+      "description": "Deterministic validation completed for the scoped release candidate."
+    },
+    {
+      "id": "packaged",
+      "order": 3,
+      "exactShaRequired": false,
+      "description": "Deployable artifact/package was assembled from the scoped candidate."
+    },
+    {
+      "id": "deployed",
+      "order": 4,
+      "exactShaRequired": false,
+      "description": "The scoped release worker completed its production write/publish operation."
+    },
+    {
+      "id": "liveVerified",
+      "order": 5,
+      "exactShaRequired": false,
+      "description": "Fresh anonymous visitor/runtime verification completed after deployment."
+    },
+    {
+      "id": "checkpointed",
+      "order": 6,
+      "exactShaRequired": true,
+      "description": "The global production checkpoint advanced to the source revision after all planned lanes passed."
+    }
+  ],
+  "evidenceStates": [
+    "verified",
+    "workflow-aggregate",
+    "not-observed",
+    "failed",
+    "skipped"
+  ],
+  "rules": [
+    "A merged commit or green source build is not deployment evidence.",
+    "A deployed stage must not be marked verified unless the release worker reports success.",
+    "A liveVerified stage must not be marked verified unless post-deploy verification reports success.",
+    "A checkpointed stage must not be marked verified unless the dtfseeds-production tag advancement step succeeds for the same source SHA.",
+    "workflow-aggregate means the parent observed a successful child workflow that owns deeper evidence; it is not equivalent to exact stage-specific proof.",
+    "Later stages cannot be verified when an earlier required production stage failed."
+  ],
+  "lanes": {
+    "wordpress": {
+      "publishStep": "wp_production",
+      "verifyStep": "wp_verify"
+    },
+    "education": {
+      "publishStep": "education_publish",
+      "verifyStep": "education_verify"
+    },
+    "harvestOutdoor": {
+      "publishStep": "harvest_outdoor_publish",
+      "verifyStep": "harvest_outdoor_verify"
+    },
+    "publicSuite": {
+      "publishStep": "public_publish",
+      "verifyStep": "public_verify"
+    }
+  }
+}
