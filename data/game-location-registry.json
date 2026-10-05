@@ -1373,6 +1373,35 @@
       "notes": [
         "Canonical standalone React/Vite build from dtfgenetics/Thc-guess-who/03_digital-game. Production visual art is approved: 25 suspect portraits, 5 canonical missing-item assets, 20 UI/HUD assets, and one case-room environment. The full npm run check gate includes deterministic data/art registry validation, UI and environment validation, production-asset auditing, smoke and balance checks, dependency audit, production build, and mystery-privacy verification. No Playwright is used."
       ]
+    },
+    {
+      "id": "pheno-hunter",
+      "title": "Pheno Hunter",
+      "aliases": [
+        "pheno-hunter",
+        "pheno hunter"
+      ],
+      "publicRoute": "/games/pheno-hunter/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/pheno-hunter"
+        ],
+        "sourceOfTruth": "games/pheno-hunter/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/pheno-hunter",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/pheno-hunter",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/pheno-hunter/scripts/validate-data.mjs && node games/pheno-hunter/test/engine.test.mjs && node --check site/public-route-patch/games/pheno-hunter/app.js && node --check site/public-route-patch/games/pheno-hunter/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-10-05"
+      },
+      "developmentLocations": [],
+      "assets": null,
+      "notes": [
+        "Self-hosted deterministic keeper-selection scouting game salvaged from preserved PR #261 onto current main. Exact post-deploy live-route verification remains required."
+      ]
     }
   ],
   "sharedInfrastructure": [
