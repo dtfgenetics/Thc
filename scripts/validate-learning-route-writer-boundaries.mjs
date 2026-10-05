@@ -27,17 +27,7 @@ const workflowContracts = [
 ];
 for (const [workflow,token] of workflowContracts) {
   const source=fs.readFileSync(workflow,'utf8');
-  const activeAssignment=new RegExp(`^\\s*${token}:\\s*['"]?true['"]?\\s*#!/usr/bin/env node
-import fs from 'node:fs';
-
-const overlay=JSON.parse(fs.readFileSync('site/deployment/dtf420-static-overlay.json','utf8'));
-const generic=fs.readFileSync('scripts/publish-wordpress-learning-center-pages.mjs','utf8');
-const expansion=fs.readFileSync('scripts/publish-wordpress-learning-center-expansion-v1.mjs','utf8');
-const encyclopediaPublisher=fs.readFileSync('scripts/publish-wordpress-encyclopedia-canonical-batch.mjs','utf8');
-const topicOrganizer=fs.readFileSync('scripts/organize-wordpress-encyclopedia-topics.mjs','utf8');
-const errors=[];
-
-,'m');
+  const activeAssignment=new RegExp(`^\\s*${token}:\\s*['"]?true['"]?\\s*$`,'m');
   if(activeAssignment.test(source)) errors.push(`${workflow} regained active standalone Learn-root apply assignment: ${token}`);
 }
 
