@@ -44,7 +44,8 @@ const headers = {
 const ownerMarkerAlternatives = {
   home: [
     ['data-dtf-layout="home-v3"'],
-    ['id="dtf-visual-system-v2"', 'Genetics first. Cultivation science behind it.']
+    ['id="dtf-visual-system-v2"', 'Genetics first. Cultivation science behind it.'],
+    ['Genetics first. Learn the plant behind the pack.', '/seeds/', '/learn/', '/tools/']
   ],
   learn: [
     ['data-dtf-layout="learn-v3"'],
