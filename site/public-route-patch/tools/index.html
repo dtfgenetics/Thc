@@ -107,66 +107,9 @@
     footer{background:var(--forest);color:#dfe9e2}
     .footer-inner{width:min(1260px,calc(100% - 42px));margin:auto;padding:48px 0 26px;display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:32px}
     .footer-inner p{max-width:470px;color:#aebfb3}.footer-links{display:flex;flex-direction:column;gap:9px}.footer-links strong{color:#fff}.footer-links a{color:#dfe9e2}.copyright{grid-column:1/-1;padding-top:22px;border-top:1px solid rgba(255,255,255,.11);color:#8fa698;font-size:.88rem}
-    .tool-group{margin-top:18px;border:1px solid rgba(17,43,28,.11);border-radius:20px;background:rgba(255,253,247,.72);overflow:hidden}
-    .tool-group+ .tool-group{margin-top:14px}
-    .tool-group>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:58px;padding:16px 20px;font-weight:900;font-size:1.12rem;background:rgba(237,243,236,.72)}
-    .tool-group>summary::-webkit-details-marker{display:none}
-    .tool-group>summary:after{content:"+";display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border:1px solid rgba(17,43,28,.14);border-radius:10px;background:#fff;color:var(--leaf);font-size:1.2rem}
-    .tool-group[open]>summary:after{content:"−"}
-    .tool-group>.measure-panel{padding:14px}
     @media(max-width:980px){.hero-grid,.split,.community-callout{grid-template-columns:1fr}.hero-panel{max-width:720px}.quicknav{grid-template-columns:repeat(3,minmax(0,1fr))}.reference-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.tool-chooser{grid-template-columns:1fr}.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.learn-rail{grid-template-columns:repeat(2,minmax(0,1fr))}.section-heading{align-items:flex-start;flex-direction:column}.community-callout .actions{justify-content:flex-start}.footer-inner{grid-template-columns:1fr 1fr}}
     @media(max-width:680px){.wrap,.site-header-inner,.footer-inner{width:min(100% - 28px,1260px)}.reference-launcher{padding:14px}.reference-launcher-head{align-items:flex-start;flex-direction:column}.reference-grid{grid-template-columns:1fr}.site-header-inner{padding:12px 0;align-items:flex-start}.primary-nav{gap:0}.primary-nav a{padding:8px}.hero{padding:60px 0 72px}.hero h1{font-size:clamp(2.65rem,14vw,4.2rem)}.hero-panel:before{display:none}.quickbar{margin-top:0;padding-top:14px}.quicknav,.flow,.measure-panel,.learn-rail,.footer-inner{grid-template-columns:1fr}.feature-list{grid-template-columns:1fr}.actions .button{width:100%}.tool-feature{min-height:0}.section{padding:56px 0}.community-callout{padding:24px}.copyright{grid-column:1}.primary-nav .shop-link{margin-left:0}}
-/* UX simplicity pass: keep navigation and reference choices compact on small screens. */
-    @media(max-width:760px){
-      .site-header-inner{gap:12px}
-      .primary-nav{width:100%;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;padding-bottom:2px}
-      .primary-nav::-webkit-scrollbar{display:none}
-      .primary-nav a{flex:0 0 auto;min-height:42px;padding:8px 12px;white-space:nowrap}
-      .primary-nav .shop-link{margin-left:0}
-      .hero{padding:44px 0 48px}
-      .hero-grid{gap:26px}
-      .hero h1{font-size:clamp(2.55rem,12vw,3.9rem);line-height:.94}
-      .lede{font-size:1rem;line-height:1.65}
-      .hero-panel{padding:14px;border-radius:20px}
-      .workflow-stack article{padding:13px}
-      .quickbar{margin-top:0;padding-top:12px}
-      .quicknav{display:flex;gap:7px;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;padding:8px}
-      .quicknav::-webkit-scrollbar{display:none}
-      .quicknav a{flex:0 0 auto;min-height:42px;padding:10px 13px;white-space:nowrap}
-      .reference-launcher{margin-top:24px;padding:12px}
-      .reference-grid{display:flex;gap:9px;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;padding-bottom:3px}
-      .reference-grid::-webkit-scrollbar{display:none}
-      .reference-card{flex:0 0 min(78vw,270px);min-height:136px;padding:16px}
-      .reference-card .ref-icon{margin-bottom:14px}
-      .section{padding:48px 0}
-      .section-heading{gap:14px;margin-bottom:24px}
-      h2{font-size:clamp(2rem,9vw,3rem)}
-      .task-card{min-height:0;padding:20px}
-      .tool-feature{padding:22px;border-radius:20px}
-      .community-callout{padding:21px}
-    }
-    @media(max-width:430px){
-      .wrap,.site-header-inner,.footer-inner{width:min(100% - 22px,1260px)}
-      .hero{padding-top:36px}
-      .actions{gap:8px;margin-top:22px}
-      .actions .button{min-height:46px}
-      .workflow-stack span{font-size:.84rem}
-    }
-  
-    .tool-search{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;margin:0 0 18px;padding:14px;border:1px solid rgba(17,43,28,.11);border-radius:18px;background:#fff;box-shadow:0 10px 26px rgba(17,43,28,.05)}
-    .tool-search label{display:block;margin-bottom:6px;font-weight:850}
-    .tool-search input{width:100%;min-height:46px;padding:10px 13px;border:1px solid #cbd7cd;border-radius:12px;background:#fff;color:var(--ink);font:inherit}
-    .tool-search input:focus{outline:3px solid rgba(38,120,74,.18);border-color:var(--leaf)}
-    .tool-search-status{min-width:130px;text-align:right;color:var(--muted);font-size:.9rem}
-    .tool-hidden{display:none!important}
-    .workflow-entry-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-    .workflow-entry{min-height:260px;padding:24px;border:1px solid rgba(17,43,28,.11);border-radius:22px;background:var(--paper);box-shadow:0 12px 32px rgba(17,43,28,.06)}
-    .workflow-entry .label{display:inline-flex;margin-bottom:12px;padding:6px 9px;border-radius:999px;background:#edf3ec;color:var(--leaf);font-size:.72rem;font-weight:900}
-    .workflow-entry h3{margin:0 0 9px;font-size:1.35rem}.workflow-entry>p{margin:0 0 16px;color:var(--muted);font-size:.91rem;line-height:1.6}
-    .workflow-route{display:grid;gap:7px;margin-top:auto}.workflow-route a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border:1px solid rgba(17,43,28,.09);border-radius:10px;background:#fff;color:var(--ink);font-size:.82rem;font-weight:800}.workflow-route a span{color:var(--muted);font-size:.72rem;font-weight:600}.workflow-route a:hover,.workflow-route a:focus-visible{border-color:rgba(38,120,74,.35);background:#f5f8f4}
-    @media(max-width:980px){.workflow-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:680px){.tool-search{grid-template-columns:1fr}.tool-search-status{text-align:left}.workflow-entry-grid{grid-template-columns:1fr}.workflow-entry{min-height:0}}
-</style>
+  </style>
 </head>
 <body>
   <!-- dtf-tools-v4: visual hierarchy aligned with the DTF WordPress V3 presentation -->
@@ -214,7 +157,7 @@
       </div>
     </section>
 
-    <div class="wrap quickbar"><nav class="quicknav" aria-label="Tool shortcuts"><a href="#choose-tool">Start here</a><a href="#task-workflows">Choose by task</a><a href="#expanded-tools">All tools</a><a href="#workflow">How it works</a><a href="#measure">Measure</a><a href="#diagnose">Diagnose</a></nav></div>
+    <div class="wrap quickbar"><nav class="quicknav" aria-label="Tool shortcuts"><a href="#choose-tool">Start here</a><a href="#expanded-tools">All tools</a><a href="#workflow">How it works</a><a href="#measure">Measure</a><a href="#diagnose">Diagnose</a></nav></div>
 
     <section class="section" id="choose-tool">
       <div class="wrap">
@@ -227,44 +170,30 @@
     </section>
 
 
-    <section class="section soft" id="task-workflows">
-      <div class="wrap">
-        <div class="section-heading"><div><p class="eyebrow">Task-first workflows</p><h2>Start with what you need to do.</h2></div><p>Each route moves from observation or planning into the next useful tool. These are workflow paths, not biological prescriptions.</p></div>
-        <div class="workflow-entry-grid">
-          <article class="workflow-entry"><span class="label">Environment</span><h3>Diagnose the room before blaming the plant.</h3><p>Start with current environmental evidence, then narrow into condensation/VPD context or escalate plant symptoms into Grow Doc.</p><div class="workflow-route"><a href="/environment-control/">1 · Environment Center <span>combine room signals</span></a><a href="/dew-point/">2 · Dew Point Lab <span>condensation risk</span></a><a href="/vpd-chart/">3 · VPD Chart <span>leaf-air context</span></a><a href="/thc-grow-doc/">4 · Grow Doc <span>compare causes</span></a></div></article>
-          <article class="workflow-entry"><span class="label">Irrigation & root zone</span><h3>Review water delivery, root conditions, then dryback.</h3><p>Keep source water, root temperature, irrigation response, and feed/root-zone EC in the same evidence chain.</p><div class="workflow-route"><a href="/water-quality-lab/">1 · Water Quality Lab <span>source chemistry</span></a><a href="/root-zone-temperature/">2 · Root-Zone Temperature <span>measure root context</span></a><a href="/dryback-lab/">3 · Dryback Lab <span>irrigation response</span></a><a href="/environment-control/">4 · Environment Center <span>connect demand</span></a></div></article>
-          <article class="workflow-entry"><span class="label">Feed formulation</span><h3>Formulate from source water, then verify the mixed result.</h3><p>Build the chemistry transparently and keep measurement records beside the recipe instead of treating one calculator output as proof.</p><div class="workflow-route"><a href="/water-quality-lab/">1 · Water Quality Lab <span>source-water inputs</span></a><a href="/fertigation-lab/">2 · Fertigation Lab <span>mass balance</span></a><a href="/ph-meter/">3 · pH Meter <span>verify pH</span></a><a href="/tds-meter/">4 · EC / TDS Meter <span>verify conductivity</span></a></div></article>
-          <article class="workflow-entry"><span class="label">Crop & light planning</span><h3>Put stage, photoperiod, light, and growth on one timeline.</h3><p>Plan timing first, measure actual canopy light, then track plant response instead of assuming the schedule produced the intended result.</p><div class="workflow-route"><a href="/grow-planner/">1 · Grow Planner <span>stage calendar</span></a><a href="/photoperiod-planner/">2 · Photoperiod Planner <span>clock schedule</span></a><a href="/ppfd-chart/">3 · PPFD / DLI Light Lab <span>measure light</span></a><a href="/plant-growth-tracker/">4 · Growth Tracker <span>trend response</span></a></div></article>
-          <article class="workflow-entry"><span class="label">Harvest & post-harvest</span><h3>Preserve the harvest record through dry and cure.</h3><p>Track checkpoints and environmental transitions, then keep the finished record connected to the crop history and chemistry references.</p><div class="workflow-route"><a href="/dry-cure-lab/">1 · Dry & Cure Lab <span>staged checkpoints</span></a><a href="/growlens/">2 · GrowLens <span>harvest record</span></a><a href="/terpene-atlas/">3 · Terpene Atlas <span>chemistry context</span></a></div></article>
-          <article class="workflow-entry"><span class="label">Breeding & selection</span><h3>Measure phenotype before you preserve lineage.</h3><p>Use repeatable observations and plant-science context to support selections, then preserve the actual parentage and generation record.</p><div class="workflow-route"><a href="/plant-growth-tracker/">1 · Growth Tracker <span>phenotype measurements</span></a><a href="/atlas/?compareA=genetics-phenotype&compareB=nodes-branching#compare-systems">2 · Plant Atlas <span>genetics × architecture</span></a><a href="/breeder-pedigree/">3 · Pedigree Builder <span>lineage record</span></a></div></article>
-        </div>
-      </div>
-    </section>
-
     <section class="section" id="expanded-tools">
       <div class="wrap">
-        <div class="section-heading"><div><p class="eyebrow">THC Tool Suite</p><h2>Choose the job, not the acronym.</h2></div><p>Browse the full toolbox by task: water and irrigation, environment and light, plant health, lifecycle, and genetics. Start with GrowLens or Grow Doc if you are not sure which tool you need.</p></div><div class="tool-search"><div><label for="toolSearch">Find a tool</label><input id="toolSearch" type="search" placeholder="Try: pH, irrigation, light, breeding, dryback…" autocomplete="off"></div><div id="toolSearchStatus" class="tool-search-status" aria-live="polite">18 tools shown</div></div><div class="community-callout" style="margin-bottom:34px"><div><p class="eyebrow">Shared cultivation context</p><h3 style="font-size:1.7rem;margin-bottom:8px">Select the grow once. Carry the context across tools.</h3><p>Grow, room, zone, plant, cultivar and stage follow the user through the new tool suite. When a matching GrowLens record exists, supported tools can save directly into the existing GrowLens environment, irrigation, observation, feeding, reservoir and harvest record families without inventing IDs.</p></div><div class="actions"><a class="button primary" href="/growlens/">Open GrowLens</a></div></div>
-        <details class="tool-group" open><summary>Water, nutrition & irrigation</summary><div class="measure-panel">
+        <div class="section-heading"><div><p class="eyebrow">THC Tool Suite</p><h2>Choose the job, not the acronym.</h2></div><p>Browse the full toolbox by task: water and irrigation, environment and light, plant health, lifecycle, and genetics. Start with GrowLens or Grow Doc above if you are not sure which tool you need.</p></div><div class="community-callout" style="margin-bottom:34px"><div><p class="eyebrow">Shared cultivation context</p><h3 style="font-size:1.7rem;margin-bottom:8px">Select the grow once. Carry the context across tools.</h3><p>Grow, room, zone, plant, cultivar and stage follow the user through the new tool suite. When a matching GrowLens record exists, supported tools can save directly into the existing GrowLens environment, irrigation, observation, feeding, reservoir and harvest record families without inventing IDs.</p></div><div class="actions"><a class="button primary" href="/growlens/">Open GrowLens</a></div></div>
+        <h3>Water, nutrition & irrigation</h3><div class="measure-panel">
         <article><strong>Water Quality Lab</strong><p>Keep pH, EC, alkalinity, hardness and major ions together.</p><a class="text-link" href="/water-quality-lab/">Open Water Lab →</a></article>
         <article><strong>Fertigation Lab</strong><p>Mass-balance fertilizer calculations with explicit units and assumptions.</p><a class="text-link" href="/fertigation-lab/">Open Fertigation Lab →</a></article>
         <article><strong>Irrigation & Dryback Lab</strong><p>Calculate weight-based dryback, rate and measured drainage percentage.</p><a class="text-link" href="/dryback-lab/">Open Dryback Lab →</a></article>
         <article><strong>Substrate & Container Calculator</strong><p>Plan media volume, blend components and bag counts.</p><a class="text-link" href="/substrate-calculator/">Open Substrate Calculator →</a></article>
         <article><strong>Solution Dilution Calculator</strong><p>Use C₁V₁ = C₂V₂ with visible assumptions.</p><a class="text-link" href="/dilution-calculator/">Open Dilution Calculator →</a></article>
-        <article><strong>Cultivation Unit Converter</strong><p>Convert common cultivation temperature, volume, length and EC units.</p><a class="text-link" href="/unit-converter/">Open Unit Converter →</a></article></div></details>
-        <details class="tool-group"><summary>Environment & light</summary><div class="measure-panel">
+        <article><strong>Cultivation Unit Converter</strong><p>Convert common cultivation temperature, volume, length and EC units.</p><a class="text-link" href="/unit-converter/">Open Unit Converter →</a></article></div>
+        <h3 style="margin-top:34px">Environment & light</h3><div class="measure-panel">
         <article><strong>Environmental Control Center</strong><p>View leaf VPD, dew point, DLI and root-zone context together.</p><a class="text-link" href="/environment-control/">Open Environment Center →</a></article>
         <article><strong>Dew Point & Condensation Lab</strong><p>Compare dew point with measured leaf or surface temperature.</p><a class="text-link" href="/dew-point/">Open Dew Point Lab →</a></article>
         <article><strong>Ventilation & CO₂ Reference</strong><p>Calculate room volume and theoretical air changes with an explicit safety boundary.</p><a class="text-link" href="/co2-ventilation/">Open Ventilation Tool →</a></article>
         <article><strong>Photoperiod & Lighting Schedule</strong><p>Compare clock timing, photoperiod and calculated DLI.</p><a class="text-link" href="/photoperiod-planner/">Open Photoperiod Tool →</a></article>
         <article><strong>Root-Zone Temperature Reference</strong><p>Compare root-zone, air and irrigation temperatures.</p><a class="text-link" href="/root-zone-temperature/">Open Root-Zone Tool →</a></article>
-        <article><strong>PPFD / DLI Light Lab</strong><p>Measure, map and compare canopy light exposure.</p><a class="text-link" href="/ppfd-chart/">Open Light Lab →</a></article></div></details>
-        <details class="tool-group"><summary>Plant health, lifecycle & genetics</summary><div class="measure-panel">
+        <article><strong>PPFD / DLI Light Lab</strong><p>Measure, map and compare canopy light exposure.</p><a class="text-link" href="/ppfd-chart/">Open Light Lab →</a></article></div>
+        <h3 style="margin-top:34px">Plant health, lifecycle & genetics</h3><div class="measure-panel">
         <article><strong>IPM Scout</strong><p>Build repeatable scouting records and trend counts.</p><a class="text-link" href="/ipm-scout/">Open IPM Scout →</a></article>
         <article><strong>Dry & Cure Lab</strong><p>Track drying weight loss, time and environment.</p><a class="text-link" href="/dry-cure-lab/">Open Dry & Cure Lab →</a></article>
         <article><strong>Grow Cycle Planner</strong><p>Turn lifecycle durations into a stage calendar.</p><a class="text-link" href="/grow-planner/">Open Grow Planner →</a></article>
         <article><strong>Plant Growth Tracker</strong><p>Calculate growth and node-rate changes from repeatable observations.</p><a class="text-link" href="/plant-growth-tracker/">Open Growth Tracker →</a></article>
         <article><strong>DTF Breeding & Pedigree Builder</strong><p>Preserve parents, generations, seed type and selection purpose.</p><a class="text-link" href="/breeder-pedigree/">Open Pedigree Builder →</a></article>
-        <article><strong>Grow Doc</strong><p>Escalate suspicious observations into the evidence-guided diagnostic workflow.</p><a class="text-link" href="/thc-grow-doc/">Open Grow Doc →</a></article></div></details>
+        <article><strong>Grow Doc</strong><p>Escalate suspicious observations into the evidence-guided diagnostic workflow.</p><a class="text-link" href="/thc-grow-doc/">Open Grow Doc →</a></article></div>
       </div>
     </section>
 
@@ -303,31 +232,5 @@
   </main>
 
   <footer><div class="footer-inner"><div><a class="brand" href="/">DTF Genetics <span>Dream the Future</span></a><p>Documented genetics, Teaching Healthy Cultivation, practical grow tools, original games, and community projects in one home.</p></div><div class="footer-links"><strong>Explore</strong><a href="/seeds/">Seeds</a><a href="/learn/">Learn</a><a href="/tools/">Tools</a><a href="/games/">Games</a><a href="/community/">Community</a><a href="/shop/">Shop</a></div><div class="footer-links"><strong>Learn & connect</strong><a href="/courses/">Courses</a><a href="/learn/start-here/">Start Here</a><a href="/learn/infographics/">Visual Library</a><a href="/contact/">Contact</a><a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Discord</a></div><div class="copyright">© 2026 DTF Genetics · Dream the Future · Adults only. Follow applicable local laws.</div></div></footer>
-<script>
-(()=>{
-  const input=document.getElementById('toolSearch');
-  const status=document.getElementById('toolSearchStatus');
-  const groups=[...document.querySelectorAll('#expanded-tools .tool-group')];
-  if(!input||!status||!groups.length)return;
-  const cards=groups.flatMap(group=>[...group.querySelectorAll('.measure-panel article')].map(card=>({group,card,text:card.textContent.toLowerCase()})));
-  function apply(){
-    const q=input.value.trim().toLowerCase();
-    let shown=0;
-    for(const {card,text} of cards){
-      const match=!q||text.includes(q);
-      card.classList.toggle('tool-hidden',!match);
-      if(match)shown++;
-    }
-    for(const group of groups){
-      const visible=[...group.querySelectorAll('.measure-panel article')].some(card=>!card.classList.contains('tool-hidden'));
-      group.classList.toggle('tool-hidden',!visible);
-      if(q&&visible)group.open=true;
-    }
-    status.textContent=q?shown+' matching tool'+(shown===1?'':'s'):cards.length+' tools shown';
-  }
-  input.addEventListener('input',apply);
-  input.addEventListener('search',apply);
-  apply();
-})();
-</script></body>
+</body>
 </html>
