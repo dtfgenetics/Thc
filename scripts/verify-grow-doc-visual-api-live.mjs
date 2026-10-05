@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
+const contractOnly = process.argv.includes('--contract-only')
 const site = (process.env.SITE || 'https://dtfseeds.com').replace(/\/$/, '')
 const endpoint = `${site}/thc-grow-doc/api/visual-observations.php`
 const evidenceDir = process.env.DTF_GROW_DOC_VISUAL_API_EVIDENCE || 'test-results/grow-doc-visual-api-live'
@@ -94,6 +95,35 @@ const originCheck = await expectStatus(
   403,
   'Same-origin protection',
 )
+
+if (contractOnly) {
+  const report = {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    site,
+    endpoint,
+    mode: 'contract-only',
+    canonicalSource: { repository: marker.repository, commit: marker.commit },
+    fixture: {
+      id: fixture.id,
+      repositoryPath: fixture.repository_path,
+      license: fixture.license,
+      sha256: fixtureSha,
+      bytes: fixtureBytes.length,
+    },
+    controlledIndicatorCount: allowedIndicators.length,
+    protections: {
+      getMethodStatus: methodCheck.status,
+      missingMarkerStatus: markerCheck.status,
+      crossOriginStatus: originCheck.status,
+    },
+    liveProviderVerified: false,
+    ok: true,
+  }
+  await writeFile(path.join(evidenceDir, 'report.json'), `${JSON.stringify(report, null, 2)}\n`)
+  console.log(JSON.stringify(report))
+  process.exit(0)
+}
 
 const form = new FormData()
 form.append('allowedIndicators', JSON.stringify(allowedIndicators))
