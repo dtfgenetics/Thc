@@ -106,6 +106,12 @@
   "reconciliation": {
     "requestedAt": "2026-10-03",
     "reason": "Restore and visitor-verify the canonical THC-ENC-041–060 inline visual attachments before continuing the final Encyclopedia publication sequence.",
-    "trigger": "encyclopedia_finish_420"
+    "trigger": "encyclopedia_finish_420",
+    "persistenceRepair": {
+      "requestedAt": "2026-10-05",
+      "guardFix": "f3dec356b1f42a742b5b41368643c0ddf63d4c3c",
+      "reason": "Republish THC-ENC-041–060 after narrowing the retired-visual guard to preserve exact curated Encyclopedia visual-map filenames.",
+      "acceptance": "After publication, rerun the retired-visual guard and confirm all 20 lesson-specific figures remain visitor-visible."
+    }
   }
 }
