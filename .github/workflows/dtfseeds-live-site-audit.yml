@@ -4,6 +4,14 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '17 8 * * *'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - scripts/audit-dtfseeds-live.mjs
+      - scripts/audit-dtfseeds-public-suite.mjs
+      - scripts/audit-dtfseeds-commerce.mjs
+      - .github/workflows/dtfseeds-live-site-audit.yml
   push:
     branches:
       - main
