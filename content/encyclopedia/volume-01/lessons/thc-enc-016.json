@@ -24,32 +24,39 @@
   "coreScience": [
     "Male cannabis plants usually form branched inflorescences bearing many small staminate flowers. In the examined botanical descriptions, a typical flower has a five-part greenish perianth surrounding five stamens. These counts describe the common form, not an invariant rule; observed variants should be recorded rather than forced into the diagram. At anthesis, the segments open, filaments extend, and anthers release pollen.",
     "Pollen development begins before visible release. A closed flower cluster can therefore represent a future contamination risk even if no airborne pollen is observed. Timing varies among genotypes and with environment. Male plants can also differ in branching, floral density, release duration, and pollen viability.",
-    "Botanical identification should focus on structures rather than overall plant shape. Male plants are often described as taller or more open, but architecture overlaps and is affected by spacing, light, stage, and genetics. Confirmation comes from reproductive anatomy."
+    "Botanical identification should focus on structures rather than overall plant shape. Male plants are often described as taller or more open, but architecture overlaps and is affected by spacing, light, stage, and genetics. Confirmation comes from reproductive anatomy.",
+    "Pollen release is the endpoint of a developmental sequence that includes microspore formation, pollen maturation, anther dehiscence, and exposure to ambient humidity and temperature. Viability can decline during handling and storage because pollen is sensitive to moisture and thermal conditions. The visible opening of anthers therefore marks a practical contamination stage, but pollen quality still has to be measured if it is being used as breeding material."
   ],
   "cultivationRelevance": [
     "For pollen-exclusion production, inspect nodes and developing inflorescences before anthesis and document removal or isolation decisions.",
-    "For breeding, record the exact male plant, first anthesis, collection date, environmental conditions, and pollen handling. “The male from the room” is not an adequate parent record."
+    "For breeding, record the exact male plant, first anthesis, collection date, environmental conditions, and pollen handling. “The male from the room” is not an adequate parent record.",
+    "In pollen-exclusion production, scouting should focus on reproductive stage rather than overall plant shape. Record the earliest floral structures, how quickly they progress toward anthesis, and whether pollen release has occurred. Isolation decisions should happen before confirmed release because a visually closed cluster can mature rapidly.",
+    "For breeding, treat pollen like a traceable biological reagent. Label parent plant, collection branch, collection time, drying method, storage conditions, thaw or rehydration history, and viability testing method when used. This allows failed seed set to be separated from recipient timing or pollen-quality problems."
   ],
   "measureAndRecord": [
     {
-      "field": "Plant and parent ID",
-      "requirement": "Unique genetic and plant identifier."
+      "field": "Parent identity",
+      "requirement": "Record unique plant, genetic, line, and generation IDs; source; branch or inflorescence sampled; and any selection notes. Parent identity must remain traceable after pollen is collected and stored."
     },
     {
-      "field": "First visible staminate flower",
-      "requirement": "Date, node, and stage."
+      "field": "Floral development",
+      "requirement": "Record first visible staminate structures, bud expansion, first anthesis, peak anthesis, and final observed release using dated observations. Photograph representative flowers with scale when anatomy is being documented."
     },
     {
-      "field": "Anthesis",
-      "requirement": "First release, peak release, and final observed release."
+      "field": "Pollen release",
+      "requirement": "Record whether anthers are closed, dehiscing, actively releasing, or spent; environmental conditions at collection; and whether visible pollen contamination occurred outside the intended collection area."
     },
     {
-      "field": "Pollen condition",
-      "requirement": "Fresh, collected, dried, stored, tested, or discarded."
+      "field": "Pollen handling",
+      "requirement": "Record collection method, drying or desiccation method if used, container, temperature, humidity-control method, storage duration, freeze/thaw events, and any carrier or diluent. Avoid assuming stored pollen remains equivalent to fresh material."
+    },
+    {
+      "field": "Viability or function",
+      "requirement": "Record the test used, sample size, date, and result when viability is measured; otherwise record seed-set outcome separately as a functional endpoint because failed fertilization can also reflect recipient timing or conditions."
     },
     {
       "field": "Containment",
-      "requirement": "Isolation location, airflow controls, clothing/tools, and cleanup."
+      "requirement": "Record isolation location, airflow controls, personnel/clothing/tool controls, cleanup, plant removal or retention, and any known accidental release. Containment records are part of parentage confidence."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "All pollen is equally viable: Viability changes with genotype, maturity, moisture, temperature, and storage."
   ],
   "evidenceLimits": [
-    "Flower-part terminology varies among botanical descriptions, especially for the perianth. The controlled illustration must name its source and use one consistent convention."
+    "Male floral anatomy is well described, but pollen viability, release duration, and storage performance vary with genotype, maturity, humidity, temperature, collection method, and assay. A closed inflorescence indicates future risk but does not quantify how much viable pollen will ultimately be released. Botanical terminology can also differ among sources, so diagrams and flower-part counts should cite the convention used rather than implying every publication labels the perianth identically."
   ],
   "crossLinks": "THC-ENC-015, THC-ENC-017–018, THC-ENC-227–235, and pollen containment SOPs.",
   "sourceNotes": [
     "Lavie O. et al. (2026). Transcriptomic insights into unisexual flower development in Cannabis sativa. BMC Plant Biology.",
-    "Liao X. et al. (2025). Characterization and transcriptomic analysis provide novel insights into sexual differentiation of dioecious Cannabis sativa. BMC Plant Biology 25:1108."
+    "Liao X. et al. (2025). Characterization and transcriptomic analysis provide novel insights into sexual differentiation of dioecious Cannabis sativa. BMC Plant Biology 25:1108.",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; reproductive anatomy, pollen handling, parent traceability, containment, and measurement framework."
   ],
   "slug": "male-flower-and-inflorescence-anatomy",
   "route": "/encyclopedia/male-flower-and-inflorescence-anatomy",
