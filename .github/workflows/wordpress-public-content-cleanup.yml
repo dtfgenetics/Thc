@@ -8,6 +8,13 @@ on:
         required: true
         default: all
         type: string
+  pull_request:
+    branches:
+      - main
+    paths:
+      - site/wordpress/articles/**
+      - scripts/publish-wordpress-articles-rest.mjs
+      - .github/workflows/wordpress-public-content-cleanup.yml
   push:
     branches:
       - main
@@ -27,7 +34,24 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  validate:
+    name: Validate THC article packages
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate publisher and article packages
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-articles-rest.mjs
+          VALIDATE_ONLY=1 node scripts/publish-wordpress-articles-rest.mjs
+
   publish:
+    if: github.event_name != 'pull_request'
     name: Publish validated THC articles
     runs-on: ubuntu-latest
     timeout-minutes: 20
