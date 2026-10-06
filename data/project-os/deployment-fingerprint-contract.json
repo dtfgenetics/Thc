@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "fingerprintId": "project-os.release-fingerprint-v1",
+  "publicPath": "/assets/project-os-release-fingerprint.json",
+  "sourceOfTruth": "dtfgenetics/Thc",
+  "requiredFields": [
+    "schemaVersion",
+    "repository",
+    "sourceRevision",
+    "buildId",
+    "generatedAt",
+    "bundleHash",
+    "dataHashes"
+  ],
+  "hashedInputs": [
+    "site/deployment/public-apps.json",
+    "data/project-os/acceptance-manifests.json",
+    "data/project-os/definitions-of-done.json"
+  ],
+  "liveVerification": {
+    "cacheBustQuery": "project_os_verify",
+    "requireExactSourceRevision": true,
+    "requireExactBundleHash": true
+  }
+}
