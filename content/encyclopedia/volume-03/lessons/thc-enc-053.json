@@ -22,50 +22,52 @@
     }
   ],
   "coreScience": [
-    "Substrate pores hold either water or gas. Large, connected pores drain readily and replenish oxygen; smaller pores retain water more strongly. Total porosity alone is incomplete because two mixes can have similar total pore volume but very different distributions between air and water.",
-    "Container capacity and air space depend on the container as well as the mix. For the same substrate, a taller column generally drains to a lower average water content and more air space than a shallow column. Adding drainage holes improves exit pathways but does not eliminate the capillary water profile.",
-    "Particle breakdown, compaction, root growth, biofilms, salts, and decomposition change pore geometry during production. Measurements on a fresh bag do not guarantee end-of-cycle behavior."
+    "Container substrates are three-phase systems made of solids, liquid water, and gas-filled pore space. Total porosity describes how much of the container volume is pore space, but it does not tell the grower how that pore volume is divided between water and air after irrigation and drainage. Large, well-connected pores tend to empty at relatively low suction and refill with air; smaller pores retain water more strongly. Two media can therefore have similar total porosity yet create very different root-zone oxygen supply, water storage, and irrigation frequency.",
+    "Container capacity is a system property, not just a bag-of-media property. After saturation and free drainage, capillary forces retain water in part of the pore network. The vertical height of the substrate column changes the average water-to-air distribution: in general, a taller column of the same uniformly packed substrate contains a larger proportion of drained, air-filled pore space than a shallow column. Adding more holes can improve drainage pathways and prevent a blocked outlet, but it does not erase the capillary pressure relationships that create the retained-water profile inside the medium.",
+    "Physical properties also change during the crop. Organic particles can swell, shrink, and decompose; fine particles can migrate; roots can occupy or redirect pore space; repeated irrigation can settle the mix; salts, precipitates, and biofilms can alter hydraulic pathways; and handling or top-watering can compact material. A fresh-media specification is therefore a starting measurement rather than a guarantee of end-of-cycle behavior. Comparisons are most useful when container geometry, packing, saturation procedure, drainage time, and measurement method are kept consistent.",
+    "Air space, water-filled pore space, and total porosity should be interpreted together with irrigation behavior. A medium with high water storage may be useful in one crop or container but risky when irrigation is too frequent, root respiration is high, or drainage is poor. A highly aerated medium can reduce the duration of saturation but may require more frequent irrigation and tighter control of hydraulic uniformity. The goal is not to maximize one physical property; it is to match the air-water balance to plant size, root occupancy, container dimensions, climate, and irrigation strategy."
   ],
   "cultivationRelevance": [
-    "Match particle distribution and container height to irrigation strategy and plant size. Fine seedling media, large finishing containers, and high-frequency drip systems have different requirements.",
-    "A practical container test can quantify saturated volume, drained volume, retained water, and air space. Use the same packing method and moisture history for batch comparisons."
+    "Use physical-property measurements to choose and manage media rather than relying on labels such as “light,” “airy,” or “well draining.” Compare the same substrate in the actual container size and packing method used for production. When changing from seedling cells to larger containers, or from hand watering to high-frequency drip, expect the useful air-water balance and irrigation interval to change even if the media recipe does not.",
+    "When plants show slow dryback, persistent saturation, uneven wilt, weak root development, or large differences between containers, inspect the physical system before treating the symptom as a nutrient problem. Check settling, compaction, root occupancy, channeling, blocked drainage, container height, irrigation distribution, and changes in media structure. Physical measurements are especially valuable when a new media lot or container design performs differently from the previous crop."
   ],
   "measureAndRecord": [
     {
-      "field": "Container",
-      "requirement": "Nominal and measured volume, height, diameter, base shape, and drainage openings."
+      "field": "Container geometry",
+      "requirement": "Record measured internal container volume, substrate height, top and bottom diameter where relevant, base shape, drainage-hole number and location, and whether liners, saucers, fabric walls, benches, or other features can restrict drainage or evaporation. Keep the same container geometry when comparing media batches."
     },
     {
-      "field": "Media preparation",
-      "requirement": "Lot, blend ratio, initial moisture, packing method, and compaction."
+      "field": "Media preparation and packing",
+      "requirement": "Record media brand or recipe, lot, component ratios, initial moisture condition, particle-size observations where available, fill mass or bulk-density method, packing/compaction procedure, and whether the material was pre-wetted. Small changes in packing can change pore distribution enough to make comparisons misleading."
     },
     {
       "field": "Physical test",
-      "requirement": "Saturation volume, drained volume, container capacity, air space, and total porosity."
+      "requirement": "Using a documented method, record the container volume, water required to reach saturation, drainage time, drained-water volume, retained-water estimate, calculated total porosity, calculated air space, and calculated water-filled pore space or container capacity. Report the denominator and method with every percentage so values from different procedures are not mixed."
     },
     {
       "field": "Crop change",
-      "requirement": "Settling, shrinkage, root filling, channeling, and end-of-cycle retest."
+      "requirement": "At defined crop stages, record settling or shrinkage, surface crusting, root occupancy, visible channeling, compaction, decomposition, algae or biofilm, and any change in drainage time. If performance changes materially, repeat the same physical test with the same procedure rather than assuming the fresh-media value still applies."
     },
     {
       "field": "Irrigation fit",
-      "requirement": "Volume, frequency, runoff, dryback, and spatial uniformity."
+      "requirement": "Pair physical-property data with irrigation volume, event frequency, runoff or drainage fraction where used, time to drain, dryback trend, spatial uniformity, root-zone moisture measurements when available, and plant response. Interpret the media as part of a coupled container-irrigation-root system rather than as an isolated material."
     }
   ],
   "misconceptions": [
-    "More perlite always means perfect aeration: Particle size, proportion, packing, container, and root growth determine the result.",
-    "More drainage holes remove perched water: They improve exit but do not change the substrate's capillary behavior by themselves.",
-    "Water-holding capacity is a property of the bag alone: Container geometry and packing affect the measured value."
+    "More perlite always means perfect aeration: Particle size, proportion, packing, container height, root occupancy, and irrigation determine the final air-water behavior; an ingredient name alone does not establish air space.",
+    "More drainage holes remove perched water: Additional outlets can prevent blockage and speed exit from the base, but they do not eliminate the capillary forces that retain water inside the substrate profile.",
+    "Water-holding capacity is a property of the bag alone: Container height, packing, saturation history, drainage time, root growth, and the measurement method affect the observed value.",
+    "Maximum water storage is always best for the plant: More retained water can lengthen irrigation intervals, but it can also reduce gas-filled pore space and extend saturation when the system is poorly matched to crop demand."
   ],
   "evidenceLimits": [
-    "Different laboratories use related but nonidentical physical-property methods. Report the method, container, packing, and units with every value."
+    "Physical-property values depend on the test method, container dimensions, packing, saturation procedure, drainage interval, temperature, and media condition. Different laboratories and extension methods may use related but nonidentical definitions or denominators, so percentages should not be compared without checking methodology. Most published container-substrate procedures are general horticulture evidence rather than cannabis-specific performance thresholds; use them to measure the root-zone system, not to claim a universal cannabis target."
   ],
   "crossLinks": "THC-ENC-043–044, THC-ENC-050–052, THC-ENC-054–060, and irrigation lessons.",
   "sourceNotes": [
-    "Nemali K. Greenhouse and Indoor Production of Horticultural Crops: Understanding the Pores of a Soilless Substrate. Purdue Extension HO-287-W. 2018. Open source",
-    "Owen WG, Lopez RG. Commercial Greenhouse and Nursery Production: Evaluating Container Substrates and Their Components. Purdue Extension HO-255-W. 2015. Open source",
-    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1.  Project source packet supplied by the publisher.",
-    "Zhang H, Dunn B, Hu B. Greenhouse Growth Media Sampling, Testing and Interpretations. Oklahoma State University Extension HLA-6726. 2021. Open source"
+    "Nemali K. Greenhouse and Indoor Production of Horticultural Crops: Understanding the Pores of a Soilless Substrate. Purdue Extension HO-287-W. Updated 2025. General horticulture physical-property method and container-substrate explanation. https://ag.purdue.edu/department/hla/extension/extension-publications-library/_docs/ho-287-w.pdf",
+    "Owen WG, Lopez RG. Commercial Greenhouse and Nursery Production: Evaluating Container Substrates and Their Components. Purdue Extension HO-255-W. 2015. General horticulture reference for container substrate properties and evaluation.",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; used for the plant-science/data-record framing and context-dependence rules.",
+    "Zhang H, Dunn B, Hu B. Greenhouse Growth Media Sampling, Testing and Interpretations. Oklahoma State University Extension HLA-6726. 2021. General horticulture reference emphasizing method-consistent sampling, records, and interpretation limits. https://extension.okstate.edu/fact-sheets/greenhouse-growth-media-sampling-testing-and-interpretations"
   ],
   "slug": "porosity-air-filled-porosity-and-water-holding-capacity",
   "route": "/encyclopedia/porosity-air-filled-porosity-and-water-holding-capacity",

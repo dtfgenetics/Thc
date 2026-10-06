@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "lessonId": "THC-ENC-###",
   "version": "0.1.0",
   "title": "",
@@ -84,5 +84,25 @@
     "subjectRoutes": [],
     "toolRoutes": [],
     "atlasRoutes": []
+  },
+  "qualityTargets": {
+    "coreScienceMinimumWords": 180,
+    "coreScienceMinimumTeachingPoints": 3,
+    "cultivationRelevanceMinimumWords": 80,
+    "measurementGuidanceMinimumWords": 80,
+    "misconceptionMinimumCount": 3,
+    "evidenceLimitsMinimumWords": 35,
+    "sourceMinimumCount": 3,
+    "quantitativeClaimContextRequired": true,
+    "depthOverrideRequiresJustification": true
+  },
+  "depthReview": {
+    "mechanismExplained": false,
+    "applicationConnected": false,
+    "measurementsInterpretable": false,
+    "uncertaintyExplicit": false,
+    "differentialReasoningIncluded": null,
+    "quantitativeClaimsContextualized": false,
+    "shorterThanDefaultJustification": ""
   }
 }

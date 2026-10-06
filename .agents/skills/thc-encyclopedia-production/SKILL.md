@@ -103,6 +103,25 @@ Repair lesson source objects, not generated website output. Preserve:
 
 Use batch repair only when the transformation is semantically safe. Do not generate generic assessments or generic filler merely to satisfy counts.
 
+### Scientific depth acceptance standard
+
+A lesson is not production-quality merely because every field exists. Before it can be treated as learner-facing complete, the canonical source should normally meet all of these depth expectations unless the topic genuinely requires less text:
+
+- core science/mechanism: at least 180 substantive words across three or more distinct teaching points;
+- cultivation relevance/application: at least 80 substantive words connecting mechanism to decisions or observations;
+- measurement and records: at least 80 substantive words covering what to measure, units or method when applicable, timing/location, and interpretation limits;
+- misconceptions: at least three lesson-specific claim/correction pairs;
+- evidence limits: at least 35 substantive words describing applicability, uncertainty, study/system limitations, or competing explanations;
+- sources/evidence: normally at least three source notes, prioritizing Tier 1-3 material and distinguishing cannabis-specific evidence from general horticulture;
+- quantitative claims: units, context, population/system, and whether the value is regulatory, evidence-based, manufacturer-specific, cultivar-specific, or a practical starting range;
+- diagnostic topics: differential explanations and disconfirming evidence, not symptom-color matching;
+- visuals: teaching purpose, caption, alt text, factual labels, rights status, and QA state;
+- assessment: mechanism/application, measurement/verification, and misconception/evidence-limit reasoning.
+
+These are default production gates, not an excuse for filler. Shorter lessons require a topic-specific justification; longer lessons still fail if they repeat generic wording instead of teaching mechanism, evidence, and application.
+
+The scorecard should expose depth metrics so a 420-page count cannot hide thin content.
+
 ### 3. Build discovery/search
 
 Run the discovery-index builder after content changes.
