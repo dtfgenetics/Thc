@@ -24,32 +24,39 @@
   "coreScience": [
     "The germinating embryo and cotyledons supply early reserves, while roots progressively take over mineral acquisition. Seedling media may contain a starter nutrient charge, be nearly inert, or receive nutrient solution from the beginning. Management must match the actual system rather than a fixed calendar.",
     "High soluble-salt concentration lowers solution water potential and can constrain water uptake. In one industrial-hemp study, NaCl concentration and temperature altered root, stem, and total seedling length; the design did not establish a universal nutrient-solution EC threshold. Delayed emergence, short or browned roots, stalled growth, leaf injury, or collapse remain non-specific observations and require direct measurements and controls.",
-    "EC indicates total ionic concentration, not which nutrient is present or whether the ratio is correct. pH, alkalinity, media chemistry, irrigation frequency, evaporation, drainage, and fertilizer source all affect the root-zone result. Input EC alone cannot describe accumulation around the roots."
+    "EC indicates total ionic concentration, not which nutrient is present or whether the ratio is correct. pH, alkalinity, media chemistry, irrigation frequency, evaporation, drainage, and fertilizer source all affect the root-zone result. Input EC alone cannot describe accumulation around the roots.",
+    "Seedling salinity stress reflects both osmotic effects and ion-specific effects. As external solute concentration rises, roots must maintain a stronger water-potential gradient to take up water; particular ions can also accumulate to damaging concentrations or disturb nutrient balance. Young seedlings have limited root volume and buffering capacity, so errors in concentration, mixing, or media charge can alter water status quickly. EC is therefore a screening measurement for ionic strength, not a diagnosis of which ion or nutrient caused injury."
   ],
   "cultivationRelevance": [
     "Know the media's initial charge and water chemistry. Begin conservatively, measure with a calibrated meter, and increase nutrition only when roots, true leaves, and growth trend support the change.",
-    "When injury appears, review mixing order, meter units, calibration, stock concentration, pH, media test method, watering history, and root condition before diagnosing a single-element deficiency."
+    "When injury appears, review mixing order, meter units, calibration, stock concentration, pH, media test method, watering history, and root condition before diagnosing a single-element deficiency.",
+    "Build nutrition changes from measured inputs and root-zone response rather than from plant age alone. Confirm the propagation medium's existing charge, source-water alkalinity where available, solution pH/EC, and seedling root development before increasing concentration.",
+    "If growth stalls or leaf/root injury appears, compare affected and unaffected units and verify meter units, calibration, stock strength, mixing order, root-zone pH/EC, irrigation frequency, dryback, temperature, and disease evidence. Correcting the wrong cause with stronger fertilizer can intensify osmotic stress."
   ],
   "measureAndRecord": [
     {
-      "field": "Inputs",
-      "requirement": "Water source, alkalinity if known, fertilizer product, batch, mixing rate, pH, and EC."
+      "field": "Input water and fertilizer",
+      "requirement": "Record water source, alkalinity/bicarbonate where known, fertilizer product and batch, stock concentration, mixing order, application rate, final pH, EC, units, and solution temperature."
     },
     {
-      "field": "Media",
-      "requirement": "Type, initial nutrient charge, batch, amendment, and test method."
+      "field": "Meter quality",
+      "requirement": "Record pH/EC meter model, calibration or verification solution/date, temperature compensation behavior, and any unit conversion. A misplaced decimal or ppm conversion can create a major seedling error."
     },
     {
-      "field": "Root-zone test",
-      "requirement": "Method, timing relative to irrigation, pH, EC, temperature, and sample ID."
+      "field": "Media context",
+      "requirement": "Record substrate/media type and batch, initial nutrient charge, amendments, container volume, irrigation method, and the extraction/root-zone test method used."
+    },
+    {
+      "field": "Root-zone measurement",
+      "requirement": "Record pH, EC, temperature, sample location, timing relative to irrigation, drainage/runoff context, and replicate containers. Input and root-zone values should not be treated as interchangeable."
     },
     {
       "field": "Plant response",
-      "requirement": "Emergence, root condition, cotyledons, true leaves, growth, and injury pattern."
+      "requirement": "Record emergence, root-tip condition, root length/distribution, cotyledon and true-leaf color/pattern, turgor, necrosis, growth rate, and whether injury appears uniformly or by position."
     },
     {
-      "field": "Correction",
-      "requirement": "Change made, dilution or leaching method, date, and measured follow-up."
+      "field": "Correction and verification",
+      "requirement": "Record dilution, leaching, formulation change, pH correction, irrigation change, or no action; then repeat the same root-zone measurements and plant observations on a defined follow-up date."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "Seedling burn is always too much nitrogen: Total salinity, specific ions, pH, root injury, or disease can produce overlapping symptoms."
   ],
   "evidenceLimits": [
-    "No universal seedling EC or feed schedule is established across cannabis genotypes and media. Interpret every number with the extraction method and system."
+    "No universal cannabis seedling EC, nutrient concentration, or feeding schedule is established across media, cultivars, water chemistries, and measurement methods. EC measures combined ionic conductivity rather than nutrient composition, and extraction methods can yield different values from the same root zone. Salinity, pH error, root hypoxia, pathogens, temperature stress, and specific nutrient disorders can overlap visually, so concentration changes require measured context and follow-up rather than symptom matching."
   ],
   "crossLinks": "THC-ENC-027, THC-ENC-031, THC-ENC-035, THC-ENC-121–140, and mineral-nutrition lessons.",
   "sourceNotes": [
     "Varga I. et al. (2022). Germination of Industrial Hemp (Cannabis sativa L.) at Different Levels of Sodium Chloride and Temperatures. Agriculturae Conspectus Scientificus 87:11-15. https://acs.agr.hr/articles/1114_Germination_of_Industrial_Hemp_%28Cannabis_sativa_L_%29_at_Different_Level_of_Sodium_Chloride_and_Temperatures_en.pdf",
-    "Geneve R.L. et al. (2022). Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.). Crops 2:415-427. https://doi.org/10.3390/crops2040029"
+    "Geneve R.L. et al. (2022). Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.). Crops 2:415-427. https://doi.org/10.3390/crops2040029",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; seedling establishment, transplant, nutrition, measurement, and diagnostic framework."
   ],
   "slug": "seedling-nutrition-and-salinity-sensitivity",
   "route": "/encyclopedia/seedling-nutrition-and-salinity-sensitivity",
