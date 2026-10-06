@@ -38,8 +38,14 @@ for (const item of items) {
   if (item.minimumVisualsRequired !== 8 || item.targetVisuals !== 10) errors.push(`${item.lessonId}: visual depth contract must require minimum 8 and target 10 visuals.`);
   if (!Array.isArray(item.visualRoles) || item.visualRoles.length !== 10) errors.push(`${item.lessonId}: must define 10 distinct educational visual roles.`);
   else if (new Set(item.visualRoles.map(role=>role.role)).size !== 10) errors.push(`${item.lessonId}: educational visual roles must be unique.`);
-  if (!Number.isInteger(item.visualGapCount) || item.visualGapCount !== Math.max(0, 10 - Number(item.assetCandidateCount || 0))) errors.push(`${item.lessonId}: target visual gap count is inconsistent.`);
-  if (!Number.isInteger(item.minimumVisualGapCount) || item.minimumVisualGapCount !== Math.max(0, 8 - Number(item.assetCandidateCount || 0))) errors.push(`${item.lessonId}: minimum visual gap count is inconsistent.`);
+  if (!Number.isInteger(item.roleAddressedAssetCount) || item.roleAddressedAssetCount < 0 || item.roleAddressedAssetCount > 10) errors.push(`${item.lessonId}: role-addressed asset count is invalid.`);
+  if (!Number.isInteger(item.unclassifiedLegacyAssetCount) || item.unclassifiedLegacyAssetCount < 0) errors.push(`${item.lessonId}: unclassified legacy asset count is invalid.`);
+  if (Number(item.roleAddressedAssetCount) + Number(item.unclassifiedLegacyAssetCount) !== Number(item.assetCandidateCount)) errors.push(`${item.lessonId}: classified and legacy asset counts must equal candidate count.`);
+  if (!Number.isInteger(item.visualGapCount) || item.visualGapCount !== 10 - Number(item.roleAddressedAssetCount || 0)) errors.push(`${item.lessonId}: target visual gap count is inconsistent.`);
+  if (!Number.isInteger(item.minimumVisualGapCount) || item.minimumVisualGapCount !== Math.max(0, 8 - Number(item.roleAddressedAssetCount || 0))) errors.push(`${item.lessonId}: minimum visual gap count is inconsistent.`);
+  for (const role of item.visualRoles || []) {
+    if (role.canonicalAssetPath && !String(role.canonicalAssetPath).includes(`_${String(role.ordinal).padStart(2,'0')}_${role.role}.png`)) errors.push(`${item.lessonId}: role asset must encode its ordinal and role in the filename.`);
+  }
   if (item.approvedAssetId !== null) errors.push(`${item.lessonId}: queue builder must not approve an asset.`);
   if (item.assetCandidateCount > 0) {
     if (!item.canonicalAssetPath) errors.push(`${item.lessonId}: produced artwork must name its canonical asset path.`);
