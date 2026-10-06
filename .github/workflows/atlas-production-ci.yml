@@ -47,5 +47,32 @@ jobs:
           node --check site/public-route-patch/atlas/atlas-anatomy-index-v1.js
           node --check site/public-route-patch/atlas/module.js
           node --check site/public-route-patch/terpene-atlas/terpene-atlas-v1.js
+      - name: Validate shared Atlas module design system
+        shell: bash
+        run: |
+          set -euo pipefail
+          shared='site/public-route-patch/atlas/atlas-module-v1.css'
+          test -s "$shared"
+          grep -Fq -- '--accent:   #9fe870' "$shared"
+          grep -Fq 'var(--dtf-global-header-height, var(--site-header-fallback))' "$shared"
+          modules=(
+            diagnostics
+            nodes-branching
+            stem-vascular
+            trichomes-resin
+            seed-germination
+            environmental-physiology
+            flowers
+          )
+          for module in "${modules[@]}"; do
+            page="site/public-route-patch/atlas/$module/index.html"
+            test -s "$page"
+            grep -Fq 'href="/atlas/atlas-module-v1.css"' "$page"
+            grep -Eqi '<meta name="viewport"[^>]*width=device-width' "$page"
+            grep -Eqi '<h1([ >])' "$page"
+            grep -Fq 'class="topbar"' "$page"
+            ! grep -Fqi '#f5f3e9' "$page"
+          done
+
       - name: Validate public Atlas route ownership
         run: node scripts/validate-atlas-route-ownership.mjs
