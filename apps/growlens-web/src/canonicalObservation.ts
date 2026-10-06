@@ -70,7 +70,7 @@ export type GrowLensCanonicalObservationRecord = {
     deviceModel: null;
     calibrationId: null;
     estimated: false;
-    derived: false;
+    derived: boolean;
   };
 };
 
