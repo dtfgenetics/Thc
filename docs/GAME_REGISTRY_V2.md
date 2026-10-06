@@ -26,7 +26,7 @@ Concept bank: **17**
 | Lost in the Terps | `lost-in-the-terps` | dtfgenetics/Thc | /games/lost-in-the-terps/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Mystery Strain | `mystery-strain` | dtfgenetics/Thc | /games/mystery-strain/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Pheno Draft | `pheno-draft` | dtfgenetics/Thc | /games/pheno-draft/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
-| Pheno Hunter | `pheno-hunter` | dtfgenetics/Thc | /games/pheno-hunter/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL, revision, and timestamp after deployment verification. |
+| Pheno Hunter | `pheno-hunter` | dtfgenetics/Thc | /games/pheno-hunter/ | `vertical-slice` | dtfgenetics/Thc | Pass browser, mobile, accessibility, and exact live-route verification before public promotion. |
 | PhenoQuest: The Living Seed Vault | `phenoquest` | dtfgenetics/Catching-phenos | /games/phenoquest/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Quack & Bake: Stoner Duck Race | `stoner-duck-race` | dtfgenetics/Dtf420 | /games/stoner-duck-race | `playable-local` | dtfgenetics/Thc | Complete multiplayer/browser presentation QA, lock production ownership/public route, then package through the DTFSeeds release pipeline. |
 | Root Cause | `root-cause` | dtfgenetics/Thc | /games/root-cause/ | `vertical-slice` | dtfgenetics/Thc | Reconcile public-hub intent, run full route QA, and promote only after exact live verification. |
