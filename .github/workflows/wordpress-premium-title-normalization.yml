@@ -49,6 +49,8 @@ jobs:
           node --check scripts/wordpress-transient-fetch-bootstrap.mjs
           test -s site/wordpress/pages/community.html
           test -s site/wordpress/pages/gallery.html
+          test -s site/wordpress/pages/about.html
+          test -s site/wordpress/pages/contact.html
       - name: Normalize editorial page title hierarchies
         id: normalize
         shell: bash
@@ -96,6 +98,8 @@ jobs:
           }
           verify '/community/' 'community' 'site/wordpress/pages/community.html'
           verify '/gallery/' 'gallery' 'site/wordpress/pages/gallery.html'
+          verify '/about/' 'about' 'site/wordpress/pages/about.html'
+          verify '/contact/' 'contact' 'site/wordpress/pages/contact.html'
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
       - name: Upload page snapshots
         if: always()
@@ -120,5 +124,5 @@ jobs:
             echo "Scoped normalization: **${NORMALIZE:-not-completed}**"
             echo "Live verification: **${VERIFY:-not-completed}**"
             echo
-            echo 'Community and Gallery are validated against their owned versioned layout marker plus a custom H1, so normal copy updates do not break title normalization.'
+            echo 'Community, Gallery, About, and Contact are validated against their owned versioned layout marker plus a custom H1, so normal copy updates do not break title normalization.'
           } >> "$GITHUB_STEP_SUMMARY"
