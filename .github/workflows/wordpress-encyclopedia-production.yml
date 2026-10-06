@@ -83,6 +83,8 @@ jobs:
           node --check scripts/organize-wordpress-encyclopedia-topics.mjs
           node --check scripts/validate-encyclopedia-release-control.mjs
           node --check scripts/validate-encyclopedia-production-pointer.mjs
+          node --check scripts/resolve-encyclopedia-changed-publication-batch.mjs
+          node --check scripts/validate-encyclopedia-changed-depth.mjs
           node scripts/validate-encyclopedia-production-pointer.mjs
           node --check scripts/publish-wordpress-learning-search-indexes.mjs
           node --check scripts/deploy-wordpress-learning-search-runtime-via-rest.mjs
@@ -91,6 +93,10 @@ jobs:
           npm run verify:wordpress-learning-search
           npm run build:encyclopedia-scorecard
           node scripts/validate-encyclopedia-completion-scorecard.mjs
+          if node -e "const fs=require('fs');const d=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_BATCH_FILE,'utf8'));process.exit(d.validationGate==='changed-lesson-depth-v1'?0:1)"; then
+            changed_files="$(node -e "const fs=require('fs');const d=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_BATCH_FILE,'utf8'));process.stdout.write(d.lessonFiles.join(','))")"
+            ENCYCLOPEDIA_CHANGED_FILES="$changed_files" npm run verify:encyclopedia-changed-depth
+          fi
           npm run build:encyclopedia-discovery
           node scripts/build-thc-education-search-index.mjs
           node scripts/validate-thc-education-search.mjs
