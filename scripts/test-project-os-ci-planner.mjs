@@ -17,4 +17,6 @@ assert.ok(cross.checks.includes('verify:project-os'));
 const pkg=run('package.json');
 assert.equal(pkg.fullValidation,true);
 assert.ok(pkg.checks.includes('verify:project-os'));
+assert.ok(!pkg.narrowChecks.includes('verify:project-os'));
+assert.ok(pkg.broadChecks.includes('verify:project-os'));
 console.log('Project OS CI planner tests passed');
