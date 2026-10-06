@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "visibleTraits": ["vigor", "structure", "speed"],
+  "hiddenTraits": ["resin", "aroma", "yield", "stability"],
+  "traitLabels": {
+    "vigor": "Vigor",
+    "structure": "Structure",
+    "speed": "Finish Speed",
+    "resin": "Resin",
+    "aroma": "Aroma",
+    "yield": "Yield Potential",
+    "stability": "Stability"
+  },
+  "briefs": [
+    {
+      "id": "balanced-keeper",
+      "title": "Balanced Keeper",
+      "summary": "Find the most complete all-around candidate without sacrificing stability for one flashy trait.",
+      "weights": {"vigor": 15, "structure": 15, "speed": 10, "resin": 15, "aroma": 15, "yield": 15, "stability": 15}
+    },
+    {
+      "id": "resin-scout",
+      "title": "Resin Scout",
+      "summary": "Prioritize resin expression and stability while keeping enough vigor and structure to remain practical.",
+      "weights": {"vigor": 10, "structure": 10, "speed": 5, "resin": 30, "aroma": 10, "yield": 10, "stability": 25}
+    },
+    {
+      "id": "aroma-keeper",
+      "title": "Aroma Keeper",
+      "summary": "Chase standout aroma, but do not ignore stability, resin, and the plant frame supporting the expression.",
+      "weights": {"vigor": 8, "structure": 10, "speed": 7, "resin": 15, "aroma": 30, "yield": 5, "stability": 25}
+    },
+    {
+      "id": "outdoor-frame",
+      "title": "Outdoor Frame",
+      "summary": "Favor vigor, branching structure, stability, and useful yield potential over cosmetic traits.",
+      "weights": {"vigor": 25, "structure": 25, "speed": 10, "resin": 5, "aroma": 5, "yield": 15, "stability": 15}
+    },
+    {
+      "id": "fast-finisher",
+      "title": "Fast Finisher",
+      "summary": "Choose for speed without letting the rest of the keeper profile collapse around one early finish trait.",
+      "weights": {"vigor": 10, "structure": 10, "speed": 30, "resin": 10, "aroma": 10, "yield": 10, "stability": 20}
+    },
+    {
+      "id": "workhorse",
+      "title": "Production Workhorse",
+      "summary": "Prioritize vigor, useful structure, yield potential, and stability for a dependable all-purpose plant.",
+      "weights": {"vigor": 20, "structure": 20, "speed": 10, "resin": 5, "aroma": 5, "yield": 25, "stability": 15}
+    }
+  ],
+  "candidates": [
+    {"id":"a1","name":"Atlas Lime","family":"Citrus Frame","tagline":"Broad shoulders, clean spacing.","traits":{"vigor":9,"structure":9,"speed":6,"resin":6,"aroma":7,"yield":9,"stability":8}},
+    {"id":"a2","name":"Velvet Static","family":"Purple Signal","tagline":"Compact frame with a loud finish.","traits":{"vigor":6,"structure":8,"speed":7,"resin":8,"aroma":9,"yield":6,"stability":7}},
+    {"id":"a3","name":"Frost Relay","family":"Silver Orchard","tagline":"Fast, bright, and heavily coated.","traits":{"vigor":7,"structure":6,"speed":9,"resin":10,"aroma":7,"yield":6,"stability":8}},
+    {"id":"a4","name":"Mango Foundry","family":"Tropic Forge","tagline":"Heavy frame with dense branching.","traits":{"vigor":9,"structure":8,"speed":5,"resin":7,"aroma":9,"yield":10,"stability":7}},
+    {"id":"a5","name":"Night Compass","family":"Indigo North","tagline":"Measured growth and excellent repeatability.","traits":{"vigor":7,"structure":8,"speed":7,"resin":8,"aroma":6,"yield":7,"stability":10}},
+    {"id":"a6","name":"Lemon Current","family":"Citrus Wire","tagline":"Quick vertical growth with sharp aromatic notes.","traits":{"vigor":8,"structure":6,"speed":9,"resin":6,"aroma":10,"yield":7,"stability":6}},
+    {"id":"a7","name":"Berry Tower","family":"Orchard Stack","tagline":"Tall branching profile with steady output.","traits":{"vigor":8,"structure":9,"speed":6,"resin":7,"aroma":8,"yield":9,"stability":8}},
+    {"id":"a8","name":"Diesel Lantern","family":"Fuel Glow","tagline":"Open frame and intense late expression.","traits":{"vigor":7,"structure":7,"speed":6,"resin":9,"aroma":10,"yield":7,"stability":7}},
+    {"id":"a9","name":"Cloud Nectar","family":"Soft Bloom","tagline":"Balanced canopy with polished secondary traits.","traits":{"vigor":7,"structure":8,"speed":7,"resin":8,"aroma":8,"yield":8,"stability":9}},
+    {"id":"b1","name":"Ember Grove","family":"Forest Heat","tagline":"Durable branch set and dependable pace.","traits":{"vigor":8,"structure":9,"speed":7,"resin":6,"aroma":6,"yield":8,"stability":9}},
+    {"id":"b2","name":"Violet Circuit","family":"Purple Signal","tagline":"Compact, resin-forward, and unusually consistent.","traits":{"vigor":6,"structure":8,"speed":8,"resin":10,"aroma":8,"yield":6,"stability":10}},
+    {"id":"b3","name":"Ruby Engine","family":"Redline Fruit","tagline":"High-energy growth with strong production traits.","traits":{"vigor":10,"structure":8,"speed":7,"resin":7,"aroma":7,"yield":10,"stability":7}},
+    {"id":"b4","name":"Solar Skunk","family":"Sunline Funk","tagline":"Fast, vigorous, and aromatic with a loose frame.","traits":{"vigor":9,"structure":6,"speed":10,"resin":7,"aroma":9,"yield":8,"stability":6}},
+    {"id":"b5","name":"Grape Signal","family":"Purple Signal","tagline":"Aroma specialist with a controlled compact canopy.","traits":{"vigor":6,"structure":8,"speed":6,"resin":8,"aroma":10,"yield":6,"stability":9}},
+    {"id":"b6","name":"Forest Relay","family":"Green Transit","tagline":"Branchy, resilient, and stable across observations.","traits":{"vigor":9,"structure":10,"speed":6,"resin":6,"aroma":6,"yield":9,"stability":10}},
+    {"id":"b7","name":"Dawn Haze","family":"Morning Air","tagline":"Longer frame with fast finish and bright aroma.","traits":{"vigor":8,"structure":7,"speed":9,"resin":7,"aroma":9,"yield":7,"stability":7}},
+    {"id":"b8","name":"Frost Compass","family":"Silver North","tagline":"Resin-heavy expression anchored by stability.","traits":{"vigor":7,"structure":7,"speed":7,"resin":10,"aroma":8,"yield":7,"stability":10}},
+    {"id":"b9","name":"Citrus Anchor","family":"Citrus Frame","tagline":"Steady branching and useful output with few weak spots.","traits":{"vigor":8,"structure":9,"speed":7,"resin":7,"aroma":8,"yield":9,"stability":9}}
+  ]
+}
