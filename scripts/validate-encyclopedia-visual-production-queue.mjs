@@ -74,6 +74,12 @@ for (const item of items) {
   if (item.publicationEffect !== 'none_review_state_unchanged') errors.push(`${item.lessonId}: visual brief must not change publication state.`);
 }
 for (const lesson of canonical) if (!items.some(item => item.lessonId === lesson.id)) errors.push(`${lesson.id}: missing visual brief.`);
+const expectedVisualTasksNeeded=items.reduce((sum,item)=>sum+Number(item.visualGapCount||0),0);
+const expectedLessonsWithVisualGaps=items.filter(item=>Number(item.visualGapCount||0)>0).length;
+if(queue.summary?.visualTasksNeeded!==expectedVisualTasksNeeded) errors.push(`Queue summary visualTasksNeeded must equal ${expectedVisualTasksNeeded}; found ${queue.summary?.visualTasksNeeded}.`);
+if(queue.summary?.missingToTarget!==expectedVisualTasksNeeded) errors.push('Queue summary missingToTarget must equal visualTasksNeeded.');
+if(queue.summary?.lessonsWithVisualGaps!==expectedLessonsWithVisualGaps) errors.push(`Queue summary lessonsWithVisualGaps must equal ${expectedLessonsWithVisualGaps}; found ${queue.summary?.lessonsWithVisualGaps}.`);
+if(queue.summary?.roleAddressedRasterAssetCount + queue.summary?.unclassifiedLegacyRasterAssetCount !== queue.summary?.currentRasterAssetCount) errors.push('Queue summary raster counts do not reconcile.');
 
 if (errors.length) {
   console.error(`Encyclopedia visual queue validation failed with ${errors.length} error(s):`);
