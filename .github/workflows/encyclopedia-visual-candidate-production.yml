@@ -124,6 +124,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          REQUESTED_BATCH: ${{ inputs.batch_size || '72' }}
         run: |
           set -euo pipefail
           gh workflow run encyclopedia-visual-candidate-production.yml --ref main -f batch_size="$REQUESTED_BATCH"
