@@ -68,15 +68,9 @@ jobs:
           node --check scripts/validate-woocommerce-reconciliation.mjs
           node scripts/validate-genetics-commerce.mjs
           node scripts/validate-woocommerce-reconciliation.mjs
-          for slug in home learn shop; do
+          for slug in home learn shop seeds community gallery about contact; do
             test -s "site/wordpress/pages/$slug.html"
             grep -Fq '<h1' "site/wordpress/pages/$slug.html"
-          done
-          # Render-model contract: WordPress supplies the sole canonical page-title H1
-          # for these routes; stored body fragments must not add a duplicate H1.
-          for slug in seeds community gallery about contact; do
-            test -s "site/wordpress/pages/$slug.html"
-            ! grep -Fq '<h1' "site/wordpress/pages/$slug.html"
             grep -Fq '<h2' "site/wordpress/pages/$slug.html"
           done
           test -s site/wordpress/products/genetics.json
@@ -85,8 +79,10 @@ jobs:
           test ! -e site/wordpress/pages/high-iq.html
           grep -Fq "show_on_front: 'page'" scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'page_on_front: expectedFrontPageId' scripts/apply-wordpress-public-content-rest.mjs
-          grep -Fq '/yellow-leaves/' site/wordpress/pages/learn.html
+          grep -Fq '/thc-grow-doc/' site/wordpress/pages/learn.html
+          grep -Fq '/growlens/' site/wordpress/pages/learn.html
           grep -Fq '/learn/infographics/' site/wordpress/pages/learn.html
+          grep -Fq 'id="dtf-learn-v5-atlas-alignment"' site/wordpress/pages/learn.html
           test -d site/wordpress/assets/infographics
           test -s site/wordpress/assets/infographics/Cannabis_Plant_Anatomy_Infographic.png
           test -s site/wordpress/assets/infographics/Nutrient_Uptake_and_Root_Zone_Chemistry.png
