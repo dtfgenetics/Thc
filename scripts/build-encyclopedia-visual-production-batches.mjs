@@ -8,8 +8,10 @@ const outDir=path.join(root,'content','encyclopedia','visual-production-batches'
 const batchSize=Math.max(1,Number(process.env.ENCYCLOPEDIA_VISUAL_BATCH_SIZE||24));
 const queue=JSON.parse(fs.readFileSync(queuePath,'utf8'));
 const items=(queue.items||[])
-  .filter(x=>x.productionStatus==='brief_ready_raster_artwork_needed')
-  .sort((a,b)=>b.visualPriorityScore-a.visualPriorityScore||a.number-b.number);
+  .flatMap(lesson=>(lesson.visualRoles||[])
+    .filter(role=>role.status==='brief_ready_raster_artwork_needed')
+    .map(role=>({...lesson,visualRole:role.role,visualOrdinal:role.ordinal})))
+  .sort((a,b)=>b.visualPriorityScore-a.visualPriorityScore||a.number-b.number||a.visualOrdinal-b.visualOrdinal);
 
 fs.mkdirSync(outDir,{recursive:true});
 for(const name of fs.readdirSync(outDir)) if(/^batch-\d{3}\.(?:json|md)$/i.test(name)) fs.unlinkSync(path.join(outDir,name));
@@ -29,6 +31,7 @@ for(let i=0;i<items.length;i+=batchSize){
     purpose:'Turn controlled encyclopedia visual briefs into lesson-specific raster teaching candidates without changing publication approval state.',
     reviewRule:'Every asset remains unapproved until science, accessibility, rights/provenance, rendering, and responsive review are explicitly recorded.',
     itemCount:slice.length,
+    lessonCount:new Set(slice.map(x=>x.lessonId)).size,
     priorityRange:{
       high:Math.max(...slice.map(x=>x.visualPriorityScore)),
       low:Math.min(...slice.map(x=>x.visualPriorityScore))
@@ -42,6 +45,8 @@ for(let i=0;i<items.length;i+=batchSize){
       visualType:item.visualType,
       visualFamily:item.visualFamily,
       visualPriorityScore:item.visualPriorityScore,
+      visualRole:item.visualRole,
+      visualOrdinal:item.visualOrdinal,
       purpose:item.purpose,
       accuracyRequirements:item.accuracyRequirements,
       requiredLabels:item.requiredLabels,
@@ -49,8 +54,8 @@ for(let i=0;i<items.length;i+=batchSize){
       sourceAnchors:item.sourceAnchors,
       altTextDraft:item.altTextDraft,
       captionDraft:item.captionDraft,
-      targetFilename:`${item.lessonId}_teaching-visual-v1.png`,
-      targetRepositoryPath:`site/wordpress/assets/infographics/${item.lessonId}_teaching-visual-v1.png`,
+      targetFilename:`${item.lessonId}_${String(item.visualOrdinal).padStart(2,'0')}_${item.visualRole}.png`,
+      targetRepositoryPath:`site/wordpress/assets/infographics/${item.lessonId}_${String(item.visualOrdinal).padStart(2,'0')}_${item.visualRole}.png`,
       requiredReviews:{
         science:'pending',
         accessibility:'pending',
@@ -73,13 +78,14 @@ for(let i=0;i<items.length;i+=batchSize){
       `## ${idx+1}. ${item.lessonId} — ${item.title}`,
       '',
       `- Family: \`${item.visualFamily}\``,
+      `- Visual role: \`${item.visualRole}\` (#${item.visualOrdinal})`,
       `- Priority: **${item.visualPriorityScore}**`,
       `- Purpose: ${item.purpose}`,
       `- Required labels: ${item.requiredLabels.join(', ')}`,
       `- Accuracy requirements: ${item.accuracyRequirements.join(' | ')}`,
       `- Misconception guards: ${item.misconceptionGuards.join(' | ')}`,
       `- Sources: ${item.sourceAnchors.join(' | ')}`,
-      `- Target: \`site/wordpress/assets/infographics/${item.lessonId}_teaching-visual-v1.png\``,
+      `- Target: \`site/wordpress/assets/infographics/${item.lessonId}_${String(item.visualOrdinal).padStart(2,'0')}_${item.visualRole}.png\``,
       ''
     ])
   ].join('\n');
@@ -90,7 +96,8 @@ for(let i=0;i<items.length;i+=batchSize){
     itemCount:slice.length,
     priorityRange:packet.priorityRange,
     visualFamilies:families,
-    lessonIds:slice.map(x=>x.lessonId)
+    lessonIds:[...new Set(slice.map(x=>x.lessonId))],
+    visualTaskIds:slice.map(x=>`${x.lessonId}:${x.visualRole}`)
   });
 }
 const index={
@@ -100,10 +107,12 @@ const index={
   source:'content/encyclopedia/visual-production-queue-v1.json',
   batchSize,
   artworkNeededCount:items.length,
+  visualTaskCount:items.length,
+  lessonCountWithGaps:new Set(items.map(x=>x.lessonId)).size,
   batchCount:batches.length,
   firstBatchLessonIds:batches[0]?.lessonIds||[],
   batches
 };
 fs.writeFileSync(path.join(outDir,'index.json'),JSON.stringify(index,null,2)+'\n');
-console.log(`Built ${batches.length} controlled visual production batches for ${items.length} lessons at ${batchSize} lessons/batch.`);
+console.log(`Built ${batches.length} controlled visual production batches for ${items.length} missing visual roles across ${index.lessonCountWithGaps} lessons at ${batchSize} visual tasks/batch.`);
 if(batches[0]) console.log(`First batch: ${batches[0].batchId} · ${batches[0].lessonIds.join(', ')}`);
