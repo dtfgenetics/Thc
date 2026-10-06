@@ -25,6 +25,33 @@ const defects=[
   {id:'generic-misconception-placeholder',re:/Correction:\s*See the (?:controlled )?lesson evidence and context\.?/i}
 ];
 
+const normalizeForCompare=value=>String(value??'')
+  .toLowerCase()
+  .replace(/[\u2018\u2019]/g,"'")
+  .replace(/[\u201c\u201d]/g,'"')
+  .replace(/[\u2013\u2014]/g,'-')
+  .replace(/\s+/g,' ')
+  .trim();
+
+function canonicalContentDefects(lesson,text){
+  if(!lesson) return [];
+  const haystack=normalizeForCompare(text);
+  const missing=[];
+  for(const [index,paragraph] of (lesson.coreScience||[]).entries()){
+    const needle=normalizeForCompare(paragraph);
+    if(needle && !haystack.includes(needle)) missing.push(`core-science-${index+1}-missing`);
+  }
+  for(const [index,row] of (lesson.misconceptions||[]).entries()){
+    const raw=typeof row==='string'?row:`${row?.claim||row?.misconception||''}: ${row?.correction||row?.explanation||''}`;
+    const parts=String(raw).split(':');
+    const claim=normalizeForCompare(parts.shift()||'');
+    const correction=normalizeForCompare(parts.join(':'));
+    if(claim && !haystack.includes(claim)) missing.push(`misconception-${index+1}-claim-missing`);
+    if(correction && !haystack.includes(correction)) missing.push(`misconception-${index+1}-correction-missing`);
+  }
+  return missing;
+}
+
 function decodeHtml(value=''){
   return String(value)
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ')
@@ -68,6 +95,7 @@ async function fetchRoute(id){
       );
       const matched=defects.filter(d=>d.re.test(text));
       const found=matched.map(d=>d.id);
+      if(response.status===200) found.push(...canonicalContentDefects(lesson,text));
       if(response.status===200&&expectedFingerprint&&liveFingerprint!==expectedFingerprint) found.push(liveFingerprint?'source-fingerprint-mismatch':'source-fingerprint-missing');
       const defectSnippets=matched.map(d=>{
         const match=text.match(d.re);
@@ -77,7 +105,7 @@ async function fetchRoute(id){
         return {id:d.id,snippet:index>=0?text.slice(snippetStart,snippetEnd):null};
       });
       if(response.status===200||response.status===404){
-        return {id,url,status:response.status,live:response.status===200,expectedFingerprint,liveFingerprint,fingerprintMatch:response.status===200?liveFingerprint===expectedFingerprint:null,structuredDataPassed,defects:found,defectSnippets,attempts:attempt,passed:response.status===404||response.status===200&&found.length===0&&structuredDataPassed};
+        return {id,url,status:response.status,live:response.status===200,expectedFingerprint,liveFingerprint,fingerprintMatch:response.status===200?liveFingerprint===expectedFingerprint:null,structuredDataPassed,defects:found,defectSnippets,attempts:attempt,passed:response.status===200&&found.length===0&&structuredDataPassed};
       }
       lastError=`HTTP ${response.status}`;
     }catch(error){
@@ -107,7 +135,7 @@ const report={
   baseUrl:BASE_URL,
   controlledEntries:entries.length,
   livePages:live.length,
-  unpublished404:results.filter(r=>r.status===404).length,
+  missing404:results.filter(r=>r.status===404).length,
   failures:failures.length,
   fingerprintVerified:results.filter(r=>r.live&&r.fingerprintMatch===true).length,
   fingerprintMissingOrMismatched:results.filter(r=>r.live&&r.fingerprintMatch!==true).length,
