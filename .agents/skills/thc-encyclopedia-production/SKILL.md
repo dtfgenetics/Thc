@@ -120,7 +120,7 @@ A lesson is not production-quality merely because every field exists. Before it 
 
 These are default production gates, not an excuse for filler. Shorter lessons require a topic-specific justification; longer lessons still fail if they repeat generic wording instead of teaching mechanism, evidence, and application.
 
-The scorecard should expose depth metrics so a 420-page count cannot hide thin content.
+The scorecard should expose depth metrics so a 420-page count cannot hide thin content. Pull requests that change canonical lesson files must pass `verify:encyclopedia-changed-depth`; existing technical debt is repaired incrementally, but touched lessons may not regress or remain below the production depth floor without a substantive topic-specific justification.
 
 ### 3. Build discovery/search
 
@@ -275,6 +275,7 @@ Run as applicable:
 ```bash
 npm run build:encyclopedia-scorecard
 npm run verify:encyclopedia-scorecard
+npm run verify:encyclopedia-changed-depth
 npm run build:encyclopedia-discovery
 npm run build:education-search
 npm run validate:education-search
