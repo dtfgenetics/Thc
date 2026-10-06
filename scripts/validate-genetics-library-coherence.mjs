@@ -5,19 +5,22 @@ const controlPath=process.env.GENETICS_RELEASE_CONTROL||'data/genetics/release-c
 const libraryPath=process.env.SEED_LINE_CATALOG||'site/wordpress/products/seed-line-catalog.json';
 const productsPath=process.env.GENETICS_PRODUCTS||'site/wordpress/products/genetics.json';
 const seedsPath=process.env.SEEDS_PAGE||'site/wordpress/pages/seeds.html';
+const metadataPath=process.env.GENETICS_META_PATH||'site/wordpress/seo/genetics-page-meta.json';
 
-const [stableText,controlText,libraryText,productsText,seedsHtml]=await Promise.all([
+const [stableText,controlText,libraryText,productsText,seedsHtml,metadataText]=await Promise.all([
   readFile(stablePath,'utf8'),
   readFile(controlPath,'utf8'),
   readFile(libraryPath,'utf8'),
   readFile(productsPath,'utf8'),
-  readFile(seedsPath,'utf8')
+  readFile(seedsPath,'utf8'),
+  readFile(metadataPath,'utf8')
 ]);
 
 const stable=JSON.parse(stableText);
 const controls=JSON.parse(controlText);
 const library=JSON.parse(libraryText);
 const products=JSON.parse(productsText);
+const metadata=JSON.parse(metadataText);
 const errors=[];
 const warnings=[];
 
@@ -31,6 +34,13 @@ if(!Array.isArray(stable?.lines)||!stable.lines.length) fail('stable catalog: li
 if(!Array.isArray(controls?.lineControls)) fail('release control: lineControls must be an array');
 if(!Array.isArray(library?.lines)||!library.lines.length) fail('public library: lines must be non-empty');
 if(!Array.isArray(products?.products)||!products.products.length) fail('commerce registry: products must be non-empty');
+
+const metadataPages=Array.isArray(metadata?.pages)?metadata.pages:[];
+if(metadataPages.length!==1) fail('genetics metadata: expected exactly one Seeds metadata record');
+const seedsMeta=metadataPages[0]||{};
+if(seedsMeta.slug!=='seeds'||seedsMeta.route!=='/seeds/') fail('genetics metadata: canonical record must target /seeds/');
+if(typeof seedsMeta.title!=='string'||seedsMeta.title.length<10||seedsMeta.title.length>60) fail('genetics metadata: Seeds title must be 10–60 characters');
+if(typeof seedsMeta.description!=='string'||seedsMeta.description.length<80||seedsMeta.description.length>160) fail('genetics metadata: Seeds description must be 80–160 characters');
 
 const stableById=new Map();
 const stableByName=new Map();
