@@ -223,6 +223,7 @@
     "verify:project-os-release-proof": "node scripts/test-project-os-release-fingerprint.mjs && node scripts/test-project-os-release-fingerprint-live.mjs",
     "plan:project-os-ci": "node scripts/plan-project-os-ci.mjs",
     "run:project-os-ci": "node scripts/run-project-os-ci-plan.mjs --execute",
-    "verify:project-os-ci-planner": "node scripts/test-project-os-ci-planner.mjs && node scripts/test-project-os-ci-runner.mjs && node scripts/build-project-os-regression-snapshot.mjs && node scripts/test-project-os-regression-snapshot.mjs"
+    "verify:project-os-ci-planner": "node scripts/test-project-os-ci-planner.mjs && node scripts/test-project-os-ci-runner.mjs && node scripts/build-project-os-regression-snapshot.mjs && node scripts/test-project-os-regression-snapshot.mjs",
+    "verify:project-os-core": "npm run verify:project-os-queue && npm run verify:project-os-dod && npm run verify:project-os-acceptance && npm run verify:project-os-release-proof && npm run verify:project-os-ci-planner && npm run verify:repository-architecture && npm run verify:external-agent-contracts && npm run verify:project-execution && npm run verify:tool-execution && npm run verify:repository-file-boundaries && npm run verify:workflow-path-parity && npm run validate:public-suite-qualification-workflow && npm run audit:platform-convergence:check"
   }
 }
