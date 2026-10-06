@@ -50,7 +50,11 @@ assert.match(runtime, /loadCode: highLinesAgentLoadCode/);
 assert.match(runtime, /newScene:/);
 assert.match(runtime, /reset: highLinesAgentReset/);
 assert.match(runtime, /MouseEvent\('click', \{ bubbles: true \}\)/);
-assert.doesNotMatch(runtime, /hiddenObjects\.map\([^\n]*id/, 'agent snapshot must not enumerate hidden-object ids');
+const agentSnapshotStart = runtime.indexOf('function highLinesAgentSnapshot()');
+const agentSnapshotEnd = runtime.indexOf('function highLinesAgentSelectColor', agentSnapshotStart);
+assert.ok(agentSnapshotStart >= 0 && agentSnapshotEnd > agentSnapshotStart, 'agent snapshot source must be discoverable');
+const agentSnapshotSource = runtime.slice(agentSnapshotStart, agentSnapshotEnd);
+assert.doesNotMatch(agentSnapshotSource, /hiddenObjects\.map\([^\n]*id/, 'agent snapshot must not enumerate hidden-object ids');
 
 assert.match(baseCss, /@media\(forced-colors:active\)/);
 assert.match(baseCss, /@media\(prefers-reduced-motion:reduce\)/);
