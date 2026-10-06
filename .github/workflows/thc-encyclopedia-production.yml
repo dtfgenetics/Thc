@@ -135,6 +135,8 @@ jobs:
         run: npm run audit:encyclopedia-learning-quality
       - name: Audit substantive lesson quality
         run: npm run audit:encyclopedia-substantive-quality:strict
+      - name: Build depth-aware quality repair queue
+        run: npm run verify:encyclopedia-quality-scorecard
       - name: Audit cross-corpus consistency
         run: npm run audit:encyclopedia-consistency
       - name: Build rich discovery index
@@ -188,6 +190,7 @@ jobs:
           name: thc-encyclopedia-generated
           path: |
             data/encyclopedia-completion-scorecard.json
+            data/encyclopedia-quality-scorecard.json
             data/encyclopedia-evidence-tracking.json
             data/encyclopedia-evidence-priority.json
             data/encyclopedia-assessment-rationale-package.json
