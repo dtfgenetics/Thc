@@ -24,32 +24,39 @@
   "coreScience": [
     "Viability and vigor answer different questions. A lot can reach a high final germination percentage yet germinate slowly or unevenly. It may therefore be viable under a favorable test while establishing poorly under a cooler, wetter, saltier, deeper, or otherwise stressful production environment.",
     "Vigor is expressed through multiple traits: time to germination, spread of germination times, emergence strength, seedling integrity, and performance under defined stress. Informal physical traits such as size, coat color, hardness, or float behavior are not interchangeable with a validated vigor test; a trait may correlate within a defined lot but is not a universal stand-alone assay. Cannabis research has shown that priming may increase germination speed without necessarily increasing final germination in already viable lots.",
-    "Assessment requires a defined endpoint and consistent conditions. Radicle emergence and normal-seedling evaluation are separate seed-testing endpoints: one records the germination event, while the other evaluates whether essential structures support continued development under favorable conditions. Dead, hard, contaminated, radicle-only, delayed, and abnormal outcomes should remain separate recorded categories rather than one undifferentiated 'failed' count."
+    "Assessment requires a defined endpoint and consistent conditions. Radicle emergence and normal-seedling evaluation are separate seed-testing endpoints: one records the germination event, while the other evaluates whether essential structures support continued development under favorable conditions. Dead, hard, contaminated, radicle-only, delayed, and abnormal outcomes should remain separate recorded categories rather than one undifferentiated 'failed' count.",
+    "A seed-lot assessment can therefore produce several different but complementary metrics: final germination estimates the proportion reaching the defined endpoint, time-to-event metrics describe speed and spread, abnormal-seedling categories describe developmental quality, and emergence under a defined stress or production system measures performance under that context. These metrics should not be collapsed into one score unless the calculation and purpose are explicit."
   ],
   "cultivationRelevance": [
     "Use final germination to estimate usable quantity and time-based metrics to plan planting windows and evaluate uniformity. A weak lot may require a different population plan even when some seeds remain viable.",
-    "Compare lots only when sample size, substrate, temperature, moisture, light after emergence, observation interval, and scoring rules are the same."
+    "Compare lots only when sample size, substrate, temperature, moisture, light after emergence, observation interval, and scoring rules are the same.",
+    "Use viability to estimate how many units are likely to produce acceptable seedlings under favorable conditions, then use vigor and time-distribution data to decide whether the lot fits a synchronized production schedule. A lot with high final germination but long, variable emergence may require staggered transplant decisions or may be unsuitable for a uniform trial.",
+    "Retest aging or high-value lots with the same protocol used for the baseline whenever possible. Method changes can create an apparent decline or improvement that is really a test-condition effect. Keep production-emergence records linked to the laboratory or bench test so the test's practical predictive value can be evaluated."
   ],
   "measureAndRecord": [
     {
       "field": "Test design",
-      "requirement": "Lot, sample size, replicates, substrate, temperature, and start date."
+      "requirement": "Record lot and aliquot ID, sample size, replicate structure, randomization, substrate or medium, temperature, moisture method, light conditions after emergence, start date/time, and the exact endpoint used for germination and normal-seedling scoring."
     },
     {
-      "field": "Germination events",
-      "requirement": "Newly germinated count at each observation time using one criterion."
+      "field": "Time-series counts",
+      "requirement": "At fixed observation intervals record newly germinated units and cumulative counts using the same criterion. Preserve raw event times when possible so median/mean germination time, spread, and synchrony can be calculated later."
     },
     {
       "field": "Final categories",
-      "requirement": "Normal, abnormal, ungerminated, dead, hard, moldy, or unclassified."
+      "requirement": "Record normal seedlings, abnormal seedlings, ungerminated units, dead/decayed units, hard or intact ungerminated units, mold-contaminated units, and unresolved units separately rather than combining every non-normal outcome."
     },
     {
-      "field": "Time metrics",
-      "requirement": "Median or mean germination time and spread or uniformity measure."
+      "field": "Vigor indicators",
+      "requirement": "Record agreed time-based metrics, early seedling growth or integrity measures, and any stress-test conditions. The metric must be named and its method retained so different vigor procedures are not treated as equivalent."
     },
     {
-      "field": "Production outcome",
-      "requirement": "Emergence, survival, and early seedling quality under the actual system."
+      "field": "Production validation",
+      "requirement": "For planted lots, record emergence percentage, time to emergence, survival, early uniformity, abnormal seedlings, and environmental/root-zone conditions. Compare production outcomes with the bench test to assess transferability."
+    },
+    {
+      "field": "Uncertainty",
+      "requirement": "Report percentages with sample size and replicate results. Small samples can produce wide uncertainty, and apparent lot differences should not be overinterpreted without enough observations or repeat testing."
     }
   ],
   "misconceptions": [
@@ -58,7 +65,7 @@
     "One successful seed proves the lot: Lot quality is a population property requiring an adequate, unbiased sample."
   ],
   "evidenceLimits": [
-    "Vigor tests are method-dependent. A result is interpretable only with its protocol, and research or certification laboratories may use standards beyond this encyclopedia."
+    "Viability and vigor are protocol-dependent measurements. Germination percentage changes with temperature, moisture, oxygen, duration, scoring definition, and seed lot, while vigor tests intentionally add different stress or timing criteria. Results from industrial hemp or genebank procedures can guide method design but should not be presented as universal performance thresholds for every cannabis genotype or production system."
   ],
   "crossLinks": "THC-ENC-024, THC-ENC-028, THC-ENC-030, THC-ENC-038, and THC-ENC-040.",
   "sourceNotes": [
