@@ -556,8 +556,7 @@ jobs:
           node scripts/verify-external-release-candidates-live.mjs
 
       - name: Dispatch independent feature-surface verification
-        if: steps.publish_freshness.outputs.current == 'true'
-        if: always()
+        if: always() && steps.publish_freshness.outputs.current == 'true'
         shell: bash
         run: |
           set -euo pipefail
