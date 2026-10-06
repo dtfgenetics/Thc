@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "manifestId": "project-os.acceptance-manifests-v1",
+  "domains": [
+    {
+      "id": "encyclopedia",
+      "projectType": "encyclopedia_lesson",
+      "sources": [
+        "content/encyclopedia/catalog.json",
+        "site/wordpress/education/encyclopedia-deployment-target.json"
+      ],
+      "validators": [
+        "verify:encyclopedia-catalog",
+        "verify:encyclopedia-production-readiness",
+        "verify:encyclopedia-structured-data",
+        "verify:encyclopedia-source-pin"
+      ],
+      "liveRequired": true
+    },
+    {
+      "id": "tools",
+      "projectType": "tool_calculator",
+      "sources": [
+        "data/tool-execution-registry.json"
+      ],
+      "validators": [
+        "verify:tool-execution",
+        "verify:cultivation-reference-tools"
+      ],
+      "liveRequired": true
+    },
+    {
+      "id": "games",
+      "projectType": "game",
+      "sources": [
+        "data/game-registry-v2.json",
+        "data/game-location-registry.json"
+      ],
+      "validators": [
+        "games:registry:check",
+        "games:locations:check",
+        "games:release-pins:check",
+        "games:qa:catalog-check"
+      ],
+      "liveRequired": true
+    },
+    {
+      "id": "academy",
+      "projectType": "academy_certification",
+      "sources": [
+        "site/wordpress/education/academy-deployment-target.json"
+      ],
+      "validators": [
+        "verify:academy-source-pin"
+      ],
+      "liveRequired": true
+    },
+    {
+      "id": "growlens",
+      "projectType": "growlens_diagnostic",
+      "sources": [
+        "apps/growlens-web",
+        "site/deployment/public-apps.json"
+      ],
+      "validators": [
+        "validate:growlens-release-contract",
+        "verify:growlens"
+      ],
+      "liveRequired": true
+    },
+    {
+      "id": "critical-assets",
+      "projectType": "visual_asset",
+      "sources": [
+        "data/asset-state-registry.json"
+      ],
+      "validators": [
+        "verify:asset-states"
+      ],
+      "liveRequired": false
+    },
+    {
+      "id": "release-infrastructure",
+      "projectType": "release_infrastructure",
+      "sources": [
+        "data/project-execution-registry.json",
+        "data/repository-registry.json",
+        "site/deployment/public-apps.json"
+      ],
+      "validators": [
+        "verify:project-execution",
+        "verify:repository-architecture",
+        "validate:public-suite-qualification-workflow"
+      ],
+      "liveRequired": false
+    }
+  ]
+}
