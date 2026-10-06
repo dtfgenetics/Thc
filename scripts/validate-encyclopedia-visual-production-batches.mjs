@@ -46,6 +46,16 @@ for(const batch of batches){
   }
 }
 if(count!==index.artworkNeededCount) errors.push(`Batch item total ${count} does not equal index artwork-needed count ${index.artworkNeededCount}`);
+if(batches.length>0){
+  const firstFile=path.join(root,batches[0].file||'');
+  if(fs.existsSync(firstFile)){
+    const first=JSON.parse(fs.readFileSync(firstFile,'utf8'));
+    const firstLessons=new Set((first.items||[]).map(item=>item.lessonId));
+    const firstRoles=new Set((first.items||[]).map(item=>item.visualRole));
+    if(expectedNeeded>=configuredBatchSize && firstLessons.size<Math.min(8,configuredBatchSize)) errors.push(`First production batch is insufficiently lesson-diverse: ${firstLessons.size} unique lessons.`);
+    if(expectedNeeded>=configuredBatchSize && firstRoles.size<1) errors.push('First production batch must contain at least one controlled visual role.');
+  }
+}
 if(errors.length){
   console.error(`Visual production batch validation failed with ${errors.length} error(s):`);
   errors.slice(0,100).forEach(e=>console.error(' - '+e));
