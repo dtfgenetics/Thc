@@ -23,7 +23,7 @@
   --shadow:   0 24px 64px rgba(0,0,0,.38);
   --serif:    ui-serif, Georgia, Cambria, "Times New Roman", serif;
   --sans:     Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --site-header: 92px;
+  --site-header-fallback: 0px;
 }
 
 *, *::before, *::after { box-sizing: border-box }
@@ -55,7 +55,7 @@ img { max-width: 100%; display: block }
 /* ── Topbar ──────────────────────────────────────────────────── */
 .topbar {
   position: sticky;
-  top: var(--site-header);
+  top: var(--dtf-global-header-height, var(--site-header-fallback));
   z-index: 40;
   border-bottom: 1px solid var(--borsoft);
   background: rgba(7,16,11,.92);
