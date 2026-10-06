@@ -1,0 +1,43 @@
+name: Project OS Health
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'data/project-os/**'
+      - 'data/project-os-status.json'
+      - 'scripts/*project-os*'
+      - '.github/workflows/project-os-health.yml'
+      - 'package.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Verify health registries and mutation contracts
+        run: npm run verify:project-os-health
+      - name: Build current health report
+        env:
+          PROJECT_OS_NOW: ${{ github.event.pull_request.updated_at || github.event.repository.updated_at }}
+        run: npm run build:project-os-health
+      - name: Upload Project OS health evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: project-os-health-${{ github.sha }}
+          path: |
+            data/project-os/portfolio-metrics.json
+            data/project-os/health-report.json
+            data/project-os/health-history.json
+          retention-days: 30
