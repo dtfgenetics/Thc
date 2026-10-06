@@ -74,6 +74,37 @@ jobs:
           console.log(`Review-only evidence: ${index.visualTaskCount} missing visual-role tasks across ${index.lessonCountWithGaps} lessons in ${index.batchCount} batches.`);
           NODE
 
+      - name: Write visual-depth job summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs=require('fs');
+          const queue=JSON.parse(fs.readFileSync('content/encyclopedia/visual-production-queue-v1.json','utf8'));
+          const index=JSON.parse(fs.readFileSync('content/encyclopedia/visual-production-batches/index.json','utf8'));
+          const first=index.batches?.[0];
+          const firstPacket=first ? JSON.parse(fs.readFileSync(first.file,'utf8')) : {items:[]};
+          const s=queue.summary||{};
+          const lines=[
+            '# Encyclopedia visual-depth evidence',
+            '',
+            `- Lessons: ${s.lessonCount}`,
+            `- Minimum target: ${s.minimumVisualTarget}`,
+            `- Full target: ${s.fullVisualTarget}`,
+            `- Role-addressed rasters: ${s.roleAddressedRasterAssetCount}`,
+            `- Unclassified legacy rasters: ${s.unclassifiedLegacyRasterAssetCount}`,
+            `- Missing to minimum: ${s.missingToMinimum}`,
+            `- Missing to target: ${s.missingToTarget}`,
+            `- Lessons with visual gaps: ${s.lessonsWithVisualGaps}`,
+            `- Visual tasks needed: ${s.visualTasksNeeded}`,
+            `- Controlled batches: ${index.batchCount}`,
+            '',
+            '## ENC-VIS-BATCH-001 preview',
+            ...firstPacket.items.slice(0,24).map((item,i)=>`${i+1}. ${item.lessonId} — ${item.visualRole} → ${item.targetFilename}`)
+          ];
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,lines.join('\n')+'\n');
+          NODE
+
       - name: Upload production packet evidence
         uses: actions/upload-artifact@v4
         with:
