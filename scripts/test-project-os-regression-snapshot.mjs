@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {spawnSync} from 'node:child_process';
+const good=spawnSync(process.execPath,['scripts/build-project-os-regression-snapshot.mjs','--json'],{encoding:'utf8'});
+assert.equal(good.status,0,good.stderr);
+const snap=JSON.parse(good.stdout);
+assert.equal(snap.metrics.encyclopediaLessons,420);
+assert.ok(snap.metrics.toolRegistryEntries>=25);
+assert.ok(snap.metrics.gameRegistryEntries>=30);
+assert.ok(snap.metrics.publicApps>=59);
+assert.ok(snap.metrics.sitemapUrls>=480);
+const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'project-os-baseline-'));
+const original=fs.readFileSync('data/project-os/regression-baseline.json','utf8');
+const bad=JSON.parse(original); bad.minimums.publicApps=9999;
+fs.writeFileSync('data/project-os/regression-baseline.json',JSON.stringify(bad));
+const failed=spawnSync(process.execPath,['scripts/build-project-os-regression-snapshot.mjs'],{encoding:'utf8'});
+fs.writeFileSync('data/project-os/regression-baseline.json',original);
+fs.rmSync(tmp,{recursive:true,force:true});
+assert.notEqual(failed.status,0);
+assert.match(failed.stderr,/publicApps regressed below minimum/);
+console.log('Project OS regression snapshot tests passed');
