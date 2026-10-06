@@ -175,7 +175,8 @@ function restoreExperience(payload, sourceData) {
   if (!scene) throw new Error('Saved High Lines scene no longer exists.');
   const paletteIds = new Set(sourceData.palette.map((color) => color.id));
   const regionIds = new Set(scene.regions);
-  const hiddenIds = new Set(scene.hiddenObjects.map((item) => item.id));
+  const hiddenIds = new Set();
+  for (const item of scene.hiddenObjects) hiddenIds.add(item.id);
   if (payload.selectedColorId != null) {
     if (!paletteIds.has(payload.selectedColorId)) throw new Error('Saved High Lines color is invalid.');
     next = selectColor(next, payload.selectedColorId, sourceData);
