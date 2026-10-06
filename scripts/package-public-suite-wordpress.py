@@ -389,7 +389,6 @@ required = [
     "projects/index.html",
     "puzzles/current.json",
     "atlas/index.html",
-    "atlas/assets",
     "atlas/atlas-v5.css",
     "atlas/atlas-anatomy-index-v1.js",
     "atlas/atlas-guided-tour-v1.js",
@@ -480,10 +479,21 @@ for target in external_targets:
         if rel not in required:
             required.append(rel)
 
+required_directories = [
+    "atlas/assets",
+]
+
 for rel in required:
     path = root / rel
     if not path.is_file() or path.stat().st_size == 0:
         raise SystemExit(f"required deploy file missing or empty: {rel}")
+
+for rel in required_directories:
+    path = root / rel
+    if not path.is_dir():
+        raise SystemExit(f"required deploy directory missing: {rel}")
+    if not any(child.is_file() for child in path.rglob("*")):
+        raise SystemExit(f"required deploy directory is empty: {rel}")
 
 for forbidden in ["index.html", "learn/index.html", "blog/index.html"]:
     if forbidden in allowed:
@@ -539,6 +549,7 @@ manifest = {
         "sharedPaths": overlay_manifest["sharedPaths"],
     },
     "required": required,
+    "requiredDirectories": required_directories,
     "fileCount": len(files),
     "uncompressedBytes": sum(int(meta["size"]) for meta in files.values()),
     "files": files,
