@@ -26,6 +26,8 @@ for(let i=0;i<rows.length;i++){
   if(!Number.isFinite(row.score)||row.score<0||row.score>100) errors.push(row.id+': invalid score');
   if(!Array.isArray(row.dimensions)||row.dimensions.length!==8) errors.push(row.id+': expected 8 quality dimensions');
   if(!Array.isArray(row.blockers)||!Array.isArray(row.nextActions)) errors.push(row.id+': blockers/nextActions must be arrays');
+  if(!Array.isArray(row.depthDeficits)) errors.push(row.id+': depthDeficits must be an array');
+  if(row.depthDeficits?.length&&!row.blockers?.includes('content_depth')) errors.push(row.id+': depth deficits must create content_depth blocker');
   const release=row.dimensions?.find(x=>x.name==='release_control');
   if(release?.details?.publicationAuthorized===false&&release.score>=8) errors.push(row.id+': publication points awarded without authorization');
   const evidence=row.dimensions?.find(x=>x.name==='evidence');
@@ -37,6 +39,7 @@ for(let i=0;i<rows.length;i++){
 for(let i=0;i<queue.length;i++){
   const row=queue[i];
   if(row.rank!==i+1) errors.push('Repair queue rank mismatch at '+(i+1));
+  if(!Array.isArray(row.depthDeficits)) errors.push('Repair queue depthDeficits missing at rank '+(i+1));
   if(i>0&&Number(queue[i-1].repairPriorityScore||0)<Number(row.repairPriorityScore||0)) errors.push('Repair queue is not priority-descending at rank '+(i+1));
 }
 
