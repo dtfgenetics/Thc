@@ -19,7 +19,7 @@ assert.equal(game.releaseGates.rulesTested,true);
 assert.equal(game.releaseGates.browserTested,false);
 assert.equal(game.releaseGates.mobileTested,false);
 assert.equal(game.releaseGates.accessibilityReviewed,false);
-assert.equal(game.releaseGates.deploymentRegistered,false);
+assert.equal(game.releaseGates.deploymentRegistered,true);
 
 assert.deepEqual(publicData,canonicalData,'public and canonical candidate data must match exactly');
 assert.equal(publicEngine,canonicalEngine,'public and canonical deterministic engines must match exactly');
