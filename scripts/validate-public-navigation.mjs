@@ -112,6 +112,7 @@ const academyCompatibility = (overlay.legacyCompatibilityRoutes || []).find((ite
 assert(Boolean(academyCompatibility), 'Dtf420 overlay must classify /learn/academy/ as an explicit legacy compatibility route while it remains staged');
 assert(academyCompatibility?.canonicalReplacement === '/courses/', 'Legacy /learn/academy/ must point to /courses/ as the canonical replacement');
 assert(academyCompatibility?.structuredLearningReplacement === '/learn/learning-hub/', 'Legacy /learn/academy/ must point to Learning Hub for structured course content');
+assert((overlay.wordpressOwnedRoutes || []).includes('/courses/'), 'Dtf420 overlay contract must preserve WordPress ownership of /courses/');
 assert((nav.courses?.sections || []).some((item) => item.route === '/learn/learning-hub/'), 'Courses must expose the Learning Hub as its structured course tree');
 assert((nav.diagnostic?.tools || []).some((item) => item.route === '/growlens/'), 'Tools registry must include GrowLens');
 assert((nav.diagnostic?.tools || []).some((item) => item.route === '/thc-grow-doc/'), 'Tools registry must include THC Grow Doc');
