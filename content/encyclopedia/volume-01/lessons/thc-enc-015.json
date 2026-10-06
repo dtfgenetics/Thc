@@ -24,32 +24,43 @@
   "coreScience": [
     "Cannabis is commonly dioecious: individual plants predominantly produce staminate or pistillate flowers. Many dioecious populations use an XY chromosome system in which females are typically XX and males XY. Monoecious cultivars also exist, particularly in some hemp breeding systems, and bear both flower types on one plant.",
     "Monoecy is not the same as an unexpected staminate flower on a predominantly female plant. Intersex expression can involve genetic predisposition, developmental and hormonal state, environment, physical injury, chemical treatment, or interactions among them. No single stressor should be assigned as the universal cause. Observing a flower establishes phenotype at that site and time; it does not by itself explain the mechanism.",
-    "Sex expression terminology should be descriptive. Record the organ or flower type, plant location, date, stage, and stress history. Avoid using stigmatizing or ambiguous slang in controlled records."
+    "Sex expression terminology should be descriptive. Record the organ or flower type, plant location, date, stage, and stress history. Avoid using stigmatizing or ambiguous slang in controlled records.",
+    "Sex expression is a phenotype produced by genetic sex-determination systems interacting with developmental and hormonal regulation. In dioecious material, sex chromosomes strongly influence the predominant floral phenotype, but flower development still depends on gene expression and hormone signaling. Monoecious lines represent a distinct breeding system rather than simply 'females that made male flowers.' Environmental or chemical treatments can alter expression in susceptible genotypes, which demonstrates plasticity but does not erase the underlying genetic and breeding context."
   ],
   "cultivationRelevance": [
     "Early identification matters when pollen exclusion or controlled breeding is the goal. Inspection must continue because sex expression can appear at different times and positions.",
-    "A plant that produces unexpected staminate structures should be evaluated for pollen release risk and documented before any breeding conclusion is made."
+    "A plant that produces unexpected staminate structures should be evaluated for pollen release risk and documented before any breeding conclusion is made.",
+    "Use controlled vocabulary in scouting and breeding records. Separate predominant plant phenotype from a localized flower observation, and record whether staminate and pistillate structures occur on different plants, on the same plant as a stable monoecious pattern, or as unexpected localized expression. This prevents one observation from overwriting the history of the plant.",
+    "For pollen-exclusion crops, risk management depends on timing and pollen function, not terminology alone. Record the first unexpected structure, whether anthers dehisce or pollen is released, its canopy location, nearby plants at risk, and subsequent observations. For breeding work, retain lineage-level recurrence data because repeated expression across relatives is more informative than one isolated event."
   ],
   "measureAndRecord": [
     {
       "field": "Predominant phenotype",
-      "requirement": "Staminate, pistillate, monoecious, mixed/intersex, or unresolved."
+      "requirement": "Record staminate, pistillate, monoecious, mixed/intersex, or unresolved based on repeated floral observations. Do not assign a permanent category from a preflower that was not verified as development continued."
     },
     {
       "field": "Observation site",
-      "requirement": "Node, branch, inflorescence, and canopy position."
+      "requirement": "Record node, branch, inflorescence, canopy layer, and whether the structure is isolated or repeated. Photograph with scale and enough surrounding tissue to show anatomical context."
     },
     {
-      "field": "Flower structure",
-      "requirement": "Anther/stamen, pistil/stigma, mixed organ, or uncertain."
+      "field": "Floral structure",
+      "requirement": "Describe visible anthers/stamens, stigmas/pistillate structures, mixed organs, unopened floral tissue, or uncertain anatomy. Where pollen risk matters, record dehiscence and visible pollen release separately."
     },
     {
       "field": "Timing",
-      "requirement": "Plant age, developmental stage, and days after induction."
+      "requirement": "Record plant age, developmental stage, days after photoperiod induction when applicable, and whether the observation appeared early, mid, or late in reproductive development."
     },
     {
-      "field": "Context",
-      "requirement": "Genotype, treatment, environmental event, injury, and related plants."
+      "field": "Genetic and treatment context",
+      "requirement": "Record line, clone, seed family, parent IDs, feminization or sex-reversal treatment history where applicable, and whether related plants show similar expression. Preserve untreated comparison information when available."
+    },
+    {
+      "field": "Environmental and stress context",
+      "requirement": "Record major temperature/light interruptions, root-zone stress, drought/saturation events, physical injury, chemical treatments, pruning, and disease pressure without assuming any one event caused the phenotype."
+    },
+    {
+      "field": "Follow-up and recurrence",
+      "requirement": "Record whether additional structures appeared, pollen was released, seeds formed, the trait recurred in clones or relatives, and whether affected material was retained, isolated, or excluded from breeding."
     }
   ],
   "misconceptions": [
@@ -58,7 +69,7 @@
     "A feminized seed makes intersex expression impossible: Feminized describes the breeding method and expected sex ratio, not a guarantee against every expression outcome."
   ],
   "evidenceLimits": [
-    "Sex expression mechanisms are complex and genotype-dependent. Avoid claiming a single cause without controlled evidence or repeated lineage records."
+    "Cannabis sex expression is influenced by genetics, developmental state, hormone signaling, and environment, but the relative contribution of each factor differs among genotypes and experiments. An isolated intersex flower does not establish a universal stress mechanism, while a feminized seed does not guarantee zero probability of unexpected staminate expression. Causal claims should rely on controlled treatment or repeated lineage evidence rather than retrospective association with one environmental event."
   ],
   "crossLinks": "THC-ENC-016–018, THC-ENC-173–176, THC-ENC-227–237, and breeding records.",
   "sourceNotes": [
