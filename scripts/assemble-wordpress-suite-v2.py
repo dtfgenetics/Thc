@@ -360,6 +360,8 @@ for variable in ("targets", "required", "exact_files"):
     payload = replace_once(payload, old, old + addition, f"build manifest {variable}")
     evidence = b"\n        'data/research/evidence/latest.json'," if variable != "exact_files" else b"'data/research/evidence/latest.json',"
     payload = replace_once(payload, old, old + evidence, f"research evidence {variable}")
+    sitemap = b"\n        'sitemap.xml'," if variable != "exact_files" else b"'sitemap.xml',"
+    payload = replace_once(payload, old, old + sitemap, f"canonical sitemap {variable}")
 
 final_actual = hashlib.sha256(payload).hexdigest()
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
