@@ -23,7 +23,7 @@ Generated from canonical repository state on 2026-10-06 UTC.
 
 | Repository | SHA | Open PRs |
 | --- | --- | ---: |
-| dtfgenetics/Thc | `6591e05ad61e96abaed43c4d3f6e712479ec1ba2` | 13 |
+| dtfgenetics/Thc | `c691841b701b20eeac6a72f92a67418976c2b05c` | 7 |
 | dtfgenetics/thc-grow-hub | `48b05b31523012793c5558f59af01d8a7b63c0fb` | 1 |
 | dtfgenetics/Thc-learning-courses- | `2ee9fe91c7da16eea6136eee064e6e2df08a3bda` | 0 |
 | dtfgenetics/Tools | `49b6cd302a5131e1d0ac9cfcde7462b44b938431` | 1 |
@@ -32,3 +32,7 @@ Generated from canonical repository state on 2026-10-06 UTC.
 ## Operating rule
 
 Optimize for **closed blockers, verified live routes, and retired stale branches**. A merge is not production success; source, test, package, attestation, deploy, live verification, and checkpoint evidence remain separate release states.
+
+## 2026-10-06 convergence audit
+
+The live-copy audit hardening is merged as PR #2079. Stale/superseded PRs #2015, #2019, #2034, #2056, #2062, and #2063 were closed after comparing them with current canonical source ownership and newer integrated work. The production repository now has 7 active pull requests.
