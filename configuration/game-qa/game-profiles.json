@@ -917,5 +917,19 @@
         "telemetry-capture"
       ]
     }
+  },
+  "assignments": {
+    "pheno-hunter": {
+      "gameplayProfile": "casual-puzzle",
+      "rendererProfile": "dom",
+      "sessionProfile": "short",
+      "persistenceProfile": "progress",
+      "networkProfile": "local",
+      "contentProfile": "database-driven",
+      "performanceProfile": "tiny-ui",
+      "securityProfile": "local",
+      "accessibilityProfile": "text-ui",
+      "autonomousPlaytestProfile": "controllable"
+    }
   }
 }
