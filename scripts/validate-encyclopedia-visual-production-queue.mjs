@@ -62,7 +62,7 @@ for (const item of items) {
     else {
       for (const assetPath of item.canonicalAssetPaths) {
         if (!fs.existsSync(path.join(root, assetPath))) errors.push(`${item.lessonId}: visual candidate is missing from the repository: ${assetPath}`);
-        if (!/\\.(?:png|jpe?g|webp)$/i.test(String(assetPath))) errors.push(`${item.lessonId}: production visual candidate must be raster: ${assetPath}`);
+        if (!rasterPathPattern.test(String(assetPath))) errors.push(`${item.lessonId}: production visual candidate must be raster: ${assetPath}`);
       }
       if (Number(item.assetCandidateCount) !== item.canonicalAssetPaths.length) errors.push(`${item.lessonId}: asset candidate count does not match canonical asset paths.`);
     }
