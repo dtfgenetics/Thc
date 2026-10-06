@@ -101,7 +101,7 @@ describe('GrowLens canonical observation producer', () => {
       provenance: {
         method: 'growlens-observation',
         estimated: false,
-        derived: true,
+        derived: false,
       },
     });
     expect(result.canonicalRecord.values.candidateDifferentials).toEqual(['Heat stress', 'Root-zone stress']);
@@ -110,7 +110,9 @@ describe('GrowLens canonical observation producer', () => {
       locationOnPlant: 'upper-canopy',
       tissue: 'leaf',
       environmentObservedAt: '2026-10-05T00:45:00.000Z',
+      environmentAgeMinutes: 15,
       irrigationObservedAt: '2026-10-05T00:30:00.000Z',
+      irrigationAgeMinutes: 30,
       contextRecordIds: ['reading-before', 'irrigation-before'],
     });
     expect(result.canonicalRecord.metrics).toMatchObject({
@@ -133,7 +135,8 @@ describe('GrowLens canonical observation producer', () => {
       inputEcMsCm: 'mS/cm',
     });
     expect(result.canonicalRecord.values.recentInterventions?.[0]).toContain('training');
-    expect(result.canonicalRecord.provenance.derived).toBe(true);
+    expect(result.canonicalRecord.values.recentInterventionAgesMinutes).toEqual([180]);
+    expect(result.canonicalRecord.provenance.derived).toBe(false);
     expect(result.canonicalRecord.mediaRefs).toHaveLength(1);
   });
 
@@ -150,6 +153,37 @@ describe('GrowLens canonical observation producer', () => {
 
     expect(result.canonicalRecord.values).not.toHaveProperty('diagnosis');
     expect(result.canonicalRecord.provenance.estimated).toBe(false);
+    expect(result.canonicalRecord.provenance.derived).toBe(false);
+  });
+
+
+  it('preserves exact source time and age even when context is old instead of silently declaring it fresh', () => {
+    const result = createGrowLensObservationArtifacts({
+      id: 'observation-old-context',
+      plantId: 'plant-12345678',
+      symptoms: ['chlorosis'],
+      notes: '',
+      candidateDifferentials: [],
+      photoIds: [],
+      observedAt,
+    }, {
+      ...state,
+      readings: [{
+        id: 'reading-old',
+        spaceId: 'space-12345678',
+        temperatureC: 24,
+        humidity: 62,
+        ppfd: 500,
+        createdAt: '2026-10-03T01:00:00.000Z',
+      }],
+      irrigationRecords: [],
+      feedingRecords: [],
+      diary: [],
+    });
+
+    expect(result.canonicalRecord.metrics.temperatureC).toBe(24);
+    expect(result.canonicalRecord.values.environmentObservedAt).toBe('2026-10-03T01:00:00.000Z');
+    expect(result.canonicalRecord.values.environmentAgeMinutes).toBe(2880);
     expect(result.canonicalRecord.provenance.derived).toBe(false);
   });
 
