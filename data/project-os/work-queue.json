@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-06T09:34:00Z",
+  "updatedAt": "2026-10-06T10:02:00Z",
   "items": [
     {
       "workItemId": "project-os.queue-contract-v1",
@@ -81,7 +81,7 @@
         "collisionRisk": 1,
         "score": 64
       },
-      "state": "review",
+      "state": "done",
       "dependencies": [
         "project-os.queue-contract-v1"
       ],
@@ -89,32 +89,32 @@
         {
           "id": "coverage",
           "description": "All nine required project types have explicit completion contracts.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS Quality Gate and repository CI"
         },
         {
           "id": "validation",
           "description": "Malformed or incomplete completion contracts are rejected deterministically.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS Quality Gate and repository CI"
         },
         {
           "id": "integration",
           "description": "Definitions-of-Done verification is part of verify:project-os.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS Quality Gate and repository CI"
         }
       ],
       "branch": "work/platform/project-os-dod-v1/20261006",
       "pullRequest": 2075,
       "baseSha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
-      "headSha": null,
+      "headSha": "627f9feb2f26588627d352f037e257389d84407d",
       "lease": null,
       "tests": [
         {
           "name": "project-os-dod",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 Project OS Quality Gate"
         }
       ],
       "deployment": {
@@ -123,8 +123,8 @@
         "verifiedAt": null
       },
       "blocker": null,
-      "lastAction": "Added machine-readable project-type Definitions of Done, validator, fixtures, and Project OS gate integration.",
-      "nextAction": "Open PR and require exact-head CI before promoting acceptance criteria.",
+      "lastAction": "Merged PR #2075 with exact-head repository, Project OS, security, game, GrowLens, responsive, Encyclopedia, and release gates green.",
+      "nextAction": null,
       "evidence": [
         "data/project-os/definitions-of-done.json",
         "scripts/validate-project-os-definitions-of-done.mjs",
@@ -132,8 +132,8 @@
       ],
       "timestamps": {
         "createdAt": "2026-10-06T09:24:00Z",
-        "updatedAt": "2026-10-06T09:24:00Z",
-        "completedAt": null
+        "updatedAt": "2026-10-06T09:54:55Z",
+        "completedAt": "2026-10-06T09:54:55Z"
       }
     },
     {
@@ -150,7 +150,7 @@
         "collisionRisk": 1,
         "score": 69
       },
-      "state": "review",
+      "state": "done",
       "dependencies": [
         "project-os.definitions-of-done-v1"
       ],
@@ -158,38 +158,38 @@
         {
           "id": "domains",
           "description": "Canonical acceptance domains cover Encyclopedia, Tools, Games, Academy, GrowLens, critical assets, and release infrastructure.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS Quality Gate and repository CI"
         },
         {
           "id": "sources",
           "description": "Acceptance domains point to existing canonical registries/targets.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS Quality Gate and repository CI"
         },
         {
           "id": "fixtures",
           "description": "Duplicate domains, missing validators/sources, and invalid live requirements are rejected.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS Quality Gate and repository CI"
         },
         {
           "id": "integration",
           "description": "Acceptance-manifest verification is part of verify:project-os.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS Quality Gate and repository CI"
         }
       ],
       "branch": "work/platform/project-os-dod-v1/20261006",
       "pullRequest": 2075,
       "baseSha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
-      "headSha": null,
+      "headSha": "627f9feb2f26588627d352f037e257389d84407d",
       "lease": null,
       "tests": [
         {
           "name": "project-os-acceptance",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 Project OS Quality Gate"
         }
       ],
       "deployment": {
@@ -198,8 +198,8 @@
         "verifiedAt": null
       },
       "blocker": null,
-      "lastAction": "Added registry-backed acceptance manifests, validator, negative fixtures, and Project OS gate integration.",
-      "nextAction": "Require exact-head CI before promoting acceptance evidence.",
+      "lastAction": "Merged PR #2075 with registry-backed acceptance manifests validated against canonical sources.",
+      "nextAction": null,
       "evidence": [
         "data/project-os/acceptance-manifests.json",
         "scripts/validate-project-os-acceptance-manifests.mjs",
@@ -207,7 +207,341 @@
       ],
       "timestamps": {
         "createdAt": "2026-10-06T09:34:00Z",
-        "updatedAt": "2026-10-06T09:34:00Z",
+        "updatedAt": "2026-10-06T09:54:55Z",
+        "completedAt": "2026-10-06T09:54:55Z"
+      }
+    },
+    {
+      "workItemId": "platform.crossword-production-repair-20261006",
+      "project": "games",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 5,
+        "userImpact": 5,
+        "productionExposure": 5,
+        "unblockValue": 5,
+        "ageDays": 0,
+        "complexity": 3,
+        "collisionRisk": 1,
+        "score": 91
+      },
+      "state": "done",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "source-gate",
+          "description": "Pinned Crossword source installs, tests, verifies, builds, and validates production route/assets.",
+          "status": "passed",
+          "evidence": "merged PR #2071 Validate Crossword Release Source"
+        },
+        {
+          "id": "deployment",
+          "description": "Public Suite transactional deployment and canonical game-route promotion succeed.",
+          "status": "passed",
+          "evidence": "workflow run 37443275174"
+        },
+        {
+          "id": "live-verification",
+          "description": "Registered suite and external candidate game live verification passes.",
+          "status": "passed",
+          "evidence": "workflow run 37443275174 Verify current suite-owned public application surfaces + Verify external release candidate games live"
+        }
+      ],
+      "branch": "work/platform/production-closure/20261006-crossword-seo",
+      "pullRequest": 2071,
+      "baseSha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
+      "headSha": "2071d6542edb0fbaefbaa3b0ad2af268ad1c08d1",
+      "lease": null,
+      "tests": [
+        {
+          "name": "Validate Crossword Release Source",
+          "status": "passed",
+          "evidence": "PR #2071"
+        },
+        {
+          "name": "Public Suite deployment",
+          "status": "passed",
+          "evidence": "run 37443275174"
+        }
+      ],
+      "deployment": {
+        "state": "verified_live",
+        "fingerprint": "crossword-production-repair-2026-10-06",
+        "verifiedAt": "2026-10-06T09:38:23Z"
+      },
+      "blocker": null,
+      "lastAction": "Completed transactional Public Suite deploy and live suite/game verification.",
+      "nextAction": null,
+      "evidence": [
+        "PR #2071",
+        "workflow run 37443275174"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T09:26:00Z",
+        "updatedAt": "2026-10-06T09:38:23Z",
+        "completedAt": "2026-10-06T09:38:23Z"
+      }
+    },
+    {
+      "workItemId": "tools.live-verification-pin-49b6cd3",
+      "project": "tools",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 4,
+        "userImpact": 4,
+        "productionExposure": 4,
+        "unblockValue": 4,
+        "ageDays": 0,
+        "complexity": 2,
+        "collisionRisk": 1,
+        "score": 69
+      },
+      "state": "done",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "canonical-pin",
+          "description": "Integration repo pins canonical Tools verifier-strengthened revision.",
+          "status": "passed",
+          "evidence": "PR #2078 merged"
+        },
+        {
+          "id": "all-routes",
+          "description": "All 23 registered Tools routes return substantive live pages.",
+          "status": "passed",
+          "evidence": "2026-10-06 live verification"
+        },
+        {
+          "id": "marker",
+          "description": "Tools hub exposes strengthened source marker.",
+          "status": "passed",
+          "evidence": "live /tools/ contains Tool count updates automatically"
+        }
+      ],
+      "branch": "work/platform/tools-pin-49b6cd3-r3/20261006",
+      "pullRequest": 2078,
+      "baseSha": "dbb301006483837868340660f54979b6f0d8dfcd",
+      "headSha": "5c2f4707edd1d7622fa520764b4ac35f3ee54c86",
+      "lease": null,
+      "tests": [
+        {
+          "name": "canonical-tools-mirror",
+          "status": "passed",
+          "evidence": "PR #2078 Canonical tool mirror guard"
+        }
+      ],
+      "deployment": {
+        "state": "verified_live",
+        "fingerprint": "Tools@49b6cd302a5131e1d0ac9cfcde7462b44b938431",
+        "verifiedAt": "2026-10-06T09:43:00Z"
+      },
+      "blocker": null,
+      "lastAction": "Merged canonical Tools pin after 23/23 live route verification.",
+      "nextAction": null,
+      "evidence": [
+        "PR #2078",
+        "dtfgenetics/Tools@49b6cd302a5131e1d0ac9cfcde7462b44b938431"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T09:26:45Z",
+        "updatedAt": "2026-10-06T09:43:00Z",
+        "completedAt": "2026-10-06T09:43:00Z"
+      }
+    },
+    {
+      "workItemId": "genetics.seeds-seo-release-contract",
+      "project": "genetics",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 4,
+        "userImpact": 4,
+        "productionExposure": 5,
+        "unblockValue": 4,
+        "ageDays": 0,
+        "complexity": 3,
+        "collisionRisk": 1,
+        "score": 71
+      },
+      "state": "done",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "metadata-contract",
+          "description": "Seeds metadata is genetics-owned and bounded by validated title/description limits.",
+          "status": "passed",
+          "evidence": "PR #2040 merged"
+        },
+        {
+          "id": "publish",
+          "description": "Seeds library, reviewed cards, and metadata reconcile through genetics production workflow.",
+          "status": "passed",
+          "evidence": "workflow run 37443465939"
+        },
+        {
+          "id": "cache-acceptance",
+          "description": "LiteSpeed purge and authoritative REST/public cache convergence succeed.",
+          "status": "passed",
+          "evidence": "workflow run 37443465939"
+        }
+      ],
+      "branch": "work/genetics/seeds-seo-contract/20261005-chatgpt",
+      "pullRequest": 2040,
+      "baseSha": "1b770998cb3dde5ab39103b00d7ca6dc82b0de83",
+      "headSha": "a90485c62ec6ed647629f848f1b7dd6b4dd2a25c",
+      "lease": null,
+      "tests": [
+        {
+          "name": "Genetics Library Coherence CI",
+          "status": "passed",
+          "evidence": "PR #2040"
+        }
+      ],
+      "deployment": {
+        "state": "verified_live",
+        "fingerprint": "dbb301006483837868340660f54979b6f0d8dfcd",
+        "verifiedAt": "2026-10-06T09:37:00Z"
+      },
+      "blocker": null,
+      "lastAction": "Merged #2040 and completed genetics production publication, metadata reconciliation, cache purge, public acceptance, and evidence upload.",
+      "nextAction": null,
+      "evidence": [
+        "PR #2040",
+        "workflow run 37443465939"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T01:19:35Z",
+        "updatedAt": "2026-10-06T09:37:00Z",
+        "completedAt": "2026-10-06T09:37:00Z"
+      }
+    },
+    {
+      "workItemId": "growlens.measured-context-r3",
+      "project": "growlens",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 4,
+        "userImpact": 4,
+        "productionExposure": 4,
+        "unblockValue": 5,
+        "ageDays": 0,
+        "complexity": 2,
+        "collisionRisk": 1,
+        "score": 73
+      },
+      "state": "review",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "growlens",
+          "description": "GrowLens canonical observation context tests pass.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "public-suite",
+          "description": "Public Suite build/qualification and publishability gates pass.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "security-quality",
+          "description": "CodeQL, Project OS, responsive, web-quality and release-hardening gates pass.",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "branch": "work/growlens/observation-context/20261006-r3",
+      "pullRequest": 2090,
+      "baseSha": "5c20db360ebd343e605f9ddafdbedf60a5bb3302",
+      "headSha": "e057a06c4481c10043df767361972cf3ebb2e05a",
+      "lease": null,
+      "tests": [
+        {
+          "name": "exact-head CI",
+          "status": "running",
+          "evidence": "PR #2090"
+        }
+      ],
+      "deployment": {
+        "state": "not_deployed",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": "Fresh exact-head CI is queued.",
+      "lastAction": "Replayed measured-context enrichment onto latest main.",
+      "nextAction": "Merge only after all exact-head gates are green, then verify production publication/live GrowLens behavior.",
+      "evidence": [
+        "PR #2090",
+        "Thc-dataset PR #432 merged"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T10:00:27Z",
+        "updatedAt": "2026-10-06T10:02:00Z",
+        "completedAt": null
+      }
+    },
+    {
+      "workItemId": "games.high-lines-control-bridge-r3",
+      "project": "games",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 3,
+        "userImpact": 3,
+        "productionExposure": 3,
+        "unblockValue": 4,
+        "ageDays": 0,
+        "complexity": 2,
+        "collisionRisk": 1,
+        "score": 53
+      },
+      "state": "review",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "high-lines",
+          "description": "High Lines runtime/control bridge tests pass without hidden-answer exposure.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "game-gates",
+          "description": "Game portfolio, route, release-integrity and workspace gates pass.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "security-release",
+          "description": "CodeQL, Public Suite qualification, Project OS, publishability and web-quality gates pass.",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "branch": "work/high-lines/agent-controls/20261006-r3",
+      "pullRequest": 2091,
+      "baseSha": "5c20db360ebd343e605f9ddafdbedf60a5bb3302",
+      "headSha": "8762149e2aaa31c879f526351fc984ffaef43803",
+      "lease": null,
+      "tests": [
+        {
+          "name": "exact-head CI",
+          "status": "running",
+          "evidence": "PR #2091"
+        }
+      ],
+      "deployment": {
+        "state": "not_deployed",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": "Fresh exact-head CI is queued.",
+      "lastAction": "Replayed High Lines control bridge after canonical Tools convergence.",
+      "nextAction": "Merge only after all exact-head game/release/security gates are green.",
+      "evidence": [
+        "PR #2091"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T10:00:39Z",
+        "updatedAt": "2026-10-06T10:02:00Z",
         "completedAt": null
       }
     }
