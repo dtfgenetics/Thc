@@ -19,8 +19,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: encyclopedia-visual-production-batches
-  cancel-in-progress: false
+  group: encyclopedia-visual-production-batches-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   build:
