@@ -362,6 +362,8 @@ for variable in ("targets", "required", "exact_files"):
     payload = replace_once(payload, old, old + evidence, f"research evidence {variable}")
     sitemap = b"\n        'sitemap.xml'," if variable != "exact_files" else b"'sitemap.xml',"
     payload = replace_once(payload, old, old + sitemap, f"canonical sitemap {variable}")
+    fingerprint = b"\n        'assets/project-os-release-fingerprint.json'," if variable != "exact_files" else b"'assets/project-os-release-fingerprint.json',"
+    payload = replace_once(payload, old, old + fingerprint, f"Project OS release fingerprint {variable}")
 
 final_actual = hashlib.sha256(payload).hexdigest()
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
