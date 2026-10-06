@@ -1,0 +1,45 @@
+name: Pheno Hunter CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - games/pheno-hunter/**
+      - site/public-route-patch/games/pheno-hunter/**
+      - .github/workflows/pheno-hunter-ci.yml
+  push:
+    branches: [main]
+    paths:
+      - games/pheno-hunter/**
+      - site/public-route-patch/games/pheno-hunter/**
+      - .github/workflows/pheno-hunter-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Enforce browser-tool policy
+        run: node scripts/verify-browser-tool-policy.mjs
+      - name: Validate candidate bank and public copy
+        run: node games/pheno-hunter/scripts/validate-data.mjs
+      - name: Run deterministic scouting engine tests
+        run: node games/pheno-hunter/test/engine.test.mjs
+      - name: Validate public runtime contract
+        run: node games/pheno-hunter/test/public-runtime.test.mjs
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/pheno-hunter/app.js
+          node --check site/public-route-patch/games/pheno-hunter/engine.mjs
+      - name: Verify canonical and public mirrors
+        run: |
+          cmp games/pheno-hunter/src/engine.mjs site/public-route-patch/games/pheno-hunter/engine.mjs
+          cmp games/pheno-hunter/data/phenos.json site/public-route-patch/games/pheno-hunter/data/phenos.json
