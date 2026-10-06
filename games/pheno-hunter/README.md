@@ -30,3 +30,5 @@ All candidate names, families, scores, and target briefs are fictional game data
 - Tests: `games/pheno-hunter/test/engine.test.mjs`
 - Validator: `games/pheno-hunter/scripts/validate-data.mjs`
 - Public route: `site/public-route-patch/games/pheno-hunter/`
+
+Integration status: vertical slice. Packaging and route registration are present, but public promotion remains blocked on browser, mobile, accessibility, and exact live-route verification.
