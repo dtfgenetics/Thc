@@ -32,6 +32,8 @@ for(const batch of batches){
     seen.add(taskId);
     if(!/^THC-ENC-\d{3}$/.test(item.lessonId)) errors.push(`${item.lessonId}: invalid lesson ID`);
     if(!item.visualRole || !Number.isInteger(item.visualOrdinal) || item.visualOrdinal<1 || item.visualOrdinal>10) errors.push(`${item.lessonId}: missing or invalid visual role/ordinal`);
+    if(!item.teachingIntent || !item.productionBrief) errors.push(`${item.lessonId}:${item.visualRole}: missing role-specific teaching intent or production brief`);
+    if(!item.altTextDraft || !item.captionDraft) errors.push(`${item.lessonId}:${item.visualRole}: missing role-specific accessibility copy`);
     if(!/\.png$/i.test(item.targetFilename||'')) errors.push(`${item.lessonId}: target must be PNG`);
     if(!String(item.targetRepositoryPath||'').startsWith('site/wordpress/assets/infographics/')) errors.push(`${item.lessonId}: invalid target path`);
     if(!Array.isArray(item.accuracyRequirements)||item.accuracyRequirements.length<2) errors.push(`${item.lessonId}: insufficient accuracy requirements`);
