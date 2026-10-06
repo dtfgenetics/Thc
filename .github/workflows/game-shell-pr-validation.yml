@@ -47,8 +47,18 @@ jobs:
         run: |
           set -euo pipefail
           test -s site/public-route-patch/games/dtf-route.css
+          test -s site/public-route-patch/games/dtf-shell.css
           test -s site/public-route-patch/games/index.html
           grep -Fq '23 playable browser games' site/public-route-patch/games/index.html
+          grep -Fq 'New public game surfaces must use /games/dtf-route.css.' site/public-route-patch/games/dtf-shell.css
+
+          legacy_refs="$(grep -RFl 'dtf-shell.css' site/public-route-patch/games --include='*.html' | sort || true)"
+          expected_legacy='site/public-route-patch/games/strain-showdown/index.html'
+          if [[ "$legacy_refs" != "$expected_legacy" ]]; then
+            echo "dtf-shell.css gained an unexpected consumer. Expected only: $expected_legacy" >&2
+            printf 'Actual consumers:\n%s\n' "$legacy_refs" >&2
+            exit 1
+          fi
           grep -Fq '.route-placeholder-card' site/public-route-patch/games/dtf-route.css
           for slug in weedopolis crossword who-took-it ganjumanji thc-rpg; do
             page="site/public-route-patch/games/$slug/index.html"
