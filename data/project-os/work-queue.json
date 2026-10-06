@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-06T02:30:00Z",
+  "updatedAt": "2026-10-06T09:27:00Z",
   "items": [
     {
       "workItemId": "project-os.queue-contract-v1",
@@ -64,6 +64,159 @@
       "timestamps": {
         "createdAt": "2026-10-06T00:20:00Z",
         "updatedAt": "2026-10-06T02:30:00Z",
+        "completedAt": null
+      }
+    },
+    {
+      "workItemId": "growlens.observation-context-current-main",
+      "project": "growlens",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 4,
+        "userImpact": 4,
+        "productionExposure": 4,
+        "unblockValue": 5,
+        "ageDays": 0,
+        "complexity": 2,
+        "collisionRisk": 1,
+        "score": 73
+      },
+      "state": "review",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "growlens-ci",
+          "description": "GrowLens deterministic test and contract suite passes on exact head.",
+          "status": "passed",
+          "evidence": "PR #2069 GrowLens CI"
+        },
+        {
+          "id": "public-suite",
+          "description": "Public Suite build and qualification pass after Dtf420 overlay contract synchronization.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "security",
+          "description": "CodeQL and release/web quality gates pass on exact head.",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "branch": "work/growlens/observation-context/20261006-current-main",
+      "pullRequest": 2069,
+      "baseSha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
+      "headSha": "340eaa1a47b8ddc5d12aad66692eeb24d03f0965",
+      "lease": null,
+      "tests": [
+        {
+          "name": "GrowLens CI",
+          "status": "passed",
+          "evidence": "GitHub Actions"
+        },
+        {
+          "name": "Public Suite Build Qualification",
+          "status": "running",
+          "evidence": "GitHub Actions"
+        },
+        {
+          "name": "CodeQL Security",
+          "status": "running",
+          "evidence": "GitHub Actions"
+        }
+      ],
+      "deployment": {
+        "state": "not_deployed",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": "Waiting for remaining exact-head Public Suite qualification, CodeQL, and web-quality gates.",
+      "lastAction": "Replayed #2055 on current main after #2067 synchronized the Dtf420 overlay ownership contract.",
+      "nextAction": "Squash merge when all exact-head gates are green, then verify registered production publication and live GrowLens behavior.",
+      "evidence": [
+        "PR #2069",
+        "PR #2067 merged",
+        "Thc-dataset PR #432 merged"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T09:25:14Z",
+        "updatedAt": "2026-10-06T09:27:00Z",
+        "completedAt": null
+      }
+    },
+    {
+      "workItemId": "games.crossword-release-source-platform-replay",
+      "project": "platform",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 4,
+        "userImpact": 5,
+        "productionExposure": 5,
+        "unblockValue": 5,
+        "ageDays": 0,
+        "complexity": 2,
+        "collisionRisk": 1,
+        "score": 83
+      },
+      "state": "review",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "source-validator",
+          "description": "Pinned Crossword source installs, tests, verifies, builds, and satisfies built-route/content assertions.",
+          "status": "passed",
+          "evidence": "PR #2070 Validate Crossword Release Source"
+        },
+        {
+          "id": "lane-safety",
+          "description": "Repository-level validator change passes Parallel Project Safety from platform lane.",
+          "status": "passed",
+          "evidence": "PR #2070 Parallel Project Safety"
+        },
+        {
+          "id": "security",
+          "description": "CodeQL and publishability gates pass on exact head.",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "branch": "work/platform/crossword-release-gate/20261006",
+      "pullRequest": 2070,
+      "baseSha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
+      "headSha": "93b066eed81d24d18cdf8701de287bc21370d0e0",
+      "lease": null,
+      "tests": [
+        {
+          "name": "Validate Crossword Release Source",
+          "status": "passed",
+          "evidence": "GitHub Actions"
+        },
+        {
+          "name": "Parallel Project Safety",
+          "status": "passed",
+          "evidence": "GitHub Actions"
+        },
+        {
+          "name": "CodeQL Security",
+          "status": "queued",
+          "evidence": "GitHub Actions"
+        }
+      ],
+      "deployment": {
+        "state": "not_deployed",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": "Waiting for exact-head CodeQL completion.",
+      "lastAction": "Replayed #2065 onto the repository-prescribed platform integration lane.",
+      "nextAction": "Squash merge after CodeQL is green, then verify live /games/crossword/ and continue route repair if production still returns an error.",
+      "evidence": [
+        "PR #2070",
+        "live /games/crossword/ currently returns internal error"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T09:25:20Z",
+        "updatedAt": "2026-10-06T09:27:00Z",
         "completedAt": null
       }
     }
