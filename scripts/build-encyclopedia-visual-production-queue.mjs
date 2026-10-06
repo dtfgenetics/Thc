@@ -189,7 +189,8 @@ const output = {
     missingToTarget: items.reduce((sum,item)=>sum+item.visualGapCount,0),
     lessonsBelowMinimum: items.filter(item=>item.minimumVisualGapCount>0).length,
     lessonsBelowTarget: items.filter(item=>item.visualGapCount>0).length,
-    artworkNeeded: items.filter(item => item.visualGapCount > 0).length,
+    lessonsWithVisualGaps: items.filter(item => item.visualGapCount > 0).length,
+    visualTasksNeeded: items.reduce((sum,item)=>sum+item.visualGapCount,0),
     artworkProducedReviewPending: items.filter(item => item.assetCandidateCount > 0).length,
     highestPriorityArtworkNeeded: items.filter(item => item.visualGapCount > 0).sort((a,b)=>b.visualPriorityScore-a.visualPriorityScore||b.visualGapCount-a.visualGapCount||a.number-b.number).slice(0,40).map(item=>({lessonId:item.lessonId,visualPriorityScore:item.visualPriorityScore,visualFamily:item.visualFamily,visualGapCount:item.visualGapCount,title:item.title})),
     approvedAssets: items.filter(item => item.approvedAssetId).length
@@ -198,5 +199,5 @@ const output = {
 };
 
 fs.writeFileSync(outPath, `${JSON.stringify(output, null, 2)}\n`);
-console.log(`Encyclopedia visual queue: ${items.length}/${registryState.totalCount} lessons · ${output.summary.currentRasterAssetCount}/${output.summary.fullVisualTarget} target raster visuals present · ${output.summary.missingToMinimum} missing to 8/lesson minimum · ${output.summary.missingToTarget} missing to 10/lesson target · ${output.summary.approvedAssets} approved`);
+console.log(`Encyclopedia visual queue: ${items.length}/${registryState.totalCount} lessons · ${output.summary.roleAddressedRasterAssetCount}/${output.summary.fullVisualTarget} role-addressed target visuals present · ${output.summary.unclassifiedLegacyRasterAssetCount} legacy rasters unclassified · ${output.summary.missingToMinimum} missing to 8/lesson minimum · ${output.summary.missingToTarget} missing to 10/lesson target · ${output.summary.approvedAssets} approved`);
 console.log(`Wrote ${relativePath(root, outPath)}`);
