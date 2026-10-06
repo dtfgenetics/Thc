@@ -68,6 +68,18 @@ const visualRoles = [
   'misconception-correction',
   'summary-reference-graphic'
 ];
+const visualRoleIntent = {
+  'core-concept-overview': 'Orient the learner with a concise visual model of the lesson’s central idea and major relationships.',
+  'labeled-anatomy-or-structure': 'Identify the physical structures, components, or spatial relationships that the learner must recognize.',
+  'mechanism-or-process-sequence': 'Show the causal or chronological steps that explain how the lesson’s process works.',
+  'measurement-or-data-reference': 'Show what is measured, the relevant units or observations, and how to interpret the data without inventing universal targets.',
+  'comparison-or-contrast': 'Contrast closely related states, methods, structures, or outcomes so meaningful differences are visible.',
+  'diagnostic-or-observation-example': 'Show observable evidence and distinguishing cues while preserving uncertainty and avoiding diagnosis from appearance alone.',
+  'environment-or-cultivation-context': 'Place the concept in realistic plant, environment, or cultivation context and show important interactions.',
+  'microscopy-or-detail-view': 'Magnify a fine structure or small-scale feature that is difficult to understand at normal viewing scale.',
+  'misconception-correction': 'Visually contrast a common misconception with the evidence-supported interpretation taught by the lesson.',
+  'summary-reference-graphic': 'Provide a compact review graphic that reinforces the lesson’s terminology, relationships, and practical takeaways.'
+};
 const minimumVisualsPerLesson = 8;
 const targetVisualsPerLesson = visualRoles.length;
 
@@ -98,7 +110,11 @@ const items = lessons.map(lesson => {
       role,
       ordinal: index + 1,
       status: assetPath ? 'raster_artwork_produced_review_pending' : 'brief_ready_raster_artwork_needed',
-      canonicalAssetPath: assetPath ? relativePath(root, assetPath) : null
+      canonicalAssetPath: assetPath ? relativePath(root, assetPath) : null,
+      teachingIntent: visualRoleIntent[role],
+      productionBrief: `${visualRoleIntent[role]} Lesson: ${lesson.title}. Objective: ${lesson.objective || 'Explain the controlled lesson concept.'} Use the lesson accuracy requirements, labels, misconception guards, and source anchors; do not add unsupported numerical targets or claims.`,
+      altTextDraft: `${lesson.title}: ${visualRoleIntent[role]}`,
+      captionDraft: `${lesson.title} — ${role.replaceAll('-', ' ')}. Interpret this visual within the lesson context, evidence limits, and measurement method.`
     };
   });
   const roleAddressedAssetCount = assignedVisualRoles.filter(role => role.canonicalAssetPath).length;
