@@ -28,28 +28,30 @@
   ],
   "cultivationRelevance": [
     "Accurate diagrams should label the fruit wall, seed coat, cotyledons, radicle, hypocotyl, and shoot region separately. The radicle is embryonic tissue and should not be illustrated as a green root before emergence.",
-    "Handle achenes as biological inventory: preserve lot identity, avoid crushing or moisture cycling, and test representative samples rather than relying on appearance."
+    "Handle achenes as biological inventory: preserve lot identity, avoid crushing or moisture cycling, and test representative samples rather than relying on appearance.",
+    "Use the anatomical distinction when diagnosing physical damage and during image-based education. A cracked outer fruit wall, a damaged embryo, and poor physiological viability are different problems. Cutting tests, germination tests, radiography, tetrazolium methods, or laboratory seed tests answer different questions; external color alone does not identify which tissue or process failed.",
+    "For inventory management, treat each seed lot as a population sample rather than a bag of interchangeable objects. Preserve source, generation, harvest year, storage history, sample size, germination result, abnormal seedling rate, and retest date. This creates evidence for viability decline and lot-to-lot differences without selecting only visually preferred achenes."
   ],
   "measureAndRecord": [
     {
-      "field": "Lot ID",
-      "requirement": "Source, cross or cultivar, generation, harvest year, and quantity."
+      "field": "Lot identity",
+      "requirement": "Record breeder or source, cross or cultivar, generation, harvest year if known, acquisition date, quantity, package or accession ID, and any parent or batch identifiers. Keep test results linked to this lot rather than only to the commercial name."
     },
     {
-      "field": "Physical condition",
-      "requirement": "Cracked, crushed, malformed, discolored, or apparently intact."
+      "field": "Physical inspection",
+      "requirement": "Using a representative sample, record cracked, crushed, malformed, incompletely filled, discolored, mold-damaged, insect-damaged, or apparently intact units. If size or mass is measured, record the method and do not use appearance as a substitute for viability."
     },
     {
       "field": "Storage history",
-      "requirement": "Temperature, moisture-control method, container, and duration when known."
+      "requirement": "Record container type, estimated moisture-control method, temperature, light exposure, duration, freeze-thaw or moisture-cycling events, and any known interruption in controlled storage. Unknown conditions should be recorded as unknown rather than assumed."
     },
     {
-      "field": "Test sample",
-      "requirement": "Random or representative sample size and selection method."
+      "field": "Viability or germination test",
+      "requirement": "Record randomization or sample-selection method, number tested, test medium, temperature, moisture method, start date, scoring interval, germination definition, test duration, and number of normal, abnormal, ungerminated, hard, or dead units."
     },
     {
-      "field": "Outcome",
-      "requirement": "Normal germination, abnormal seedling, hard or ungerminated, and dead."
+      "field": "Interpretation",
+      "requirement": "Report percentage with sample size and test conditions. Separate physical quality from physiological viability, and avoid conclusions about sex, chemotype, or genetic purity unless those variables were independently tested."
     }
   ],
   "misconceptions": [
@@ -58,12 +60,13 @@
     "The outer shell is only a seed coat: Botanically, the planted unit also includes the fruit wall."
   ],
   "evidenceLimits": [
-    "Everyday cultivation can continue to use the word seed. The anatomical distinction is required when teaching structure, viability testing, and seed development."
+    "Achene anatomy is well supported, but the predictive value of external color, mottling, size, or firmness for cannabis viability is limited and lot-dependent. Germination percentage also depends on the testing method, temperature, moisture, dormancy state, seed age, and scoring criteria. Everyday use of the word 'seed' is acceptable; the term 'achene' is needed when the fruit wall and true seed structures must be distinguished scientifically."
   ],
   "crossLinks": "THC-ENC-008, THC-ENC-021–040, and the seed intake and storage SOP.",
   "sourceNotes": [
     "Mangeot-Peter L. et al. (2023). Development and anatomy of hemp achenes. AoB PLANTS 15(6):plad082.",
-    "Geneve R.L. et al. (2022). Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.). Crops 2(4):415–427."
+    "Geneve R.L. et al. (2022). Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.). Crops 2(4):415–427.",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; seed/achene anatomy, lot traceability, viability, storage, and germination-record framework."
   ],
   "slug": "the-cannabis-achene-what-growers-call-a-seed",
   "route": "/encyclopedia/the-cannabis-achene-what-growers-call-a-seed",
