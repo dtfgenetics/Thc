@@ -220,6 +220,6 @@
     "verify:project-os-dod": "node scripts/validate-project-os-definitions-of-done.mjs && node scripts/test-project-os-definitions-of-done.mjs",
     "verify:project-os-acceptance": "node scripts/validate-project-os-acceptance-manifests.mjs && node scripts/test-project-os-acceptance-manifests.mjs",
     "build:project-os-fingerprint": "node scripts/build-project-os-release-fingerprint.mjs",
-    "verify:project-os-release-proof": "node scripts/test-project-os-release-fingerprint.mjs"
+    "verify:project-os-release-proof": "node scripts/test-project-os-release-fingerprint.mjs && node scripts/test-project-os-release-fingerprint-live.mjs"
   }
 }
