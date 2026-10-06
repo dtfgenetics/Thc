@@ -109,6 +109,16 @@ jobs:
           npm run verify:portfolio
           node scripts/validate-public-navigation.mjs
           grep -Fq '23 playable browser games' site/public-route-patch/games/index.html
+          test -s site/public-route-patch/games/dtf-route.css
+          grep -Fq '.route-placeholder-card' site/public-route-patch/games/dtf-route.css
+          for slug in weedopolis crossword who-took-it ganjumanji thc-rpg; do
+            page="site/public-route-patch/games/$slug/index.html"
+            test -s "$page"
+            grep -Fq 'href="/games/dtf-route.css"' "$page"
+            grep -Fq 'class="route-placeholder"' "$page"
+            grep -Fq 'class="route-placeholder-card"' "$page"
+            ! grep -Fq '<style>' "$page"
+          done
 
       - name: Build canonical sitemap inventory
         run: |
