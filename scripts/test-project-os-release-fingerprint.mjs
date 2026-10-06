@@ -24,5 +24,15 @@ assert.equal(failed.queue.items[0].blocker.type,'live_drift');
 const ok=reconcileQueue(queue,{workItemId:'x',expected,observed:expected,verifiedAt:'2026-10-06T10:01:00Z'});
 assert.equal(ok.queue.items[0].deployment.state,'verified');
 assert.equal(ok.errors.length,0);
+const queuePath=path.join(tmp,'queue.json');
+const observedPath=path.join(tmp,'observed.json');
+fs.writeFileSync(queuePath,JSON.stringify(queue));
+fs.writeFileSync(observedPath,JSON.stringify(wrong));
+const cli=spawnSync(process.execPath,['scripts/reconcile-project-os-deployment.mjs',out,observedPath,'--queue',queuePath,'--work-item','x','--write'],{encoding:'utf8'});
+assert.notEqual(cli.status,0);
+const persisted=JSON.parse(fs.readFileSync(queuePath,'utf8'));
+assert.equal(persisted.items[0].state,'failed');
+assert.equal(persisted.items[0].blocker.type,'live_drift');
+
 fs.rmSync(tmp,{recursive:true,force:true});
 console.log('Project OS release fingerprint tests passed');
