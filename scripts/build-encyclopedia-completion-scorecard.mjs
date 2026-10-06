@@ -28,6 +28,18 @@ for(const lesson of canonicalLessons){
 
 const arr=v=>Array.isArray(v)?v:[];
 const text=v=>String(v??'').trim();
+const flattenText=value=>{
+  if(value==null)return '';
+  if(typeof value==='string'||typeof value==='number'||typeof value==='boolean')return String(value);
+  if(Array.isArray(value))return value.map(flattenText).join(' ');
+  if(typeof value==='object')return Object.values(value).map(flattenText).join(' ');
+  return '';
+};
+const wordCount=value=>flattenText(value).trim().split(/\\s+/).filter(Boolean).length;
+const coreScienceOf=l=>arr(l.coreScience).length?arr(l.coreScience):arr(l.sections?.mechanism);
+const cultivationOf=l=>arr(l.cultivationRelevance).length?arr(l.cultivationRelevance):arr(l.sections?.cultivationRelevance);
+const evidenceLimitsOf=l=>arr(l.evidenceLimits).length?arr(l.evidenceLimits):arr(l.sections?.evidenceLimits);
+const misconceptionsOf=l=>arr(l.misconceptions).length?arr(l.misconceptions):arr(l.sections?.misconceptions);
 const termsOf=l=>arr(l.terms).length?arr(l.terms):arr(l.termsToKnow);
 const measureOf=l=>arr(l.measureAndRecord).length?arr(l.measureAndRecord):arr(l.measurements);
 const measurementGuidanceComplete=l=>{
@@ -71,16 +83,25 @@ const crossOf=l=>{
 function criterion(ok,weight,label){return {label,weight,ok:Boolean(ok),points:ok?weight:0}}
 function scoreLesson(entry){
   const l=lessonById.get(entry.id)||{};
+  const depthMetrics={
+    coreScienceWords:wordCount(coreScienceOf(l)),
+    coreScienceTeachingPoints:coreScienceOf(l).length,
+    cultivationRelevanceWords:wordCount(cultivationOf(l)),
+    measurementGuidanceWords:wordCount(measureOf(l)),
+    misconceptionCount:misconceptionsOf(l).length,
+    evidenceLimitsWords:wordCount(evidenceLimitsOf(l)),
+    sourceCount:sourcesOf(l).length
+  };
   const c=[
     criterion(text(l.objective||arr(l.learningObjectives)[0]).length>=24,8,'objective'),
     criterion(termsOf(l).length>=3,7,'terms'),
-    criterion(arr(l.coreScience).length>=2||arr(l.sections?.mechanism).length>=2,12,'core science'),
-    criterion(arr(l.cultivationRelevance).length>=1||arr(l.sections?.cultivationRelevance).length>=1,8,'cultivation relevance'),
-    criterion(measurementGuidanceComplete(l)||arr(l.sections?.measurementAndRecords).length>=2,10,'measurement guidance'),
-    criterion(arr(l.misconceptions).length>=2||arr(l.sections?.misconceptions).length>=2,7,'misconceptions'),
-    criterion(arr(l.evidenceLimits).length>=1||text(l.evidenceLimits).length>=30||arr(l.sections?.evidenceLimits).length>=1,8,'evidence limits'),
+    criterion(depthMetrics.coreScienceTeachingPoints>=3&&depthMetrics.coreScienceWords>=180,12,'core science'),
+    criterion(depthMetrics.cultivationRelevanceWords>=80,8,'cultivation relevance'),
+    criterion((measurementGuidanceComplete(l)||arr(l.sections?.measurementAndRecords).length>=2)&&depthMetrics.measurementGuidanceWords>=80,10,'measurement guidance'),
+    criterion(depthMetrics.misconceptionCount>=3,7,'misconceptions'),
+    criterion(depthMetrics.evidenceLimitsWords>=35,8,'evidence limits'),
     criterion(crossOf(l).length>=2,8,'cross-links'),
-    criterion(sourcesOf(l).length>=2,12,'source notes / evidence'),
+    criterion(depthMetrics.sourceCount>=3,12,'source notes / evidence'),
     criterion(visualsOf(l).some(v=>v?.assetId&&v?.qaStatus==='approved')||Boolean(l.approvedVisualAssetId),8,'approved teaching visual'),
     criterion(checksOf(l).length>=3,7,'lesson-specific assessment'),
     criterion(Boolean(l.assessmentDesign?.answerRationaleStatus&&l.assessmentDesign.answerRationaleStatus!=='pending_independent_review')||arr(l.assessment?.answerRationales).length>=checksOf(l).length&&checksOf(l).length>=3,3,'assessment rationale / completion'),
@@ -99,7 +120,7 @@ function scoreLesson(entry){
   const publicationAuthorized=l.reviewControl?.publicationAuthorized??l.publicationAuthorized??null;
   return {
     id:entry.id,number:entry.number,part:entry.part,topic:topic?.title||`Part ${entry.part}`,
-    title:entry.title,file:l._file||null,score,maxScore:100,
+    title:entry.title,file:l._file||null,score,maxScore:100,depthMetrics,
     contentScore,contentMaxScore,contentContractComplete,
     readiness:score>=90?'production-candidate':score>=75?'needs-polish':score>=50?'incomplete':'major-gaps',
     publicationAuthorized,
