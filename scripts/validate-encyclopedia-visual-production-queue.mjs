@@ -37,7 +37,13 @@ for (const item of items) {
   if (!item.altTextDraft || !item.captionDraft) errors.push(`${item.lessonId}: accessibility copy is incomplete.`);
   if (item.minimumVisualsRequired !== 8 || item.targetVisuals !== 10) errors.push(`${item.lessonId}: visual depth contract must require minimum 8 and target 10 visuals.`);
   if (!Array.isArray(item.visualRoles) || item.visualRoles.length !== 10) errors.push(`${item.lessonId}: must define 10 distinct educational visual roles.`);
-  else if (new Set(item.visualRoles.map(role=>role.role)).size !== 10) errors.push(`${item.lessonId}: educational visual roles must be unique.`);
+  else {
+    if (new Set(item.visualRoles.map(role=>role.role)).size !== 10) errors.push(`${item.lessonId}: educational visual roles must be unique.`);
+    for (const role of item.visualRoles) {
+      if (!role.teachingIntent || !role.productionBrief) errors.push(`${item.lessonId}:${role.role}: role-specific teaching intent/brief missing.`);
+      if (!role.altTextDraft || !role.captionDraft) errors.push(`${item.lessonId}:${role.role}: role-specific accessibility copy missing.`);
+    }
+  }
   if (!Number.isInteger(item.roleAddressedAssetCount) || item.roleAddressedAssetCount < 0 || item.roleAddressedAssetCount > 10) errors.push(`${item.lessonId}: role-addressed asset count is invalid.`);
   if (!Number.isInteger(item.unclassifiedLegacyAssetCount) || item.unclassifiedLegacyAssetCount < 0) errors.push(`${item.lessonId}: unclassified legacy asset count is invalid.`);
   if (Number(item.roleAddressedAssetCount) + Number(item.unclassifiedLegacyAssetCount) !== Number(item.assetCandidateCount)) errors.push(`${item.lessonId}: classified and legacy asset counts must equal candidate count.`);
@@ -60,6 +66,8 @@ for (const item of items) {
     }
     if (item.assetQaStatus !== 'produced_pending_asset_qa') errors.push(`${item.lessonId}: produced artwork must remain pending asset QA.`);
   }
+  if (Number(item.roleAddressedAssetCount || 0) < 10 && Number(item.visualPriorityScore || 0) <= 0) errors.push(`${item.lessonId}: incomplete target visual set must retain positive production priority.`);
+  if (Number(item.roleAddressedAssetCount || 0) >= 10 && Number(item.visualPriorityScore || 0) !== 0) errors.push(`${item.lessonId}: complete target visual set must have zero production priority.`);
   const expectedStatus = item.minimumVisualGapCount > 0 ? 'multi_visual_artwork_needed' : 'minimum_visual_depth_produced_review_pending';
   if (item.productionStatus !== expectedStatus) errors.push(`${item.lessonId}: production status must reflect the 8-visual minimum depth contract.`);
   if (!/pending/.test(String(item.accuracyReview))) errors.push(`${item.lessonId}: accuracy review must remain pending.`);
