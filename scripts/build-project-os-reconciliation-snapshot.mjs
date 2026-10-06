@@ -17,8 +17,12 @@ export function buildGithubSnapshot(queue,pullRequests,{capturedAt='1970-01-01T0
  return {schemaVersion:1,capturedAt,pullRequests:byNumber};
 }
 
+export function isVerifiedDeploymentState(state){
+ return state==='verified'||state==='verified_live';
+}
+
 export function buildLiveSnapshot(queue,fingerprints,{capturedAt='1970-01-01T00:00:00.000Z'}={}){
- const wanted=new Set((queue.items||[]).filter(x=>x.deployment?.state==='verified').map(x=>x.workItemId));
+ const wanted=new Set((queue.items||[]).filter(x=>isVerifiedDeploymentState(x.deployment?.state)).map(x=>x.workItemId));
  const out={};
  for(const [id,value] of Object.entries(fingerprints||{})) if(wanted.has(id)) out[id]=value;
  return {schemaVersion:1,capturedAt,workItems:out};
