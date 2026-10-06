@@ -8,7 +8,7 @@
 
 ## Public playable catalog
 
-The current controlled catalog contains **24 public-route games**. A public route is not the same as exact live verification; use each entry’s release state and verification evidence.
+The current controlled catalog contains **23 public-route games**. A public route is not the same as exact live verification; use each entry’s release state and verification evidence.
 
 1. **Bud or Bluff** — `bud-or-bluff` — /games/bud-or-bluff/ — `public-unverified`
 2. **Burn Buds** — `protect-the-plants` — /games/protect-the-plants/ — `public-unverified`
@@ -23,22 +23,22 @@ The current controlled catalog contains **24 public-route games**. A public rout
 11. **Lost in the Terps** — `lost-in-the-terps` — /games/lost-in-the-terps/ — `public-unverified`
 12. **Mystery Strain** — `mystery-strain` — /games/mystery-strain/ — `public-unverified`
 13. **Pheno Draft** — `pheno-draft` — /games/pheno-draft/ — `public-unverified`
-14. **Pheno Hunter** — `pheno-hunter` — /games/pheno-hunter/ — `public-unverified`
-15. **PhenoQuest: The Living Seed Vault** — `phenoquest` — /games/phenoquest/ — `public-unverified`
-16. **Seed Man: Grow. Fight. Restore.** — `seed-man-platformer` — /games/seed-man-platformer/ — `public-unverified`
-17. **Spin the Strain** — `spin-the-strain` — /games/spin-the-strain/ — `public-unverified`
-18. **Strain Match** — `strain-match` — /games/strain-match/ — `public-unverified`
-19. **Strain Showdown** — `strain-showdown` — /games/strain-showdown/ — `public-unverified`
-20. **Terpocalypse: Grow Room From Hell** — `terpocalypse` — /games/terpocalypse/ — `public-unverified`
-21. **THC Daily Crossword** — `crossword` — /games/crossword/ — `public-unverified`
-22. **Trichome Trials** — `trichome-trials` — /games/trichome-trials/ — `public-unverified`
-23. **Weedopolis: Strain City Edition** — `weedopolis` — /games/weedopolis/ — `public-unverified`
-24. **Who Took It?** — `who-took-it` — /games/who-took-it/ — `public-unverified`
+14. **PhenoQuest: The Living Seed Vault** — `phenoquest` — /games/phenoquest/ — `public-unverified`
+15. **Seed Man: Grow. Fight. Restore.** — `seed-man-platformer` — /games/seed-man-platformer/ — `public-unverified`
+16. **Spin the Strain** — `spin-the-strain` — /games/spin-the-strain/ — `public-unverified`
+17. **Strain Match** — `strain-match` — /games/strain-match/ — `public-unverified`
+18. **Strain Showdown** — `strain-showdown` — /games/strain-showdown/ — `public-unverified`
+19. **Terpocalypse: Grow Room From Hell** — `terpocalypse` — /games/terpocalypse/ — `public-unverified`
+20. **THC Daily Crossword** — `crossword` — /games/crossword/ — `public-unverified`
+21. **Trichome Trials** — `trichome-trials` — /games/trichome-trials/ — `public-unverified`
+22. **Weedopolis: Strain City Edition** — `weedopolis` — /games/weedopolis/ — `public-unverified`
+23. **Who Took It?** — `who-took-it` — /games/who-took-it/ — `public-unverified`
 
 ## Built prototype not yet promoted
 
 - **Ganjumanji: The Lost Grower's Temple** — `packaged` — Publish the qualified package to the DTFSeeds public suite, then verify /games/ganjumanji/ against exact revision 257c5a60c8ec0e7f6a87170f232c37e047458b22.
 - **Kush Kings Chess** — `playable-local` — Configure the five Kush Kings production secrets, run the exact-SHA deploy, pass frontend/API/Socket.IO live verification, then complete two-browser/mobile multiplayer acceptance.
+- **Pheno Hunter** — `vertical-slice` — Pass browser, mobile, accessibility, and exact live-route verification before public promotion.
 - **Quack & Bake: Stoner Duck Race** — `playable-local` — Complete multiplayer/browser presentation QA, lock production ownership/public route, then package through the DTFSeeds release pipeline.
 - **Root Cause** — `vertical-slice` — Reconcile public-hub intent, run full route QA, and promote only after exact live verification.
 - **Seed Man: Seed Ascent** — `playable-local` — Complete game-feel QA and decide final canonical owner/cutover; migration-overlay release remains allowed.
