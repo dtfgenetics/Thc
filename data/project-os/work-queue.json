@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-06T10:24:00Z",
+  "updatedAt": "2026-10-06T10:30:00Z",
   "items": [
     {
       "workItemId": "project-os.queue-contract-v1",
@@ -263,7 +263,7 @@
       ],
       "branch": "work/platform/project-os-release-proof-v1/20261006",
       "pullRequest": null,
-      "baseSha": "bde282176256ee682a795649d7f5d6455aa25257",
+      "baseSha": "f7917aae3b6c1e58c472fd73fbd088c08e21a9ca",
       "headSha": null,
       "lease": null,
       "tests": [
@@ -279,8 +279,8 @@
         "verifiedAt": null
       },
       "blocker": null,
-      "lastAction": "Added deployment fingerprint contract, builder, drift reconciliation, live watchdog, Public Suite build integration, and post-deploy verification.",
-      "nextAction": "Open PR and require exact-head Project OS, security, build, and deployment-workflow validation.",
+      "lastAction": "Rebased release-proof implementation onto current main after upstream production workflow changes; exact-head CI rerun required.",
+      "nextAction": "Require fresh exact-head Project OS, Public Suite, CodeQL, security, and deployment-workflow validation before merge.",
       "evidence": [
         "data/project-os/deployment-fingerprint-contract.json",
         "scripts/build-project-os-release-fingerprint.mjs",
@@ -289,7 +289,7 @@
       ],
       "timestamps": {
         "createdAt": "2026-10-06T10:24:00Z",
-        "updatedAt": "2026-10-06T10:24:00Z",
+        "updatedAt": "2026-10-06T10:30:00Z",
         "completedAt": null
       }
     }
