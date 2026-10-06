@@ -80,6 +80,35 @@ jobs:
           check '/' 'Genetics. Plant science. Tools. Games. Community.' || status=1
           check '/learn/' 'Explore by subject' || status=1
           check '/learn/infographics/' 'Visual plant science and cultivation library.' || status=1
+
+          plain_check() {
+            local path="$1"
+            local marker="$2"
+            local body="$RUNNER_TEMP/plain-$(printf '%s' "$path" | tr '/?' '__').html"
+            local found=0
+            for attempt in 1 2 3 4 5 6; do
+              if curl -4 -fsSL --retry 2 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "https://dtfseeds.com${path}" \
+                -o "$body"; then
+                if grep -Fqi -- "$marker" "$body"; then
+                  found=1
+                  break
+                fi
+              fi
+              sleep 5
+            done
+            if [[ "$found" -eq 1 ]]; then
+              echo "$path plain canonical URL exposes current output"
+            else
+              echo "$path plain canonical URL remains stale after LiteSpeed purge" >&2
+              head -c 1800 "$body" >&2 || true
+              return 1
+            fi
+          }
+
+          plain_check '/tools/' 'Tool count updates automatically' || status=1
           exit "$status"
 
       - name: Report cache repair result
