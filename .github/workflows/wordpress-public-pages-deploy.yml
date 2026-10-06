@@ -104,6 +104,8 @@ jobs:
           grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/community.html
           grep -Fq '/thc-grow-doc/' site/wordpress/pages/learn.html
           grep -Fq '/growlens/' site/wordpress/pages/learn.html
+          grep -Fq 'id="dtf-learn-v5-atlas-alignment"' site/wordpress/pages/learn.html
+          grep -Fq -- '--lime:#9fe870' site/wordpress/pages/learn.html
           grep -Fq 'DTF Field Notes &amp; Updates' site/wordpress/pages/blog.html
           grep -Fq 'Follow what we are learning, building, and releasing.' site/wordpress/pages/blog.html
           grep -Fq 'Game Hub' site/wordpress/pages/blog.html
