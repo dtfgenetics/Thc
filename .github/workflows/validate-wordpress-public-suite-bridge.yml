@@ -129,7 +129,8 @@ jobs:
                   'games/strain-showdown/index.html','games/terpocalypse/index.html','games/terpocalypse/main.js',
                   'games/phenoquest/index.html','games/phenoquest/game.js','games/phenoquest/lineage-runtime.js','games/phenoquest/build-meta.json',
                   'games/weedopolis/index.html','games/crossword/index.html','games/who-took-it/index.html',
-                  'growlens/index.html','thc-grow-doc/index.html','thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'
+                  'growlens/index.html','thc-grow-doc/index.html','thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json',
+                  'assets/project-os-release-fingerprint.json'
               ]
               for path in required: assert path in names, path
               manifest_raw = z.read('.dtf-suite-manifest.json')
@@ -178,6 +179,7 @@ jobs:
               # This fails on missing routes, duplicate routes, and copy drift without
               # maintaining a second hardcoded list of customer-facing slogans.
               'unified shell allowlist': 'games/dtf-shell.css' in text,
+              'Project OS fingerprint exact-file allowlist': "'assets/project-os-release-fingerprint.json'" in text,
               'Protect the Plants deployment scope': 'games/protect-the-plants' in text,
               'Bud or Bluff deployment scope': 'games/bud-or-bluff' in text,
               'Strain Showdown deployment scope': 'games/strain-showdown' in text,
