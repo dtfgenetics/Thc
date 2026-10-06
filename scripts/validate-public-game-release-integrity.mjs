@@ -266,6 +266,24 @@ async function fetchDirect(game, app) {
     return;
   }
 
+  const navGame = (nav.games || []).find((candidate) => candidate.id === game.id);
+  if (navGame?.status === 'play-now') {
+    const placeholderMarkers = [
+      'class="route-placeholder"',
+      'class="route-placeholder-card"',
+      '>Coming Soon<',
+      '>In Development<',
+      '>In QA<',
+      'Deployment in progress',
+      'Check the Game Hub for live status updates'
+    ];
+    const matchedPlaceholder = placeholderMarkers.find((marker) => html.includes(marker));
+    if (matchedPlaceholder) {
+      fail(`${game.id} is marked play-now but live route is serving a placeholder marker: ${matchedPlaceholder}`);
+      return;
+    }
+  }
+
   if (/Pick what is playable\. See what is coming next\./i.test(html) && game.route !== '/games/') {
     fail(`${game.id} is serving the Game Hub fallback instead of its own route.`);
   }
