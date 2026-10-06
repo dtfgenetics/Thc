@@ -5,7 +5,9 @@ import path from 'node:path';
 const root=process.cwd();
 const queuePath=path.join(root,'content','encyclopedia','visual-production-queue-v1.json');
 const outDir=path.join(root,'content','encyclopedia','visual-production-batches');
-const batchSize=Math.max(1,Number(process.env.ENCYCLOPEDIA_VISUAL_BATCH_SIZE||24));
+const requestedBatchSize=Number(process.env.ENCYCLOPEDIA_VISUAL_BATCH_SIZE||24);
+if(!Number.isInteger(requestedBatchSize)||requestedBatchSize<1||requestedBatchSize>100) throw new Error('ENCYCLOPEDIA_VISUAL_BATCH_SIZE must be an integer from 1 to 100.');
+const batchSize=requestedBatchSize;
 const queue=JSON.parse(fs.readFileSync(queuePath,'utf8'));
 const items=(queue.items||[])
   .flatMap(lesson=>(lesson.visualRoles||[])
@@ -117,6 +119,8 @@ const index={
   artworkNeededCount:items.length,
   visualTaskCount:items.length,
   lessonCountWithGaps:new Set(items.map(x=>x.lessonId)).size,
+  sourceVisualTasksNeeded:Number(queue.summary?.visualTasksNeeded||0),
+  sourceLessonsWithVisualGaps:Number(queue.summary?.lessonsWithVisualGaps||0),
   batchCount:batches.length,
   firstBatchLessonIds:batches[0]?.lessonIds||[],
   batches
