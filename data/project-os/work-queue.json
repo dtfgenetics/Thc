@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-06T09:24:00Z",
+  "updatedAt": "2026-10-06T09:29:00Z",
   "items": [
     {
       "workItemId": "project-os.queue-contract-v1",
@@ -16,7 +16,7 @@
         "collisionRisk": 1,
         "score": 67
       },
-      "state": "review",
+      "state": "done",
       "dependencies": [],
       "acceptanceCriteria": [
         {
@@ -28,26 +28,26 @@
         {
           "id": "collision",
           "description": "Duplicate work IDs and conflicting active branches are rejected.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "scripts/test-project-os-work-queue.mjs"
         },
         {
           "id": "stale",
           "description": "Expired leases cannot remain claimed or in progress.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "scripts/test-project-os-work-queue.mjs"
         }
       ],
       "branch": "work/platform/project-os-queue-v1/20261005-2130",
-      "pullRequest": null,
+      "pullRequest": 2058,
       "baseSha": "66098512901a47ad74549e440bb590b98ec10647",
-      "headSha": null,
+      "headSha": "6b7ddbd3af7ed60062658c31c795c12f52fb8a8e",
       "lease": null,
       "tests": [
         {
           "name": "project-os-work-queue",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2058 Project OS Quality Gate at 6b7ddbd3af7ed60062658c31c795c12f52fb8a8e"
         }
       ],
       "deployment": {
@@ -56,15 +56,15 @@
         "verifiedAt": null
       },
       "blocker": null,
-      "lastAction": "Rebased Project OS queue contract, collision/lease fixtures, and deterministic scoring onto current main.",
-      "nextAction": "Run exact-head CI via PR; only then promote pending acceptance criteria.",
+      "lastAction": "Merged PR #2058 after all observed exact-head PR workflows passed.",
+      "nextAction": null,
       "evidence": [
         "data/project-os/work-queue.schema.json"
       ],
       "timestamps": {
         "createdAt": "2026-10-06T00:20:00Z",
-        "updatedAt": "2026-10-06T02:30:00Z",
-        "completedAt": null
+        "updatedAt": "2026-10-06T09:29:00Z",
+        "completedAt": "2026-10-06T09:24:00Z"
       }
     },
     {
