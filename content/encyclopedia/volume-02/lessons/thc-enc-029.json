@@ -24,32 +24,39 @@
   "coreScience": [
     "Germination requires water and oxygen. Water supports hydration and biochemical reactions; oxygen supports aerobic respiration as metabolic demand increases. A saturated paper, plug, or substrate can contain abundant water but insufficient gas exchange, especially when warm, compacted, deep, or sealed.",
     "The correct condition is moist and aerated, not alternately flooded and dry. Substrate texture, compression, container depth, drainage path, water volume, temperature, and seed placement all influence the balance. Visible surface dryness does not necessarily describe moisture at seed depth.",
-    "Low oxygen can constrain aerobic seed metabolism and radicle development; disease risk under wet conditions is a separate, organism- and temperature-dependent process. Insufficient contact between seed and moist substrate can also interrupt imbibition. Do not diagnose either mechanism from surface wetness alone: use a repeatable preparation and watering method and record germination stage, moisture condition, temperature, and disease signs."
+    "Low oxygen can constrain aerobic seed metabolism and radicle development; disease risk under wet conditions is a separate, organism- and temperature-dependent process. Insufficient contact between seed and moist substrate can also interrupt imbibition. Do not diagnose either mechanism from surface wetness alone: use a repeatable preparation and watering method and record germination stage, moisture condition, temperature, and disease signs.",
+    "Oxygen availability is controlled by diffusion as well as concentration. Oxygen diffuses far more slowly through water than through air, so filling connected pore space with water can sharply reduce the rate at which respiring seed and root tissues are resupplied. Warmer temperatures can increase metabolic demand while also changing dissolved-gas behavior, making the interaction among moisture, temperature, pore structure, and respiration more important than any single 'wetness' observation."
   ],
   "cultivationRelevance": [
     "Precondition germination media uniformly, avoid crushing plugs or compacting fine substrate, and provide drainage. In enclosed methods, allow gas exchange while controlling excessive evaporation.",
-    "If germination is slow, inspect water distribution and odor, seed depth, container drainage, and temperature before adding more water."
+    "If germination is slow, inspect water distribution and odor, seed depth, container drainage, and temperature before adding more water.",
+    "Standardize media preparation by mass or measured wetting procedure when comparing trays or lots. Uneven packing and uneven prewetting can create local saturated or dry zones that are invisible from the surface and can make a biological treatment appear inconsistent.",
+    "If damping-off or low-oxygen stress is suspected, separate environmental evidence from disease evidence. Record moisture distribution, drainage, temperature, odor, root/radicle condition, lesions, and pathogen signs or test results where available before changing multiple variables at once."
   ],
   "measureAndRecord": [
     {
       "field": "Media preparation",
-      "requirement": "Material, batch, wetting volume, mixing method, and compaction."
+      "requirement": "Record substrate/material, batch, particle condition, initial dry or premoistened state, wetting volume, mixing method, fill mass or compaction method, and whether all cells/containers were prepared identically."
     },
     {
-      "field": "Container",
-      "requirement": "Cell or pot dimensions, drainage openings, cover, and placement."
+      "field": "Container and drainage",
+      "requirement": "Record cell/pot dimensions, drainage openings, tray/saucer configuration, cover or dome, depth, and any standing-water pathway. Container geometry affects the air-water profile."
     },
     {
       "field": "Water events",
-      "requirement": "Volume, method, time, drainage observation, and standing water."
+      "requirement": "Record irrigation volume, method, time, runoff/drainage observation, standing water, rewetting interval, and whether different positions in the tray receive equal water."
     },
     {
       "field": "Seed-zone condition",
-      "requirement": "Moisture assessment at depth, temperature, odor, and visible films."
+      "requirement": "Assess moisture at seed depth, temperature, odor, visible films/algae, compaction, and whether the zone remains continuously saturated or cycles toward aeration. Surface appearance alone is insufficient."
     },
     {
-      "field": "Outcome",
-      "requirement": "Radicle timing, root color, disease signs, emergence, and survival."
+      "field": "Biological outcome",
+      "requirement": "Record time to radicle protrusion, radicle/root color and firmness, emergence, lesions, collapse, disease signs, survival, and whether symptoms cluster in wetter or poorly drained positions."
+    },
+    {
+      "field": "Differential check",
+      "requirement": "Compare affected and unaffected positions or a lower-water treatment when practical. Record which observations support oxygen limitation, excessive drying, disease, temperature stress, or another explanation."
     }
   ],
   "misconceptions": [
@@ -58,7 +65,7 @@
     "Surface appearance tells the whole root zone: Moisture can differ sharply by depth and container position."
   ],
   "evidenceLimits": [
-    "Precise oxygen thresholds depend on method and equipment. Routine production usually manages risk through media physical properties, drainage, water records, and plant response."
+    "Routine production rarely measures oxygen concentration or diffusion directly, so oxygen limitation is often inferred from physical conditions plus plant response. Exact hypoxia thresholds vary with temperature, developmental stage, medium, microbial activity, and measurement method. Wetness also increases disease risk without proving a pathogen is responsible. Use media physical properties, drainage, moisture history, temperature, and diagnostic evidence together rather than diagnosing from a saturated surface alone."
   ],
   "crossLinks": "THC-ENC-026, THC-ENC-028, THC-ENC-035, THC-ENC-037, and THC-ENC-043.",
   "sourceNotes": [
