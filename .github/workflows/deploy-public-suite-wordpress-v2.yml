@@ -550,7 +550,7 @@ jobs:
             echo "- Atlas verification: ${{ steps.live_atlas.outcome }}"
             echo '- High IQ is resource-owned and intentionally excluded from this transaction and its suite-owned live verification.'
             echo '- High Land remains suite-owned until its independent SSH publisher is proven in production.'
-            echo '- Game Hub verification requires the current 25-game navigation shell while this writer publishes all suite-owned routes.'
+            echo '- Game Hub and Projects verification require the current 23-game public registry while this writer publishes all suite-owned routes.'
             echo '- Who Took It verification requires the current case-board edition marker and its own canonical public route.'
             echo '- PhenoQuest must package as a verified self-contained canonical build.'
             echo '- Terpocalypse must package validated browser runtime JavaScript from the integration snapshot.'
