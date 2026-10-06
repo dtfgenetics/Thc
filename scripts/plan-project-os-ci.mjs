@@ -26,7 +26,7 @@ for(const d of rules.domains){
     for(const c of d.broadChecks||[]) broad.add(c);
   }
 }
-const full=argv.includes('--full')||affected.length>=3;
+const full=argv.includes('--full')||affected.length>=3||files.some(f=>f==='package.json'||f.startsWith('.github/workflows/'));
 const narrowChecks=[...checks].sort();
 const broadChecks=full?[...broad].sort():[];
 const result={schemaVersion:1,changedFiles:files,affectedDomains:affected,fullValidation:full,narrowChecks,broadChecks,checks:[...new Set([...narrowChecks,...broadChecks])]};
