@@ -223,6 +223,7 @@
     "build:project-os-fingerprint": "node scripts/build-project-os-release-fingerprint.mjs",
     "verify:project-os-release-proof": "node scripts/test-project-os-release-fingerprint.mjs && node scripts/test-project-os-release-fingerprint-live.mjs",
     "verify:encyclopedia-lifecycle": "node scripts/validate-encyclopedia-lifecycle.mjs",
-    "audit:encyclopedia-lifecycle:strict": "node scripts/validate-encyclopedia-lifecycle.mjs --strict --write-report"
+    "audit:encyclopedia-lifecycle:strict": "node scripts/validate-encyclopedia-lifecycle.mjs --strict --write-report",
+    "build:encyclopedia-lifecycle-report": "node scripts/validate-encyclopedia-lifecycle.mjs --write-report"
   }
 }
