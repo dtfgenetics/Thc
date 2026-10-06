@@ -21,7 +21,7 @@ Updated: 2026-10-06
 | Lost in the Terps | /games/lost-in-the-terps/ | dtfgenetics/Thc | games/lost-in-the-terps | dtfgenetics/Thc · site/public-route-patch/games/lost-in-the-terps · local-static | `public-unverified` |
 | Mystery Strain | /games/mystery-strain/ | dtfgenetics/Thc | games/mystery-strain | dtfgenetics/Thc · site/public-route-patch/games/mystery-strain · local-static | `public-unverified` |
 | Pheno Draft | /games/pheno-draft/ | dtfgenetics/Thc | games/pheno-draft | dtfgenetics/Thc · site/public-route-patch/games/pheno-draft · local-static | `public-unverified` |
-| Pheno Hunter | /games/pheno-hunter/ | dtfgenetics/Thc | games/pheno-hunter | dtfgenetics/Thc · site/public-route-patch/games/pheno-hunter · local-static | `public-unverified` |
+| Pheno Hunter | /games/pheno-hunter/ | dtfgenetics/Thc | games/pheno-hunter | dtfgenetics/Thc · site/public-route-patch/games/pheno-hunter · local-static | `vertical-slice` |
 | PhenoQuest: The Living Seed Vault | /games/phenoquest/ | dtfgenetics/Catching-phenos | src, data, public/games/phenoquest | dtfgenetics/Thc · site/public-route-patch/games/phenoquest · external-build | `public-unverified` |
 | Quack & Bake: Stoner Duck Race | /games/stoner-duck-race | dtfgenetics/Dtf420 | app/games/stoner-duck-race, game/stoner-duck-race | dtfgenetics/Thc | `playable-local` |
 | Root Cause | /games/root-cause/ | dtfgenetics/Thc | games/root-cause | dtfgenetics/Thc · site/public-route-patch/games/root-cause · static | `vertical-slice` |
