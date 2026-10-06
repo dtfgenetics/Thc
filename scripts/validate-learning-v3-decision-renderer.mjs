@@ -21,16 +21,21 @@ for(const token of [
   'journey.visualRoles',
   'Decision-first learning',
   'How to know the decision worked',
-  'Four ways into one knowledge system',
-  'By stage',
-  'By problem',
-  'By system',
-  'By skill',
+  'Choose your goal',
+  'Start with the question you are trying to answer.',
+  'Four ways into one knowledge system—stage, problem, system, and skill—',
+  'Beginner',
+  'Plant health',
+  'Control',
+  'Breeding',
   'Every strong lesson should answer eight questions',
   'Applied practice',
   'Use the evidence before choosing the answer',
   'topic.practiceScenarios'
 ]) assert(source.includes(token),`Learning V3 canonical renderer is missing required decision-first token: ${token}`);
+
+assert(!source.includes('Find the answer your way'), 'Learning V3 must not restore the redundant secondary Learn entry block');
+assert(!source.includes('<h2>Four ways into one knowledge system.</h2>'), 'Learning V3 must keep a single goal-first entry model');
 
 for(const topic of data.topics||[]){
   const j=topic.learnerJourney||{};
