@@ -11,4 +11,5 @@ assert.equal(full.status,0,full.stderr);
 const fullPlan=JSON.parse(full.stdout);
 assert.equal(fullPlan.fullValidation,true);
 assert.ok(fullPlan.broadChecks.includes('verify:project-os'));
+assert.ok(!fullPlan.narrowChecks.includes('verify:project-os'));
 console.log('Project OS CI plan runner tests passed');
