@@ -1,32 +1,32 @@
 {
   "schema": "dtf-project-os-status@1",
-  "generatedAt": "2026-10-05T01:55:00Z",
+  "generatedAt": "2026-10-06T09:30:00Z",
   "portfolioState": "release-closure",
   "canonicalRepositories": {
     "production": {
       "repo": "dtfgenetics/Thc",
-      "sha": "1ee6137059185709f2e22c5daab843b9a659949d",
-      "openPullRequests": 30
+      "sha": "6591e05ad61e96abaed43c4d3f6e712479ec1ba2",
+      "openPullRequests": 13
     },
     "encyclopedia": {
       "repo": "dtfgenetics/thc-grow-hub",
-      "sha": "874d02b502061544e7cfc3dbc6d43bbecc43c654",
+      "sha": "48b05b31523012793c5558f59af01d8a7b63c0fb",
       "openPullRequests": 1
     },
     "academy": {
       "repo": "dtfgenetics/Thc-learning-courses-",
-      "sha": "ea7b3c7e6d62a51c1b37f332bacc85897d49e5aa",
+      "sha": "2ee9fe91c7da16eea6136eee064e6e2df08a3bda",
       "openPullRequests": 0
     },
     "tools": {
       "repo": "dtfgenetics/Tools",
-      "sha": "c4a7025316875d32028fa7530cb898b2c81c98ce",
-      "openPullRequests": 0
+      "sha": "49b6cd302a5131e1d0ac9cfcde7462b44b938431",
+      "openPullRequests": 1
     },
     "growDoc": {
       "repo": "dtfgenetics/Thc-dataset",
-      "sha": "797c2ca3b4b4ca60cebf82bc105d2be93c06a5e9",
-      "openPullRequests": 4
+      "sha": "6633d50428f41208b72868d05c8217597b7b1e74",
+      "openPullRequests": 0
     }
   },
   "lanes": {
@@ -49,8 +49,8 @@
       "state": "production-closed",
       "evidence": {
         "canonicalRoutes": 23,
-        "liveAvailabilityVerified": "23/23",
-        "canonicalMirrorPinned": "c4a7025316875d32028fa7530cb898b2c81c98ce",
+        "liveAvailabilityVerified": "23-route canonical contract; current source pin advanced to Tools 49b6cd3",
+        "canonicalMirrorPinned": "49b6cd302a5131e1d0ac9cfcde7462b44b938431",
         "runtimeMimeClosure": "PR #1909 merged"
       },
       "remainingOperationalEnhancement": [
@@ -89,16 +89,11 @@
     },
     "growDoc": {
       "state": "evidence-expansion",
-      "openPullRequests": [
-        419,
-        420,
-        422,
-        423
-      ],
+      "openPullRequests": [],
       "remaining": [
         "reference-media depth",
         "hard negative/look-alike evaluation data",
-        "live visual API verifier #1880"
+        "continued live visual API verification"
       ]
     },
     "academy": {
@@ -117,11 +112,16 @@
     "games": {
       "state": "completion-factory",
       "remaining": [
-        "engine-agent readiness",
+        "engine-agent readiness for remaining candidates",
         "browser playtests",
         "mobile/touch QA",
-        "live release verification",
-        "salvage Seed Man and Burn Buds assets through bounded current-main work"
+        "live release verification for candidate and multiplayer runtimes",
+        "continue bounded current-main repair/salvage where browser verification fails"
+      ],
+      "evidence": [
+        "game hub currently exposes 23 playable browser games and 2 live multiplayer tables",
+        "High Land public runtime shell is live",
+        "Weedopolis public game UI is live"
       ]
     },
     "migrationRepos": {
