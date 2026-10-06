@@ -28,28 +28,34 @@
   ],
   "cultivationRelevance": [
     "Stage-based management is more reliable than copying a calendar. Light, irrigation, nutrition, humidity risk, training tolerance, scouting emphasis, and sampling all change with development.",
-    "Record both age and stage. Age supports scheduling; stage supports biological interpretation."
+    "Record both age and stage. Age supports scheduling; stage supports biological interpretation.",
+    "Define management transitions by observable development rather than by a copied schedule. For example, transplant readiness should consider root occupancy and shoot balance; training decisions should consider active meristems and branch structure; reproductive management should use visible preflower and floral development; and harvest planning should use crop-specific maturity observations rather than an assumed number of weeks.",
+    "Stage records also improve interpretation of stress. The same environmental event can have different consequences during seedling establishment, rapid vegetative expansion, floral initiation, seed development, or late senescence. When comparing crops, align observations by developmental stage as well as chronological age so a later or earlier phenotype is not mistaken for a treatment effect."
   ],
   "measureAndRecord": [
     {
-      "field": "Start point",
-      "requirement": "Imbibition date, radicle emergence date, or cutting date."
+      "field": "Biological start point",
+      "requirement": "Record imbibition, radicle emergence, cutting date, rooted-cutting date, or transplant date explicitly. Do not mix these start points when calculating plant age or comparing lots."
     },
     {
-      "field": "Establishment",
-      "requirement": "First true leaves, rooted cutting, and transplant dates."
+      "field": "Establishment milestones",
+      "requirement": "Record cotyledon opening, first true leaves, root emergence for cuttings, transplant date, and any abnormal delay. Include temperature, moisture, oxygen or media conditions when establishment differs from the expected crop baseline."
     },
     {
-      "field": "Vegetative status",
-      "requirement": "Node count, height, branch count, and canopy size."
+      "field": "Vegetative development",
+      "requirement": "At defined intervals record node count, plant height, branch count, canopy dimensions, stem diameter where useful, pruning or training events, and visible vigor. Note whether measurements are chronological-age or stage aligned."
     },
     {
-      "field": "Reproductive milestones",
-      "requirement": "Preflower, induction, first visible flowers, anthesis, or pollination."
+      "field": "Reproductive transition",
+      "requirement": "Record photoperiod schedule, first preflowers, first visible pistillate or staminate flowers, anthesis or pollen shed, and any intersex expression. For day-neutral material, record the same milestones without assuming photoperiod caused transition."
     },
     {
       "field": "Maturity and senescence",
-      "requirement": "Defined observations, harvest date, seed maturity, and tissue decline."
+      "requirement": "Define the observation used for maturity, record harvest or seed-maturity date, tissue decline, leaf senescence pattern, reproductive completion, and whether stress accelerated the decline. Keep maturity criteria separate from calendar week labels."
+    },
+    {
+      "field": "Environmental context",
+      "requirement": "For each milestone, preserve the relevant light schedule, temperature, root-zone condition, major stress events, and propagation method so developmental duration can be compared without implying that time alone caused the difference."
     }
   ],
   "misconceptions": [
@@ -58,7 +64,7 @@
     "Senescence is always a nutrient deficiency: Senescence is regulated, although stress and root-zone problems can accelerate or mimic it."
   ],
   "evidenceLimits": [
-    "The life-cycle framework applies broadly, but stage duration is genotype- and environment-dependent."
+    "Life-cycle stages are broadly transferable, but their timing and visible expression depend on genotype, propagation method, photoperiod sensitivity, temperature, light, root-zone conditions, plant health, and management. Published timelines often describe a particular cultivar or experiment rather than a universal cannabis schedule. Developmental stage should therefore be assigned from defined observations, with calendar age retained as supporting context rather than treated as proof of physiological state."
   ],
   "crossLinks": "THC-ENC-021–040, THC-ENC-221–240, and THC-ENC-361–380.",
   "sourceNotes": [
