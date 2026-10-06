@@ -1,0 +1,31 @@
+name: Project OS Governance
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'data/project-os/research-handoffs.json'
+      - 'data/project-os/security-maintenance.json'
+      - 'data/project-os/archival-readiness.json'
+      - 'scripts/*project-os-governance*'
+      - 'scripts/record-project-os-research-handoff.mjs'
+      - 'scripts/evaluate-project-os-archival-readiness.mjs'
+      - '.github/workflows/project-os-governance.yml'
+      - 'package.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  governance:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run verify:project-os-governance
