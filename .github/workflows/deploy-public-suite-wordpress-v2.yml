@@ -380,8 +380,27 @@ jobs:
           PY
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
 
+      - name: Refuse superseded push before production mutation
+        id: publish_freshness
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" != 'push' ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git fetch --quiet origin main
+          latest="$(git rev-parse origin/main)"
+          if [[ "$latest" == "$GITHUB_SHA" ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'current=false' >> "$GITHUB_OUTPUT"
+            echo "Skipping superseded push deployment $GITHUB_SHA before WordPress mutation; latest main is $latest."
+          fi
+
       - name: Recover stale transaction and remove temporary Public Suite bridges
         id: cleanup
+        if: steps.publish_freshness.outputs.current == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -389,6 +408,7 @@ jobs:
           grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/stale-suite-bridge-cleanup.json"
 
       - name: Publish current Public Suite through transactional WordPress bridge
+        if: steps.publish_freshness.outputs.current == 'true'
         id: publish
         shell: bash
         env:
@@ -399,6 +419,7 @@ jobs:
           grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/deploy-result.log"
 
       - name: Verify Project OS release fingerprint
+        if: steps.publish_freshness.outputs.current == 'true'
         shell: bash
         env:
           SUITE_ROOT: ${{ steps.suite.outputs.root }}
@@ -411,6 +432,7 @@ jobs:
             "https://dtfseeds.com/assets/project-os-release-fingerprint.json"
 
       - name: Verify canonical sitemap publication
+        if: steps.publish_freshness.outputs.current == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -423,6 +445,7 @@ jobs:
           grep -Fq 'https://dtfseeds.com/tools/' <<<"$sitemap"
 
       - name: Promote canonical public game routes
+        if: steps.publish_freshness.outputs.current == 'true'
         id: promote_routes
         shell: bash
         run: |
@@ -430,6 +453,7 @@ jobs:
           node scripts/promote-public-game-routes-via-wordpress.mjs
 
       - name: Verify Atlas live routes
+        if: steps.publish_freshness.outputs.current == 'true'
         id: live_atlas
         shell: bash
         run: |
@@ -448,6 +472,7 @@ jobs:
           done
 
       - name: Verify current suite-owned public application surfaces
+        if: steps.publish_freshness.outputs.current == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -522,6 +547,7 @@ jobs:
           check 'https://dtfseeds.com/applied-learning/' 'Applied Learning Lab'
 
       - name: Verify external release candidate games live
+        if: steps.publish_freshness.outputs.current == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -530,7 +556,7 @@ jobs:
           node scripts/verify-external-release-candidates-live.mjs
 
       - name: Dispatch independent feature-surface verification
-        if: always()
+        if: always() && steps.publish_freshness.outputs.current == 'true'
         shell: bash
         run: |
           set -euo pipefail
