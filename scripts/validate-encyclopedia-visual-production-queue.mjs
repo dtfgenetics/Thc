@@ -8,7 +8,15 @@ const root = process.cwd();
 const queuePath = path.join(root, 'content', 'encyclopedia', 'visual-production-queue-v1.json');
 const errors = [];
 if (!fs.existsSync(queuePath)) errors.push('Visual production queue is missing.');
-const queue = errors.length ? { items: [] } : JSON.parse(fs.readFileSync(queuePath, 'utf8'));
+let queue = { items: [] };
+if (!errors.length) {
+  const rawQueue = fs.readFileSync(queuePath, 'utf8').trim();
+  if (!rawQueue) errors.push('Visual production queue is empty; rebuild it before validation.');
+  else {
+    try { queue = JSON.parse(rawQueue); }
+    catch (error) { errors.push(`Visual production queue is invalid JSON: ${error.message}`); }
+  }
+}
 const canonical = readCanonicalEncyclopediaLessons(root);
 const registryState = loadEncyclopediaRegistry(root);
 const canonicalIds = new Set(canonical.map(lesson => lesson.id));
