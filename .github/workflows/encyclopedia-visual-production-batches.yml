@@ -3,7 +3,9 @@ name: Build THC Encyclopedia Visual Production Batches
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
+      - 'work/encyclopedia/**'
     paths:
       - 'content/encyclopedia/visual-production-queue-v1.json'
       - 'scripts/build-encyclopedia-visual-production-batches.mjs'
@@ -25,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.ref }}
           fetch-depth: 0
 
       - uses: actions/setup-node@v4
@@ -62,7 +64,9 @@ jobs:
           node - <<'NODE'
           const fs=require('fs');
           const index=JSON.parse(fs.readFileSync('content/encyclopedia/visual-production-batches/index.json','utf8'));
-          if(!index.artworkNeededCount || !index.batchCount) throw new Error('Visual production evidence index is incomplete.');
+          if(!Number.isInteger(index.artworkNeededCount) || index.artworkNeededCount < 0 || !Number.isInteger(index.batchCount) || index.batchCount < 0) throw new Error('Visual production evidence index is incomplete.');
+          if(index.artworkNeededCount === 0 && index.batchCount !== 0) throw new Error('Zero artwork-needed lessons must produce zero batches.');
+          if(index.artworkNeededCount > 0 && index.batchCount === 0) throw new Error('Artwork-needed lessons require at least one controlled batch.');
           console.log(`Review-only evidence: ${index.artworkNeededCount} artwork-needed lessons in ${index.batchCount} batches.`);
           NODE
 
