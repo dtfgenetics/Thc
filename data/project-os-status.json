@@ -1,12 +1,12 @@
 {
   "schema": "dtf-project-os-status@1",
-  "generatedAt": "2026-10-06T09:30:00Z",
+  "generatedAt": "2026-10-06T10:00:00Z",
   "portfolioState": "release-closure",
   "canonicalRepositories": {
     "production": {
       "repo": "dtfgenetics/Thc",
-      "sha": "6591e05ad61e96abaed43c4d3f6e712479ec1ba2",
-      "openPullRequests": 13
+      "sha": "c691841b701b20eeac6a72f92a67418976c2b05c",
+      "openPullRequests": 7
     },
     "encyclopedia": {
       "repo": "dtfgenetics/thc-grow-hub",
@@ -116,7 +116,7 @@
         "browser playtests",
         "mobile/touch QA",
         "live release verification for candidate and multiplayer runtimes",
-        "continue bounded current-main repair/salvage where browser verification fails"
+        "replay Pheno Hunter rebuild #2035 on current main or supersede it with a clean current-main branch"
       ],
       "evidence": [
         "game hub currently exposes 23 playable browser games and 2 live multiplayer tables",
@@ -137,5 +137,18 @@
       }
     }
   },
-  "operatingRule": "Optimize for closed blockers, verified live routes, and retired stale branches; do not treat merge success as production success."
+  "operatingRule": "Optimize for closed blockers, verified live routes, and retired stale branches; do not treat merge success as production success.",
+  "auditConvergence": {
+    "date": "2026-10-06",
+    "encyclopediaLiveGate": "merged as PR #2079",
+    "stalePullRequestsClosed": [
+      2015,
+      2019,
+      2034,
+      2056,
+      2062,
+      2063
+    ],
+    "currentProductionOpenPullRequests": 7
+  }
 }
