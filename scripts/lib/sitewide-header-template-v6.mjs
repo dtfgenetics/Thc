@@ -26,7 +26,7 @@ export const SITEWIDE_HEADER_STYLE_TAG = `${V5_BASE_STYLE_TAG}<style id="dtf-sit
 .dtf-global-nav a{min-height:42px!important;padding:9px 9px!important;border-radius:8px!important;font-size:.82rem!important}
 .dtf-global-nav a[aria-current="page"],.dtf-global-nav a.is-active{box-shadow:inset 0 0 0 1px rgba(117,220,125,.13)!important}
 .dtf-global-actions{gap:1px!important}
-.dtf-global-icon{width:38px!important;height:38px!important;border-radius:8px!important}
+.dtf-global-icon{width:44px!important;height:44px!important;border-radius:8px!important}
 .dtf-global-icon svg{width:20px!important;height:20px!important}
 @media(max-width:1320px){
   .dtf-global-header__inner{grid-template-columns:minmax(118px,146px) minmax(0,1fr) auto!important;gap:9px!important}
@@ -54,8 +54,8 @@ body{font-size:16px!important;overflow-x:clip!important}
 .dtf-global-brand__genetics{margin-top:5px!important;font-size:.62rem!important;letter-spacing:.13em!important}
 .dtf-global-brand__tag,.dtf-global-tagline{display:none!important}
 .dtf-global-actions__icons .dtf-global-icon:nth-child(2){display:none!important}
-.dtf-global-icon{width:36px!important;height:40px!important;border-radius:10px!important}
-.dtf-global-menu{min-width:44px!important;height:40px!important;border-radius:10px!important;padding-inline:10px!important;background:rgba(255,255,255,.065)!important}
+.dtf-global-icon{width:44px!important;height:44px!important;border-radius:10px!important}
+.dtf-global-menu{min-width:44px!important;height:44px!important;border-radius:10px!important;padding-inline:10px!important;background:rgba(255,255,255,.065)!important}
 .dtf-global-nav,.dtf-global-nav.is-open{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 .dtf-global-nav.is-open{margin:4px 0 2px!important;padding:10px!important;gap:7px!important;border:1px solid rgba(126,207,126,.2)!important;border-radius:15px!important;background:linear-gradient(180deg,rgba(5,31,18,.99),rgba(3,23,14,.99))!important;box-shadow:0 16px 36px rgba(0,0,0,.24)!important}
 .dtf-global-nav a{min-height:46px!important;padding:10px 12px!important;border:1px solid rgba(255,255,255,.055)!important;border-radius:10px!important;background:rgba(255,255,255,.025)!important;font-size:.82rem!important;line-height:1.15!important;white-space:normal!important;text-align:center!important}
@@ -98,8 +98,8 @@ body{font-size:16px!important;overflow-x:clip!important}
 .dtf-global-header__inner{width:calc(100% - 14px)!important}
 .dtf-global-brand__dtf{font-size:1.58rem!important}
 .dtf-global-brand__genetics{font-size:.56rem!important}
-.dtf-global-icon{width:32px!important}
-.dtf-global-menu{min-width:40px!important;padding-inline:8px!important}
+.dtf-global-icon{width:44px!important;height:44px!important}
+.dtf-global-menu{min-width:44px!important;height:44px!important;padding-inline:8px!important}
 .dtf-global-nav,.dtf-global-nav.is-open{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 .dtf-global-nav a{min-height:44px!important;padding:9px 8px!important;font-size:.78rem!important}
 .v3 .hero h1,.dtf-page .dtf-hero h1,.dtf-v1 h1,.game-hub-page .hero h1{font-size:clamp(2rem,10.5vw,2.8rem)!important}
