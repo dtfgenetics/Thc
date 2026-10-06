@@ -8,9 +8,13 @@ on:
         required: false
         default: '72'
   push:
-    branches: [main]
+    branches:
+      - main
+      - 'improve/encyclopedia/**'
     paths:
       - 'scripts/render-encyclopedia-visual-candidates.py'
+      - 'scripts/build-encyclopedia-visual-production-queue.mjs'
+      - 'scripts/validate-encyclopedia-visual-renderer-coverage.mjs'
       - '.github/workflows/encyclopedia-visual-candidate-production.yml'
 
 permissions:
@@ -19,8 +23,8 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: encyclopedia-visual-candidate-production
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   render:
@@ -113,7 +117,7 @@ jobs:
 
       - name: Safely integrate candidate binaries through moving-main PR lane
         id: integrate
-        if: steps.render.outputs.rendered != '0'
+        if: steps.render.outputs.rendered != '0' && github.ref == 'refs/heads/main'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -132,7 +136,7 @@ jobs:
           echo 'changed=true' >> "$GITHUB_OUTPUT"
 
       - name: Continue next batch until machine artwork queue is drained
-        if: steps.render.outputs.pending_after != '0' && steps.render.outputs.rendered != '0'
+        if: steps.render.outputs.pending_after != '0' && steps.render.outputs.rendered != '0' && github.ref == 'refs/heads/main'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
