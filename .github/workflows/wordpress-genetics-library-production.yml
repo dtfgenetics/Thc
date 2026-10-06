@@ -9,6 +9,7 @@ on:
       - 'data/genetics/catalog.json'
       - 'data/genetics/release-control.json'
       - 'site/wordpress/pages/seeds.html'
+      - 'site/wordpress/seo/genetics-page-meta.json'
       - 'site/design-system/dtf-genetics-owner-v1.css'
       - 'site/wordpress/products/genetics.json'
       - 'site/wordpress/products/seed-line-catalog.json'
@@ -24,6 +25,7 @@ on:
       - 'scripts/flush-hostinger-litespeed-mcp.mjs'
       - 'scripts/purge-wordpress-litespeed-cache.mjs'
       - 'scripts/verify-wordpress-genetics-library-production.mjs'
+      - 'scripts/reconcile-aioseo-core-meta.mjs'
       - 'scripts/publish-woocommerce-strain-card-images-cdn.mjs'
       - 'scripts/audit-genetics-cdn-sources.mjs'
   workflow_run:
@@ -63,6 +65,7 @@ jobs:
       SEED_LINE_CATALOG: site/wordpress/products/seed-line-catalog.json
       GENETICS_CDN_IDENTITIES: site/wordpress/products/genetics-cdn-identities.json
       STRAIN_CARD_REGISTRY: site/wordpress/products/strain-card-images.json
+      GENETICS_META_PATH: site/wordpress/seo/genetics-page-meta.json
       BACKUP_ROOT: /tmp/wordpress-genetics-production
 
     steps:
@@ -90,6 +93,7 @@ jobs:
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
           node --check scripts/purge-wordpress-litespeed-cache.mjs
           node --check scripts/verify-wordpress-genetics-library-production.mjs
+          node --check scripts/reconcile-aioseo-core-meta.mjs
           node scripts/validate-genetics-library-coherence.mjs
           node scripts/validate-genetics-commerce.mjs
           grep -Fq 'data-dtf-genetics-structure="release-first-v2"' scripts/publish-wordpress-genetics-library-cdn-core.mjs
@@ -162,6 +166,27 @@ jobs:
           set -euo pipefail
           node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-woocommerce-strain-card-images-cdn.mjs
 
+      - name: Reconcile Seeds search metadata under genetics ownership
+        id: seo
+        env:
+          CORE_META_PATH: site/wordpress/seo/genetics-page-meta.json
+          APPLY_AIOSEO_CORE_META: 'true'
+          BACKUP_ROOT: /tmp/wordpress-genetics-production/seo
+        shell: bash
+        run: |
+          set +e
+          set -uo pipefail
+          node scripts/reconcile-aioseo-core-meta.mjs 2>&1 | tee "$RUNNER_TEMP/genetics-seo.log"
+          status=${PIPESTATUS[0]}
+          set -e
+          if [[ "$status" -ne 0 ]]; then
+            if grep -Fq 'AIOSEO state saved but public metadata did not fully verify' "$RUNNER_TEMP/genetics-seo.log"; then
+              echo 'Seeds metadata state persisted; preliminary visitor verification may be cache-stale. Continuing to the genetics-owned LiteSpeed purge.'
+            else
+              exit "$status"
+            fi
+          fi
+
       - name: Purge Genetics routes from LiteSpeed immediately before acceptance
         id: purge
         env:
@@ -206,6 +231,7 @@ jobs:
           JOB_STATUS: ${{ job.status }}
           LIBRARY_OUTCOME: ${{ steps.library.outcome }}
           PRODUCT_OUTCOME: ${{ steps.products.outcome }}
+          SEO_OUTCOME: ${{ steps.seo.outcome }}
           PURGE_OUTCOME: ${{ steps.purge.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
           LINE_COUNT: ${{ steps.library.outputs.line_count }}
@@ -218,6 +244,7 @@ jobs:
               `Result: **${process.env.JOB_STATUS}**`,
               `Seeds library + line pages: **${process.env.LIBRARY_OUTCOME||'not-run'}**`,
               `WooCommerce reviewed card publication: **${process.env.PRODUCT_OUTCOME||'not-run'}**`,
+              `Seeds search metadata reconciliation: **${process.env.SEO_OUTCOME||'not-run'}**`,
               `Targeted LiteSpeed route purge: **${process.env.PURGE_OUTCOME||'not-run'}**`,
               `Authoritative REST + public convergence: **${process.env.VERIFY_OUTCOME||'not-run'}**`,
               `Published line profiles: **${process.env.LINE_COUNT||'not-run'}**`,
