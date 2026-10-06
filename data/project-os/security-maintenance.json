@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "registryId": "project-os.security-maintenance-v1",
+  "controls": [
+    "codeql",
+    "dependency_review",
+    "secret_scanning",
+    "actions_permissions",
+    "actions_pinning"
+  ],
+  "repositories": [
+    {
+      "repo": "dtfgenetics/Thc",
+      "role": "production-integration",
+      "state": "evidence-required",
+      "evidence": []
+    },
+    {
+      "repo": "dtfgenetics/Tools",
+      "role": "focused-tools",
+      "state": "external-verification-required",
+      "evidence": []
+    },
+    {
+      "repo": "dtfgenetics/Thc-dataset",
+      "role": "grow-doc",
+      "state": "external-verification-required",
+      "evidence": []
+    },
+    {
+      "repo": "dtfgenetics/Thc-learning-courses-",
+      "role": "academy",
+      "state": "external-verification-required",
+      "evidence": []
+    },
+    {
+      "repo": "dtfgenetics/thc-grow-hub",
+      "role": "encyclopedia",
+      "state": "external-verification-required",
+      "evidence": []
+    }
+  ]
+}
