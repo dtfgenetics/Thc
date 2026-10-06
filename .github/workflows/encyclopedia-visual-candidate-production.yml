@@ -82,8 +82,20 @@ jobs:
           report=json.load(open(sys.argv[1],encoding='utf-8'))
           if not report.get('candidateOnly') or report.get('approvalEffect')!='none':
               raise SystemExit('Visual generation report crossed the approval boundary')
+          seen=set()
           for row in report.get('results',[]):
+              role=row.get('visualRole')
+              ordinal=row.get('visualOrdinal')
+              if not role or not isinstance(ordinal,int) or ordinal < 1 or ordinal > 10:
+                  raise SystemExit(f'Candidate missing controlled visual role identity: {row}')
+              task=(row.get('lessonId'),role)
+              if task in seen: raise SystemExit(f'Duplicate visual task in render report: {task}')
+              seen.add(task)
+              expected=f"{row['lessonId']}_{ordinal:02d}_{role}.png"
               path=Path(row['path'])
+              if path.name != expected: raise SystemExit(f'Role-addressed filename mismatch: {path.name} != {expected}')
+              if not row.get('teachingIntent') or not row.get('altTextDraft') or not row.get('captionDraft'):
+                  raise SystemExit(f'Candidate missing role-specific teaching/accessibility metadata: {expected}')
               if not path.exists(): raise SystemExit(f'Missing candidate: {path}')
               with Image.open(path) as im:
                   if im.format!='PNG' or im.size!=(1600,1000):
