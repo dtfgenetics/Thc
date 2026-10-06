@@ -22,6 +22,26 @@ export function reconcileItem(item, github, live) {
   return {workItemId:item.workItemId,ok:issues.length===0,issues};
 }
 
+export function applyReconciliation(queue,result,{checkedAt='1970-01-01T00:00:00.000Z'}={}){
+  const next=structuredClone(queue);
+  for(const report of result.items.filter(x=>!x.ok)){
+    const item=next.items?.find(x=>x.workItemId===report.workItemId);
+    if(!item) continue;
+    const evidence={type:'reconciliation_drift',checkedAt,issues:report.issues.map(x=>x.code)};
+    item.evidence=Array.isArray(item.evidence)?item.evidence:[];
+    if(!item.evidence.some(x=>typeof x==='object'&&x.type===evidence.type&&x.checkedAt===checkedAt))
+      item.evidence.push(evidence);
+    item.state='failed';
+    item.blocker={type:'state_drift',message:report.issues.map(x=>x.message).join('; ')};
+    item.lastAction='Project OS reconciliation detected state drift.';
+    item.nextAction='Repair recorded drift, refresh GitHub/live snapshots, and rerun reconciliation.';
+    item.timestamps=item.timestamps||{};
+    item.timestamps.updatedAt=checkedAt;
+  }
+  next.updatedAt=checkedAt;
+  return next;
+}
+
 export function reconcile(queue,github={},live={}){
   const items=(queue.items||[]).map(item=>reconcileItem(item,github,live));
   return {schemaVersion:1,ok:items.every(x=>x.ok),summary:{checked:items.length,drifted:items.filter(x=>!x.ok).length},items};
