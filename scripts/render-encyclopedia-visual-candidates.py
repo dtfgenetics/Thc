@@ -75,8 +75,11 @@ def canvas(item):
     im=Image.new('RGB',(W,H),BG); d=ImageDraw.Draw(im)
     d.rounded_rectangle((42,32,W-42,H-32),radius=30,fill=PAPER,outline=LINE,width=3)
     d.text((78,58),f"{item['lessonId']} · {short(item['title'],58)}",font=font(38,True),fill=INK)
-    d.text((78,112),short(item.get('purpose','Controlled teaching visual candidate.'),116),font=font(20),fill=MUTED)
-    d.line((78,158,W-78,158),fill=LINE,width=2)
+    role=clean(item.get('visualRole','')).replace('-', ' ')
+    role_label=f"Visual {int(item.get('visualOrdinal',0) or 0):02d} · {role}" if role else 'Controlled teaching visual candidate'
+    d.text((78,112),short(role_label,116),font=font(20,True),fill=GREEN)
+    d.text((78,142),short(item.get('teachingIntent') or item.get('purpose','Controlled teaching visual candidate.'),116),font=font(17),fill=MUTED)
+    d.line((78,180,W-78,180),fill=LINE,width=2)
     d.text((78,H-75),"Candidate teaching visual · requires independent science, accessibility, and asset QA before approval",font=font(17),fill=MUTED)
     return im,d
 
@@ -242,13 +245,16 @@ def main():
     }
     for item in chosen:
         im,d=canvas(item)
-        renderers.get(item.get('visualFamily'),render_mechanism)(item,im,d)
+        render_item=dict(item)
+        render_item['purpose']=item.get('productionBrief') or item.get('teachingIntent') or item.get('purpose')
+        renderers.get(item.get('visualFamily'),render_mechanism)(render_item,im,d)
         path=OUT/output_name(item)
         im.save(path,'PNG',optimize=True,dpi=(144,144))
         results.append({
           'lessonId':item['lessonId'],'number':item['number'],'title':item['title'],
           'visualFamily':item.get('visualFamily'),'visualPriorityScore':item.get('visualPriorityScore',0),
           'visualRole':item.get('visualRole'),'visualOrdinal':item.get('visualOrdinal'),
+          'teachingIntent':item.get('teachingIntent'),'altTextDraft':item.get('altTextDraft'),'captionDraft':item.get('captionDraft'),
           'path':str(path.relative_to(ROOT)).replace('\\','/'),'status':'produced_pending_asset_qa'
         })
     report={
