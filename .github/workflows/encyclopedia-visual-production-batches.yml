@@ -8,6 +8,8 @@ on:
       - 'work/encyclopedia/**'
     paths:
       - 'content/encyclopedia/visual-production-queue-v1.json'
+      - 'scripts/build-encyclopedia-visual-production-queue.mjs'
+      - 'scripts/validate-encyclopedia-visual-production-queue.mjs'
       - 'scripts/build-encyclopedia-visual-production-batches.mjs'
       - 'scripts/validate-encyclopedia-visual-production-batches.mjs'
       - '.github/workflows/encyclopedia-visual-production-batches.yml'
@@ -44,15 +46,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/build-encyclopedia-teaching-visuals.mjs
-          node scripts/build-encyclopedia-visual-production-queue.mjs
-          node scripts/validate-encyclopedia-visual-production-queue.mjs
+          npm run verify:encyclopedia-visual-depth
 
-      - name: Build review-controlled production batches
+      - name: Revalidate review-controlled production batches
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/build-encyclopedia-visual-production-batches.mjs
           node scripts/validate-encyclopedia-visual-production-batches.mjs
           test -s content/encyclopedia/visual-production-batches/index.json
 

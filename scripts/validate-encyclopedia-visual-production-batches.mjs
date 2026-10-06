@@ -11,7 +11,7 @@ if(!fs.existsSync(indexPath)) errors.push('Batch index is missing.');
 const index=errors.length?{batches:[]}:JSON.parse(fs.readFileSync(indexPath,'utf8'));
 const batches=Array.isArray(index.batches)?index.batches:[];
 const queue=JSON.parse(fs.readFileSync(queuePath,'utf8'));
-const expectedNeeded=(queue.items||[]).filter(x=>x.productionStatus==='brief_ready_raster_artwork_needed').length;
+const expectedNeeded=(queue.items||[]).reduce((sum,lesson)=>sum+(lesson.visualRoles||[]).filter(role=>role.status==='brief_ready_raster_artwork_needed').length,0);
 if(index.artworkNeededCount!==expectedNeeded) errors.push(`Expected ${expectedNeeded} artwork-needed lessons from queue; found ${index.artworkNeededCount}`);
 if(index.batchSize!==24) errors.push(`Expected batch size 24; found ${index.batchSize}`);
 const expectedBatchCount=Math.ceil(expectedNeeded/24);
@@ -27,9 +27,13 @@ for(const batch of batches){
   if(!Array.isArray(data.items)||data.items.length<1||data.items.length>24) errors.push(`${batch.batchId}: invalid item count`);
   for(const item of data.items||[]){
     count++;
-    if(seen.has(item.lessonId)) errors.push(`${item.lessonId}: appears in more than one batch`);
-    seen.add(item.lessonId);
+    const taskId=`${item.lessonId}:${item.visualRole}`;
+    if(seen.has(taskId)) errors.push(`${taskId}: appears in more than one batch`);
+    seen.add(taskId);
     if(!/^THC-ENC-\d{3}$/.test(item.lessonId)) errors.push(`${item.lessonId}: invalid lesson ID`);
+    if(!item.visualRole || !Number.isInteger(item.visualOrdinal) || item.visualOrdinal<1 || item.visualOrdinal>10) errors.push(`${item.lessonId}: missing or invalid visual role/ordinal`);
+    if(!item.teachingIntent || !item.productionBrief) errors.push(`${item.lessonId}:${item.visualRole}: missing role-specific teaching intent or production brief`);
+    if(!item.altTextDraft || !item.captionDraft) errors.push(`${item.lessonId}:${item.visualRole}: missing role-specific accessibility copy`);
     if(!/\.png$/i.test(item.targetFilename||'')) errors.push(`${item.lessonId}: target must be PNG`);
     if(!String(item.targetRepositoryPath||'').startsWith('site/wordpress/assets/infographics/')) errors.push(`${item.lessonId}: invalid target path`);
     if(!Array.isArray(item.accuracyRequirements)||item.accuracyRequirements.length<2) errors.push(`${item.lessonId}: insufficient accuracy requirements`);
@@ -45,4 +49,4 @@ if(errors.length){
   errors.slice(0,100).forEach(e=>console.error(' - '+e));
   process.exit(1);
 }
-console.log(`Visual production batches PASS: ${count} unique lessons across ${batches.length} controlled batches; every asset remains review-pending.`);
+console.log(`Visual production batches PASS: ${count} unique lesson/visual-role tasks across ${batches.length} controlled batches; every asset remains review-pending.`);
