@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-06T09:34:00Z",
+  "updatedAt": "2026-10-06T10:30:00Z",
   "items": [
     {
       "workItemId": "project-os.queue-contract-v1",
@@ -81,7 +81,7 @@
         "collisionRisk": 1,
         "score": 64
       },
-      "state": "review",
+      "state": "done",
       "dependencies": [
         "project-os.queue-contract-v1"
       ],
@@ -89,32 +89,32 @@
         {
           "id": "coverage",
           "description": "All nine required project types have explicit completion contracts.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head CI"
         },
         {
           "id": "validation",
           "description": "Malformed or incomplete completion contracts are rejected deterministically.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head CI"
         },
         {
           "id": "integration",
           "description": "Definitions-of-Done verification is part of verify:project-os.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head CI"
         }
       ],
       "branch": "work/platform/project-os-dod-v1/20261006",
       "pullRequest": 2075,
       "baseSha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
-      "headSha": null,
+      "headSha": "627f9feb2f26588627d352f037e257389d84407d",
       "lease": null,
       "tests": [
         {
           "name": "project-os-dod",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 Project OS Quality Gate at 627f9feb2f26588627d352f037e257389d84407d"
         }
       ],
       "deployment": {
@@ -123,8 +123,8 @@
         "verifiedAt": null
       },
       "blocker": null,
-      "lastAction": "Added machine-readable project-type Definitions of Done, validator, fixtures, and Project OS gate integration.",
-      "nextAction": "Open PR and require exact-head CI before promoting acceptance criteria.",
+      "lastAction": "Merged PR #2075 after exact-head Project OS and repository CI passed.",
+      "nextAction": null,
       "evidence": [
         "data/project-os/definitions-of-done.json",
         "scripts/validate-project-os-definitions-of-done.mjs",
@@ -132,8 +132,8 @@
       ],
       "timestamps": {
         "createdAt": "2026-10-06T09:24:00Z",
-        "updatedAt": "2026-10-06T09:24:00Z",
-        "completedAt": null
+        "updatedAt": "2026-10-06T10:30:00Z",
+        "completedAt": "2026-10-06T10:24:00Z"
       }
     },
     {
@@ -150,7 +150,7 @@
         "collisionRisk": 1,
         "score": 69
       },
-      "state": "review",
+      "state": "done",
       "dependencies": [
         "project-os.definitions-of-done-v1"
       ],
@@ -158,38 +158,38 @@
         {
           "id": "domains",
           "description": "Canonical acceptance domains cover Encyclopedia, Tools, Games, Academy, GrowLens, critical assets, and release infrastructure.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head CI"
         },
         {
           "id": "sources",
           "description": "Acceptance domains point to existing canonical registries/targets.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head CI"
         },
         {
           "id": "fixtures",
           "description": "Duplicate domains, missing validators/sources, and invalid live requirements are rejected.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head CI"
         },
         {
           "id": "integration",
           "description": "Acceptance-manifest verification is part of verify:project-os.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head CI"
         }
       ],
       "branch": "work/platform/project-os-dod-v1/20261006",
       "pullRequest": 2075,
       "baseSha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
-      "headSha": null,
+      "headSha": "627f9feb2f26588627d352f037e257389d84407d",
       "lease": null,
       "tests": [
         {
           "name": "project-os-acceptance",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 Project OS Quality Gate at 627f9feb2f26588627d352f037e257389d84407d"
         }
       ],
       "deployment": {
@@ -198,8 +198,8 @@
         "verifiedAt": null
       },
       "blocker": null,
-      "lastAction": "Added registry-backed acceptance manifests, validator, negative fixtures, and Project OS gate integration.",
-      "nextAction": "Require exact-head CI before promoting acceptance evidence.",
+      "lastAction": "Merged PR #2075 after exact-head Project OS and repository CI passed.",
+      "nextAction": null,
       "evidence": [
         "data/project-os/acceptance-manifests.json",
         "scripts/validate-project-os-acceptance-manifests.mjs",
@@ -207,8 +207,8 @@
       ],
       "timestamps": {
         "createdAt": "2026-10-06T09:34:00Z",
-        "updatedAt": "2026-10-06T09:34:00Z",
-        "completedAt": null
+        "updatedAt": "2026-10-06T10:30:00Z",
+        "completedAt": "2026-10-06T10:24:00Z"
       }
     }
   ]
