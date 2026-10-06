@@ -228,6 +228,6 @@
     "test:encyclopedia-routes": "node scripts/test-encyclopedia-routes.mjs",
     "verify:encyclopedia-ui": "node scripts/validate-encyclopedia-experience-ui.mjs",
     "verify:encyclopedia-visual-renderer-coverage": "node scripts/validate-encyclopedia-visual-renderer-coverage.mjs",
-    "build:encyclopedia-experience-readiness": "npm run build:encyclopedia-lifecycle-report && npm run build:encyclopedia-discovery && node scripts/build-encyclopedia-experience-readiness.mjs"
+    "build:encyclopedia-experience-readiness": "npm run build:encyclopedia-lifecycle-report && npm run build:encyclopedia-visual-queue && npm run build:encyclopedia-discovery && node scripts/build-encyclopedia-experience-readiness.mjs"
   }
 }
