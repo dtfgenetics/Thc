@@ -14,9 +14,12 @@ const liveAcceptancePath=path.join(root,'.github/workflows/growlens-live-accepta
 const privateAuditPath=path.join(root,'scripts/growlens-private-data-audit.php');
 const privateBackupWorkflowPath=path.join(root,'.github/workflows/growlens-private-data-backup.yml');
 const privateBackupDocsPath=path.join(root,'docs/GROWLENS_PRIVATE_DATA_BACKUP.md');
+const observationProducerPath=path.join(root,'apps/growlens-web/src/scientificObservation.ts');
+const observationProducerTestPath=path.join(root,'apps/growlens-web/src/scientificObservation.test.ts');
+const observationFixturePath=path.join(root,'apps/growlens-web/fixtures/scientific-observation-v1.json');
 
 const fail=(message)=>{console.error('GrowLens release contract validation failed:',message);process.exitCode=1;};
-for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath,indexPath,readmePath,packagePath,liveAcceptancePath,privateAuditPath,privateBackupWorkflowPath,privateBackupDocsPath]){
+for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath,indexPath,readmePath,packagePath,liveAcceptancePath,privateAuditPath,privateBackupWorkflowPath,privateBackupDocsPath,observationProducerPath,observationProducerTestPath,observationFixturePath]){
   if(!fs.existsSync(file))fail(`Required file missing: ${path.relative(root,file)}`);
 }
 if(process.exitCode)process.exit();
@@ -133,6 +136,26 @@ for(const token of [
 ]){
   if(!privateBackupDocs.includes(token))fail(`GrowLens private backup runbook is stale: ${token}`);
 }
+
+
+const observationProducer=fs.readFileSync(observationProducerPath,'utf8');
+for(const token of [
+  "repository: 'dtfgenetics/Thc-dataset'",
+  "path: 'dataset/schema/scientific-observation.schema.json'",
+  "schemaId: 'https://dtfseeds.com/schemas/scientific-observation-v1.json'",
+  "gitBlobSha: '942a74fadb59a2dfe475d71190f6b685d7b81516'",
+  "FORM-DLI-PPFD-PHOTOPERIOD",
+  "derived: false",
+  "derived: true",
+  "source_type: 'derived'"
+]){
+  if(!observationProducer.includes(token))fail(`GrowLens scientific observation producer is missing contract control: ${token}`);
+}
+const observationFixture=JSON.parse(fs.readFileSync(observationFixturePath,'utf8'));
+if(observationFixture?.contract?.repository!=='dtfgenetics/Thc-dataset')fail('GrowLens observation fixture repository pin mismatch.');
+if(observationFixture?.contract?.gitBlobSha!=='942a74fadb59a2dfe475d71190f6b685d7b81516')fail('GrowLens observation fixture schema hash pin mismatch.');
+if(observationFixture?.expected?.formulaId!=='FORM-DLI-PPFD-PHOTOPERIOD')fail('GrowLens observation fixture DLI formula pin mismatch.');
+if(observationFixture?.expected?.dli!==21.6)fail('GrowLens observation fixture DLI vector must remain 21.6 mol/m2/day for 500 PPFD × 12 h.');
 
 const suite=fs.readFileSync(suitePath,'utf8');
 for(const token of [
