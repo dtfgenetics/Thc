@@ -88,14 +88,23 @@ const items = lessons.map(lesson => {
   const canonicalAssetExists = canonicalAssetPaths.length > 0;
   const visualFamily = visualFamilyFor(lesson, entry);
   const visualPriorityScore = visualPriorityFor(lesson, visualFamily, canonicalAssetPaths.length >= minimumVisualsPerLesson);
-  const assignedVisualRoles = visualRoles.map((role, index) => ({
-    role,
-    ordinal: index + 1,
-    status: canonicalAssetPaths[index] ? 'raster_artwork_produced_review_pending' : 'brief_ready_raster_artwork_needed',
-    canonicalAssetPath: canonicalAssetPaths[index] ? relativePath(root, canonicalAssetPaths[index]) : null
-  }));
-  const visualGapCount = Math.max(0, targetVisualsPerLesson - canonicalAssetPaths.length);
-  const minimumVisualGapCount = Math.max(0, minimumVisualsPerLesson - canonicalAssetPaths.length);
+  const roleAssetPath = (role, index) => canonicalAssetPaths.find(assetPath => {
+    const name = path.basename(assetPath).toLowerCase();
+    return name.includes(`_${String(index + 1).padStart(2, '0')}_${role}.png`);
+  }) || null;
+  const assignedVisualRoles = visualRoles.map((role, index) => {
+    const assetPath = roleAssetPath(role, index);
+    return {
+      role,
+      ordinal: index + 1,
+      status: assetPath ? 'raster_artwork_produced_review_pending' : 'brief_ready_raster_artwork_needed',
+      canonicalAssetPath: assetPath ? relativePath(root, assetPath) : null
+    };
+  });
+  const roleAddressedAssetCount = assignedVisualRoles.filter(role => role.canonicalAssetPath).length;
+  const unclassifiedLegacyAssetCount = Math.max(0, canonicalAssetPaths.length - roleAddressedAssetCount);
+  const visualGapCount = targetVisualsPerLesson - roleAddressedAssetCount;
+  const minimumVisualGapCount = Math.max(0, minimumVisualsPerLesson - roleAddressedAssetCount);
 
   return {
     queueId: `ENC-VIS-${String(lesson.number).padStart(3, '0')}`,
@@ -121,10 +130,12 @@ const items = lessons.map(lesson => {
     visualRoles: assignedVisualRoles,
     visualGapCount,
     minimumVisualGapCount,
-    productionStatus: canonicalAssetPaths.length >= minimumVisualsPerLesson ? 'minimum_visual_depth_produced_review_pending' : 'multi_visual_artwork_needed',
+    productionStatus: roleAddressedAssetCount >= minimumVisualsPerLesson ? 'minimum_visual_depth_produced_review_pending' : 'multi_visual_artwork_needed',
     canonicalAssetPath: canonicalAssetExists ? relativePath(root, canonicalAssetPaths[0]) : null,
     canonicalAssetPaths: canonicalAssetPaths.map(assetPath => relativePath(root, assetPath)),
     assetCandidateCount: canonicalAssetPaths.length,
+    roleAddressedAssetCount,
+    unclassifiedLegacyAssetCount,
     assetProductionBatch: canonicalAssetExists
       ? (produced ? (visualMap.batch || null) : 'repository-prefix-scan-v1')
       : null,
@@ -140,7 +151,7 @@ const output = {
   schemaVersion: '1.0.0',
   artifactId: 'thc-encyclopedia-visual-production-queue-v1',
   generatedBy: 'scripts/build-encyclopedia-visual-production-queue.mjs',
-  scope: `One controlled teaching-visual brief for each of the ${registryState.totalCount} registered THC-ENC lessons.`, 
+  scope: `A controlled 10-role teaching-visual set for each of the ${registryState.totalCount} registered THC-ENC lessons; 8 role-addressed raster visuals are the minimum depth target.`, 
   releaseRule: 'A brief is not an approved asset. Publication requires asset-level science, accessibility, rights, and rendering QA.',
   summary: {
     lessonCount: items.length,
@@ -150,6 +161,8 @@ const output = {
     minimumVisualTarget: items.length * minimumVisualsPerLesson,
     fullVisualTarget: items.length * targetVisualsPerLesson,
     currentRasterAssetCount: items.reduce((sum,item)=>sum+item.assetCandidateCount,0),
+    roleAddressedRasterAssetCount: items.reduce((sum,item)=>sum+item.roleAddressedAssetCount,0),
+    unclassifiedLegacyRasterAssetCount: items.reduce((sum,item)=>sum+item.unclassifiedLegacyAssetCount,0),
     missingToMinimum: items.reduce((sum,item)=>sum+item.minimumVisualGapCount,0),
     missingToTarget: items.reduce((sum,item)=>sum+item.visualGapCount,0),
     lessonsBelowMinimum: items.filter(item=>item.minimumVisualGapCount>0).length,
