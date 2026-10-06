@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "growlens-scientific-observation-contract-pin-v1",
+  "upstreamRepository": "dtfgenetics/Thc-dataset",
+  "upstreamPath": "dataset/schema/scientific-observation.schema.json",
+  "upstreamGitBlobSha": "942a74fadb59a2dfe475d71190f6b685d7b81516",
+  "schemaId": "https://dtfseeds.com/schemas/scientific-observation-v1.json",
+  "localSnapshot": "data/contracts/scientific-observation-v1.schema.json",
+  "consumer": "GrowLens",
+  "contractVersion": 1,
+  "boundary": "The scientific observation contract represents numeric measurements. GrowLens qualitative symptoms and differential hypotheses remain in the canonical observation envelope and are not coerced into numeric measurements."
+}
