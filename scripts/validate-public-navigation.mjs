@@ -7,6 +7,7 @@ const shell = JSON.parse(fs.readFileSync(path.join(root, 'data/site-navigation-v
 const apps = JSON.parse(fs.readFileSync(path.join(root, 'site/deployment/public-apps.json'), 'utf8'));
 const overlay = JSON.parse(fs.readFileSync(path.join(root, 'site/deployment/dtf420-static-overlay.json'), 'utf8'));
 const hub = fs.readFileSync(path.join(root, 'site/public-route-patch/games/index.html'), 'utf8');
+const projectsHub = fs.readFileSync(path.join(root, 'site/public-route-patch/projects/index.html'), 'utf8');
 const headerV5 = fs.readFileSync(path.join(root, 'scripts/lib/sitewide-header-template.mjs'), 'utf8');
 const headerV6 = fs.readFileSync(path.join(root, 'scripts/lib/sitewide-header-template-v6.mjs'), 'utf8');
 
@@ -155,6 +156,10 @@ const hubCandidateCount = hub.match(/<strong>(\d+)<\/strong><span>release\/runti
 const publicMultiplayerGames = publicGames.filter((game) => game.status === 'multiplayer');
 const releaseCandidates = privateGames.filter((game) => typeof game.candidateRoute === 'string' && game.candidateRoute.length > 0);
 
+const projectsPublicCount = projectsHub.match(/<strong>(\d+)<\/strong><span>public browser games<\/span>/i);
+const projectsMultiplayerCount = projectsHub.match(/<strong>(\d+)<\/strong><span>public multiplayer games<\/span>/i);
+const projectsCandidateCount = projectsHub.match(/<strong>(\d+)<\/strong><span>release\/runtime candidates<\/span>/i);
+
 assert(Boolean(hubPlayableCount), 'Game Hub must expose its playable-game count');
 if (hubPlayableCount) {
   assert(Number(hubPlayableCount[1]) === publicGames.length, `Game Hub playable count ${hubPlayableCount[1]} does not match ${publicGames.length} public games`);
@@ -166,6 +171,22 @@ if (hubLiveMultiplayerCount) {
 assert(Boolean(hubCandidateCount), 'Game Hub must expose its release/runtime candidate count');
 if (hubCandidateCount) {
   assert(Number(hubCandidateCount[1]) === releaseCandidates.length, `Game Hub candidate count ${hubCandidateCount[1]} does not match ${releaseCandidates.length} registered candidates`);
+}
+
+assert(Boolean(projectsPublicCount), 'Projects page must expose its public-game count');
+if (projectsPublicCount) {
+  assert(Number(projectsPublicCount[1]) === publicGames.length, `Projects public-game count ${projectsPublicCount[1]} does not match ${publicGames.length} public games`);
+}
+assert(Boolean(projectsMultiplayerCount), 'Projects page must expose its public-multiplayer count');
+if (projectsMultiplayerCount) {
+  assert(Number(projectsMultiplayerCount[1]) === publicMultiplayerGames.length, `Projects multiplayer count ${projectsMultiplayerCount[1]} does not match ${publicMultiplayerGames.length} public multiplayer games`);
+}
+assert(Boolean(projectsCandidateCount), 'Projects page must expose its release/runtime candidate count');
+if (projectsCandidateCount) {
+  assert(Number(projectsCandidateCount[1]) === releaseCandidates.length, `Projects candidate count ${projectsCandidateCount[1]} does not match ${releaseCandidates.length} registered candidates`);
+}
+for (const game of releaseCandidates) {
+  assert(!projectsHub.includes(`href="${game.candidateRoute}"`) && !projectsHub.includes(`href='${game.candidateRoute}'`), `Projects page must not expose a Play link for non-public candidate ${game.id}`);
 }
 
 for (const game of publicGames) {
