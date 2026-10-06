@@ -1,146 +1,111 @@
-<!-- DTFSeeds.com public education page content. Goal-first learning hub. -->
-<section aria-labelledby="learn-title">
-  <p><strong>Teaching Healthy Cultivation</strong></p>
-  <h1 id="learn-title">Learn the plant as one connected system.</h1>
-  <p>Start with the question you are trying to answer. Use the Encyclopedia as an independent reference library, or enter Courses when you want structured training, practice, progress, and certification-oriented learning.</p>
-  <p>
-    <a href="/learn/start-here/"><strong>Start Here</strong></a>
-    &nbsp; <a href="/courses/"><strong>Courses</strong></a>
-    &nbsp; <a href="/learn/search/"><strong>Search Education</strong></a>
-  </p>
-</section>
+<!-- DTFSeeds.com canonical Learn landing page. Goal-first, reference-first education hub. -->
+<style id="dtf-learn-v5-css">
+.learn-hub{--bg:#f5f3e9;--surface:#fffdf8;--ink:#102b1a;--muted:#5c6c61;--deep:#07190f;--deep2:#0d2b1a;--leaf:#2c7544;--lime:#9fe870;--gold:#d6b75c;--line:rgba(16,43,26,.14);--max:1360px;--read:72ch;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.learn-hub *{box-sizing:border-box;min-width:0}.learn-hub a{color:inherit;text-underline-offset:3px}.learn-wrap{width:min(var(--max),calc(100% - clamp(28px,6vw,72px)));margin-inline:auto}.learn-hero{padding:clamp(64px,8vw,104px) 0;background:radial-gradient(circle at 84% 15%,rgba(159,232,112,.12),transparent 26rem),linear-gradient(145deg,var(--deep),var(--deep2));color:#f4f7f1}.learn-hero-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:clamp(34px,6vw,78px);align-items:end}.learn-kicker{margin:0 0 14px;color:#c7dfbd;font-size:.68rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.learn-hub h1,.learn-hub h2,.learn-hub h3{text-wrap:balance}.learn-hub h1{max-width:11ch;margin:0;font:600 clamp(3.2rem,6.7vw,6.5rem)/.9 ui-serif,Georgia,Cambria,"Times New Roman",serif;letter-spacing:-.055em}.learn-lede{max-width:var(--read);margin:22px 0 0;color:#cbd8ce;font-size:clamp(1.02rem,1.4vw,1.18rem);line-height:1.7}.learn-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}.learn-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;border:1px solid rgba(159,232,112,.32);border-radius:10px;text-decoration:none;font-size:.73rem;font-weight:850}.learn-btn.primary{background:var(--lime);border-color:var(--lime);color:#09200f}.learn-overview{border-left:1px solid rgba(159,232,112,.25);padding-left:24px}.learn-overview strong{display:block;font:600 1.6rem/1.05 ui-serif,Georgia,Cambria,"Times New Roman",serif}.learn-overview p{margin:10px 0 0;color:#aebdaf;line-height:1.6}.learn-overview ul{list-style:none;margin:20px 0 0;padding:0;border-top:1px solid rgba(255,255,255,.1)}.learn-overview li{padding:11px 0;border-bottom:1px solid rgba(255,255,255,.08);color:#c6d3c9;font-size:.8rem}
+.learn-section{padding:clamp(54px,7vw,90px) 0}.learn-section.alt{background:#edf0e8}.learn-section.dark{background:var(--deep);color:#f2f5ef}.learn-heading{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);gap:clamp(18px,4vw,52px);align-items:end;margin-bottom:30px;padding-bottom:18px;border-bottom:1px solid var(--line)}.dark .learn-heading{border-color:rgba(255,255,255,.12)}.learn-heading h2{margin:0;font:600 clamp(2rem,4vw,4rem)/.96 ui-serif,Georgia,Cambria,"Times New Roman",serif;letter-spacing:-.04em}.learn-heading p{max-width:55ch;margin:0;color:var(--muted);line-height:1.65}.dark .learn-heading p{color:#aebdaf}.section-label{margin:0 0 8px;color:var(--leaf);font-size:.65rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}.dark .section-label{color:#addc9d}
+.goal-grid,.depth-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.goal{padding:24px 20px;border-top:2px solid rgba(44,117,68,.35);background:rgba(255,255,255,.38)}.goal span{display:block;margin-bottom:26px;color:var(--leaf);font-size:.65rem;font-weight:900}.goal h3,.depth-card h3{margin:0;font:600 1.35rem/1.05 ui-serif,Georgia,Cambria,"Times New Roman",serif}.goal p,.depth-card p{color:var(--muted);line-height:1.62;font-size:.83rem}.goal a,.depth-card a,.subject-link,.reference-list a{color:#23633a;font-weight:800}.method-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-block:1px solid var(--line)}.method-step{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:20px 24px;border-bottom:1px solid var(--line)}.method-step:nth-child(odd){border-right:1px solid var(--line)}.method-step b{color:var(--leaf);font-family:ui-serif,Georgia,serif;font-size:1.2rem}.method-step strong{display:block}.method-step p{margin:5px 0 0;color:var(--muted);font-size:.8rem;line-height:1.55}
+.system-rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-block:1px solid rgba(255,255,255,.14)}.system-rail article{padding:22px 16px}.system-rail article+article{border-left:1px solid rgba(255,255,255,.1)}.system-rail b{display:block;color:var(--lime);font:600 1.05rem/1 ui-serif,Georgia,serif}.system-rail strong{display:block;margin-top:18px}.system-rail p{color:#9fb0a3;font-size:.74rem;line-height:1.5}
+.depth-card{padding:22px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.reference-layout{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:44px}.reference-copy p{max-width:58ch;color:var(--muted);line-height:1.65}.reference-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}.reference-list li{padding:16px 0;border-bottom:1px solid var(--line);line-height:1.55}.reference-list small{display:block;margin-top:4px;color:var(--muted)}.subject-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px;border-top:1px solid var(--line)}.subject-link{display:flex;justify-content:space-between;gap:16px;padding:18px 2px;border-bottom:1px solid var(--line);text-decoration:none}.subject-link:after{content:"→";color:var(--leaf)}.next-band{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:34px;align-items:end;padding:clamp(28px,5vw,50px);border:1px solid rgba(159,232,112,.24);border-radius:18px;background:linear-gradient(90deg,rgba(159,232,112,.07),rgba(255,255,255,.02))}.next-band h2{margin:0;font:600 clamp(2rem,4vw,3.7rem)/.96 ui-serif,Georgia,serif}.next-band p{color:#aebdaf}.learn-legal{padding:24px 0 34px;color:#78887c;font-size:.78rem}
+@media(max-width:1040px){.learn-hero-grid,.learn-heading,.reference-layout,.next-band{grid-template-columns:1fr}.learn-overview{max-width:720px}.goal-grid,.depth-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.system-rail{grid-template-columns:repeat(3,1fr)}.system-rail article:nth-child(4){border-left:0}.system-rail article:nth-child(n+4){border-top:1px solid rgba(255,255,255,.1)}}
+@media(max-width:700px){.learn-wrap{width:calc(100% - 28px)}.learn-hero{padding:52px 0}.learn-hub h1{font-size:clamp(3rem,15vw,4.8rem)}.learn-actions{display:grid}.learn-btn{width:100%}.learn-overview{border-left:0;border-top:1px solid rgba(159,232,112,.25);padding:20px 0 0}.goal-grid,.depth-grid,.subject-grid,.method-grid{grid-template-columns:1fr}.method-step:nth-child(odd){border-right:0}.system-rail{grid-template-columns:1fr}.system-rail article+article,.system-rail article:nth-child(4){border-left:0}.system-rail article:nth-child(n+2){border-top:1px solid rgba(255,255,255,.1)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
 
-<section id="start-paths" aria-labelledby="paths-title">
-  <p><strong>Choose your goal</strong></p>
-  <h2 id="paths-title">What are you trying to do?</h2>
+<main class="learn-hub v3" data-dtf-layout="learn-v3" data-dtf-learning-map="v4">
+  <section class="learn-hero" aria-labelledby="learn-title">
+    <div class="learn-wrap learn-hero-grid">
+      <div>
+        <p class="learn-kicker">Teaching Healthy Cultivation</p>
+        <h1 id="learn-title">Learn the plant as one connected system.</h1>
+        <p class="learn-lede">Start with the question you are trying to answer. Use the Encyclopedia when you need an independent reference, Courses when you want structured training, and Grow Doc when you need to work through a plant-health problem.</p>
+        <div class="learn-actions">
+          <a class="learn-btn primary" href="/learn/start-here/">Start here</a>
+          <a class="learn-btn" href="/learn/search/">Search education</a>
+          <a class="learn-btn" href="/courses/">Open courses</a>
+        </div>
+      </div>
+      <aside class="learn-overview" aria-label="How to use THC education">
+        <strong>Question first. Depth second.</strong>
+        <p>Reference learning, sequenced courses, diagnostics, and cultivation tools remain connected without pretending they are the same product.</p>
+        <ul><li>Learn answers the question.</li><li>Courses build the skill in sequence.</li><li>Tools measure and calculate.</li><li>Grow Doc structures diagnostic evidence.</li></ul>
+      </aside>
+    </div>
+  </section>
 
-  <article>
-    <h3>I am learning to grow</h3>
-    <p>Build plant biology, environment, lighting, root-zone, plant-stage, sanitation, observation, and recordkeeping fundamentals in order.</p>
-    <p><a href="/learn/start-here/"><strong>Start the beginner path</strong></a></p>
-  </article>
+  <section class="learn-section" id="start-paths" aria-labelledby="paths-title"><div class="learn-wrap">
+    <div class="learn-heading"><div><p class="section-label">Choose your goal</p><h2 id="paths-title">What are you trying to do?</h2></div><p>Pick the task that matches the decision in front of you. Each path connects to deeper references only when they are useful.</p></div>
+    <div class="goal-grid">
+      <article class="goal"><span>01 · FOUNDATIONS</span><h3>I am learning to grow</h3><p>Build plant biology, environment, lighting, root-zone, plant-stage, sanitation, observation, and recordkeeping fundamentals in order.</p><a href="/learn/start-here/">Start the beginner path →</a></article>
+      <article class="goal"><span>02 · DIAGNOSE</span><h3>I am investigating a problem</h3><p>Collect evidence before guessing. Compare roots, environment, nutrition, pests, disease, crop stage, and recent changes.</p><a href="/thc-grow-doc/">Open Grow Doc →</a></article>
+      <article class="goal"><span>03 · ENVIRONMENT</span><h3>I want better climate and light</h3><p>Connect temperature, RH, leaf temperature, VPD, airflow, PPFD, DLI, photoperiod, and measurement.</p><a href="/learn/environment-vpd/">Study environment →</a></article>
+      <article class="goal"><span>04 · GENETICS</span><h3>I am documenting selections</h3><p>Study identity, phenotype, inheritance, filial generations, selection, uncertainty, and repeatable records.</p><a href="/learn/genetics-breeding/">Study genetics →</a></article>
+    </div>
+  </div></section>
 
-  <article>
-    <h3>I am trying to diagnose a problem</h3>
-    <p>Start with evidence intake, then compare roots, environment, nutrition, pests, disease, crop stage, and recent changes.</p>
-    <p><a href="/thc-grow-doc/"><strong>Open Grow Doc</strong></a> · <a href="/yellow-leaves/">Yellow-leaves guide</a> · <a href="/learn/ipm/">Plant Health &amp; IPM</a></p>
-  </article>
+  <section class="learn-section alt" aria-labelledby="method-title"><div class="learn-wrap">
+    <div class="learn-heading"><div><p class="section-label">How THC teaches</p><h2 id="method-title">Observation before explanation. Verification after action.</h2></div><p>Strong lessons should move from evidence to mechanism to decision, without burying the useful answer under unnecessary theory.</p></div>
+    <div class="method-grid">
+      <article class="method-step"><b>01</b><div><strong>What is it?</strong><p>Get the short plain-language answer first.</p></div></article>
+      <article class="method-step"><b>02</b><div><strong>What should I observe?</strong><p>Know what evidence matters before guessing.</p></div></article>
+      <article class="method-step"><b>03</b><div><strong>What should I measure?</strong><p>Use the smallest measurement set that can change the decision.</p></div></article>
+      <article class="method-step"><b>04</b><div><strong>What mechanism explains it?</strong><p>Connect the observation to plant science.</p></div></article>
+      <article class="method-step"><b>05</b><div><strong>What decision follows?</strong><p>Prefer explicit decision rules over folklore.</p></div></article>
+      <article class="method-step"><b>06</b><div><strong>What can fool me?</strong><p>Surface confounders, common mistakes, and evidence limits.</p></div></article>
+      <article class="method-step"><b>07</b><div><strong>How do I verify it?</strong><p>Re-measure or re-observe after the change.</p></div></article>
+      <article class="method-step"><b>08</b><div><strong>Where do I go deeper?</strong><p>Open the relevant tool, visual, course, or encyclopedia entry.</p></div></article>
+    </div>
+  </div></section>
 
-  <article>
-    <h3>I want better environment and lighting</h3>
-    <p>Connect temperature, RH, leaf temperature, VPD, airflow, PPFD, DLI, photoperiod, and measurement.</p>
-    <p><a href="/learn/environment-vpd/">Open environment learning</a> · <a href="/ppfd-chart/">PPFD / DLI tool</a></p>
-  </article>
+  <section class="learn-section dark" aria-labelledby="learn-map-title"><div class="learn-wrap">
+    <div class="learn-heading"><div><p class="section-label">Learning map</p><h2 id="learn-map-title">Six systems connect most cultivation decisions.</h2></div><p>Enter where the question is, move backward to likely drivers, then forward to the measurement or action that tests your understanding.</p></div>
+    <div class="system-rail">
+      <article><b>01</b><strong>Plant</strong><p>Biology, anatomy, lifecycle, signaling, and response.</p></article>
+      <article><b>02</b><strong>Environment</strong><p>Temperature, RH, VPD, airflow, light, and CO₂ context.</p></article>
+      <article><b>03</b><strong>Root zone</strong><p>Water, media, oxygen, pH, EC, irrigation, and dryback.</p></article>
+      <article><b>04</b><strong>Manage</strong><p>Propagation, training, canopy, crop stage, and records.</p></article>
+      <article><b>05</b><strong>Protect</strong><p>Sanitation, scouting, differential diagnosis, and IPM.</p></article>
+      <article><b>06</b><strong>Finish</strong><p>Harvest, post-harvest, quality, genetics, and iteration.</p></article>
+    </div>
+  </div></section>
 
-  <article>
-    <h3>I am documenting genetics or selections</h3>
-    <p>Study identity, phenotype, inheritance, filial generations, selection, uncertainty, and repeatable records.</p>
-    <p><a href="/learn/genetics-breeding/">Open genetics learning</a> · <a href="/seeds/">DTF genetics</a></p>
-  </article>
-</section>
+  <section class="learn-section" aria-labelledby="depth-title"><div class="learn-wrap">
+    <div class="learn-heading"><div><p class="section-label">Choose the depth</p><h2 id="depth-title">Use the shortest format that answers the question.</h2></div><p>The Encyclopedia is a reference library. Courses are sequenced instruction. The visual library explains spatial or process-heavy concepts. Start Here provides orientation.</p></div>
+    <div class="depth-grid">
+      <article class="depth-card"><h3>Start Here</h3><p>Beginner-friendly orientation and order of operations.</p><a href="/learn/start-here/">Open Start Here →</a></article>
+      <article class="depth-card"><h3>Courses</h3><p>Structured curriculum with lessons, practice, progress, assessments, practical work, and certification-oriented pathways.</p><a href="/courses/">Open Courses →</a></article>
+      <article class="depth-card"><h3>Plant Science Encyclopedia</h3><p>An independent 420+ reference library with permanent entries, sources, visuals, cross-links, and lesson-level knowledge checks.</p><a href="/learn/encyclopedia/">Open Encyclopedia →</a></article>
+      <article class="depth-card"><h3>Visual Library</h3><p>Diagrams, infographics, anatomy references, and process visuals grouped by subject.</p><a href="/learn/infographics/">Browse Visuals →</a></article>
+    </div>
+  </div></section>
 
+  <section class="learn-section alt" aria-labelledby="reference-title"><div class="learn-wrap reference-layout">
+    <div class="reference-copy"><p class="section-label">Reference desk</p><h2 id="reference-title">Keep measurement and anatomy beside the lesson.</h2><p>These tools and atlases support the lesson rather than replacing it. Use them when a concept becomes easier to understand by seeing, measuring, or comparing it.</p></div>
+    <ul class="reference-list">
+      <li><a href="/atlas/">Living Plant Atlas</a><small>Interactive anatomy, structures, systems, and connected plant science.</small></li>
+      <li><a href="/terpene-atlas/">Terpene Atlas</a><small>Compound families, chemistry, measured samples, and evidence.</small></li>
+      <li><a href="/ph-meter/">pH Reference</a><small>Calibrated pH readings and root-zone context.</small></li>
+      <li><a href="/tds-meter/">TDS / EC Reference</a><small>Conductivity and 500/700-scale conversion.</small></li>
+      <li><a href="/vpd-chart/">VPD Chart</a><small>Temperature, RH, leaf temperature, and vapor-pressure context.</small></li>
+      <li><a href="/ppfd-chart/">PPFD / DLI Tool</a><small>Light intensity and daily light integral.</small></li>
+    </ul>
+  </div></section>
 
-<section aria-labelledby="find-title">
-  <p><strong>Find the answer your way</strong></p>
-  <h2 id="find-title">Four ways into connected resources without mixing their jobs.</h2>
-  <div>
-    <article>
-      <h3>By stage</h3>
-      <p>Seed and seedling → vegetative growth → transition → flowering → harvest → drying, curing, storage, and the next cycle.</p>
-      <p><a href="/learn/start-here/">Follow the lifecycle path</a></p>
-    </article>
-    <article>
-      <h3>By problem</h3>
-      <p>Start from the symptom or failure, collect evidence, compare plausible causes, measure the likely drivers, then verify the response.</p>
-      <p><a href="/thc-grow-doc/">Start a diagnostic workflow</a></p>
-    </article>
-    <article>
-      <h3>By system</h3>
-      <p>Plant biology, environment, light, root zone, nutrition, crop management, plant health, postharvest, genetics, and research methods.</p>
-      <p><a href="#subjects-title">Browse the subject map</a></p>
-    </article>
-    <article>
-      <h3>By skill</h3>
-      <p>Learn to measure, map, scout, calibrate, record, compare, diagnose, propagate, train, harvest, preserve genetics, and interpret evidence.</p>
-      <p><a href="/courses/">Open structured courses</a></p>
-    </article>
-  </div>
-</section>
+  <section class="learn-section" aria-labelledby="subjects-title"><div class="learn-wrap">
+    <div class="learn-heading"><div><p class="section-label">Browse subjects</p><h2 id="subjects-title">Go deeper only when the question requires it.</h2></div><p>Subject pages organize the complete reference library without forcing every topic into the homepage.</p></div>
+    <div class="subject-grid">
+      <a class="subject-link" href="/learn/plant-biology/">Plant Biology &amp; Anatomy</a><a class="subject-link" href="/learn/environment-vpd/">Environment &amp; VPD</a>
+      <a class="subject-link" href="/learn/lighting/">Lighting</a><a class="subject-link" href="/learn/water-ph-ec/">Water &amp; Root Zone</a>
+      <a class="subject-link" href="/learn/nutrition-media/">Nutrition &amp; Media</a><a class="subject-link" href="/learn/lifecycle-propagation/">Lifecycle, Propagation &amp; Crop Management</a>
+      <a class="subject-link" href="/learn/ipm/">Plant Health &amp; IPM</a><a class="subject-link" href="/learn/harvest-postharvest/">Harvest &amp; Post-Harvest</a>
+      <a class="subject-link" href="/learn/genetics-breeding/">Genetics &amp; Breeding</a><a class="subject-link" href="/learn/outdoor/">Outdoor Cultivation</a>
+      <a class="subject-link" href="/learn/research-methods/">Evidence, Measurement &amp; Research</a><a class="subject-link" href="/learn/search/">Search all education</a>
+    </div>
+  </div></section>
 
-<section aria-labelledby="lesson-method-title">
-  <p><strong>How THC teaches</strong></p>
-  <h2 id="lesson-method-title">Every strong lesson should answer eight questions.</h2>
-  <ol>
-    <li><strong>What is it?</strong> Get the short, plain-language answer first.</li>
-    <li><strong>What should I observe?</strong> Know what evidence to look for before guessing.</li>
-    <li><strong>What should I measure?</strong> Use the smallest useful measurement set.</li>
-    <li><strong>What does the mechanism explain?</strong> Connect the observation to plant science.</li>
-    <li><strong>What decision follows?</strong> Use explicit decision rules instead of folklore.</li>
-    <li><strong>What can fool me?</strong> See common mistakes, confounders, and evidence limits.</li>
-    <li><strong>How do I verify it?</strong> Re-measure or re-observe after the change.</li>
-    <li><strong>Where do I go deeper?</strong> Open the linked tool, visual, course, or encyclopedia entry only when needed.</li>
-  </ol>
-</section>
+  <section class="learn-section dark" aria-labelledby="learn-actions-title"><div class="learn-wrap next-band">
+    <div><p class="section-label">Use what you learn</p><h2 id="learn-actions-title">Education should lead into a clear next action.</h2><p>Measure with cultivation tools, document a grow in GrowLens, structure a diagnostic in Grow Doc, or continue into a sequenced course.</p></div>
+    <div class="learn-actions"><a class="learn-btn primary" href="/tools/">Open tools</a><a class="learn-btn" href="/growlens/">Track a grow</a><a class="learn-btn" href="/thc-grow-doc/">Diagnose a plant</a></div>
+  </div></section>
 
-<section aria-labelledby="learn-map-title">
-  <p><strong>Learning map</strong></p>
-  <h2 id="learn-map-title">Six systems connect most cultivation decisions.</h2>
-  <ol>
-    <li><strong>Plant:</strong> biology, anatomy, lifecycle, signaling, and plant response.</li>
-    <li><strong>Environment:</strong> temperature, RH, VPD, airflow, light, and CO₂ context.</li>
-    <li><strong>Root zone:</strong> water, media, oxygen, pH, EC, irrigation, and dryback.</li>
-    <li><strong>Manage:</strong> propagation, training, canopy, crop stage, and records.</li>
-    <li><strong>Protect:</strong> sanitation, scouting, differential diagnosis, and IPM.</li>
-    <li><strong>Finish:</strong> harvest, post-harvest, quality, genetics, and iteration.</li>
-  </ol>
-  <p>Enter where your question is, move backward to likely drivers, then forward to the measurement or action that tests your understanding.</p>
-</section>
-
-<section aria-labelledby="depth-title">
-  <p><strong>Choose the depth</strong></p>
-  <h2 id="depth-title">Use the shortest format that answers the question.</h2>
-  <article><h3>Start Here</h3><p>Beginner-friendly orientation and order of operations.</p><p><a href="/learn/start-here/">Open Start Here</a></p></article>
-  <article><h3>THC Academy</h3><p>Structured curriculum with its own course lessons, practice, progress, assessments, practical work, and certification-oriented pathways.</p><p><a href="/courses/">Open Courses</a></p></article>
-  <article><h3>Plant Science Encyclopedia</h3><p>An independent 420+ reference library with its own permanent entries, sources, visuals, cross-links, and lesson-level knowledge checks. It is not a course catalog.</p><p><a href="/learn/encyclopedia/">Open Encyclopedia</a></p></article>
-  <article><h3>Visual Library</h3><p>Infographics and visual references grouped by subject.</p><p><a href="/learn/infographics/">Browse Visuals</a></p></article>
-</section>
-
-<section aria-labelledby="reference-title">
-  <p><strong>Reference desk</strong></p>
-  <h2 id="reference-title">Keep the important measurement tools beside the lesson.</h2>
-  <ul>
-    <li><a href="/atlas/"><strong>Living Plant Atlas</strong></a> — interactive anatomy, structures, systems, and diagnostics.</li>
-    <li><a href="/terpene-atlas/"><strong>Terpene Atlas</strong></a> — compound families, chemistry, measured samples, and evidence.</li>
-    <li><a href="/ph-meter/"><strong>pH Reference</strong></a> — calibrated pH readings and root-zone context.</li>
-    <li><a href="/tds-meter/"><strong>TDS / EC Reference</strong></a> — conductivity and 500/700-scale conversion.</li>
-    <li><a href="/vpd-chart/"><strong>VPD Chart</strong></a> — temperature, RH, leaf temperature, and vapor-pressure context.</li>
-    <li><a href="/ppfd-chart/"><strong>PPFD / DLI Tool</strong></a> — light intensity and daily light integral.</li>
-  </ul>
-</section>
-
-<section aria-labelledby="subjects-title">
-  <p><strong>Browse subjects</strong></p>
-  <h2 id="subjects-title">Go deeper only when the question requires it.</h2>
-  <ul>
-    <li><a href="/learn/plant-biology/">Plant Biology &amp; Anatomy</a></li>
-    <li><a href="/learn/environment-vpd/">Environment &amp; VPD</a></li>
-    <li><a href="/learn/lighting/">Lighting</a></li>
-    <li><a href="/learn/water-ph-ec/">Water &amp; Root Zone</a></li>
-    <li><a href="/learn/nutrition-media/">Nutrition &amp; Media</a></li>
-    <li><a href="/learn/lifecycle-propagation/">Lifecycle, Propagation &amp; Crop Management</a></li>
-    <li><a href="/learn/ipm/">Plant Health &amp; IPM</a></li>
-    <li><a href="/learn/harvest-postharvest/">Harvest &amp; Post-Harvest</a></li>
-    <li><a href="/learn/genetics-breeding/">Genetics &amp; Breeding</a></li>
-    <li><a href="/learn/outdoor/">Outdoor Cultivation</a></li>
-    <li><a href="/learn/research-methods/">Evidence, Measurement &amp; Research</a></li>
-  </ul>
-</section>
-
-<section aria-labelledby="learn-actions-title">
-  <p><strong>Use what you learn</strong></p>
-  <h2 id="learn-actions-title">Education should lead into a clear next action.</h2>
-  <p><a href="/tools/"><strong>Open cultivation tools</strong></a> · <a href="/growlens/">Track a grow</a> · <a href="/thc-grow-doc/">Diagnose a plant</a> · <a href="/community/">Ask the community</a></p>
-</section>
-
-<hr>
-<p><small>Educational information only. Follow local law, equipment instructions, electrical and fire codes, pesticide labels, and professional safety guidance. Do not use a visual symptom alone as proof of a nutrient, pest, or disease diagnosis.</small></p>
+  <div class="learn-wrap learn-legal"><small>Educational information only. Follow local law, equipment instructions, electrical and fire codes, pesticide labels, and professional safety guidance. Do not use a visual symptom alone as proof of a nutrient, pest, or disease diagnosis.</small></div>
+</main>
