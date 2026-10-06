@@ -12,9 +12,10 @@ const index=errors.length?{batches:[]}:JSON.parse(fs.readFileSync(indexPath,'utf
 const batches=Array.isArray(index.batches)?index.batches:[];
 const queue=JSON.parse(fs.readFileSync(queuePath,'utf8'));
 const expectedNeeded=(queue.items||[]).reduce((sum,lesson)=>sum+(lesson.visualRoles||[]).filter(role=>role.status==='brief_ready_raster_artwork_needed').length,0);
-if(index.artworkNeededCount!==expectedNeeded) errors.push(`Expected ${expectedNeeded} artwork-needed lessons from queue; found ${index.artworkNeededCount}`);
-if(index.batchSize!==24) errors.push(`Expected batch size 24; found ${index.batchSize}`);
-const expectedBatchCount=Math.ceil(expectedNeeded/24);
+if(index.artworkNeededCount!==expectedNeeded) errors.push(`Expected ${expectedNeeded} missing visual-role tasks from queue; found ${index.artworkNeededCount}`);
+const configuredBatchSize=Math.max(1,Number(process.env.ENCYCLOPEDIA_VISUAL_BATCH_SIZE||24));
+if(index.batchSize!==configuredBatchSize) errors.push(`Expected batch size ${configuredBatchSize}; found ${index.batchSize}`);
+const expectedBatchCount=Math.ceil(expectedNeeded/configuredBatchSize);
 if(index.batchCount!==expectedBatchCount) errors.push(`Expected ${expectedBatchCount} batches; found ${index.batchCount}`);
 const seen=new Set();
 let count=0;
@@ -24,7 +25,7 @@ for(const batch of batches){
   const data=JSON.parse(fs.readFileSync(file,'utf8'));
   if(data.batchId!==batch.batchId) errors.push(`${batch.batchId}: index/file ID mismatch`);
   if(data.status!=='production-ready-review-controlled') errors.push(`${batch.batchId}: invalid status`);
-  if(!Array.isArray(data.items)||data.items.length<1||data.items.length>24) errors.push(`${batch.batchId}: invalid item count`);
+  if(!Array.isArray(data.items)||data.items.length<1||data.items.length>configuredBatchSize) errors.push(`${batch.batchId}: invalid item count`);
   for(const item of data.items||[]){
     count++;
     const taskId=`${item.lessonId}:${item.visualRole}`;
