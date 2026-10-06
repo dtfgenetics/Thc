@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-10-04",
+  "updated": "2026-10-06",
   "apps": [
     {
       "id": "high-land",
@@ -989,6 +989,18 @@
         "localOnly": true,
         "credentialUseAuthorized": false
       }
+    },
+    {
+      "id": "pheno-hunter",
+      "title": "Pheno Hunter",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/pheno-hunter",
+      "canonicalDataPath": "games/pheno-hunter",
+      "route": "/games/pheno-hunter/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/pheno-hunter/scripts/validate-data.mjs && node games/pheno-hunter/test/engine.test.mjs && node --check site/public-route-patch/games/pheno-hunter/app.js && node --check site/public-route-patch/games/pheno-hunter/engine.mjs",
+      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
     }
   ]
 }
