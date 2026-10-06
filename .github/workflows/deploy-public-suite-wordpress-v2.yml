@@ -237,6 +237,13 @@ jobs:
             atlas/root-system/index.html
             atlas/root-system/rhizosphere/index.html
             atlas/downloads/index.html
+            atlas/atlas-module-v1.css
+            atlas/diagnostics/index.html
+            atlas/nodes-branching/index.html
+            atlas/stem-vascular/index.html
+            atlas/trichomes-resin/index.html
+            atlas/seed-germination/index.html
+            atlas/environmental-physiology/index.html
             atlas/flowers/index.html
             assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg
             assets/.htaccess
@@ -332,6 +339,14 @@ jobs:
                   'atlas/root-system/index.html',
                   'atlas/root-system/rhizosphere/index.html',
                   'atlas/downloads/index.html',
+                  'atlas/atlas-module-v1.css',
+                  'atlas/diagnostics/index.html',
+                  'atlas/nodes-branching/index.html',
+                  'atlas/stem-vascular/index.html',
+                  'atlas/trichomes-resin/index.html',
+                  'atlas/seed-germination/index.html',
+                  'atlas/environmental-physiology/index.html',
+                  'atlas/flowers/index.html',
                   'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg',
                   'assets/.htaccess',
                   'assets/thc-measurement-journal-v1.js',
@@ -463,7 +478,14 @@ jobs:
             https://dtfseeds.com/terpene-atlas/ \
             https://dtfseeds.com/atlas/root-system/ \
             https://dtfseeds.com/atlas/root-system/rhizosphere/ \
-            https://dtfseeds.com/atlas/downloads/; do
+            https://dtfseeds.com/atlas/downloads/ \
+            https://dtfseeds.com/atlas/diagnostics/ \
+            https://dtfseeds.com/atlas/nodes-branching/ \
+            https://dtfseeds.com/atlas/stem-vascular/ \
+            https://dtfseeds.com/atlas/trichomes-resin/ \
+            https://dtfseeds.com/atlas/seed-germination/ \
+            https://dtfseeds.com/atlas/environmental-physiology/ \
+            https://dtfseeds.com/atlas/flowers/; do
             echo "Checking $url"
             body="$(curl -fsSL --retry 5 --retry-delay 6 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
@@ -509,6 +531,8 @@ jobs:
           check 'https://dtfseeds.com/games/' '23 playable browser games'
           check 'https://dtfseeds.com/projects/' '23 public browser games'
           check 'https://dtfseeds.com/games/high-land/' 'High Land'
+          check 'https://dtfseeds.com/games/weedopolis/' 'Weedopolis'
+          check 'https://dtfseeds.com/games/crossword/' 'Crossword'
           check 'https://dtfseeds.com/games/strain-showdown/' 'Eight play styles. One showdown.'
           check 'https://dtfseeds.com/games/protect-the-plants/' 'Protect the Plants'
           check 'https://dtfseeds.com/games/bud-or-bluff/' 'Bud or Bluff'
