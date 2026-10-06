@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "registryId": "project-os.archival-readiness-v1",
+  "requiredGates": [
+    "canonical_ownership_verified",
+    "unique_assets_migrated",
+    "unique_code_migrated",
+    "production_dependencies_zero",
+    "active_links_removed_or_redirected",
+    "required_history_retained",
+    "admin_permission_available"
+  ],
+  "candidates": [
+    {
+      "repo": "dtfgenetics/Dtf420",
+      "state": "blocked",
+      "gates": {},
+      "blocker": "Repository administration permission and complete migration evidence are required before archival."
+    },
+    {
+      "repo": "dtfgenetics/dtf-thc-hub",
+      "state": "blocked",
+      "gates": {},
+      "blocker": "Repository administration permission and complete migration evidence are required before archival."
+    }
+  ]
+}
