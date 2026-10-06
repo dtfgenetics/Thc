@@ -4,6 +4,9 @@ export type EntryType = 'note' | 'watering' | 'feeding' | 'training' | 'transpla
 export type TaskRecurrence = 'none' | 'daily' | 'weekly' | 'monthly';
 export type PpmScale = 500 | 700 | null;
 export type ObservationOutcomeStatus = 'monitoring' | 'confirmed' | 'ruled-out' | 'resolved';
+export type ObservationSeverity = 'mild' | 'moderate' | 'severe';
+export type ObservationPlantLocation = 'new-growth' | 'upper-canopy' | 'middle-canopy' | 'lower-canopy' | 'whole-plant' | 'flowers' | 'root-zone';
+export type ObservationTissue = 'leaf' | 'stem' | 'flower' | 'root' | 'whole-plant';
 
 export type GrowSpace = {
   id: string;
@@ -82,6 +85,9 @@ export type Observation = {
   symptoms: string[];
   notes: string;
   possibleCauses: string[];
+  severity?: ObservationSeverity;
+  locationOnPlant?: ObservationPlantLocation;
+  tissue?: ObservationTissue;
   photoIds?: string[];
   createdAt: string;
 };
