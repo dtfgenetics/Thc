@@ -20,3 +20,106 @@
   .game-card:hover{transform:none}
   .button:hover{transform:none}
 }
+
+
+/* Shared compact route shell for game pages that are not yet promoted to a
+ * full interactive runtime. Keep structure shared; each page sets only
+ * --route-accent so status pages remain visually distinct without CSS forks. */
+.route-placeholder{
+  --route-accent:#9fe870;
+  min-height:100dvh;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:
+    radial-gradient(circle at 50% -5%,color-mix(in srgb,var(--route-accent) 10%,transparent),transparent 35rem),
+    radial-gradient(circle at 85% 90%,color-mix(in srgb,var(--route-accent) 5%,transparent),transparent 28rem),
+    linear-gradient(180deg,#050c08,#081208);
+  color:#eef6f2
+}
+.route-placeholder a{text-decoration:none;color:inherit}
+.route-placeholder-card{
+  width:min(94vw,540px);
+  border:1px solid color-mix(in srgb,var(--route-accent) 22%,transparent);
+  border-radius:28px;
+  padding:42px 32px 36px;
+  background:linear-gradient(160deg,rgba(12,28,18,.95),rgba(5,10,7,.98));
+  box-shadow:0 32px 100px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.025);
+  text-align:center;
+  display:grid;
+  gap:14px
+}
+.route-placeholder-icon{
+  font-size:4rem;
+  line-height:1;
+  filter:drop-shadow(0 8px 24px color-mix(in srgb,var(--route-accent) 27%,transparent))
+}
+.route-placeholder-badge{
+  display:inline-flex;
+  margin:0 auto;
+  padding:5px 13px;
+  border-radius:999px;
+  background:color-mix(in srgb,var(--route-accent) 9%,transparent);
+  border:1px solid color-mix(in srgb,var(--route-accent) 25%,transparent);
+  color:var(--route-accent);
+  font-size:.7rem;
+  font-weight:900;
+  letter-spacing:.1em;
+  text-transform:uppercase
+}
+.route-placeholder-card h1{
+  margin:0;
+  font-family:ui-serif,Georgia,Cambria,"Times New Roman",serif;
+  font-size:clamp(1.9rem,6vw,2.8rem);
+  font-weight:500;
+  line-height:1.05;
+  letter-spacing:-.02em;
+  text-transform:none
+}
+.route-placeholder-tagline{
+  margin:0;
+  color:var(--route-accent);
+  font-size:.9rem;
+  font-weight:700;
+  letter-spacing:.02em
+}
+.route-placeholder-copy{
+  margin:0 auto;
+  max-width:400px;
+  color:#8fa096;
+  font-size:.88rem;
+  line-height:1.68
+}
+.route-placeholder-actions{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-top:6px
+}
+.route-placeholder-button{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-height:44px;
+  padding:12px 18px;
+  border-radius:999px;
+  font-size:.84rem;
+  font-weight:900;
+  border:1px solid;
+  transition:border-color .15s ease,background .15s ease,color .15s ease
+}
+.route-placeholder-button.back{border-color:rgba(143,160,150,.3);color:#8fa096}
+.route-placeholder-button.back:hover{border-color:rgba(143,160,150,.6);color:#eef6f2;background:rgba(143,160,150,.08)}
+.route-placeholder-button.learn{border-color:color-mix(in srgb,var(--route-accent) 25%,transparent);color:var(--route-accent)}
+.route-placeholder-button.learn:hover{border-color:color-mix(in srgb,var(--route-accent) 50%,transparent);background:color-mix(in srgb,var(--route-accent) 6%,transparent)}
+.route-placeholder-note{margin:0;color:#566658;font-size:.74rem;letter-spacing:.02em}
+@media(max-width:520px){
+  .route-placeholder{padding:16px}
+  .route-placeholder-card{padding:34px 20px 30px;border-radius:22px}
+  .route-placeholder-actions{display:grid}
+  .route-placeholder-button{justify-content:center;width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+  .route-placeholder-button{transition:none}
+}
