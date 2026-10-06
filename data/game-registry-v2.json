@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updated": "2026-09-28",
+  "updated": "2026-10-06",
   "authority": {
     "productionControlRepository": "dtfgenetics/Thc",
     "developmentFreedomPolicy": "docs/GAME_DEVELOPMENT_FREEDOM.md",
@@ -116,7 +116,9 @@
     "who took it?": "who-took-it",
     "who took it": "who-took-it",
     "thc guess who": "who-took-it",
-    "grow room confessions": "grower-conversations"
+    "grow room confessions": "grower-conversations",
+    "pheno-hunter": "pheno-hunter",
+    "pheno hunter": "pheno-hunter"
   },
   "games": [
     {
@@ -4481,16 +4483,139 @@
       "notes": [
         "Canonical standalone React/Vite build from dtfgenetics/Thc-guess-who/03_digital-game. Production visual art is approved: 25 suspect portraits, 5 canonical missing-item assets, 20 UI/HUD assets, and one case-room environment. The full npm run check gate includes deterministic data/art registry validation, UI and environment validation, production-asset auditing, smoke and balance checks, dependency audit, production build, and mystery-privacy verification. No Playwright is used."
       ]
-    }
-  ],
-  "concepts": [
+    },
     {
       "id": "pheno-hunter",
       "title": "Pheno Hunter",
+      "aliases": [
+        "pheno-hunter",
+        "pheno hunter"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [
+        "phenoquest",
+        "pheno-draft"
+      ],
+      "legacyIds": [],
+      "publicRoute": "/games/pheno-hunter/",
+      "goal": {
+        "summary": "keeper-selection scouting puzzle with a limited observation budget",
+        "playerFantasy": "Scout a fictional cohort, reveal the right evidence, and choose the best keeper for a target brief.",
+        "primaryVerbs": [
+          "scout",
+          "compare",
+          "shortlist",
+          "select"
+        ],
+        "coreLoop": "Inspect an eight-candidate fictional cohort, spend limited scouting tokens to reveal hidden observations, shortlist up to three candidates, and select one keeper against a target brief."
+      },
+      "genre": [
+        "selection puzzle",
+        "scouting"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/pheno-hunter/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/pheno-hunter"
+        ],
+        "sourceOfTruth": "games/pheno-hunter/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/pheno-hunter",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/pheno-hunter",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/pheno-hunter/scripts/validate-data.mjs && node games/pheno-hunter/test/engine.test.mjs && node --check site/public-route-patch/games/pheno-hunter/app.js && node --check site/public-route-patch/games/pheno-hunter/engine.mjs",
+        "defaultBranch": "main"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "responsive DOM scouting and keeper-selection interface",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "canonical deterministic Pheno Hunter engine",
+        "uiLayer": "browser DOM/HUD with candidate cards, scouting controls, shortlist, and result panels",
+        "networkModel": "local deterministic",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "deterministic hunt-code replay",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and dynamic viewport containment",
+        "accessibilityContract": "keyboard operability, visible focus, reduced-motion support, and readable status feedback",
+        "audioSystem": "none required for current vertical slice",
+        "assetManifest": "games/pheno-hunter",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF public-app registry"
+        ]
+      },
+      "systems": [
+        "deterministic six-character hunt codes",
+        "fictional eight-candidate cohorts and target briefs",
+        "three visible baseline traits",
+        "four hidden scouting traits",
+        "ten-token scouting budget",
+        "shortlist of up to three candidates",
+        "final keeper constrained to the shortlist",
+        "objective-fit, evidence-gathering, and comparison scoring"
+      ],
+      "assets": {
+        "registryId": "pheno-hunter",
+        "repoRoots": [
+          "games/pheno-hunter"
+        ],
+        "driveRefs": [],
+        "licensePolicy": "All candidate names, families, scores, and target briefs are fictional game data; do not present them as real cultivar claims."
+      },
+      "verification": {
+        "buildCommand": "node games/pheno-hunter/scripts/validate-data.mjs && node games/pheno-hunter/test/engine.test.mjs && node --check site/public-route-patch/games/pheno-hunter/app.js && node --check site/public-route-patch/games/pheno-hunter/engine.mjs",
+        "testCommands": [
+          "node games/pheno-hunter/scripts/validate-data.mjs && node games/pheno-hunter/test/engine.test.mjs && node --check site/public-route-patch/games/pheno-hunter/app.js && node --check site/public-route-patch/games/pheno-hunter/engine.mjs"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/pheno-hunter/"
+      },
       "release": {
-        "status": "concept"
-      }
-    },
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL, revision, and timestamp after deployment verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [],
+        "targetExperience": "A focused scouting and keeper-selection puzzle where limited observations force evidence-based tradeoffs while fictional trait scores remain clearly separated from real cultivar claims.",
+        "knownGaps": [
+          "exact post-deploy visitor-route verification"
+        ]
+      },
+      "notes": [
+        "All candidate names, families, scores, and target briefs are fictional game data; trait scores illustrate selection tradeoffs only and are not real cultivar claims, breeding probabilities, potency data, or guaranteed outcomes.",
+        "The same hunt code reproduces the same target brief, cohort, and ordering for replay or sharing."
+      ]
+    }
+  ],
+  "concepts": [
     {
       "id": "pest-patrol",
       "title": "Pest Patrol",
