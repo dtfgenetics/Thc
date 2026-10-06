@@ -16,11 +16,11 @@ await mkdir(backupDir,{recursive:true});
 const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
 
 // V3 owns Home/Learn and V4 owns Genetics/Shop. Keep this small normalizer
-// deliberately limited to editorial pages that are not owned by those visual
+// deliberately limited to editorial support pages that are not owned by those visual
 // layers so production polishers do not fight each other. The approved marker
 // is derived from each canonical page's H1 so ordinary copy changes cannot leave
 // a stale hard-coded production assertion behind.
-const targetSlugs=['community','gallery'];
+const targetSlugs=['community','gallery','about','contact'];
 
 function textFromHtml(value){
   return String(value||'')
