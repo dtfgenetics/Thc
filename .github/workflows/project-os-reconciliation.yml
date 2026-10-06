@@ -1,0 +1,29 @@
+name: Project OS Reconciliation Watchdog
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+permissions:
+  contents: read
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify reconciliation contracts
+        run: npm run verify:project-os-reconciliation
+      - name: Build deterministic queue snapshot
+        run: |
+          mkdir -p artifacts/project-os-reconciliation
+          cp data/project-os/work-queue.json artifacts/project-os-reconciliation/queue.json
+      - name: Upload reconciliation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-os-reconciliation-${{ github.run_id }}
+          path: artifacts/project-os-reconciliation
+          if-no-files-found: error
+          retention-days: 30
