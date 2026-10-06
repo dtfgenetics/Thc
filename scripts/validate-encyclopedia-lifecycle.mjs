@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { encyclopediaLessonRoute } from './lib/encyclopedia-routes.mjs';
 
 const ROOT=process.cwd();
 const ENC=path.join(ROOT,'content','encyclopedia');
@@ -12,7 +13,6 @@ const warnings=[];
 const rows=[];
 
 const contract=JSON.parse(fs.readFileSync(contractPath,'utf8'));
-const canonicalRoute=n=>`/learn/encyclopedia/thc-enc-${String(n).padStart(3,'0')}/`;
 
 function walk(dir){
   const out=[];
@@ -50,7 +50,7 @@ for(const file of walk(ENC).sort()){
     addWarning(lesson.id,file,'stale_completion_record','Completion/status record still says approval/publication is not authorized.');
   }
 
-  const expectedRoute=canonicalRoute(number);
+  const expectedRoute=encyclopediaLessonRoute(number);
   const legacyRoute=String(lesson.route||'').trim();
   if(legacyRoute&&legacyRoute!==expectedRoute){
     addWarning(lesson.id,file,'legacy_route_metadata',`Stored route "${legacyRoute}" differs from canonical public route "${expectedRoute}".`);
