@@ -337,6 +337,7 @@ jobs:
                   'assets/thc-measurement-journal-v1.js',
                   'assets/thc-tool-suite-v1.js',
                   'assets/thc-tool-suite-v1.css',
+                  'assets/project-os-release-fingerprint.json',
                   'assets/thc-cultivation-math-v1.mjs',
                   'assets/thc-history-core-v1.mjs',
                   'assets/thc-light-lab-math-v1.mjs',
@@ -396,6 +397,18 @@ jobs:
           set -euo pipefail
           node "$RUNNER_TEMP/deploy-public-suite-v2.mjs" "$DTF_SUITE_ARCHIVE" | tee "$RUNNER_TEMP/deploy-result.log"
           grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/deploy-result.log"
+
+      - name: Verify Project OS release fingerprint
+        shell: bash
+        env:
+          SUITE_ROOT: ${{ steps.suite.outputs.root }}
+        run: |
+          set -euo pipefail
+          expected="$SUITE_ROOT/assets/project-os-release-fingerprint.json"
+          test -s "$expected"
+          node scripts/verify-project-os-release-fingerprint-live.mjs \
+            "$expected" \
+            "https://dtfseeds.com/assets/project-os-release-fingerprint.json"
 
       - name: Verify canonical sitemap publication
         shell: bash
