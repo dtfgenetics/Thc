@@ -13,10 +13,15 @@ const batches=Array.isArray(index.batches)?index.batches:[];
 const queue=JSON.parse(fs.readFileSync(queuePath,'utf8'));
 const expectedNeeded=(queue.items||[]).reduce((sum,lesson)=>sum+(lesson.visualRoles||[]).filter(role=>role.status==='brief_ready_raster_artwork_needed').length,0);
 if(index.artworkNeededCount!==expectedNeeded) errors.push(`Expected ${expectedNeeded} missing visual-role tasks from queue; found ${index.artworkNeededCount}`);
-const configuredBatchSize=Math.max(1,Number(process.env.ENCYCLOPEDIA_VISUAL_BATCH_SIZE||24));
+const configuredBatchSize=Number(process.env.ENCYCLOPEDIA_VISUAL_BATCH_SIZE||24);
+if(!Number.isInteger(configuredBatchSize)||configuredBatchSize<1||configuredBatchSize>100) errors.push('ENCYCLOPEDIA_VISUAL_BATCH_SIZE must be an integer from 1 to 100.');
 if(index.batchSize!==configuredBatchSize) errors.push(`Expected batch size ${configuredBatchSize}; found ${index.batchSize}`);
 const expectedBatchCount=Math.ceil(expectedNeeded/configuredBatchSize);
 if(index.batchCount!==expectedBatchCount) errors.push(`Expected ${expectedBatchCount} batches; found ${index.batchCount}`);
+if(index.visualTaskCount!==expectedNeeded) errors.push(`Index visualTaskCount must equal queue-derived task count ${expectedNeeded}; found ${index.visualTaskCount}`);
+if(index.sourceVisualTasksNeeded!==queue.summary?.visualTasksNeeded) errors.push('Batch index sourceVisualTasksNeeded does not match queue summary.');
+if(index.sourceLessonsWithVisualGaps!==queue.summary?.lessonsWithVisualGaps) errors.push('Batch index sourceLessonsWithVisualGaps does not match queue summary.');
+if(index.lessonCountWithGaps!==queue.summary?.lessonsWithVisualGaps) errors.push('Batch lessonCountWithGaps does not match queue summary.');
 const seen=new Set();
 let count=0;
 for(const batch of batches){
