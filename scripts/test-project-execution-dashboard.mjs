@@ -30,6 +30,10 @@ assert.equal(byId.get('thc-academy-certification')?.canonicalRepo, 'dtfgenetics/
 assert.equal(byId.get('thc-academy-certification')?.executionContract, 'academy');
 assert.equal(byId.get('thc-academy-certification')?.agentExecutionMode, 'external-executor');
 
+assert.equal(byId.get('discord-music-bot-duplicate')?.agentExecutionMode, 'archive-only');
+assert.equal(byId.get('all-in-one-thc-grow')?.agentExecutionMode, 'archive-only');
+assert.equal(byId.get('monetization-os')?.agentExecutionMode, 'non-github');
+
 assert.ok(dashboard.completionQueues.archiveReadyRepos.includes('dtfgenetics/code'));
 assert.ok(dashboard.completionQueues.archiveReadyRepos.includes('dtfgenetics/all-in-one-thc-grow-'));
 assert.ok(dashboard.completionQueues.migrationRepos.includes('dtfgenetics/Dtf420'));
