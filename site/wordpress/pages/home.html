@@ -1,95 +1,231 @@
-<!-- production-reconcile: 2026-09-27 -->
-<!-- DTFSeeds.com public homepage content. Goal-first, progressive-disclosure layout. -->
-<section aria-labelledby="dtf-home-title">
-  <p><strong>DTF Genetics</strong> · Dream the Future</p>
-  <h1 id="dtf-home-title">Genetics first. Learn the plant behind the pack.</h1>
-  <p>Explore documented DTF genetics, learn cultivation through Teaching Healthy Cultivation, use evidence-based grow tools, or play original browser games.</p>
-  <p>
-    <a href="/seeds/"><strong>Explore Genetics</strong></a>
-    &nbsp; <a href="/learn/"><strong>Start Learning</strong></a>
-    &nbsp; <a href="/tools/"><strong>Use Grow Tools</strong></a>
-  </p>
-</section>
+<!-- production-reconcile: 2026-10-06 -->
+<!-- DTFSeeds.com homepage visual reset: self-contained, mobile-first, no unapproved media dependencies. -->
+<style id="dtf-home-v2-css">
+.dtf-home-v2{--bg:#07170f;--bg2:#0c2417;--panel:#102d1d;--panel2:#153824;--paper:#f5f1e6;--ink:#102b1a;--text:#f7f4ea;--muted:#b8c7bc;--muted-dark:#607065;--gold:#d5b15a;--gold2:#f0d887;--green:#6f9847;--line:rgba(255,255,255,.12);--line-gold:rgba(213,177,90,.34);--max:1240px;--shadow:0 24px 70px rgba(0,0,0,.24);margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden}
+.dtf-home-v2 *{box-sizing:border-box;min-width:0}
+.dtf-home-v2 a{color:inherit;text-underline-offset:3px}
+.dtf-home-v2 .wrap{width:min(var(--max),calc(100% - clamp(24px,5vw,64px)));margin-inline:auto}
+.dtf-home-v2 .hero{position:relative;padding:clamp(64px,9vw,124px) 0 clamp(58px,8vw,100px);background:radial-gradient(circle at 82% 10%,rgba(213,177,90,.20),transparent 28%),radial-gradient(circle at 8% 86%,rgba(111,152,71,.17),transparent 30%),linear-gradient(145deg,#04110a 0%,#081b11 52%,#10311f 100%)}
+.dtf-home-v2 .hero:after{content:"DTF";position:absolute;right:-.04em;bottom:-.18em;color:rgba(255,255,255,.028);font-weight:950;font-size:clamp(11rem,29vw,30rem);line-height:.8;letter-spacing:-.08em;pointer-events:none}
+.dtf-home-v2 .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:clamp(34px,6vw,88px);align-items:end}
+.dtf-home-v2 .kicker,.dtf-home-v2 .section-kicker{display:inline-flex;align-items:center;gap:10px;margin:0 0 16px;color:var(--gold2);font-size:.72rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.dtf-home-v2 .kicker:before,.dtf-home-v2 .section-kicker:before{content:"";width:28px;height:1px;background:var(--gold)}
+.dtf-home-v2 h1,.dtf-home-v2 h2,.dtf-home-v2 h3{margin:0;font-family:"Arial Narrow","Roboto Condensed",Inter,sans-serif;text-transform:uppercase;text-wrap:balance}
+.dtf-home-v2 h1{max-width:11ch;font-size:clamp(3.25rem,8vw,7.25rem);line-height:.88;letter-spacing:-.048em}
+.dtf-home-v2 h2{font-size:clamp(2.2rem,4.6vw,4.5rem);line-height:.95;letter-spacing:-.035em}
+.dtf-home-v2 h3{font-size:1.25rem;line-height:1.05;letter-spacing:.01em}
+.dtf-home-v2 p{line-height:1.68}
+.dtf-home-v2 .lede{max-width:760px;margin:24px 0 0;color:#d3dfd6;font-size:clamp(1.02rem,1.35vw,1.18rem)}
+.dtf-home-v2 .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.dtf-home-v2 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:11px 18px;border:1px solid var(--line-gold);border-radius:10px;text-decoration:none!important;text-transform:uppercase;font-size:.74rem;font-weight:900;letter-spacing:.065em;background:rgba(255,255,255,.035);transition:transform .18s ease,border-color .18s ease,background .18s ease}
+.dtf-home-v2 .btn:hover{transform:translateY(-2px);border-color:rgba(213,177,90,.7)}
+.dtf-home-v2 .btn.primary{background:linear-gradient(180deg,#dfc572,#b8953f);border-color:#e7cd7a;color:#07170f}
+.dtf-home-v2 .hero-panel{display:grid;gap:0;border:1px solid var(--line-gold);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));box-shadow:var(--shadow);overflow:hidden}
+.dtf-home-v2 .hero-stat{display:grid;grid-template-columns:72px 1fr;gap:16px;align-items:center;padding:22px;border-bottom:1px solid var(--line)}
+.dtf-home-v2 .hero-stat:last-child{border-bottom:0}
+.dtf-home-v2 .hero-stat strong{color:var(--gold2);font-size:1.55rem;line-height:1}
+.dtf-home-v2 .hero-stat span{color:#c9d7ce;font-size:.9rem;line-height:1.45}
+.dtf-home-v2 .section{padding:clamp(56px,8vw,96px) 0;background:var(--bg)}
+.dtf-home-v2 .section.alt{background:#0a2015}
+.dtf-home-v2 .section.light{background:var(--paper);color:var(--ink)}
+.dtf-home-v2 .section-heading{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:clamp(22px,4vw,54px);align-items:end;margin-bottom:30px}
+.dtf-home-v2 .section-heading p{max-width:56ch;margin:0;color:var(--muted)}
+.dtf-home-v2 .light .section-heading p{color:var(--muted-dark)}
+.dtf-home-v2 .path-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.dtf-home-v2 .path-card,.dtf-home-v2 .release-card,.dtf-home-v2 .tool-card{position:relative;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(18,50,31,.98),rgba(8,28,17,.98));padding:22px;overflow:hidden}
+.dtf-home-v2 .path-card:before{content:attr(data-number);display:block;margin-bottom:28px;color:var(--gold2);font:900 .72rem/1 Inter,sans-serif;letter-spacing:.12em}
+.dtf-home-v2 .path-card p,.dtf-home-v2 .release-card p,.dtf-home-v2 .tool-card p{margin:.7rem 0 0;color:var(--muted)}
+.dtf-home-v2 .text-link{display:inline-flex;min-height:44px;align-items:center;margin-top:16px;color:var(--gold2);font-weight:900;text-decoration:none;text-transform:uppercase;font-size:.72rem;letter-spacing:.055em}
+.dtf-home-v2 .release-grid{display:grid;grid-template-columns:1.2fr .9fr .9fr;gap:16px}
+.dtf-home-v2 .release-card:first-child{background:radial-gradient(circle at 84% 10%,rgba(213,177,90,.12),transparent 26%),linear-gradient(145deg,#153824,#07170f)}
+.dtf-home-v2 .release-meta{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.dtf-home-v2 .chip{display:inline-flex;align-items:center;min-height:27px;padding:5px 9px;border:1px solid var(--line-gold);border-radius:999px;color:var(--gold2);font-size:.64rem;font-weight:900;letter-spacing:.075em;text-transform:uppercase}
+.dtf-home-v2 .release-card h3{font-size:clamp(1.55rem,2.4vw,2.3rem)}
+.dtf-home-v2 .lineage{color:#e1e8e2!important;font-weight:700}
+.dtf-home-v2 .learning-split{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px;align-items:stretch}
+.dtf-home-v2 .learning-copy{padding:clamp(26px,4vw,48px);border:1px solid #d9cc9f;border-radius:22px;background:#fffdf7}
+.dtf-home-v2 .learning-copy p{color:var(--muted-dark)}
+.dtf-home-v2 .learning-steps{display:grid;border:1px solid #d9cc9f;border-radius:22px;overflow:hidden;background:#fffaf0}
+.dtf-home-v2 .learning-step{display:grid;grid-template-columns:72px 1fr;gap:16px;padding:22px;border-bottom:1px solid #ded3ad}
+.dtf-home-v2 .learning-step:last-child{border-bottom:0}
+.dtf-home-v2 .learning-step strong{color:#4f7138}
+.dtf-home-v2 .learning-step p{margin:.35rem 0 0;color:var(--muted-dark)}
+.dtf-home-v2 .tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.dtf-home-v2 .tool-card{padding:28px}
+.dtf-home-v2 .tool-card h3{font-size:clamp(1.8rem,3vw,2.7rem)}
+.dtf-home-v2 .community-band{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);gap:28px;align-items:end;padding:clamp(28px,5vw,52px);border:1px solid var(--line-gold);border-radius:24px;background:linear-gradient(90deg,rgba(213,177,90,.07),rgba(255,255,255,.02))}
+.dtf-home-v2 .community-band p{max-width:700px;margin:.8rem 0 0;color:var(--muted)}
+.dtf-home-v2 .legal{padding:24px 0 34px;border-top:1px solid var(--line);color:#8fa092;font-size:.78rem}
+@media(max-width:980px){.dtf-home-v2 .hero-grid,.dtf-home-v2 .section-heading,.dtf-home-v2 .learning-split,.dtf-home-v2 .community-band{grid-template-columns:1fr}.dtf-home-v2 .hero-panel{max-width:620px}.dtf-home-v2 .path-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dtf-home-v2 .release-grid{grid-template-columns:1fr 1fr}.dtf-home-v2 .release-card:first-child{grid-column:1/-1}}
+@media(max-width:700px){.dtf-home-v2 .wrap{width:min(var(--max),calc(100% - 28px))}.dtf-home-v2 .hero{padding:54px 0 48px}.dtf-home-v2 h1{font-size:clamp(3rem,15vw,4.85rem)}.dtf-home-v2 .actions{display:grid;grid-template-columns:1fr}.dtf-home-v2 .btn{width:100%}.dtf-home-v2 .path-grid,.dtf-home-v2 .release-grid,.dtf-home-v2 .tool-grid{grid-template-columns:1fr}.dtf-home-v2 .release-card:first-child{grid-column:auto}.dtf-home-v2 .hero-stat,.dtf-home-v2 .learning-step{grid-template-columns:58px 1fr}.dtf-home-v2 .community-band .actions{margin-top:0}}
+@media(max-width:420px){.dtf-home-v2 .wrap{width:min(var(--max),calc(100% - 20px))}.dtf-home-v2 .path-card,.dtf-home-v2 .release-card,.dtf-home-v2 .tool-card{padding:18px}.dtf-home-v2 .hero-panel{border-radius:18px}}
+@media(prefers-reduced-motion:reduce){.dtf-home-v2 .btn{transition:none}}
+</style>
 
-<section aria-labelledby="dtf-start-title">
-  <p><strong>Start with what you came here to do</strong></p>
-  <h2 id="dtf-start-title">Four clear paths</h2>
+<main class="dtf-home-v2" data-dtf-layout="home-visual-v5">
+  <section class="hero" aria-labelledby="dtf-home-title">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="kicker">DTF Genetics · Dream the Future</p>
+        <h1 id="dtf-home-title">Genetics first. Learn the plant behind the pack.</h1>
+        <p class="lede">Explore documented DTF genetics, learn cultivation through Teaching Healthy Cultivation, use practical grow tools, and play original browser games without digging through a maze of disconnected pages.</p>
+        <div class="actions">
+          <a class="btn primary" href="/seeds/">Explore genetics</a>
+          <a class="btn" href="/learn/">Start learning</a>
+          <a class="btn" href="/tools/">Use grow tools</a>
+        </div>
+      </div>
+      <aside class="hero-panel" aria-label="DTF site overview">
+        <div class="hero-stat"><strong>01</strong><span>Documented genetics and breeding context.</span></div>
+        <div class="hero-stat"><strong>02</strong><span>Plant-science education built around real grow decisions.</span></div>
+        <div class="hero-stat"><strong>03</strong><span>Tools that turn observations and measurements into action.</span></div>
+        <div class="hero-stat"><strong>04</strong><span>Original games and community experiences.</span></div>
+      </aside>
+    </div>
+  </section>
 
-  <article>
-    <h3>Explore genetics</h3>
-    <p>See lineage, generation, breeding direction, observations, and current release routes without mixing breeding context with store availability.</p>
-    <p><a href="/seeds/"><strong>Open Genetics</strong></a></p>
-  </article>
+  <section class="section" aria-labelledby="dtf-start-title">
+    <div class="wrap">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Start here</p>
+          <h2 id="dtf-start-title">Four clear paths.</h2>
+        </div>
+        <p>The homepage now prioritizes intent. Visitors should be able to understand the site in seconds and move directly into the part they actually came for.</p>
+      </div>
+      <div class="path-grid">
+        <article class="path-card" data-number="01">
+          <h3>Explore genetics</h3>
+          <p>See lineage, generation, breeding direction, observations, and release context without confusing a breeding profile with store inventory.</p>
+          <a class="text-link" href="/seeds/">Open genetics →</a>
+        </article>
+        <article class="path-card" data-number="02">
+          <h3>Learn cultivation</h3>
+          <p>Follow structured learning across plant biology, environment, lighting, root zone, plant health, harvest, genetics, and breeding.</p>
+          <a class="text-link" href="/learn/">Open learning →</a>
+        </article>
+        <article class="path-card" data-number="03">
+          <h3>Use a tool</h3>
+          <p>Diagnose plant-health problems, track grows, calculate targets, and use measurement references from one practical tools system.</p>
+          <a class="text-link" href="/tools/">Open tools →</a>
+        </article>
+        <article class="path-card" data-number="04">
+          <h3>Play and participate</h3>
+          <p>Open original DTF games or join the community for grow discussion, testing, grow-offs, and project feedback.</p>
+          <a class="text-link" href="/games/">Open games →</a>
+        </article>
+      </div>
+    </div>
+  </section>
 
-  <article>
-    <h3>Learn cultivation</h3>
-    <p>Follow beginner paths, structured courses, plant science, environment, lighting, root-zone, plant health, harvest, breeding, and evidence-based references.</p>
-    <p><a href="/learn/"><strong>Open Learning</strong></a> · <a href="/courses/">Courses</a></p>
-  </article>
+  <section class="section alt" aria-labelledby="dtf-releases-title">
+    <div class="wrap">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Current releases</p>
+          <h2 id="dtf-releases-title">Breeding library and store inventory stay separate.</h2>
+        </div>
+        <p>Product pages control current price, stock, quantity, fulfillment, and policies. Genetics profiles explain the project itself.</p>
+      </div>
+      <div class="release-grid">
+        <article class="release-card">
+          <div class="release-meta"><span class="chip">F2</span><span class="chip">Regular</span></div>
+          <h3>Blue Mango</h3>
+          <p class="lineage">Somango XXL × Blueberry Butcher</p>
+          <p>Flagship DTF genetics with documented breeding direction around vigor, branching, resin, structure, and a blueberry-mango aromatic profile.</p>
+          <a class="text-link" href="/product/10-regular-f2-blue-mango-seeds/">Open current listing →</a>
+        </article>
+        <article class="release-card">
+          <div class="release-meta"><span class="chip">F2</span><span class="chip">Feminized</span></div>
+          <h3>Blue Mango</h3>
+          <p class="lineage">Somango XXL × Blueberry Butcher</p>
+          <a class="text-link" href="/product/10-feminized-f2-blue-mango-x/">Open current listing →</a>
+        </article>
+        <article class="release-card">
+          <div class="release-meta"><span class="chip">F1</span><span class="chip">Regular</span></div>
+          <h3>Blue Bubblegum</h3>
+          <p class="lineage">Bubblegum Kush × Blueberry Butcher</p>
+          <a class="text-link" href="/product/10-reg-f1-blueberry-bubblegum/">Open current listing →</a>
+        </article>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="/shop/">Shop current releases</a>
+        <a class="btn" href="/seeds/">Browse full genetics library</a>
+      </div>
+    </div>
+  </section>
 
-  <article>
-    <h3>Use a tool</h3>
-    <p>Diagnose plant-health problems, track grows, calculate environmental targets, and use measurement references from one tools hub.</p>
-    <p><a href="/tools/"><strong>Open Tools</strong></a></p>
-  </article>
+  <section class="section light" aria-labelledby="dtf-learn-title">
+    <div class="wrap">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker" style="color:#4f7138">Teaching Healthy Cultivation</p>
+          <h2 id="dtf-learn-title">Learn by goal, not by hunting through pages.</h2>
+        </div>
+        <p>Start with foundations, move into measurement and observation, then use deeper references when the grow actually demands them.</p>
+      </div>
+      <div class="learning-split">
+        <div class="learning-copy">
+          <h3 style="font-size:clamp(1.8rem,3vw,2.8rem)">Understand the plant as a system.</h3>
+          <p>Plant biology, light, air, media, temperature, water, nutrients, pest pressure, genetics, and post-harvest outcomes are connected. The learning system should make those connections obvious.</p>
+          <div class="actions">
+            <a class="btn primary" href="/learn/">Open learning system</a>
+            <a class="btn" style="color:#102b1a;border-color:#b9aa79" href="/courses/">View courses</a>
+          </div>
+        </div>
+        <div class="learning-steps" aria-label="Learning progression">
+          <div class="learning-step"><strong>01</strong><div><h3>Foundations</h3><p>Build vocabulary, lifecycle knowledge, and environmental basics.</p></div></div>
+          <div class="learning-step"><strong>02</strong><div><h3>Observe</h3><p>Learn what healthy structure and development look like before diagnosing problems.</p></div></div>
+          <div class="learning-step"><strong>03</strong><div><h3>Measure</h3><p>Use pH, EC, VPD, light, irrigation, and environmental records correctly.</p></div></div>
+          <div class="learning-step"><strong>04</strong><div><h3>Decide</h3><p>Compare evidence, act deliberately, and record what happened next.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <article>
-    <h3>Play and participate</h3>
-    <p>Open original DTF games or join the community for grow discussion, testing, grow-offs, and project feedback.</p>
-    <p><a href="/games/"><strong>Play Games</strong></a> · <a href="/community/">Community</a></p>
-  </article>
-</section>
+  <section class="section alt" aria-labelledby="dtf-tools-title">
+    <div class="wrap">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Cultivation tools</p>
+          <h2 id="dtf-tools-title">Observe → measure → compare → track.</h2>
+        </div>
+        <p>The tools should feel like part of one system, not unrelated experiments scattered across the site.</p>
+      </div>
+      <div class="tool-grid">
+        <article class="tool-card">
+          <h3>THC Grow Doc</h3>
+          <p>Structure plant-health evidence and compare plausible causes before acting on a visual symptom.</p>
+          <a class="text-link" href="/thc-grow-doc/">Diagnose a plant →</a>
+        </article>
+        <article class="tool-card">
+          <h3>THC GrowLens</h3>
+          <p>Track plants, spaces, environmental readings, irrigation, tasks, observations, photos, harvests, and reports.</p>
+          <a class="text-link" href="/growlens/">Track a grow →</a>
+        </article>
+      </div>
+      <div class="actions"><a class="btn primary" href="/tools/">View all tools</a></div>
+    </div>
+  </section>
 
-<section aria-labelledby="dtf-releases-title">
-  <p><strong>Current releases</strong></p>
-  <h2 id="dtf-releases-title">Available genetics stay separate from the full breeding library.</h2>
-  <p>Product pages control current price, stock, quantity, fulfillment, and policies. The genetics library explains the breeding project.</p>
-  <article>
-    <h3>Blue Mango F2 — Regular</h3>
-    <p><strong>Somango XXL × Blueberry Butcher</strong></p>
-    <p><a href="/product/10-regular-f2-blue-mango-seeds/">Open current listing</a></p>
-  </article>
-  <article>
-    <h3>Blue Mango F2 — Feminized</h3>
-    <p><strong>Somango XXL × Blueberry Butcher</strong></p>
-    <p><a href="/product/10-feminized-f2-blue-mango-x/">Open current listing</a></p>
-  </article>
-  <article>
-    <h3>Blue Bubblegum F1 — Regular</h3>
-    <p><strong>Bubblegum Kush × Blueberry Butcher</strong></p>
-    <p><a href="/product/10-reg-f1-blueberry-bubblegum/">Open current listing</a></p>
-  </article>
-  <p><a href="/shop/"><strong>Shop current releases</strong></a> · <a href="/seeds/">Browse the full genetics library</a></p>
-</section>
+  <section class="section" aria-labelledby="dtf-community-title">
+    <div class="wrap">
+      <div class="community-band">
+        <div>
+          <p class="section-kicker">More from DTF</p>
+          <h2 id="dtf-community-title">Games and community should be easy to find without crowding the core path.</h2>
+          <p>Keep the homepage focused on what DTF is strongest at, while still making games, community, and Discord feel like real parts of the brand.</p>
+        </div>
+        <div class="actions">
+          <a class="btn primary" href="/games/">Open game hub</a>
+          <a class="btn" href="/community/">Community</a>
+          <a class="btn" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Discord</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section aria-labelledby="dtf-learn-title">
-  <p><strong>Teaching Healthy Cultivation</strong></p>
-  <h2 id="dtf-learn-title">Learn by goal instead of searching through disconnected pages.</h2>
-  <p>Start with the beginner path, diagnose a plant problem, improve environment and lighting, or study genetics and breeding. Deeper references remain available when you need them.</p>
-  <p><a href="/learn/"><strong>Open the learning system</strong></a> · <a href="/courses/">View courses</a></p>
-</section>
-
-<section aria-labelledby="dtf-tools-title">
-  <p><strong>Cultivation tools</strong></p>
-  <h2 id="dtf-tools-title">Observe → measure → compare → track.</h2>
-  <article>
-    <h3>THC Grow Doc</h3>
-    <p>Structure plant-health evidence and compare plausible causes before acting on a visual symptom.</p>
-    <p><a href="/thc-grow-doc/"><strong>Diagnose a plant</strong></a></p>
-  </article>
-  <article>
-    <h3>THC GrowLens</h3>
-    <p>Track plants, grow spaces, environmental readings, irrigation, tasks, observations, photos, harvests, and reports.</p>
-    <p><a href="/growlens/"><strong>Track a grow</strong></a></p>
-  </article>
-  <p><a href="/tools/"><strong>View all tools</strong></a></p>
-</section>
-
-<section aria-labelledby="dtf-secondary-title">
-  <p><strong>More from DTF</strong></p>
-  <h2 id="dtf-secondary-title">Games and community are easy to find without crowding the core path.</h2>
-  <p><a href="/games/"><strong>Open the Game Hub</strong></a> · <a href="/community/">Community</a> · <a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Discord</a></p>
-</section>
-
-<hr>
-<p><small>Adults only. Follow applicable local laws. Cultivation information is educational and does not replace legal, medical, electrical, pesticide-label, or workplace-safety guidance. Breeding observations are not guarantees of phenotype, yield, potency, aroma, or finish date.</small></p>
+  <div class="legal">
+    <div class="wrap">Adults only. Follow applicable local laws. Cultivation information is educational and does not replace legal, medical, electrical, pesticide-label, or workplace-safety guidance. Breeding observations are not guarantees of phenotype, yield, potency, aroma, or finish date.</div>
+  </div>
+</main>
