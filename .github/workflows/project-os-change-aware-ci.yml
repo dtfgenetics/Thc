@@ -1,0 +1,40 @@
+name: Project OS Change-Aware CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: project-os-change-aware-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan-and-verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Determine changed files
+        id: changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${{ github.event.pull_request.base.sha || github.event.before }}"
+          head="${{ github.event.pull_request.head.sha || github.sha }}"
+          files="$(git diff --name-only "$base...$head" | paste -sd, -)"
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+      - name: Print deterministic CI plan
+        run: node scripts/run-project-os-ci-plan.mjs --files "${{ steps.changes.outputs.files }}"
+      - name: Run staged Project OS CI plan
+        run: node scripts/run-project-os-ci-plan.mjs --files "${{ steps.changes.outputs.files }}" --execute
