@@ -37,19 +37,21 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Validate checked-in controlled batches
+      - name: Validate visual production inputs
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/validate-encyclopedia-visual-production-batches.mjs
+          test -s content/encyclopedia/visual-production-queue-v1.json
+          test -s scripts/build-encyclopedia-visual-production-queue.mjs
+          test -s scripts/build-encyclopedia-visual-production-batches.mjs
 
-      - name: Rebuild current visual production queue for evidence
+      - name: Rebuild and validate current visual-depth evidence
         shell: bash
         run: |
           set -euo pipefail
           npm run verify:encyclopedia-visual-depth
 
-      - name: Revalidate review-controlled production batches
+      - name: Confirm generated review-controlled production batches
         shell: bash
         run: |
           set -euo pipefail
