@@ -30,19 +30,43 @@ for (const name of canonicalVisualFiles) {
 }
 
 const visualFamilyFor = (lesson, entry) => {
+  const explicit = clean([entry.teachingVisual,lesson.requiredTeachingVisual].filter(Boolean).join(' ')).toLowerCase();
+  const title = clean(lesson.title).toLowerCase();
   const text = JSON.stringify([
     lesson.title, lesson.objective, lesson.coreScience, lesson.cultivationRelevance,
     lesson.measureAndRecord, lesson.misconceptions, lesson.evidenceLimits
   ]).toLowerCase();
+
+  // Prefer the controlled visual brief/type. Broad lesson prose contains words like
+  // "diagnose", "measure", or "root" in many contexts and must not override a
+  // lesson-specific diagram requirement.
+  if(/decision tree|diagnostic|differential|troubleshoot|symptom/.test(explicit)) return 'diagnostic-decision-tree';
+  if(/anatom|structure|morpholog|cross[- ]section|labeled|organ|tissue/.test(explicit)) return 'labeled-structure-diagram';
+  if(/pedigree|inherit|genetic|segregat|backcross|selfing|breeding|cross/.test(explicit)) return 'genetics-pedigree-diagram';
+  if(/postharvest|harvest|dry|curing|storage|process sequence/.test(explicit)) return 'postharvest-process-diagram';
+  if(/environment|response curve|response chart|vpd|temperature|humidity|light response|co2/.test(explicit)) return 'environment-response-chart';
+  if(/compare|comparison|matrix|versus|trade[- ]off|categories/.test(explicit)) return 'comparison-matrix';
+  if(/measure|workflow|calibrat|sampling|record|chart|calculation|quality control/.test(explicit)) return 'measurement-workflow';
+  if(/process|pathway|cycle|mechanism|transport|signal|flow|architecture/.test(explicit)) return 'mechanism-process-diagram';
+
+  // Content fallback, ordered from specific visual semantics to broad mechanisms.
+  if(/diagnos|symptom|disease|pathogen|pest|viroid|deficien|toxicit/.test(title)) return 'diagnostic-decision-tree';
+  if(/anatom|morpholog|root system|leaf|flower|trichome|vascular|stomata|seed structure/.test(title)) return 'labeled-structure-diagram';
+  if(/breeding|pedigree|inherit|genetic|allele|segregat|backcross|selfing|selection/.test(title)) return 'genetics-pedigree-diagram';
+  if(/dry|cure|storage|harvest|postharvest/.test(title)) return 'postharvest-process-diagram';
+  if(/environment|vpd|temperature|humidity|light|ppfd|dli|co2|airflow/.test(title)) return 'environment-response-chart';
+  if(/compare|versus|difference|contrast|trade-?off|categor/.test(title)) return 'comparison-matrix';
+  if(/measure|meter|calibrat|sampling|record|uncertaint|quality control|traceab|calculation/.test(title)) return 'measurement-workflow';
+
   if(/diagnos|symptom|disease|pathogen|pest|viroid|deficien|toxicit/.test(text)) return 'diagnostic-decision-tree';
-  if(/cycle|pathway|transport|photosynth|respirat|signal|hormone|uptake|transpir|metaboli/.test(text)) return 'mechanism-process-diagram';
-  if(/compare|versus|difference|contrast|trade-?off/.test(text)) return 'comparison-matrix';
-  if(/measure|meter|calibrat|sampling|record|uncertaint|quality control|traceab/.test(text)) return 'measurement-workflow';
   if(/anatom|morpholog|root|leaf|flower|trichome|vascular|stomata/.test(text)) return 'labeled-structure-diagram';
   if(/breeding|cross|inherit|genetic|allele|segregat|backcross|selfing|selection/.test(text)) return 'genetics-pedigree-diagram';
   if(/dry|cure|storage|harvest|postharvest/.test(text)) return 'postharvest-process-diagram';
   if(/environment|vpd|temperature|humidity|light|ppfd|dli|co2|airflow/.test(text)) return 'environment-response-chart';
-  return String(entry.teachingVisual || lesson.requiredTeachingVisual || 'concept-diagram').toLowerCase().replace(/\s+/g,'-');
+  if(/compare|versus|difference|contrast|trade-?off/.test(text)) return 'comparison-matrix';
+  if(/measure|meter|calibrat|sampling|record|uncertaint|quality control|traceab/.test(text)) return 'measurement-workflow';
+  if(/cycle|pathway|transport|photosynth|respirat|signal|hormone|uptake|transpir|metaboli/.test(text)) return 'mechanism-process-diagram';
+  return 'mechanism-process-diagram';
 };
 
 const visualPriorityFor = (lesson, family, hasRaster) => {
