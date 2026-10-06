@@ -171,6 +171,7 @@ jobs:
           required=(
             sitemap.xml
             games/index.html
+            games/dtf-route.css
             games/high-land/index.html
             games/high-iq/index.html
             games/high-iq/app.js
@@ -364,6 +365,7 @@ jobs:
                   'assets/vendor/uplot-1.6.32.min.css',
                   'growlens/index.html',
                   'thc-grow-doc/index.html',
+                  'games/dtf-route.css',
                   'games/high-land/index.html',
                   'games/protect-the-plants/index.html',
                   'games/bud-or-bluff/index.html',
@@ -531,6 +533,7 @@ jobs:
           check 'https://dtfseeds.com/games/' '23 playable browser games'
           check 'https://dtfseeds.com/projects/' '23 public browser games'
           check 'https://dtfseeds.com/games/high-land/' 'High Land'
+          check 'https://dtfseeds.com/games/dtf-route.css' '.game-detail-page'
           check 'https://dtfseeds.com/games/weedopolis/' 'Weedopolis'
           check 'https://dtfseeds.com/games/crossword/' 'Crossword'
           check 'https://dtfseeds.com/games/strain-showdown/' 'Eight play styles. One showdown.'
