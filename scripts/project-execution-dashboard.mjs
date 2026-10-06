@@ -80,13 +80,14 @@ const rows = (projects.projects || []).map(project => {
   } else if (!project.repo && project.status === 'drive-only') {
     contract = { mode: 'drive-only', path: null };
   }
+  const repositoryStatus = repository?.status || (!project.repo && project.status === 'drive-only' ? 'drive-only' : 'unregistered');
   return {
     id: project.id,
     name: project.name,
     type: project.type,
     status: project.status,
     canonicalRepo: project.repo,
-    repositoryStatus: repository?.status || 'unregistered',
+    repositoryStatus,
     repositoryDomain: repository?.domain || null,
     executionContract: entry.id,
     routeSource: resolved.source,
@@ -98,7 +99,7 @@ const rows = (projects.projects || []).map(project => {
     agentExecutionMode: contract?.mode || 'undeclared',
     agentContractPath: contract ? (contract.path || externalContracts.contractPath || 'dtf-agent-contract.json') : null,
     branchPattern: 'work/' + project.id + '/<task>/<session-id>',
-    nextActionHint: nextActionHint(project.status, repository?.status || 'unregistered')
+    nextActionHint: nextActionHint(project.status, repositoryStatus)
   };
 });
 
