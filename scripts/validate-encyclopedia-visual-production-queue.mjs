@@ -21,6 +21,8 @@ const canonical = readCanonicalEncyclopediaLessons(root);
 const registryState = loadEncyclopediaRegistry(root);
 const canonicalIds = new Set(canonical.map(lesson => lesson.id));
 const items = Array.isArray(queue.items) ? queue.items : [];
+const rasterPathPattern=/\.(?:png|jpe?g|webp)$/i;
+if(!rasterPathPattern.test('candidate.png')||!rasterPathPattern.test('candidate.jpg')||!rasterPathPattern.test('candidate.webp')||rasterPathPattern.test('candidate.svg')) errors.push('Raster path validator self-check failed.');
 
 if (items.length !== registryState.totalCount) errors.push(`Expected ${registryState.totalCount} visual briefs; found ${items.length}.`);
 if (new Set(items.map(item => item.lessonId)).size !== items.length) errors.push('Visual briefs must have unique lesson IDs.');
