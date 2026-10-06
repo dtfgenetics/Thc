@@ -45,8 +45,8 @@ for (const project of dashboard.projects) {
   assert.match(project.branchPattern, /^work\/.+\/<task>\/<session-id>$/);
   assert.equal(typeof project.validationCommand, 'string');
   assert.ok(project.validationCommand.length > 0);
-  assert.notEqual(project.agentExecutionMode, 'undeclared');
-  assert.notEqual(project.repositoryStatus, 'unregistered');
+  assert.notEqual(project.agentExecutionMode, 'undeclared', `${project.id} resolved agentExecutionMode=undeclared for ${project.canonicalRepo}`);
+  assert.notEqual(project.repositoryStatus, 'unregistered', `${project.id} resolved repositoryStatus=unregistered for ${project.canonicalRepo}`);
   assert.equal(typeof project.nextActionHint, 'string');
   assert.ok(project.nextActionHint.length > 0);
 }
