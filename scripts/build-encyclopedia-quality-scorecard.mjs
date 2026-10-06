@@ -9,6 +9,8 @@ const read=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
 const arr=v=>Array.isArray(v)?v:[];
 const txt=v=>String(v??'').trim();
 const outPath=path.join(root,'data','encyclopedia-quality-scorecard.json');
+const lessonTemplate=read('content/encyclopedia/lesson-template.json');
+const depthTargets=lessonTemplate.qualityTargets||{};
 
 const registryState=loadEncyclopediaRegistry(root);
 const registry={entries:registryState.entries};
@@ -91,6 +93,16 @@ const rows=arr(registry.entries).map(entry=>{
   const searchScore=searchMetadataScore(l);
   const releaseScore=(publicationAuthorized?8:0)+(Boolean(l.reviewControl||l.revision)?2:0);
   const riskScore=Number(p.riskScore||0);
+  const depth=c.depthMetrics||{};
+  const depthDeficits=[
+    ...(Number(depth.coreScienceWords||0)<Number(depthTargets.coreScienceMinimumWords||180)?['core_science_words']:[]),
+    ...(Number(depth.coreScienceTeachingPoints||0)<Number(depthTargets.coreScienceMinimumTeachingPoints||3)?['core_science_teaching_points']:[]),
+    ...(Number(depth.cultivationRelevanceWords||0)<Number(depthTargets.cultivationRelevanceMinimumWords||80)?['cultivation_relevance']:[]),
+    ...(Number(depth.measurementGuidanceWords||0)<Number(depthTargets.measurementGuidanceMinimumWords||80)?['measurement_guidance']:[]),
+    ...(Number(depth.misconceptionCount||0)<Number(depthTargets.misconceptionMinimumCount||3)?['misconceptions']:[]),
+    ...(Number(depth.evidenceLimitsWords||0)<Number(depthTargets.evidenceLimitsMinimumWords||35)?['evidence_limits']:[]),
+    ...(Number(depth.sourceCount||0)<Number(depthTargets.sourceMinimumCount||3)?['source_count'] : [])
+  ];
 
   const dims=[
     dimension('content',contentScore,20),
@@ -106,22 +118,29 @@ const rows=arr(registry.entries).map(entry=>{
   const missing=dims.filter(d=>!d.complete).map(d=>d.name);
   const blockers=[];
   if(!c.contentContractComplete) blockers.push('content_contract');
+  if(depthDeficits.length) blockers.push('content_depth');
   if(!evidenceCount) blockers.push('claim_evidence');
   if(!sourcesResolved) blockers.push('source_resolution');
   if(!approvedVisual) blockers.push('teaching_visual');
   if(!rationaleReviewed) blockers.push('assessment_review');
   if(!publicationAuthorized) blockers.push('publication_authorization');
 
-  const impact=(100-score)+(riskScore*2)+(blockers.length*4);
+  const impact=(100-score)+(riskScore*2)+(blockers.length*4)+(depthDeficits.length*3);
   return {
     id:entry.id,number:entry.number,part:entry.part,title:entry.title,
     score,maxScore:100,
     grade:score>=90?'A':score>=80?'B':score>=70?'C':score>=60?'D':'F',
-    dimensions:dims,missing,blockers,
+    dimensions:dims,missing,blockers,depthMetrics:depth,depthDeficits,
     evidenceRiskScore:riskScore,
     repairPriorityScore:impact,
     nextActions:[
       ...(!c.contentContractComplete?['repair_content_contract']:[]),
+      ...(depthDeficits.includes('core_science_words')||depthDeficits.includes('core_science_teaching_points')?['deepen_core_science']:[]),
+      ...(depthDeficits.includes('cultivation_relevance')?['deepen_cultivation_relevance']:[]),
+      ...(depthDeficits.includes('measurement_guidance')?['expand_measurement_guidance']:[]),
+      ...(depthDeficits.includes('misconceptions')?['add_lesson_specific_misconceptions']:[]),
+      ...(depthDeficits.includes('evidence_limits')?['expand_evidence_limits']:[]),
+      ...(depthDeficits.includes('source_count')?['add_authoritative_sources']:[]),
       ...(!evidenceCount?['map_claim_evidence']:[]),
       ...(!sourcesResolved?['resolve_sources']:[]),
       ...(!approvedVisual?['produce_teaching_visual']:[]),
@@ -160,7 +179,7 @@ const output={
     missingDimensionCounts:missingCounts
   },
   byPart,
-  repairQueue:ranked.map((row,index)=>({rank:index+1,lessonId:row.id,title:row.title,part:row.part,score:row.score,repairPriorityScore:row.repairPriorityScore,evidenceRiskScore:row.evidenceRiskScore,blockers:row.blockers,nextActions:row.nextActions})),
+  repairQueue:ranked.map((row,index)=>({rank:index+1,lessonId:row.id,title:row.title,part:row.part,score:row.score,repairPriorityScore:row.repairPriorityScore,evidenceRiskScore:row.evidenceRiskScore,blockers:row.blockers,depthDeficits:row.depthDeficits,nextActions:row.nextActions})),
   lessons:rows
 };
 fs.mkdirSync(path.dirname(outPath),{recursive:true});
