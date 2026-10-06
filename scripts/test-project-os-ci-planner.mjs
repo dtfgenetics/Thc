@@ -11,6 +11,9 @@ assert.ok(game.checks.includes('games:affected:check'));
 assert.ok(game.affectedDomains.some(x=>x.id==='games'));
 const enc=run('content/encyclopedia/catalog.json');
 assert.ok(enc.checks.includes('verify:encyclopedia-catalog'));
+const projectOs=run('data/project-os/ci-impact-rules.json');
+assert.ok(projectOs.checks.includes('verify:project-os-ci-planner'));
+
 const cross=run('data/project-os/work-queue.json,site/deployment/public-apps.json,apps/growlens-web/src/main.ts');
 assert.equal(cross.fullValidation,true);
 assert.ok(cross.checks.includes('verify:project-os'));
