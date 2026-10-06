@@ -32,28 +32,34 @@
   ],
   "cultivationRelevance": [
     "Perfect manual orientation is less important than avoiding radicle injury. Roots generally reorient through gravitropism, but handling method, developmental stage, and physical obstruction affect the outcome; long exposed radicles are especially easy to damage.",
-    "Score emergence by structure: radicle appearance, cotyledon opening, first true leaves, and normal root-shoot balance. Do not call every emerged seedling healthy."
+    "Score emergence by structure: radicle appearance, cotyledon opening, first true leaves, and normal root-shoot balance. Do not call every emerged seedling healthy.",
+    "During handling, prioritize protection of the emerging radicle and the hypocotyl-root transition. Once the radicle extends, bending, pinching, drying, or abrasion can damage the root meristem or conductive tissues before the seedling has redundancy. If pre-germination is used, transfer methods should minimize time exposed to dry air and mechanical contact.",
+    "Use structural abnormalities to guide troubleshooting rather than assigning a single cause from appearance. Delayed radicle emergence, trapped cotyledons, hypocotyl collapse, root-tip necrosis, asymmetric true leaves, or stalled growth can result from different combinations of seed vigor, moisture, oxygen, salinity, temperature, pathogens, mechanical barriers, or handling. Record the pattern and environment before correcting it."
   ],
   "measureAndRecord": [
     {
+      "field": "Germination start",
+      "requirement": "Record lot ID, number started, method, medium, moisture method, temperature, start date/time, and the criterion used to define germination. This establishes the denominator for later normal-seedling and abnormal-seedling rates."
+    },
+    {
       "field": "Radicle emergence",
-      "requirement": "Date and time from start, plus approximate length if needed."
+      "requirement": "Record time to first radicle emergence and, for representative samples, approximate length or developmental class. Note discoloration, tip injury, abnormal direction only when physically constrained, or arrested extension."
     },
     {
-      "field": "Hypocotyl condition",
-      "requirement": "Upright, stretched, constricted, discolored, or damaged."
+      "field": "Hypocotyl and emergence",
+      "requirement": "Record emergence date, hypocotyl orientation, excessive elongation, constriction, collapse, lesions, or mechanical damage. Pair abnormalities with media depth, moisture, temperature, light-on-emergence, and handling records."
     },
     {
-      "field": "Cotyledons",
-      "requirement": "Opened, green, damaged, retained covering, or abnormal."
+      "field": "Cotyledon status",
+      "requirement": "Record whether cotyledons open fully, remain trapped by fruit/seed tissues, are damaged, discolored, asymmetric, or fail to expand. Do not score a seedling as normal solely because it reached the surface."
     },
     {
-      "field": "True leaves",
-      "requirement": "Date visible and symmetry or distortion."
+      "field": "Shoot apex and true leaves",
+      "requirement": "Record date the first true leaves are visible, symmetry, distortion, apex damage, and subsequent node development. Persistent abnormalities should be linked to environmental, nutritional, pest, disease, or genetic follow-up rather than diagnosed from one image."
     },
     {
-      "field": "Root-shoot balance",
-      "requirement": "Normal, weak root, weak shoot, or both abnormal."
+      "field": "Root-shoot coordination",
+      "requirement": "At transplant or diagnostic sampling, record root length/distribution, new root tips, shoot size, and whether both systems are advancing. Coordinated development is a stronger establishment indicator than emergence alone."
     }
   ],
   "misconceptions": [
@@ -62,7 +68,7 @@
     "A seedling that breaks the surface has passed: Normal development requires coordinated roots, hypocotyl, cotyledons, and shoot apex."
   ],
   "evidenceLimits": [
-    "Exact emergence timing depends on seed lot, temperature, moisture, oxygen, and method. The structural sequence is more transferable than a fixed hour count."
+    "The structural sequence from embryo activation through radicle emergence, hypocotyl extension, cotyledon expansion, and true-leaf development is transferable, but exact timing varies with seed lot, temperature, water availability, oxygen, salinity, microbial pressure, and handling. Abnormal morphology is descriptive evidence, not a unique diagnosis; several stresses can produce similar seedling outcomes and require environmental or laboratory confirmation."
   ],
   "crossLinks": "THC-ENC-007, THC-ENC-026–033, and the germination and seedling-establishment SOPs.",
   "sourceNotes": [
