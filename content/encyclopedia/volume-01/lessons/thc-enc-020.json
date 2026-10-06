@@ -24,32 +24,43 @@
   "coreScience": [
     "Morphology becomes useful data only when another person can repeat the measurement. “Tall,” “bushy,” “stacked,” and “frosty” may be useful notes, but they are not sufficient measurements. A controlled record defines reference points, organ position, units, instrument, stage, and timing.",
     "Plant height can be measured from the substrate line to the highest natural point without stretching the plant. Canopy width needs defined axes. Node count needs an inclusion rule. Internode length needs specified node positions. Stem diameter needs a set height and tool. Leaf traits need a defined leaf age and node. Inflorescence and trichome observations need defined sample sites.",
-    "Measurements are not automatically causes. If topped plants are shorter, the action affected architecture; it does not prove improved yield or chemistry. If one genotype has more visible trichomes, sampling, gland size, chemistry, and flower maturity still need evaluation. Good records preserve raw observations before conclusions are added."
+    "Measurements are not automatically causes. If topped plants are shorter, the action affected architecture; it does not prove improved yield or chemistry. If one genotype has more visible trichomes, sampling, gland size, chemistry, and flower maturity still need evaluation. Good records preserve raw observations before conclusions are added.",
+    "A measurement system also needs repeatability, provenance, and uncertainty controls. Repeated measurements on the same plant can differ because the instrument, observer, time of day, plant water status, or sampling position changed. Between-plant comparisons add biological variation. Good phenotyping therefore records both the value and the conditions that generated it, preserves raw data, and uses operational definitions detailed enough that another observer could reproduce the procedure."
   ],
   "cultivationRelevance": [
     "Use stable plant, batch, genetic, room, and sample identifiers. For quantitative comparison, a photograph should record the identifier, date, view or orientation, scale, sample position, and controlled imaging conditions. A qualitative image without all of these fields can still document an event, but it is weaker quantitative evidence.",
-    "Choose a minimum dataset that can actually be maintained. Missing or inconsistent high-volume data are less useful than a smaller set collected correctly."
+    "Choose a minimum dataset that can actually be maintained. Missing or inconsistent high-volume data are less useful than a smaller set collected correctly.",
+    "Build records around decisions rather than around every variable that could be collected. If the goal is canopy management, prioritize stage, height, width, node/internode measures, training events, and light distribution. If the goal is diagnosis, prioritize symptom distribution, environmental/root-zone measurements, treatment history, and follow-up. A smaller coherent dataset is more useful than hundreds of disconnected fields.",
+    "Use immutable IDs and timestamps so photographs, sensor readings, laboratory samples, treatments, and harvest records can be joined without relying on filenames or memory. Preserve raw observations separately from interpretation; diagnoses and conclusions can change later, while the original measurement should remain auditable."
   ],
   "measureAndRecord": [
     {
-      "field": "Identity",
-      "requirement": "Plant ID, genetic ID, source, generation or clone, and batch."
+      "field": "Identity and provenance",
+      "requirement": "Use stable plant, genetic, batch, room/location, and sample IDs; record source, generation/clone, acquisition or propagation date, and parent IDs where relevant. Never use a display name as the only join key."
     },
     {
-      "field": "Stage",
-      "requirement": "Defined developmental stage plus age and key milestone dates."
+      "field": "Developmental stage",
+      "requirement": "Record a defined stage plus chronological age and milestone dates. State the criteria used for stage assignment so measurements from different plants can be aligned biologically rather than only by calendar."
+    },
+    {
+      "field": "Operational definition",
+      "requirement": "For every quantitative variable define reference points, organ position, units, instrument, observer method, time of day or sampling window when relevant, and whether the measurement is destructive or repeatable."
     },
     {
       "field": "Architecture",
-      "requirement": "Height, width, node count, branch count, internodes, and stem diameter."
+      "requirement": "Record height, canopy axes, node count, branch count/order, specified internodes, and stem diameter with the exact positional rules used. Preserve both raw values and derived summaries separately."
     },
     {
-      "field": "Organ observations",
-      "requirement": "Defined leaf, flower, root, or trichome sampling position."
+      "field": "Image metadata",
+      "requirement": "Record subject ID, date/time, view/orientation, sample position, scale, camera/device, distance or magnification, lighting, white-balance/color reference where needed, and whether processing or cropping was applied."
     },
     {
-      "field": "Context",
-      "requirement": "Light, temperature, humidity, root-zone system, irrigation, treatment, and recent stress."
+      "field": "Environmental and treatment context",
+      "requirement": "Link light, temperature, humidity/VPD, root-zone system, irrigation, pH/EC, nutrients, training, sprays, pest/disease events, and other treatments to timestamps so apparent trait changes can be interpreted against exposures."
+    },
+    {
+      "field": "Quality and uncertainty",
+      "requirement": "Record calibration status when applicable, missing values, observer uncertainty, replicate measurements, outlier handling, and corrections. Do not overwrite an original measurement when a later review changes the interpretation."
     }
   ],
   "misconceptions": [
@@ -58,12 +69,13 @@
     "Correlation proves the treatment caused the trait: Genetics, environment, stage, and other changes may confound the result."
   ],
   "evidenceLimits": [
-    "Measurement protocols should match the question. Research-grade phenotyping may require instruments and replication beyond a home or teaching record."
+    "The appropriate phenotyping protocol depends on the decision, expected effect size, available instruments, sampling unit, and biological variation. A home or production record can be scientifically useful without research-grade equipment when definitions and methods are consistent, but it should not claim precision beyond the instrument or sampling design. Photographs, correlations, and single-plant measurements are descriptive evidence unless replication and controls support broader causal conclusions."
   ],
   "crossLinks": "THC-ENC-001, THC-ENC-401–420, and all diagnostic, breeding, and crop-review records.",
   "sourceNotes": [
     "Papoutsoglou E.A. et al. (2020). Enabling reusability of plant phenomic datasets with MIAPPE 1.1. New Phytologist 227(1):260–273.",
-    "Hesami M., Pepe M., and Jones A.M.P. (2023). Morphological Characterization of Cannabis sativa L. Throughout Its Complete Life Cycle. Plants 12(20):3646."
+    "Hesami M., Pepe M., and Jones A.M.P. (2023). Morphological Characterization of Cannabis sativa L. Throughout Its Complete Life Cycle. Plants 12(20):3646.",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; phenotyping, data provenance, measurement context, uncertainty, and recordkeeping framework."
   ],
   "slug": "morphological-measurement-and-botanical-recordkeeping",
   "route": "/encyclopedia/morphological-measurement-and-botanical-recordkeeping",
