@@ -1,11 +1,17 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
-const q=JSON.parse(fs.readFileSync(process.argv[2]||'data/project-os/work-queue.json','utf8'));
+
+const queuePath=process.argv[2]||'data/project-os/work-queue.json';
+const q=JSON.parse(fs.readFileSync(queuePath,'utf8'));
 const errors=[];
 const ids=new Set();
 const branches=new Map();
 const active=new Set(['claimed','in_progress','review','release','live_verification']);
 const validStates=new Set(['queued','claimed','in_progress','blocked','review','release','live_verification','done','failed','superseded']);
+const nowValue=process.env.PROJECT_OS_NOW||new Date().toISOString();
+const now=Date.parse(nowValue);
+if(Number.isNaN(now)) errors.push('PROJECT_OS_NOW is not a valid ISO timestamp');
+
 for(const [i,x] of (q.items||[]).entries()){
  const p='items['+i+']';
  if(!x.workItemId) errors.push(p+' missing workItemId');
@@ -19,7 +25,18 @@ for(const [i,x] of (q.items||[]).entries()){
   if(branches.has(x.branch)) errors.push('active branch collision '+x.branch);
   branches.set(x.branch,x.workItemId);
  }
- if(['claimed','in_progress'].includes(x.state)&&!x.lease) errors.push(p+' active state requires lease');
+ if(['claimed','in_progress'].includes(x.state)){
+  if(!x.lease) errors.push(p+' active state requires lease');
+  else {
+   if(!x.lease.worker) errors.push(p+' lease missing worker');
+   if(!x.lease.expiresAt) errors.push(p+' lease missing expiresAt');
+   else {
+    const expires=Date.parse(x.lease.expiresAt);
+    if(Number.isNaN(expires)) errors.push(p+' lease expiresAt invalid');
+    else if(!Number.isNaN(now)&&expires<=now) errors.push(p+' active state has expired lease');
+   }
+  }
+ }
  if(x.state==='done'&&(x.acceptanceCriteria||[]).some(a=>!['passed','waived'].includes(a.status))) errors.push(p+' done with unmet acceptance criteria');
 }
 for(const x of q.items||[]) for(const dep of x.dependencies||[]) if(!ids.has(dep)) errors.push(x.workItemId+' missing dependency '+dep);
