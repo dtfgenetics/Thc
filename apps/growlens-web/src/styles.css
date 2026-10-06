@@ -440,34 +440,22 @@ body {
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  min-height: 220px;
-  margin: 0 0 26px;
-  padding: clamp(28px, 4vw, 46px);
-  align-items: center;
-  border: 1px solid var(--lens-line);
-  border-radius: 26px;
-  background:
-    radial-gradient(circle at 88% 18%, rgba(217,184,92,.18), transparent 26%),
-    linear-gradient(135deg, #0b2919, #16432b);
-  box-shadow: var(--lens-soft-shadow);
+  min-height: 0;
+  margin: 0 0 34px;
+  padding: clamp(30px, 4.5vw, 54px) 0 28px;
+  align-items: end;
+  border: 0;
+  border-bottom: 1px solid var(--lens-line);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
-.page-intro::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  width: 360px;
-  height: 360px;
-  right: -150px;
-  top: -190px;
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 50%;
-  box-shadow: 0 0 0 58px rgba(255,255,255,.02), 0 0 0 116px rgba(255,255,255,.012);
-}
-.page-intro .eyebrow { color: #e7cd79; }
+.page-intro::after { display: none; }
+.page-intro .eyebrow { color: var(--green-700); }
 .page-intro h1 {
-  max-width: 860px;
+  max-width: 900px;
   margin: 7px 0 12px;
-  color: #fff;
+  color: var(--ink);
   font-size: clamp(2.6rem, 5vw, 4.8rem);
   line-height: .94;
   letter-spacing: -.058em;
@@ -475,48 +463,44 @@ body {
 }
 .page-intro p {
   max-width: 780px;
-  color: #ccdbd1;
+  color: var(--muted);
   font-size: 1.02rem;
   line-height: 1.72;
 }
 .page-intro .primary-button {
-  border-color: #e1c66d;
-  background: linear-gradient(180deg, #dfc66e, #bb943b);
-  color: #07190f;
-  box-shadow: 0 12px 28px rgba(0,0,0,.18);
+  border-color: var(--green-800);
+  background: var(--green-800);
+  color: #fff;
+  box-shadow: none;
 }
-.route-dashboard .page-intro { margin-bottom: 0; padding-bottom: 72px; }
+.route-dashboard .page-intro { margin-bottom: 0; padding-bottom: 28px; }
 .route-dashboard .metric-grid {
   position: relative;
   z-index: 2;
-  margin: -46px 22px 28px;
+  margin: 0 0 34px;
 }
 .metric-card {
   position: relative;
   overflow: hidden;
-  min-height: 146px;
-  padding: 21px;
-  border-color: rgba(24,53,42,.11);
-  border-radius: 20px;
-  background: rgba(255,253,248,.98);
-  box-shadow: 0 15px 36px rgba(22,55,38,.09);
+  min-height: 132px;
+  padding: 20px 20px 20px 0;
+  border: 0;
+  border-top: 1px solid var(--lens-line);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
-.metric-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 4px;
-  background: linear-gradient(90deg, var(--green-600), var(--lens-gold));
-}
+.metric-card::before { display: none; }
 .metric-card span { color: #597066; letter-spacing: .07em; }
 .metric-card strong { margin-top: 16px; font-size: clamp(2rem,3vw,2.8rem); }
 .metric-card small { display: block; margin-top: 7px; }
 .section-block {
   position: relative;
-  border-color: var(--lens-line);
-  border-radius: 22px;
-  background: rgba(255,253,248,.96);
-  box-shadow: 0 12px 34px rgba(22,55,38,.065);
+  border: 0;
+  border-top: 1px solid var(--lens-line);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .section-heading { margin-bottom: 20px; }
 .section-heading h2 { font-size: 1.25rem; }
@@ -527,16 +511,7 @@ body {
 .settings-grid > .section-block { margin-bottom: 0; }
 .forms-row .section-block::before,
 .tool-grid .section-block::before,
-.settings-grid .section-block::before {
-  content: "";
-  position: absolute;
-  left: 22px;
-  top: 0;
-  width: 52px;
-  height: 4px;
-  border-radius: 0 0 999px 999px;
-  background: linear-gradient(90deg, var(--green-600), var(--lens-gold));
-}
+.settings-grid .section-block::before { display: none; }
 .primary-button,
 .secondary-button,
 .danger-button,
@@ -564,12 +539,12 @@ input, select, textarea {
 textarea { min-height: 104px; }
 .task-row, .timeline-row, .profile-row, .diary-card, .plant-card, .diagnosis-card {
   border-color: rgba(24,53,42,.1);
-  border-radius: 15px;
-  background: #fffefb;
+  border-radius: 10px;
+  background: rgba(255,254,251,.72);
 }
 .task-row:hover, .timeline-row:hover, .profile-row:hover, .plant-card:hover, .diary-card:hover {
   border-color: rgba(45,103,73,.26);
-  box-shadow: 0 8px 22px rgba(22,55,38,.055);
+  box-shadow: none;
 }
 .plant-card { padding: 20px; }
 .plant-card-top h3 { font-size: 1.08rem; }
