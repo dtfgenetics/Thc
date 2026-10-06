@@ -94,6 +94,8 @@ jobs:
           grep -Fq 'already matches desired stored state; skipping redundant WordPress mutation.' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq 'data-dtf-learning-expanded-reference="v1"' scripts/run-learning-v3-connected-production.sh
           grep -Fq 'data-dtf-learning-map="v4"' scripts/run-learning-v3-connected-production.sh
+          grep -Fq 'Canonical Learn root · Atlas V5 visual alignment' scripts/rebuild-wordpress-learning-experience-v3.mjs
+          grep -Fq -- '--learn-accent:#9fe870' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq "presentation: 'grouped-progressive-disclosure'" scripts/build-public-learning-center-expansion-v1.mjs
           grep -Fq 'data-reference-progressive-disclosure="true"' scripts/build-public-learning-center-expansion-v1.mjs
           test -s site/wordpress/education/topic-literature.json
@@ -217,7 +219,9 @@ jobs:
           node scripts/normalize-html-visible-text.mjs "$learn" > "$learn_visible"
           grep -Fqi 'Teaching Healthy Cultivation' "$learn_visible"
           grep -Fqi 'Learn in a sequence that makes the plant easier to understand.' "$learn_visible"
-          grep -Fqi 'Learn the plant as a connected system.' "$learn_visible"
+          grep -Fqi 'Learn the plant as one connected system.' "$learn_visible"
+          grep -Fq 'Canonical Learn root · Atlas V5 visual alignment' "$learn"
+          grep -Fq -- '--learn-accent:#9fe870' "$learn"
           for label in \
             'Plant Health & IPM' \
             'Cultivation Science' \
