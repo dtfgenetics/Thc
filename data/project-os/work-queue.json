@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-06T10:30:00Z",
+  "updatedAt": "2026-10-06T10:32:00Z",
   "items": [
     {
       "workItemId": "project-os.queue-contract-v1",
@@ -209,6 +209,170 @@
         "createdAt": "2026-10-06T09:34:00Z",
         "updatedAt": "2026-10-06T10:30:00Z",
         "completedAt": "2026-10-06T10:24:00Z"
+      }
+    },
+    {
+      "workItemId": "project-os.release-proof-v1",
+      "project": "platform",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 4,
+        "userImpact": 5,
+        "productionExposure": 5,
+        "unblockValue": 5,
+        "ageDays": 0,
+        "complexity": 4,
+        "collisionRisk": 1,
+        "score": 72
+      },
+      "state": "done",
+      "dependencies": [
+        "project-os.acceptance-manifests-v1"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "contract",
+          "description": "Release fingerprint contains repository, exact source revision, build ID, bundle hash, and canonical data hashes.",
+          "status": "passed",
+          "evidence": "data/project-os/deployment-fingerprint-contract.json"
+        },
+        {
+          "id": "build",
+          "description": "Public Suite build emits the fingerprint into the deployable asset tree.",
+          "status": "passed",
+          "evidence": "PR #2101 Build DTFSeeds Public Suite"
+        },
+        {
+          "id": "watchdog",
+          "description": "Post-deployment verification compares exact source revision, bundle hash, and input hashes against live production.",
+          "status": "passed",
+          "evidence": "scripts/verify-project-os-release-fingerprint-live.mjs"
+        },
+        {
+          "id": "drift",
+          "description": "Fingerprint drift deterministically changes the affected queue work item to failed with a live_drift blocker.",
+          "status": "passed",
+          "evidence": "scripts/test-project-os-release-fingerprint.mjs"
+        },
+        {
+          "id": "integration",
+          "description": "Release-proof tests are part of verify:project-os and production deployment verification.",
+          "status": "passed",
+          "evidence": "PR #2101 Project OS Quality Gate at 823dffdb1c1b519f747fcb3c9e8269c4935e5aad"
+        }
+      ],
+      "branch": "work/platform/project-os-release-proof-v1/20261006-r2",
+      "pullRequest": 2101,
+      "baseSha": "f7917aae3b6c1e58c472fd73fbd088c08e21a9ca",
+      "headSha": "823dffdb1c1b519f747fcb3c9e8269c4935e5aad",
+      "lease": null,
+      "tests": [
+        {
+          "name": "project-os-release-proof",
+          "status": "passed",
+          "evidence": "PR #2101 exact-head Project OS Quality Gate, CodeQL, Public Suite Build Qualification"
+        }
+      ],
+      "deployment": {
+        "state": "not_applicable",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": null,
+      "lastAction": "Merged PR #2101 as 3406d8e899f7aaf150f829c56dcf9cc95277a958 after exact-head release-proof, security, and qualification gates passed.",
+      "nextAction": null,
+      "evidence": [
+        "data/project-os/deployment-fingerprint-contract.json",
+        "scripts/build-project-os-release-fingerprint.mjs",
+        "scripts/reconcile-project-os-deployment.mjs",
+        "scripts/verify-project-os-release-fingerprint-live.mjs"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T09:58:00Z",
+        "updatedAt": "2026-10-06T10:24:54Z",
+        "completedAt": "2026-10-06T10:24:54Z"
+      }
+    },
+    {
+      "workItemId": "project-os.ci-planner-v1",
+      "project": "platform",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 3,
+        "userImpact": 4,
+        "productionExposure": 4,
+        "unblockValue": 5,
+        "ageDays": 0,
+        "complexity": 3,
+        "collisionRisk": 1,
+        "score": 64
+      },
+      "state": "review",
+      "dependencies": [
+        "project-os.release-proof-v1"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "impact",
+          "description": "Changed files deterministically map to affected domains and narrow checks.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "staging",
+          "description": "Cross-cutting changes escalate from narrow checks to broad validation without weakening gates.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "regression",
+          "description": "Regression floors protect Encyclopedia, tools, games, public apps, and sitemap inventory.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "workflow",
+          "description": "PR workflow executes the deterministic CI plan.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "integration",
+          "description": "CI-planner verification is part of verify:project-os.",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "branch": "work/platform/project-os-ci-planner-v1/20261006-r3",
+      "pullRequest": 2109,
+      "baseSha": "3406d8e899f7aaf150f829c56dcf9cc95277a958",
+      "headSha": null,
+      "lease": null,
+      "tests": [
+        {
+          "name": "project-os-ci-planner",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "deployment": {
+        "state": "not_applicable",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": null,
+      "lastAction": "Replayed minimal current-main CI planner/regression slice and reconciled stale queue state discovered by its first self-test.",
+      "nextAction": "Require exact-head Project OS Change-Aware CI and repository gates before merge.",
+      "evidence": [
+        "data/project-os/ci-impact-rules.json",
+        "data/project-os/regression-baseline.json",
+        "scripts/plan-project-os-ci.mjs",
+        "scripts/run-project-os-ci-plan.mjs"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T10:26:25Z",
+        "updatedAt": "2026-10-06T10:32:00Z",
+        "completedAt": null
       }
     }
   ]
