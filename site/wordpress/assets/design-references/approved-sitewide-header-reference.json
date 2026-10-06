@@ -3,7 +3,7 @@
   "id": "dtf-approved-sitewide-header-reference-v3",
   "status": "approved",
   "purpose": "Canonical visual and information-architecture reference for the DTF Genetics sitewide shared header and structured course-interface direction.",
-  "usage": "Use the approved reference image for visual treatment only. The production information architecture is the canonical eight-section navigation defined here; older six-link wording is retired.",
+  "usage": "Use the approved reference image for visual treatment only. The production information architecture is the canonical eight-section navigation defined here; older six-link wording and the retired Diagnostic primary label are not authoritative.",
   "assetContract": {
     "canonicalMaster": "Google Drive stores the full-resolution approved visual master.",
     "repositoryPreview": "GitHub stores a durable optimized preview derivative for versioned design/QA reference.",
@@ -68,7 +68,7 @@
       ]
     },
     {
-      "label": "Diagnostic",
+      "label": "Tools",
       "href": "/tools/",
       "owns": [
         "/tools/",
@@ -131,10 +131,10 @@
   "approvedTraits": [
     "dark evergreen full-width header",
     "DTF Genetics brand at left links to Home",
-    "exact primary order: Home, Seeds, Learn, Courses, Diagnostic, Games, Community, Shop",
+    "exact primary order: Home, Seeds, Learn, Courses, Tools, Games, Community, Shop",
     "Seeds is the primary label for the genetics section",
     "Courses remains a distinct primary visitor journey",
-    "Diagnostic is the primary label for the tools and plant-health utility section",
+    "Tools is the primary label for the cultivation tools, diagnostics, measurement, and plant-health utility section",
     "green filled active-navigation state",
     "search, account, and cart utilities at right",
     "Teaching Healthy Cultivation identity at right when space permits",
