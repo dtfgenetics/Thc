@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - 'content/encyclopedia/visual-production-queue-v1.json'
+      - 'scripts/build-encyclopedia-visual-production-queue.mjs'
+      - 'scripts/validate-encyclopedia-visual-production-queue.mjs'
       - 'scripts/build-encyclopedia-visual-production-batches.mjs'
       - 'scripts/validate-encyclopedia-visual-production-batches.mjs'
       - '.github/workflows/encyclopedia-visual-production-batches.yml'
