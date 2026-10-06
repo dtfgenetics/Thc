@@ -83,7 +83,7 @@ const rows = (projects.projects || []).map(project => {
     type: project.type,
     status: project.status,
     canonicalRepo: project.repo,
-    repositoryStatus: repository?.status || 'unregistered',
+    repositoryStatus: (!project.repo || project.status === 'drive-only') ? 'non_github' : (repository?.status || 'unregistered'),
     repositoryDomain: repository?.domain || null,
     executionContract: entry.id,
     routeSource: resolved.source,
