@@ -28,28 +28,34 @@
   ],
   "cultivationRelevance": [
     "Before changing a crop, write the hypothesis in plain language: what is wrong, what evidence supports that diagnosis, what single change is proposed, and what measurement will show whether it worked. This converts reaction into controlled learning.",
-    "Numerical targets require context. A temperature, VPD, PPFD, DLI, pH, EC, or drying value should be described as a study condition, measured response, practical starting range, equipment limit, or legal limit. Calling every number an optimum creates false precision."
+    "Numerical targets require context. A temperature, VPD, PPFD, DLI, pH, EC, or drying value should be described as a study condition, measured response, practical starting range, equipment limit, or legal limit. Calling every number an optimum creates false precision.",
+    "Use an evidence ladder when deciding whether to change a crop: first define the observation, then identify plausible mechanisms, then check cannabis-specific studies where available, then use general plant science to test whether the mechanism is biologically coherent, and finally compare the claim against your own repeatable records. A recommendation becomes stronger when independent evidence types point in the same direction and weaker when it depends on one uncontrolled observation.",
+    "Treat every intervention as a small experiment whenever practical. Keep unaffected comparison plants or previous-cycle baselines, change as few variables as possible, define the expected response before acting, and set a review time. This reduces hindsight bias and helps separate true improvement from normal plant-to-plant variation, environmental drift, measurement error, or regression toward the mean."
   ],
   "measureAndRecord": [
     {
-      "field": "Claim",
-      "requirement": "Exact statement being evaluated."
+      "field": "Claim and decision question",
+      "requirement": "Write the exact claim in testable language, the crop decision it would change, and whether it is being treated as established evidence, a practical starting range, a manufacturer instruction, a regulatory requirement, or a hypothesis that still needs testing."
     },
     {
-      "field": "Source type",
-      "requirement": "Primary study, review, extension, regulation, label, manual, or observation."
+      "field": "Source and evidence class",
+      "requirement": "Record citation, source type, publication date, whether the work directly studied cannabis/hemp or another crop, peer-review or regulatory status, and any obvious conflict-of-interest or vendor context. Preserve the original wording of important limitations."
     },
     {
-      "field": "Tested context",
-      "requirement": "Genotype, stage, system, environment, sample size, and duration."
+      "field": "Tested biological context",
+      "requirement": "Record genotype or accession, propagation type, developmental stage, plant age, root-zone system, environment, treatment duration, sample size, control group, and which plant tissue or response variable was evaluated. Mark any context that does not match the crop you are managing."
     },
     {
-      "field": "Measurement",
-      "requirement": "Variable, instrument or method, units, location, and timing."
+      "field": "Measurement quality",
+      "requirement": "Record the variable, instrument or laboratory method, units, calibration or quality-control information when available, sampling location, sampling time, replicate structure, uncertainty, and whether the reported difference was biological, statistical, or only visual."
     },
     {
-      "field": "Decision",
-      "requirement": "Accept, reject, or retain as a hypothesis; record why."
+      "field": "Competing explanations",
+      "requirement": "List at least one plausible confounder or alternative mechanism. Note what observation or measurement would weaken each explanation. Do not label a diagnosis confirmed when the evidence only establishes correlation or a symptom pattern."
+    },
+    {
+      "field": "Decision and follow-up",
+      "requirement": "Record whether the claim is accepted for the current context, rejected, or retained as a hypothesis; what action was taken; what comparison or baseline will be used; when the result will be reviewed; and whether repeated cycles support the same conclusion."
     }
   ],
   "misconceptions": [
@@ -58,12 +64,13 @@
     "One perfect target exists: The useful target depends on plant response, genotype, stage, measurement method, and management goal."
   ],
   "evidenceLimits": [
-    "This lesson teaches evidence handling, not a ranking that automatically makes every academic paper correct or every grower observation wrong. Methods and applicability must still be examined."
+    "Evidence hierarchies help organize questions but do not remove the need to inspect methods. A peer-reviewed paper can still have weak controls or narrow applicability, while a repeated grower observation can be valuable for hypothesis generation without proving mechanism. Cannabis-specific evidence remains uneven across genetics, environments, production systems, and postharvest practices; general horticulture can explain mechanisms but should be labeled when cannabis was not studied. Numerical targets should therefore carry their source, context, measurement method, and uncertainty rather than being presented as universal optima."
   ],
   "crossLinks": "THC-ENC-020, THC-ENC-401–420, and every numerical or diagnostic lesson in the encyclopedia.",
   "sourceNotes": [
     "National Institutes of Health. Enhancing Reproducibility through Rigor and Transparency. Scientific-rigor and transparent-reporting guidance; reviewed July 30, 2026.",
-    "Papoutsoglou E.A. et al. (2020). Enabling reusability of plant phenomic datasets with MIAPPE 1.1. New Phytologist 227(1):260–273."
+    "Papoutsoglou E.A. et al. (2020). Enabling reusability of plant phenomic datasets with MIAPPE 1.1. New Phytologist 227(1):260–273.",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; evidence hierarchy, source-aware drafting, measurable-data, and uncertainty-control framework."
   ],
   "slug": "how-to-read-cannabis-plant-science-critically",
   "route": "/encyclopedia/how-to-read-cannabis-plant-science-critically",

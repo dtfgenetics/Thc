@@ -24,32 +24,39 @@
   "coreScience": [
     "A seed-derived cannabis plant begins with a primary root derived from the radicle. Lateral roots expand from that axis and produce finer absorbing roots. In containers, transplanting, pruning, oxygen distribution, water placement, and physical barriers can change the final architecture, so a mature cultivated root system may not resemble a simple textbook taproot.",
     "The growing root tip contains a root cap and apical meristem followed by zones of cell division, elongation, and differentiation. Root hairs form behind the tip and greatly increase contact with the surrounding solution and particles. Older thick roots provide transport and structure but are not the only active absorption sites.",
-    "Living roots use oxygen in aerobic respiration. When pores remain waterlogged, oxygen diffusion and availability decline; roots may shift metabolism, lose energy supply, and suffer impaired growth or death. Compaction, salinity, unfavorable temperature, and pathogens can also damage roots, but each requires system-specific evidence. Because leaves depend on root water and mineral supply, root injury can appear above ground as wilt, chlorosis, slowed growth, or nutrient-like symptoms."
+    "Living roots use oxygen in aerobic respiration. When pores remain waterlogged, oxygen diffusion and availability decline; roots may shift metabolism, lose energy supply, and suffer impaired growth or death. Compaction, salinity, unfavorable temperature, and pathogens can also damage roots, but each requires system-specific evidence. Because leaves depend on root water and mineral supply, root injury can appear above ground as wilt, chlorosis, slowed growth, or nutrient-like symptoms.",
+    "Root architecture is dynamic because new lateral roots are initiated from internal tissues while root tips respond to gravity, moisture gradients, mechanical impedance, nutrient distribution, and hormonal signals. Fine roots and root hairs are short-lived compared with major structural roots, so the effective absorbing surface can change rapidly even when total root mass changes little. Root-zone management therefore influences not just how much root exists, but where active absorbing tissue is positioned and how continuously it is renewed."
   ],
   "cultivationRelevance": [
     "Irrigation should wet the intended root zone without maintaining prolonged oxygen deprivation. Repeatedly wetting only a small pocket can limit root exploration; keeping the entire container saturated can also limit function.",
-    "Evaluate roots during transplanting or diagnostic sampling using color, firmness, distribution, odor, and the presence of new tips. No single color proves disease without context."
+    "Evaluate roots during transplanting or diagnostic sampling using color, firmness, distribution, odor, and the presence of new tips. No single color proves disease without context.",
+    "Manage irrigation to encourage a spatially useful root system rather than only keeping the shoot visibly turgid. Track where water is delivered, how far it moves through the substrate, how quickly the container dries, and where new roots are actually forming. Persistent wet pockets and persistent dry pockets can both restrict exploration even when average container moisture appears acceptable.",
+    "Root diagnostics should combine structure with measurements. A sparse, brown, or poorly distributed root system can result from prolonged saturation, drought, salinity, unfavorable temperature, compaction, chemical injury, pests, or pathogens. Compare affected and unaffected plants, inspect root distribution, and pair observations with moisture, EC, pH, temperature, irrigation history, and disease or pest evidence before selecting a corrective action."
   ],
   "measureAndRecord": [
     {
       "field": "Root-zone system",
-      "requirement": "Container, bed, field, water culture, slab, or other system."
+      "requirement": "Record container or bed dimensions, substrate or soil type, hydroponic configuration, transplant history, and any root-pruning or air-pruning features. System geometry constrains how root architecture can develop."
     },
     {
-      "field": "Media condition",
-      "requirement": "Moisture distribution, compaction, drainage, and air space."
+      "field": "Water and air environment",
+      "requirement": "Record irrigation volume and frequency, moisture or water-content trend, drainage behavior, compaction, visible saturation zones, and air-space information where measured. Include root-zone temperature because oxygen demand and root metabolism vary with temperature."
     },
     {
       "field": "Root distribution",
-      "requirement": "Surface, edge, bottom, uniform, circling, sparse, or localized."
+      "requirement": "At transplant or sampling, score or photograph root occupancy at top, center, sidewall, and bottom; note circling, matting, localized proliferation, sparse zones, or roots concentrated along preferential water pathways. Use the same sampling method for comparisons."
     },
     {
       "field": "Root condition",
-      "requirement": "New tips, firmness, discoloration, odor, lesions, or sloughing."
+      "requirement": "Record new white or pale tips, firmness, discoloration, cortex sloughing, lesions, swelling, odor, breakage, and fine-root abundance. Color alone should not be used as a disease diagnosis."
     },
     {
-      "field": "Linked measurements",
-      "requirement": "Root-zone temperature, moisture, pH, EC, and irrigation history."
+      "field": "Linked chemistry",
+      "requirement": "Record root-zone pH, EC, source-water data, nutrient changes, salinity events, and runoff or solution measurements using consistent methods. Chemical stress can alter root growth and can mimic disease or water-stress symptoms above ground."
+    },
+    {
+      "field": "Differential evidence",
+      "requirement": "Compare affected and unaffected plants, map symptom distribution, inspect irrigation uniformity, and record pest/pathogen observations or test results where indicated. Note which alternative causes have been weakened or remain plausible."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "A large container automatically creates a large root system: Roots expand only where physical, chemical, and biological conditions support growth."
   ],
   "evidenceLimits": [
-    "Direct cannabis root research is less abundant than shoot and flower research. General root physiology is applicable, while system-specific targets require direct validation."
+    "Direct cannabis root-architecture research is less extensive than research on shoots, flowers, and chemistry, so many mechanism statements rely on general plant root physiology. Root appearance also changes with substrate staining, age, oxygen regime, microbial communities, cultivar, and production system. Measurements and comparisons within the same system are therefore more reliable than applying a universal color, root-length, or moisture target across all cannabis crops."
   ],
   "crossLinks": "THC-ENC-041–060, THC-ENC-081–100, THC-ENC-121–140, and root-health diagnostics.",
   "sourceNotes": [
     "Hesami M., Pepe M., and Jones A.M.P. (2023). Morphological Characterization of Cannabis sativa L. Throughout Its Complete Life Cycle. Plants 12(20):3646.",
-    "Pan J., Sharif R., Xu X., and Chen X. (2021). Mechanisms of Waterlogging Tolerance in Plants: Research Progress and Prospects. Frontiers in Plant Science 11:627331."
+    "Pan J., Sharif R., Xu X., and Chen X. (2021). Mechanisms of Waterlogging Tolerance in Plants: Research Progress and Prospects. Frontiers in Plant Science 11:627331.",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; root-system, water, nutrient, diagnostic, and measurement-record framework."
   ],
   "slug": "root-system-architecture",
   "route": "/encyclopedia/root-system-architecture",

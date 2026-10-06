@@ -28,28 +28,34 @@
   ],
   "cultivationRelevance": [
     "Layered identity improves comparisons. Two plants sold under the same broad category can require different flowering schedules, show different disease pressure, or produce different chemistry.",
-    "Do not infer cultivation targets from “indica,” “sativa,” or “ruderalis” alone. Observe the actual plant and preserve its source and performance records."
+    "Do not infer cultivation targets from “indica,” “sativa,” or “ruderalis” alone. Observe the actual plant and preserve its source and performance records.",
+    "Use population, pedigree, phenology, morphology, and chemistry as separate variables when comparing plants. This allows a grower or breeder to discover that two materials with similar commercial labels behave differently without forcing the observations into a disputed taxonomic category. It also makes data reusable when naming conventions change.",
+    "For breeding and conservation, preserve the level of biological organization being claimed. A clone preserves one genotype; a seed family samples a parental cross; a maintained population can preserve broader allele diversity. Calling all three a 'strain' erases distinctions that matter for selection response, segregation, disease resistance, and reproducibility."
   ],
   "measureAndRecord": [
     {
-      "field": "Species baseline",
-      "requirement": "Cannabis sativa L."
+      "field": "Species and authority",
+      "requirement": "Record Cannabis sativa L. as the working species baseline together with the authority and review date used by the project. Keep historical species or subspecies labels in a separate notes field when they are relevant to a cited source."
     },
     {
       "field": "Population or ancestry evidence",
-      "requirement": "Pedigree, marker data, accession history, or not established."
+      "requirement": "Record pedigree, accession history, geographic provenance, population sample size, genomic cluster or marker evidence, and the method used to infer ancestry. Distinguish documented ancestry from a commercial category or visual guess."
     },
     {
       "field": "Phenology",
-      "requirement": "Photoperiod-responsive, day-neutral/autoflowering, or unresolved."
+      "requirement": "Record photoperiod response, day-neutral/autoflowering behavior, days to visible floral transition under stated conditions, and any segregation within the population. Do not use one plant to characterize an untested seed population."
     },
     {
       "field": "Morphology",
-      "requirement": "Measured architecture and leaf traits, not a label."
+      "requirement": "Measure architecture and leaf traits using repeatable descriptors or dimensions, including plant height, branch pattern, internode spacing, leaflet traits, and developmental stage. Record the environment because morphology is plastic."
     },
     {
-      "field": "Chemotype",
-      "requirement": "Laboratory-supported profile and sample context."
+      "field": "Chemotype and sampling",
+      "requirement": "Record laboratory cannabinoid or other chemistry data with sample tissue, developmental stage, harvest timing, laboratory, method, and sample ID. Treat chemotype as a measured phenotype, not as a substitute for taxonomy."
+    },
+    {
+      "field": "Interpretation status",
+      "requirement": "State whether the conclusion concerns taxonomy, ancestry, production class, phenotype, or marketing language. Record uncertainty and the alternative classification that would also fit the available evidence."
     }
   ],
   "misconceptions": [
@@ -58,7 +64,7 @@
     "Appearance proves ancestry: Environment and convergent selection can produce similar forms in different lineages."
   ],
   "evidenceLimits": [
-    "Species concepts and infraspecific ranks are scientific interpretations. The encyclopedia states which authority it follows and keeps lineage evidence separate."
+    "Species concepts and infraspecific ranks are scientific interpretations that can differ among authorities and datasets. Genomic clustering depends on which accessions were sampled, marker density, analytical method, domestication history, introgression, and modern hybridization. A cluster or recurring morphology can document population structure without automatically proving a separate species, while broad interbreeding does not by itself settle every species concept. The encyclopedia therefore states its authority and preserves ancestry evidence separately."
   ],
   "crossLinks": "THC-ENC-002, THC-ENC-004, THC-ENC-168–170, and THC-ENC-381–400.",
   "sourceNotes": [

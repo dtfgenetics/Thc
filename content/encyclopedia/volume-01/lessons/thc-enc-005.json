@@ -24,32 +24,39 @@
   "coreScience": [
     "Hemp and drug-type cannabis belong to Cannabis sativa L. Their separation can reflect intended use, breeding history, architecture, photoperiod response, and cannabinoid profile, but no single visual trait reliably determines legal status. Fiber hemp, grain hemp, cannabinoid hemp, and drug-type flower are production categories with different target traits.",
     "In the United States, federal hemp status is defined by law using delta-9 tetrahydrocannabinol concentration on a dry-weight basis and specified sampling and testing rules. Legal definitions can change and can differ from state rules. A botanical text should therefore not hard-code a current legal threshold as if it were a permanent plant-science boundary.",
-    "Chemotype classification is also not identical to legal status. A plant can have a CBD-dominant profile yet exceed a statutory THC limit. A young plant’s future chemistry cannot be established by appearance. A laboratory cannabinoid result alone is not a universal legal determination: jurisdiction, sampled plant part, sampling time, analytical method, measurement uncertainty, and administrative rules can all matter."
+    "Chemotype classification is also not identical to legal status. A plant can have a CBD-dominant profile yet exceed a statutory THC limit. A young plant’s future chemistry cannot be established by appearance. A laboratory cannabinoid result alone is not a universal legal determination: jurisdiction, sampled plant part, sampling time, analytical method, measurement uncertainty, and administrative rules can all matter.",
+    "The biological traits used to separate production classes are continuous and overlapping rather than absolute. Architecture, flowering response, cannabinoid ratios, seed yield, stem traits, and maturation time are all influenced by genotype and environment. Selection can create populations optimized for fiber, grain, cannabinoids, or mixed use, but those breeding objectives do not create new species boundaries. Legal categories simplify one regulatory decision and should not be reused as if they described the whole phenotype, ancestry, or cultivation behavior of the plant."
   ],
   "cultivationRelevance": [
     "Production advice must match the crop class. Results from grain or fiber cultivars may not transfer directly to dense indoor flower production, and vice versa.",
-    "For records, store intended use, measured chemotype, and legal classification in separate fields. This prevents one label from overwriting the others."
+    "For records, store intended use, measured chemotype, and legal classification in separate fields. This prevents one label from overwriting the others.",
+    "Separate production class from measured plant traits when planning a crop. Fiber, grain, dual-purpose, cannabinoid-hemp, and drug-type flower systems can differ in density, architecture, harvest target, photoperiod strategy, and quality measurements. A study performed in one class should be transferred to another only when the relevant biology and production conditions are comparable.",
+    "Compliance and plant science should share records without being collapsed into one field. Keep crop purpose, genotype or line ID, sample date, plant part, laboratory result, jurisdiction, regulatory sampling event, and official determination separately. This allows the same biological material to be studied scientifically while preserving the exact legal context that applied at a particular time."
   ],
   "measureAndRecord": [
     {
-      "field": "Production class",
-      "requirement": "Fiber, grain, dual-purpose, cannabinoid hemp, drug-type flower, breeding, or research."
+      "field": "Production class and purpose",
+      "requirement": "Record whether the crop is being managed for fiber, grain, dual purpose, cannabinoid hemp, drug-type flower, breeding, research, or another lawful purpose, and state the actual production objective. Do not infer purpose from plant height or a commercial name."
     },
     {
-      "field": "Intended use",
-      "requirement": "The actual production or research goal."
+      "field": "Material identity",
+      "requirement": "Record cultivar or line name, breeder/source, seed lot or clone ID, generation, propagation date, and any available chemotype or pedigree information. Keep identity records independent from the legal classification assigned to a harvest or sample."
     },
     {
       "field": "Chemotype evidence",
-      "requirement": "Laboratory result, sample stage, sample part, and date."
+      "requirement": "Record laboratory, test method, sample identifier, sampled plant part, developmental or harvest stage, collection date, reported cannabinoids and units, and measurement uncertainty when supplied. A chemistry result describes the tested sample, not every future plant from the same name."
     },
     {
-      "field": "Jurisdiction",
-      "requirement": "Country, state, province, tribe, or program."
+      "field": "Jurisdiction and controlling rule",
+      "requirement": "Record country, state, province, tribal program, or other jurisdiction; the exact regulation or program version; review date; responsible agency; and whether the requirement concerns licensing, sampling, analytical method, crop disposition, or another legal decision."
     },
     {
-      "field": "Legal determination",
-      "requirement": "Result under the cited current rule; do not infer from name or appearance."
+      "field": "Official determination",
+      "requirement": "Store the regulatory or compliance determination separately from the raw laboratory result. Record who made the determination, the date, required sampling protocol, any measurement-of-uncertainty rule, retest or appeal status, and resulting crop action."
+    },
+    {
+      "field": "Transferability of guidance",
+      "requirement": "When using research from hemp, drug-type flower, fiber, grain, or another production class, record why the finding is relevant to the current crop and which biological or management differences limit transfer."
     }
   ],
   "misconceptions": [
@@ -58,7 +65,7 @@
     "Plant height separates hemp and marijuana: Architecture is influenced by genetics, environment, density, and use, and is not a legal assay."
   ],
   "evidenceLimits": [
-    "This is not legal advice. U.S. federal statute and USDA testing guidance were reviewed July 30, 2026. Any legal threshold, sampling procedure, pesticide statement, or jurisdictional classification requires a dated review against the current controlling authority before release or use."
+    "This lesson is plant-science education rather than legal advice. Statutory definitions, sampling rules, analytical requirements, uncertainty handling, crop-disposition rules, and agency guidance can change and can differ across jurisdictions. Botanical identity and chemotype do not independently establish legal status. Any operational compliance statement must therefore be tied to the current controlling authority, jurisdiction, date, sampling context, and official determination rather than copied from a generic threshold."
   ],
   "crossLinks": "THC-ENC-002, THC-ENC-170–172, THC-ENC-251–270, and current lawful-use guidance.",
   "sourceNotes": [
