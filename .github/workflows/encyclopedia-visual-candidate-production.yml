@@ -19,9 +19,7 @@ on:
       - '.github/workflows/encyclopedia-visual-candidate-production.yml'
 
 permissions:
-  contents: write
-  actions: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,6 +29,10 @@ jobs:
   render:
     name: Render next controlled candidate batch
     runs-on: ubuntu-latest
+    permissions:
+      contents: ${{ github.ref == 'refs/heads/main' && 'write' || 'read' }}
+      actions: ${{ github.ref == 'refs/heads/main' && 'write' || 'none' }}
+      pull-requests: ${{ github.ref == 'refs/heads/main' && 'write' || 'none' }}
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
