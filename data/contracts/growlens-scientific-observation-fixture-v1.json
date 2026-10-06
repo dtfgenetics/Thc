@@ -1,0 +1,49 @@
+{
+  "observation_id": "OBS-growlens-contract-temperatureC",
+  "subject": {
+    "subject_type": "plant",
+    "subject_id": "plant-contract",
+    "plant_id": "plant-contract",
+    "grow_id": "cycle-contract",
+    "zone_id": "space-contract"
+  },
+  "observed_at": "2026-10-05T12:00:00.000Z",
+  "observed_property": {
+    "property_id": "thc:temperatureC",
+    "label": "Air temperature"
+  },
+  "method": {
+    "method_id": "growlens-context-adapter-v1",
+    "label": "GrowLens contextual measurement adapter",
+    "procedure_version": "1"
+  },
+  "measurement": {
+    "original_value": 25,
+    "original_unit": "C",
+    "canonical_value": 25,
+    "canonical_unit": "C",
+    "quality_flag": "accepted",
+    "derived": false
+  },
+  "context": {
+    "growlens_observation_id": "observation-contract",
+    "growlens_record_id": "record-observation-contract",
+    "source_context_record_ids": [
+      "reading-contract"
+    ],
+    "candidate_differentials": [
+      "Heat stress"
+    ],
+    "symptoms": [
+      "leaf-curl"
+    ]
+  },
+  "media_ids": [
+    "photo-contract"
+  ],
+  "provenance": {
+    "source_type": "derived",
+    "source_id": "record-observation-contract"
+  },
+  "review_state": "raw"
+}
