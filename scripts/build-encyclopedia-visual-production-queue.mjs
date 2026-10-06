@@ -45,14 +45,19 @@ const visualFamilyFor = (lesson, entry) => {
   return String(entry.teachingVisual || lesson.requiredTeachingVisual || 'concept-diagram').toLowerCase().replace(/\s+/g,'-');
 };
 
-const visualPriorityFor = (lesson, family, hasRaster) => {
-  if(hasRaster) return 0;
+const visualPriorityFor = (lesson, family, roleAddressedAssetCount) => {
+  if(roleAddressedAssetCount >= targetVisualsPerLesson) return 0;
   const text = JSON.stringify([lesson.title,lesson.objective,lesson.coreScience,lesson.measureAndRecord,lesson.misconceptions]).toLowerCase();
   let score=10;
   if(['diagnostic-decision-tree','mechanism-process-diagram','measurement-workflow','labeled-structure-diagram','genetics-pedigree-diagram'].includes(family)) score+=8;
   if(/\b\d+(?:\.\d+)?\s*(?:%|ppm|ppfd|dli|ec|ph|kpa|°c|°f|hours?|days?|weeks?)\b/i.test(text)) score+=5;
   if(/diagnos|pathogen|viroid|toxic|deficien|hazard|safety|calibrat|uncertaint/.test(text)) score+=6;
   if((lesson.crossLinks?.relatedLessonIds||[]).length>2) score+=2;
+  const minimumGap=Math.max(0,minimumVisualsPerLesson-roleAddressedAssetCount);
+  const targetGap=Math.max(0,targetVisualsPerLesson-roleAddressedAssetCount);
+  score+=minimumGap*4;
+  score+=targetGap;
+  if(minimumGap===0 && targetGap>0) score=Math.max(1,Math.min(score,9));
   return score;
 };
 
@@ -99,7 +104,7 @@ const items = lessons.map(lesson => {
   ])].sort();
   const canonicalAssetExists = canonicalAssetPaths.length > 0;
   const visualFamily = visualFamilyFor(lesson, entry);
-  const visualPriorityScore = visualPriorityFor(lesson, visualFamily, canonicalAssetPaths.length >= minimumVisualsPerLesson);
+  let visualPriorityScore = 0;
   const roleAssetPath = (role, index) => canonicalAssetPaths.find(assetPath => {
     const name = path.basename(assetPath).toLowerCase();
     return name.includes(`_${String(index + 1).padStart(2, '0')}_${role}.png`);
@@ -121,6 +126,7 @@ const items = lessons.map(lesson => {
   const unclassifiedLegacyAssetCount = Math.max(0, canonicalAssetPaths.length - roleAddressedAssetCount);
   const visualGapCount = targetVisualsPerLesson - roleAddressedAssetCount;
   const minimumVisualGapCount = Math.max(0, minimumVisualsPerLesson - roleAddressedAssetCount);
+  visualPriorityScore = visualPriorityFor(lesson, visualFamily, roleAddressedAssetCount);
 
   return {
     queueId: `ENC-VIS-${String(lesson.number).padStart(3, '0')}`,
