@@ -70,9 +70,16 @@ const rows = (projects.projects || []).map(project => {
   const resolved = resolveExecution(project);
   const entry = resolved.entry;
   const repository = repositoryByName.get(project.repo) || null;
-  const contract = project.repo === externalContracts.controlRepository
-    ? { mode: 'local', path: null }
-    : externalContractByRepo.get(project.repo) || null;
+  let contract = null;
+  if (project.repo === externalContracts.controlRepository) {
+    contract = { mode: 'local', path: null };
+  } else if (project.repo && externalContractByRepo.has(project.repo)) {
+    contract = externalContractByRepo.get(project.repo);
+  } else if (repository?.status === 'archive_ready') {
+    contract = { mode: 'archive-only', path: null };
+  } else if (!project.repo && project.status === 'drive-only') {
+    contract = { mode: 'drive-only', path: null };
+  }
   return {
     id: project.id,
     name: project.name,
