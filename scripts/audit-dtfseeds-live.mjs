@@ -35,6 +35,11 @@ const routes = [
     requiredLinks: ['/learn/start-here/', '/learn/academy/', '/learn/encyclopedia/', '/learn/infographics/']
   },
   {
+    key: 'courses', path: '/courses/', minimumText: 1500,
+    requiredText: ['Professional Cannabis Cultivation Education', 'Cultivation Technician I', 'Certification roadmap'],
+    requiredLinks: ['/learn/', '/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/']
+  },
+  {
     key: 'shop', path: '/shop/', minimumText: 250,
     requiredText: ['10 Feminized F2 Blue Mango Seeds', '10 Regular F1 Blue Bubblegum Seeds', '10 Regular F2 Blue Mango Seeds'],
     requiredLinks: ['/product/10-feminized-f2-blue-mango-x/', '/product/10-reg-f1-blueberry-bubblegum/', '/product/10-regular-f2-blue-mango-seeds/']
