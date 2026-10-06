@@ -66,7 +66,7 @@
     "test:live:growlens": "node scripts/growlens-live-acceptance.mjs",
     "recover:growlens:acceptance": "node scripts/growlens-live-acceptance-recover.mjs",
     "validate:plant-atlas:v4": "node scripts/validate-canonical-tools-mirror.mjs",
-    "verify:growlens": "npm run validate:growlens-release-contract && npm run test:growlens:backend && npm run test:growlens && npm run test:growlens:live-client && npm run build:growlens",
+    "verify:growlens": "npm run validate:growlens-release-contract && npm run validate:growlens-observation-contract && npm run test:growlens:backend && npm run test:growlens && npm run test:growlens:live-client && npm run build:growlens",
     "games:locations:check": "node scripts/validate-game-location-registry.mjs",
     "validate:terpene-atlas": "node scripts/validate-canonical-tools-mirror.mjs",
     "verify:asset-states": "node scripts/validate-asset-state-registry.mjs",
@@ -215,6 +215,7 @@
     "games:agents:queue": "node scripts/generate-autonomous-playtest-work-queue.mjs",
     "games:agents:queue-check": "node scripts/generate-autonomous-playtest-work-queue.mjs --check",
     "encyclopedia:visual-approved-assets": "node scripts/build-encyclopedia-visual-approved-assets.mjs",
-    "verify:responsive": "node scripts/verify-responsive-layout.mjs"
+    "verify:responsive": "node scripts/verify-responsive-layout.mjs",
+    "validate:growlens-observation-contract": "node scripts/validate-growlens-observation-contract.mjs"
   }
 }
