@@ -24,32 +24,39 @@
   "coreScience": [
     "Temperature changes membrane behavior, enzyme activity, respiration, pathogen growth, water uptake, and embryo expansion. Within a suitable range, warmer conditions generally accelerate germination until an optimum is reached. Beyond it, rate and final success can decline because of thermal inhibition or injury.",
     "A controlled study of two industrial hemp oilseed cultivars tested constant temperatures from 3 to 42 degrees C. High percentage and rate occurred between 19 and 30 degrees C in that experiment, and modeled cardinal values were cultivar- and method-specific. These results provide a defensible research anchor, not a permanent target for every drug-type or hemp genotype.",
-    "Air temperature near a room thermostat may differ from the actual seed environment. Heat mats, enclosed domes, lights, cold floors, evaporative cooling, and wet substrate can shift seed-level temperature. Daily fluctuation can also produce a different response from a constant-temperature laboratory test."
+    "Air temperature near a room thermostat may differ from the actual seed environment. Heat mats, enclosed domes, lights, cold floors, evaporative cooling, and wet substrate can shift seed-level temperature. Daily fluctuation can also produce a different response from a constant-temperature laboratory test.",
+    "Temperature responses should be interpreted separately for rate, final success, and seedling quality. A warmer treatment may shorten time to radicle emergence while also increasing abnormal seedlings, pathogen pressure, or post-emergence stress. Cardinal temperatures are therefore defined for a specific biological process and endpoint, not for the entire seed-to-seedling transition. Constant laboratory temperatures and fluctuating production environments can also produce different responses."
   ],
   "cultivationRelevance": [
     "Measure where the seed is located and compare replicate samples under controlled temperatures when evaluating a lot. Faster is not automatically better if the warmer condition increases abnormal seedlings or disease.",
-    "After emergence, reassess the environment. A temperature selected for germination may not be the best balance for seedling morphology, root-zone oxygen, or disease suppression."
+    "After emergence, reassess the environment. A temperature selected for germination may not be the best balance for seedling morphology, root-zone oxygen, or disease suppression.",
+    "Map the thermal environment at seed level rather than assuming room air represents the germination zone. Compare sensors at representative cells, trays, shelves, or mat positions when equipment creates spatial gradients, and record minimum/maximum as well as average temperature.",
+    "When evaluating a new lot or germination method, compare temperature treatments with the same moisture, medium, sample size, and scoring schedule. Judge the result by both timing and normal-seedling outcome so faster germination is not mistaken for better establishment."
   ],
   "measureAndRecord": [
     {
-      "field": "Sensor",
-      "requirement": "Model, calibration or verification date, and placement at seed level."
+      "field": "Sensor and placement",
+      "requirement": "Record sensor model, verification/calibration date, exact location relative to the seed or medium, enclosure, heat-mat position, and whether the reading represents air, surface, or root-zone/seed-zone temperature."
     },
     {
       "field": "Temperature series",
-      "requirement": "Minimum, maximum, mean, and observation interval."
+      "requirement": "Record observation interval plus minimum, maximum, mean, and major excursions. When possible preserve the raw time series so fluctuating conditions are not reduced to one average."
+    },
+    {
+      "field": "Test context",
+      "requirement": "Record cultivar/lot, sample size, replicates, substrate or medium, moisture method, light after emergence, enclosure, and test duration. Temperature comparisons require the other major variables to remain comparable."
     },
     {
       "field": "Germination curve",
-      "requirement": "New radicle events by time, not only the final percentage."
+      "requirement": "Record newly germinated units at fixed intervals and calculate final germination plus a defined time metric such as median or mean germination time. Keep timing and final percentage as separate outcomes."
     },
     {
-      "field": "Seedling outcome",
-      "requirement": "Normal, abnormal, diseased, and dead counts."
+      "field": "Seedling quality",
+      "requirement": "Record normal/abnormal seedlings, hypocotyl elongation, root injury, disease signs, survival, and emergence. A temperature that maximizes speed but worsens establishment should not be labeled optimal."
     },
     {
-      "field": "Context",
-      "requirement": "Cultivar or lot, moisture method, substrate, light, and test duration."
+      "field": "Transferability",
+      "requirement": "Record whether the tested material is industrial hemp, drug-type, autoflower/day-neutral, or another class and whether the cited temperature evidence directly studied that material. Label extrapolations explicitly."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "Warmest germination is best: Supraoptimal heat can inhibit or injure seed and favor some pathogens."
   ],
   "evidenceLimits": [
-    "The 19-30 degrees C study range belongs to two industrial hemp cultivars under controlled conditions. It should be reported as study evidence, not a universal cannabis standard."
+    "The commonly cited 19–30 °C high-performance range comes from two industrial-hemp oilseed cultivars under controlled constant-temperature conditions. Cardinal temperatures depend on genotype, seed lot, endpoint, moisture method, and model, while production systems often fluctuate diurnally and spatially. Report the study range as evidence for those tested materials rather than as a universal cannabis germination optimum."
   ],
   "crossLinks": "THC-ENC-023, THC-ENC-026, THC-ENC-029–030, THC-ENC-037, and environmental sensor lessons.",
   "sourceNotes": [
     "Geneve R.L. et al. (2022). Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.). Crops 2:415-427.  https://doi.org/10.3390/crops2040029",
-    "El-Maarouf-Bouteau H. (2022). The Seed and the Metabolism Regulation. Biology 11:168.  https://doi.org/10.3390/biology11020168"
+    "El-Maarouf-Bouteau H. (2022). The Seed and the Metabolism Regulation. Biology 11:168.  https://doi.org/10.3390/biology11020168",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; sensor placement, environmental context, and study-versus-target interpretation framework."
   ],
   "slug": "temperature-effects-on-germination-rate",
   "route": "/encyclopedia/temperature-effects-on-germination-rate",
