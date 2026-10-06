@@ -56,6 +56,21 @@ const visualPriorityFor = (lesson, family, hasRaster) => {
   return score;
 };
 
+const visualRoles = [
+  'core-concept-overview',
+  'labeled-anatomy-or-structure',
+  'mechanism-or-process-sequence',
+  'measurement-or-data-reference',
+  'comparison-or-contrast',
+  'diagnostic-or-observation-example',
+  'environment-or-cultivation-context',
+  'microscopy-or-detail-view',
+  'misconception-correction',
+  'summary-reference-graphic'
+];
+const minimumVisualsPerLesson = 8;
+const targetVisualsPerLesson = visualRoles.length;
+
 const items = lessons.map(lesson => {
   const entry = entryById.get(lesson.id) || {};
   const science = arr(lesson.coreScience);
@@ -72,7 +87,15 @@ const items = lessons.map(lesson => {
   ])].sort();
   const canonicalAssetExists = canonicalAssetPaths.length > 0;
   const visualFamily = visualFamilyFor(lesson, entry);
-  const visualPriorityScore = visualPriorityFor(lesson, visualFamily, canonicalAssetExists);
+  const visualPriorityScore = visualPriorityFor(lesson, visualFamily, canonicalAssetPaths.length >= minimumVisualsPerLesson);
+  const assignedVisualRoles = visualRoles.map((role, index) => ({
+    role,
+    ordinal: index + 1,
+    status: canonicalAssetPaths[index] ? 'raster_artwork_produced_review_pending' : 'brief_ready_raster_artwork_needed',
+    canonicalAssetPath: canonicalAssetPaths[index] ? relativePath(root, canonicalAssetPaths[index]) : null
+  }));
+  const visualGapCount = Math.max(0, targetVisualsPerLesson - canonicalAssetPaths.length);
+  const minimumVisualGapCount = Math.max(0, minimumVisualsPerLesson - canonicalAssetPaths.length);
 
   return {
     queueId: `ENC-VIS-${String(lesson.number).padStart(3, '0')}`,
@@ -93,7 +116,12 @@ const items = lessons.map(lesson => {
     sourceAnchors: sources.slice(0, 5),
     altTextDraft: `${visualType} for ${lesson.title}, showing the lesson's controlled mechanism, comparison, or workflow without implying a universal cultivation target.`,
     captionDraft: `${lesson.title}. Interpret the depicted relationships within the lesson's stated measurement method, context, and evidence limits.`,
-    productionStatus: canonicalAssetExists ? 'raster_artwork_produced_review_pending' : 'brief_ready_raster_artwork_needed',
+    minimumVisualsRequired: minimumVisualsPerLesson,
+    targetVisuals: targetVisualsPerLesson,
+    visualRoles: assignedVisualRoles,
+    visualGapCount,
+    minimumVisualGapCount,
+    productionStatus: canonicalAssetPaths.length >= minimumVisualsPerLesson ? 'minimum_visual_depth_produced_review_pending' : 'multi_visual_artwork_needed',
     canonicalAssetPath: canonicalAssetExists ? relativePath(root, canonicalAssetPaths[0]) : null,
     canonicalAssetPaths: canonicalAssetPaths.map(assetPath => relativePath(root, assetPath)),
     assetCandidateCount: canonicalAssetPaths.length,
@@ -117,14 +145,23 @@ const output = {
   summary: {
     lessonCount: items.length,
     briefsReady: items.length,
-    artworkNeeded: items.filter(item => item.productionStatus === 'brief_ready_raster_artwork_needed').length,
-    artworkProducedReviewPending: items.filter(item => item.productionStatus === 'raster_artwork_produced_review_pending').length,
-    highestPriorityArtworkNeeded: items.filter(item => item.productionStatus === 'brief_ready_raster_artwork_needed').sort((a,b)=>b.visualPriorityScore-a.visualPriorityScore||a.number-b.number).slice(0,40).map(item=>({lessonId:item.lessonId,visualPriorityScore:item.visualPriorityScore,visualFamily:item.visualFamily,title:item.title})),
+    minimumVisualsPerLesson,
+    targetVisualsPerLesson,
+    minimumVisualTarget: items.length * minimumVisualsPerLesson,
+    fullVisualTarget: items.length * targetVisualsPerLesson,
+    currentRasterAssetCount: items.reduce((sum,item)=>sum+item.assetCandidateCount,0),
+    missingToMinimum: items.reduce((sum,item)=>sum+item.minimumVisualGapCount,0),
+    missingToTarget: items.reduce((sum,item)=>sum+item.visualGapCount,0),
+    lessonsBelowMinimum: items.filter(item=>item.minimumVisualGapCount>0).length,
+    lessonsBelowTarget: items.filter(item=>item.visualGapCount>0).length,
+    artworkNeeded: items.filter(item => item.visualGapCount > 0).length,
+    artworkProducedReviewPending: items.filter(item => item.assetCandidateCount > 0).length,
+    highestPriorityArtworkNeeded: items.filter(item => item.visualGapCount > 0).sort((a,b)=>b.visualPriorityScore-a.visualPriorityScore||b.visualGapCount-a.visualGapCount||a.number-b.number).slice(0,40).map(item=>({lessonId:item.lessonId,visualPriorityScore:item.visualPriorityScore,visualFamily:item.visualFamily,visualGapCount:item.visualGapCount,title:item.title})),
     approvedAssets: items.filter(item => item.approvedAssetId).length
   },
   items
 };
 
 fs.writeFileSync(outPath, `${JSON.stringify(output, null, 2)}\n`);
-console.log(`Encyclopedia visual queue: ${items.length}/${registryState.totalCount} controlled briefs · ${output.summary.artworkNeeded} artwork needed · ${output.summary.artworkProducedReviewPending} produced/pending review · ${output.summary.approvedAssets} approved`);
+console.log(`Encyclopedia visual queue: ${items.length}/${registryState.totalCount} lessons · ${output.summary.currentRasterAssetCount}/${output.summary.fullVisualTarget} target raster visuals present · ${output.summary.missingToMinimum} missing to 8/lesson minimum · ${output.summary.missingToTarget} missing to 10/lesson target · ${output.summary.approvedAssets} approved`);
 console.log(`Wrote ${relativePath(root, outPath)}`);
