@@ -6,6 +6,11 @@ on:
       - main
     paths:
       - site/public-route-patch/games/dtf-route.css
+      - site/public-route-patch/games/weedopolis/**
+      - site/public-route-patch/games/crossword/**
+      - site/public-route-patch/games/who-took-it/**
+      - site/public-route-patch/games/ganjumanji/**
+      - site/public-route-patch/games/thc-rpg/**
       - games/test/cross-game-polish.test.mjs
       - site/public-route-patch/games/high-life/**
       - site/public-route-patch/games/grower-conversations/**
@@ -44,3 +49,13 @@ jobs:
           test -s site/public-route-patch/games/dtf-route.css
           test -s site/public-route-patch/games/index.html
           grep -Fq '23 playable browser games' site/public-route-patch/games/index.html
+          grep -Fq '.route-placeholder-card' site/public-route-patch/games/dtf-route.css
+          for slug in weedopolis crossword who-took-it ganjumanji thc-rpg; do
+            page="site/public-route-patch/games/$slug/index.html"
+            test -s "$page"
+            grep -Fq 'href="/games/dtf-route.css"' "$page"
+            grep -Fq 'class="route-placeholder"' "$page"
+            grep -Fq 'class="route-placeholder-card"' "$page"
+            grep -Fq -- '--route-accent:' "$page"
+            ! grep -Fq '<style>' "$page"
+          done
