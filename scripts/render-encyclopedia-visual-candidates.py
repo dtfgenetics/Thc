@@ -4,7 +4,7 @@
 This renderer is intentionally deterministic and conservative:
 - reads the controlled visual-production queue;
 - renders only lessons whose raster artwork is still missing;
-- uses four science-teaching layout families already assigned by the queue;
+- uses the complete controlled science-teaching layout-family set assigned by the queue;
 - preserves review boundaries: output is a candidate, never an approval.
 """
 from __future__ import annotations
@@ -149,12 +149,67 @@ def render_measurement(item,im,d):
         if i<3: arrow(d,(xs[i]+315,445),(xs[i+1],445),col)
     panel(d,(230,690,1370,865),"Quality / interpretation guard",gs[0] if gs else "A measurement is evidence only when its method and context are known; one reading is not automatically a universal threshold.",RED)
 
+def render_structure(item,im,d):
+    labs=labels(item); pts=science_points(item); gs=guards(item)
+    panel(d,(90,235,505,650),"Structure under study",pts[0] if pts else item.get('purpose',''),GREEN)
+    panel(d,(595,235,1005,650),"Function / relationship",pts[1] if len(pts)>1 else "Connect named structures to the function or process supported by the lesson evidence.",BLUE)
+    panel(d,(1095,235,1510,650),"Observe / verify",pts[2] if len(pts)>2 else "Confirm identity and function with the lesson's stated observation or measurement method.",ORANGE)
+    arrow(d,(505,440),(595,440),GREEN); arrow(d,(1005,440),(1095,440),BLUE)
+    y=700
+    d.text((90,y),"CONTROLLED LABELS",font=font(20,True),fill=INK); y+=38
+    x=90
+    for lab in labs:
+        w=min(310,max(160,16*len(lab)))
+        if x+w>1510: break
+        d.rounded_rectangle((x,y,x+w,y+48),radius=14,fill=(239,246,241),outline=(181,203,188),width=2)
+        d.text((x+14,y+12),short(lab,28),font=font(17,True),fill=GREEN); x+=w+16
+    panel(d,(260,800,1340,905),"Interpretation guard",gs[0] if gs else "A simplified teaching map is not a scale anatomical drawing; verify structure and function in the lesson context.",RED)
+
+def render_pedigree(item,im,d):
+    labs=labels(item); pts=science_points(item); gs=guards(item)
+    steps=[
+      (labs[0] if labs else 'Identity',pts[0] if pts else item.get('purpose',''),BLUE),
+      (labs[1] if len(labs)>1 else 'Mating / inheritance',pts[1] if len(pts)>1 else 'Record the biological relationship or mating event explicitly.',GREEN),
+      (labs[2] if len(labs)>2 else 'Population',pts[2] if len(pts)>2 else 'Keep family, generation, seed-lot, and individual identity separate.',ORANGE),
+      (labs[3] if len(labs)>3 else 'Selection / claim','Carry only evidence-supported lineage or trait claims into the next controlled record.',GREEN),
+    ]
+    xs=[80,455,830,1205]
+    for i,(title,body,col) in enumerate(steps):
+        panel(d,(xs[i],270,xs[i]+315,620),title,body,col)
+        if i<3: arrow(d,(xs[i]+315,445),(xs[i+1],445),col)
+    panel(d,(220,700,1380,885),"Pedigree / naming guard",gs[0] if gs else "A name or generation label records identity history only when parentage, mating event, and source records are traceable.",RED)
+
+def render_postharvest(item,im,d):
+    labs=labels(item); pts=science_points(item); gs=guards(item)
+    names=(labs+['Harvest','Dry','Condition','Store'])[:4]
+    bodies=[
+      pts[0] if pts else item.get('purpose',''),
+      pts[1] if len(pts)>1 else 'Control the relevant environment and record time, mass, temperature, humidity, and handling context.',
+      pts[2] if len(pts)>2 else 'Use measured endpoints rather than calendar time alone.',
+      'Protect identity, quality, safety, and traceability through packaging, storage, and verification.'
+    ]
+    cols=[BLUE,GREEN,ORANGE,GREEN]
+    xs=[80,455,830,1205]
+    for i in range(4):
+        panel(d,(xs[i],270,xs[i]+315,620),names[i],bodies[i],cols[i])
+        if i<3: arrow(d,(xs[i]+315,445),(xs[i+1],445),cols[i])
+    panel(d,(220,700,1380,885),"Process-control guard",gs[0] if gs else "Postharvest outcomes depend on starting material, environment, time, handling, sanitation, and measurement method.",RED)
+
+def render_environment(item,im,d):
+    labs=labels(item); pts=science_points(item); gs=guards(item)
+    panel(d,(90,235,500,610),labs[0] if labs else "Environmental driver",pts[0] if pts else item.get('purpose',''),BLUE)
+    panel(d,(595,235,1005,610),labs[1] if len(labs)>1 else "Plant response",pts[1] if len(pts)>1 else "Response depends on genotype, developmental stage, interacting resources, duration, and tissue conditions.",GREEN)
+    panel(d,(1100,235,1510,610),labs[2] if len(labs)>2 else "Measurement / decision",pts[2] if len(pts)>2 else "Measure the driver and plant response before changing a control target.",ORANGE)
+    arrow(d,(500,420),(595,420),BLUE); arrow(d,(1005,420),(1100,420),GREEN)
+    d.text((90,675),"RESPONSE IS CONTEXT-DEPENDENT — NO UNIVERSAL THRESHOLD IMPLIED",font=font(20,True),fill=RED)
+    panel(d,(210,720,1390,890),"Evidence and target guard",gs[0] if gs else "Use measured response curves and local validation; equal setpoints can produce different tissue conditions or crop responses.",RED)
+
 def output_name(item):
     return f"{item['lessonId']}_teaching-visual-candidate-v1.png"
 
 def main():
     ap=argparse.ArgumentParser()
-    ap.add_argument('--limit',type=int,default=40)
+    ap.add_argument('--limit',type=int,default=72)
     ap.add_argument('--manifest',default='')
     args=ap.parse_args()
     q=json.loads(QUEUE.read_text(encoding='utf-8'))
@@ -168,6 +223,10 @@ def main():
       'mechanism-process-diagram':render_mechanism,
       'comparison-matrix':render_comparison,
       'measurement-workflow':render_measurement,
+      'labeled-structure-diagram':render_structure,
+      'genetics-pedigree-diagram':render_pedigree,
+      'postharvest-process-diagram':render_postharvest,
+      'environment-response-chart':render_environment,
     }
     for item in chosen:
         im,d=canvas(item)
