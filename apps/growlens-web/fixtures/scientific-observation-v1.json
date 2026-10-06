@@ -1,0 +1,23 @@
+{
+  "contract": {
+    "repository": "dtfgenetics/Thc-dataset",
+    "path": "dataset/schema/scientific-observation.schema.json",
+    "schemaId": "https://dtfseeds.com/schemas/scientific-observation-v1.json",
+    "gitBlobSha": "942a74fadb59a2dfe475d71190f6b685d7b81516"
+  },
+  "input": {
+    "id": "reading-contract-fixture",
+    "spaceId": "flower-a",
+    "temperatureC": 25,
+    "humidity": 58,
+    "ppfd": 500,
+    "createdAt": "2026-10-05T20:00:00.000Z",
+    "photoperiodHours": 12
+  },
+  "expected": {
+    "measuredObservationCount": 3,
+    "derivedObservationCount": 1,
+    "dli": 21.6,
+    "formulaId": "FORM-DLI-PPFD-PHOTOPERIOD"
+  }
+}
