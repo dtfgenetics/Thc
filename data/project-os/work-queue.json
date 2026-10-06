@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-06T09:34:00Z",
+  "updatedAt": "2026-10-06T10:13:00Z",
   "items": [
     {
       "workItemId": "project-os.queue-contract-v1",
@@ -81,7 +81,7 @@
         "collisionRisk": 1,
         "score": 64
       },
-      "state": "review",
+      "state": "done",
       "dependencies": [
         "project-os.queue-contract-v1"
       ],
@@ -89,32 +89,32 @@
         {
           "id": "coverage",
           "description": "All nine required project types have explicit completion contracts.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS/repository CI"
         },
         {
           "id": "validation",
           "description": "Malformed or incomplete completion contracts are rejected deterministically.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS/repository CI"
         },
         {
           "id": "integration",
           "description": "Definitions-of-Done verification is part of verify:project-os.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS/repository CI"
         }
       ],
       "branch": "work/platform/project-os-dod-v1/20261006",
       "pullRequest": 2075,
       "baseSha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
-      "headSha": null,
+      "headSha": "627f9feb2f26588627d352f037e257389d84407d",
       "lease": null,
       "tests": [
         {
           "name": "project-os-dod",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 Project OS Quality Gate"
         }
       ],
       "deployment": {
@@ -123,8 +123,8 @@
         "verifiedAt": null
       },
       "blocker": null,
-      "lastAction": "Added machine-readable project-type Definitions of Done, validator, fixtures, and Project OS gate integration.",
-      "nextAction": "Open PR and require exact-head CI before promoting acceptance criteria.",
+      "lastAction": "Merged PR #2075 after exact-head validation.",
+      "nextAction": null,
       "evidence": [
         "data/project-os/definitions-of-done.json",
         "scripts/validate-project-os-definitions-of-done.mjs",
@@ -132,8 +132,8 @@
       ],
       "timestamps": {
         "createdAt": "2026-10-06T09:24:00Z",
-        "updatedAt": "2026-10-06T09:24:00Z",
-        "completedAt": null
+        "updatedAt": "2026-10-06T09:54:55Z",
+        "completedAt": "2026-10-06T09:54:55Z"
       }
     },
     {
@@ -150,7 +150,7 @@
         "collisionRisk": 1,
         "score": 69
       },
-      "state": "review",
+      "state": "done",
       "dependencies": [
         "project-os.definitions-of-done-v1"
       ],
@@ -158,38 +158,38 @@
         {
           "id": "domains",
           "description": "Canonical acceptance domains cover Encyclopedia, Tools, Games, Academy, GrowLens, critical assets, and release infrastructure.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS/repository CI"
         },
         {
           "id": "sources",
           "description": "Acceptance domains point to existing canonical registries/targets.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS/repository CI"
         },
         {
           "id": "fixtures",
           "description": "Duplicate domains, missing validators/sources, and invalid live requirements are rejected.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS/repository CI"
         },
         {
           "id": "integration",
           "description": "Acceptance-manifest verification is part of verify:project-os.",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 exact-head Project OS/repository CI"
         }
       ],
       "branch": "work/platform/project-os-dod-v1/20261006",
       "pullRequest": 2075,
       "baseSha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
-      "headSha": null,
+      "headSha": "627f9feb2f26588627d352f037e257389d84407d",
       "lease": null,
       "tests": [
         {
           "name": "project-os-acceptance",
-          "status": "pending",
-          "evidence": null
+          "status": "passed",
+          "evidence": "PR #2075 Project OS Quality Gate"
         }
       ],
       "deployment": {
@@ -198,8 +198,8 @@
         "verifiedAt": null
       },
       "blocker": null,
-      "lastAction": "Added registry-backed acceptance manifests, validator, negative fixtures, and Project OS gate integration.",
-      "nextAction": "Require exact-head CI before promoting acceptance evidence.",
+      "lastAction": "Merged PR #2075 after exact-head validation.",
+      "nextAction": null,
       "evidence": [
         "data/project-os/acceptance-manifests.json",
         "scripts/validate-project-os-acceptance-manifests.mjs",
@@ -207,7 +207,546 @@
       ],
       "timestamps": {
         "createdAt": "2026-10-06T09:34:00Z",
-        "updatedAt": "2026-10-06T09:34:00Z",
+        "updatedAt": "2026-10-06T09:54:55Z",
+        "completedAt": "2026-10-06T09:54:55Z"
+      }
+    },
+    {
+      "workItemId": "platform.crossword-production-repair-20261006",
+      "project": "games",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 5,
+        "userImpact": 5,
+        "productionExposure": 5,
+        "unblockValue": 5,
+        "ageDays": 0,
+        "complexity": 3,
+        "collisionRisk": 1,
+        "score": 91
+      },
+      "state": "done",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "source-gate",
+          "description": "Pinned Crossword source build/release gate passes.",
+          "status": "passed",
+          "evidence": "merged PR #2071"
+        },
+        {
+          "id": "deployment",
+          "description": "Transactional Public Suite deployment and canonical game promotion succeed.",
+          "status": "passed",
+          "evidence": "workflow run 37443275174"
+        },
+        {
+          "id": "live",
+          "description": "Suite-owned and external candidate game verification succeeds.",
+          "status": "passed",
+          "evidence": "workflow run 37443275174"
+        }
+      ],
+      "branch": "work/platform/production-closure/20261006-crossword-seo",
+      "pullRequest": 2071,
+      "baseSha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
+      "headSha": "2071d6542edb0fbaefbaa3b0ad2af268ad1c08d1",
+      "lease": null,
+      "tests": [
+        {
+          "name": "Validate Crossword Release Source",
+          "status": "passed",
+          "evidence": "PR #2071"
+        },
+        {
+          "name": "Public Suite deployment",
+          "status": "passed",
+          "evidence": "run 37443275174"
+        }
+      ],
+      "deployment": {
+        "state": "verified_live",
+        "fingerprint": "crossword-production-repair-2026-10-06",
+        "verifiedAt": "2026-10-06T09:38:23Z"
+      },
+      "blocker": null,
+      "lastAction": "Completed transactional Public Suite deployment and live game verification.",
+      "nextAction": null,
+      "evidence": [
+        "PR #2071",
+        "workflow run 37443275174"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T09:26:00Z",
+        "updatedAt": "2026-10-06T09:38:23Z",
+        "completedAt": "2026-10-06T09:38:23Z"
+      }
+    },
+    {
+      "workItemId": "tools.live-verification-pin-49b6cd3",
+      "project": "tools",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 4,
+        "userImpact": 4,
+        "productionExposure": 4,
+        "unblockValue": 4,
+        "ageDays": 0,
+        "complexity": 2,
+        "collisionRisk": 1,
+        "score": 69
+      },
+      "state": "done",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "canonical-pin",
+          "description": "Integration pins canonical Tools verifier-strengthened revision.",
+          "status": "passed",
+          "evidence": "merged PR #2078"
+        },
+        {
+          "id": "routes",
+          "description": "All 23 registered Tools routes are live and substantive.",
+          "status": "passed",
+          "evidence": "2026-10-06 live verification"
+        },
+        {
+          "id": "plain-url",
+          "description": "Plain /tools/ exposes strengthened verification marker.",
+          "status": "passed",
+          "evidence": "merged production-verification repair #2097"
+        }
+      ],
+      "branch": "work/platform/tools-pin-49b6cd3-r3/20261006",
+      "pullRequest": 2078,
+      "baseSha": "dbb301006483837868340660f54979b6f0d8dfcd",
+      "headSha": "5c2f4707edd1d7622fa520764b4ac35f3ee54c86",
+      "lease": null,
+      "tests": [
+        {
+          "name": "Canonical tool mirror guard",
+          "status": "passed",
+          "evidence": "PR #2078"
+        }
+      ],
+      "deployment": {
+        "state": "verified_live",
+        "fingerprint": "Tools@49b6cd302a5131e1d0ac9cfcde7462b44b938431",
+        "verifiedAt": "2026-10-06T10:06:34Z"
+      },
+      "blocker": null,
+      "lastAction": "Merged canonical Tools pin and production-verification repair after 23/23 route checks.",
+      "nextAction": null,
+      "evidence": [
+        "PR #2078",
+        "PR #2097"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T09:26:45Z",
+        "updatedAt": "2026-10-06T10:06:34Z",
+        "completedAt": "2026-10-06T10:06:34Z"
+      }
+    },
+    {
+      "workItemId": "genetics.seeds-seo-release-contract",
+      "project": "genetics",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 4,
+        "userImpact": 4,
+        "productionExposure": 5,
+        "unblockValue": 4,
+        "ageDays": 0,
+        "complexity": 3,
+        "collisionRisk": 1,
+        "score": 71
+      },
+      "state": "done",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "contract",
+          "description": "Seeds metadata is genetics-owned and validated.",
+          "status": "passed",
+          "evidence": "merged PR #2040"
+        },
+        {
+          "id": "publish",
+          "description": "Seeds library/cards/metadata publication succeeds.",
+          "status": "passed",
+          "evidence": "workflow run 37443465939"
+        },
+        {
+          "id": "cache",
+          "description": "Cache purge and authoritative public acceptance succeed.",
+          "status": "passed",
+          "evidence": "workflow run 37443465939"
+        }
+      ],
+      "branch": "work/genetics/seeds-seo-contract/20261005-chatgpt",
+      "pullRequest": 2040,
+      "baseSha": "1b770998cb3dde5ab39103b00d7ca6dc82b0de83",
+      "headSha": "a90485c62ec6ed647629f848f1b7dd6b4dd2a25c",
+      "lease": null,
+      "tests": [
+        {
+          "name": "Genetics Library Coherence CI",
+          "status": "passed",
+          "evidence": "PR #2040"
+        }
+      ],
+      "deployment": {
+        "state": "verified_live",
+        "fingerprint": "dbb301006483837868340660f54979b6f0d8dfcd",
+        "verifiedAt": "2026-10-06T09:37:00Z"
+      },
+      "blocker": null,
+      "lastAction": "Published genetics library/cards and reconciled SEO metadata with cache verification.",
+      "nextAction": null,
+      "evidence": [
+        "PR #2040",
+        "workflow run 37443465939"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T01:19:35Z",
+        "updatedAt": "2026-10-06T09:37:00Z",
+        "completedAt": "2026-10-06T09:37:00Z"
+      }
+    },
+    {
+      "workItemId": "growlens.measured-context-r3",
+      "project": "growlens",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 4,
+        "userImpact": 4,
+        "productionExposure": 4,
+        "unblockValue": 5,
+        "ageDays": 0,
+        "complexity": 2,
+        "collisionRisk": 1,
+        "score": 73
+      },
+      "state": "live_verification",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "merged",
+          "description": "Measured-context observation producer is merged to main.",
+          "status": "passed",
+          "evidence": "PR #2090 merge bcd32d7fd687427bda261f3f0a036c8e75084dfe"
+        },
+        {
+          "id": "deploy",
+          "description": "A newer main Public Suite deployment containing the GrowLens merge completes.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "live",
+          "description": "Registered live GrowLens behavior is verified after deployment.",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "branch": "work/growlens/observation-context/20261006-r3",
+      "pullRequest": 2090,
+      "baseSha": "5c20db360ebd343e605f9ddafdbedf60a5bb3302",
+      "headSha": "e057a06c4481c10043df767361972cf3ebb2e05a",
+      "lease": null,
+      "tests": [
+        {
+          "name": "merge",
+          "status": "passed",
+          "evidence": "PR #2090 merged"
+        }
+      ],
+      "deployment": {
+        "state": "pending",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": "Earlier GrowLens-specific deployment was superseded by newer main; latest main deployment is pending.",
+      "lastAction": "Merged PR #2090; waiting for authoritative latest-main production deployment.",
+      "nextAction": "Verify latest-main Public Suite deployment and live GrowLens surface.",
+      "evidence": [
+        "PR #2090",
+        "Thc-dataset PR #432"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T10:00:27Z",
+        "updatedAt": "2026-10-06T10:13:00Z",
+        "completedAt": null
+      }
+    },
+    {
+      "workItemId": "games.high-lines-control-bridge-r4",
+      "project": "games",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 3,
+        "userImpact": 3,
+        "productionExposure": 3,
+        "unblockValue": 4,
+        "ageDays": 0,
+        "complexity": 2,
+        "collisionRisk": 1,
+        "score": 53
+      },
+      "state": "live_verification",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "merged",
+          "description": "Controllable High Lines bridge/runtime/tests are merged to main.",
+          "status": "passed",
+          "evidence": "PR #2098 merge f7917aae3b6c1e58c472fd73fbd088c08e21a9ca"
+        },
+        {
+          "id": "deploy",
+          "description": "Latest main Public Suite deployment completes.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "live",
+          "description": "Live High Lines route and controls are verified after deployment.",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "branch": "work/high-lines/agent-controls/20261006-r4",
+      "pullRequest": 2098,
+      "baseSha": "bcd32d7fd687427bda261f3f0a036c8e75084dfe",
+      "headSha": "0256d4cbb3799d85a8cee7865e0f08c74e460bc5",
+      "lease": null,
+      "tests": [
+        {
+          "name": "merge",
+          "status": "passed",
+          "evidence": "PR #2098 merged"
+        }
+      ],
+      "deployment": {
+        "state": "pending",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": "Latest main deployment is pending.",
+      "lastAction": "Merged PR #2098; latest main now contains controllable High Lines bridge.",
+      "nextAction": "Verify latest-main deploy and live High Lines control bridge.",
+      "evidence": [
+        "PR #2098"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T10:06:09Z",
+        "updatedAt": "2026-10-06T10:13:00Z",
+        "completedAt": null
+      }
+    },
+    {
+      "workItemId": "project-os.release-proof-v1",
+      "project": "platform",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 4,
+        "userImpact": 5,
+        "productionExposure": 5,
+        "unblockValue": 5,
+        "ageDays": 0,
+        "complexity": 4,
+        "collisionRisk": 1,
+        "score": 72
+      },
+      "state": "review",
+      "dependencies": [
+        "project-os.acceptance-manifests-v1"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "contract",
+          "description": "Release fingerprint includes exact source/build/bundle/data hashes.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "build",
+          "description": "Public Suite emits fingerprint.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "watchdog",
+          "description": "Deployment verifies exact live fingerprint and detects drift.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "integration",
+          "description": "Release-proof tests are integrated into Project OS.",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "branch": "work/platform/project-os-release-proof-v1/20261006-r2",
+      "pullRequest": 2101,
+      "baseSha": "f7917aae3b6c1e58c472fd73fbd088c08e21a9ca",
+      "headSha": "823dffdb1c1b519f747fcb3c9e8269c4935e5aad",
+      "lease": null,
+      "tests": [
+        {
+          "name": "exact-head CI",
+          "status": "running",
+          "evidence": "PR #2101"
+        }
+      ],
+      "deployment": {
+        "state": "not_applicable",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": "Exact-head CI is running.",
+      "lastAction": "Replayed release fingerprint/watchdog implementation on current main without queue collision.",
+      "nextAction": "Merge only after Project OS/build/deploy/security gates are green.",
+      "evidence": [
+        "PR #2101"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T10:09:02Z",
+        "updatedAt": "2026-10-06T10:13:00Z",
+        "completedAt": null
+      }
+    },
+    {
+      "workItemId": "games.pheno-hunter-core-r3",
+      "project": "games",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 3,
+        "userImpact": 3,
+        "productionExposure": 2,
+        "unblockValue": 4,
+        "ageDays": 0,
+        "complexity": 3,
+        "collisionRisk": 1,
+        "score": 47
+      },
+      "state": "review",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "core",
+          "description": "Deterministic Pheno Hunter engine/data/runtime tests pass.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "portfolio",
+          "description": "Core-only PR does not regress shared registries/workspace.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "release",
+          "description": "Security/build/release gates pass before registry integration.",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "branch": "work/games/pheno-hunter-core/20261006-r3",
+      "pullRequest": 2102,
+      "baseSha": "f7917aae3b6c1e58c472fd73fbd088c08e21a9ca",
+      "headSha": "91a48f8b0d010d368189c01c32f74937112b3f26",
+      "lease": null,
+      "tests": [
+        {
+          "name": "exact-head CI",
+          "status": "running",
+          "evidence": "PR #2102"
+        }
+      ],
+      "deployment": {
+        "state": "not_deployed",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": "Exact-head CI is queued.",
+      "lastAction": "Replayed project-contained Pheno Hunter core on latest main without stale shared registries.",
+      "nextAction": "Merge core only after exact-head gates pass; registry/release integration remains separate.",
+      "evidence": [
+        "PR #2102"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T10:09:20Z",
+        "updatedAt": "2026-10-06T10:13:00Z",
+        "completedAt": null
+      }
+    },
+    {
+      "workItemId": "legacy.dtf420-archive-readiness",
+      "project": "platform",
+      "ownerRepo": "dtfgenetics/Dtf420",
+      "priority": {
+        "severity": 2,
+        "userImpact": 1,
+        "productionExposure": 3,
+        "unblockValue": 3,
+        "ageDays": 0,
+        "complexity": 3,
+        "collisionRisk": 1,
+        "score": 31
+      },
+      "state": "blocked",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "migration-lanes",
+          "description": "All Dtf420 migration lanes are reviewed and unique value ported.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "route-ownership",
+          "description": "No migration-pending or required Dtf420-owned overlay routes block archive.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "integration-independence",
+          "description": "Production integration no longer requires Dtf420 overlay bytes.",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "branch": "work/platform/archive-readiness/20261006",
+      "pullRequest": 290,
+      "baseSha": "d2761d05ec70162eb2f4fd0cabdd11b2f8d273b8",
+      "headSha": "ff3851607b66796631bd4c715ed02e88c05ec98a",
+      "lease": null,
+      "tests": [
+        {
+          "name": "Dtf420 Verify",
+          "status": "running",
+          "evidence": "Dtf420 PR #290"
+        }
+      ],
+      "deployment": {
+        "state": "not_applicable",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": "Dtf420 still has migration-pending routes, Dtf420-owned overlay-live routes, and review-and-port-unique migration lanes.",
+      "lastAction": "Opened PR #290 to make archival readiness fail closed and machine-readable.",
+      "nextAction": "Complete migrations before repository archive; do not archive yet.",
+      "evidence": [
+        "dtfgenetics/Dtf420#290",
+        "docs/CONSOLIDATION_MIGRATION_QUEUE.json",
+        "configuration/route-ownership.json"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T10:11:54Z",
+        "updatedAt": "2026-10-06T10:13:00Z",
         "completedAt": null
       }
     }
