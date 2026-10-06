@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "registryId": "project-os.failure-memory-v1",
+  "entries": [
+    {
+      "fingerprint": "live-site-fetch:dtfseeds:network-unreachable",
+      "category": "external_network",
+      "rootCause": "GitHub runner could not reach dtfseeds.com and failed with ETIMEDOUT/ENETUNREACH before product verification executed.",
+      "occurrences": 1,
+      "firstSeenAt": "2026-10-06T09:58:56Z",
+      "lastSeenAt": "2026-10-06T09:58:56Z",
+      "affectedProjects": [
+        "thc-rpg"
+      ],
+      "successfulRepairs": [
+        "Retry the exact verifier after network recovery; do not change unrelated product code solely to clear a runner connectivity failure."
+      ],
+      "invalidatedWorkarounds": [
+        "Editing THC RPG code without evidence of a product defect."
+      ],
+      "references": [
+        "workflow-run:37446660909"
+      ]
+    },
+    {
+      "fingerprint": "pr-merge:stale-base:not-mergeable",
+      "category": "concurrency",
+      "rootCause": "An otherwise green Project OS PR diverged from main and overlapped a deployment workflow, causing GitHub to reject the merge as not mergeable.",
+      "occurrences": 1,
+      "firstSeenAt": "2026-10-06T10:18:00Z",
+      "lastSeenAt": "2026-10-06T10:18:00Z",
+      "affectedProjects": [
+        "project-os"
+      ],
+      "successfulRepairs": [
+        "Replay the coherent infrastructure slice on current main, preserve newer workflow changes, and exclude colliding queue mutations."
+      ],
+      "invalidatedWorkarounds": [
+        "Force-merging or overwriting current production workflow state."
+      ],
+      "references": [
+        "pull-request:#2085",
+        "pull-request:#2101"
+      ]
+    }
+  ]
+}
