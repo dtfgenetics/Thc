@@ -4,7 +4,7 @@ import {
   replaceShell,
 } from './lib/wordpress-shared-shell-reconcile.mjs';
 import { getWordPressSafeInlineScriptTag } from './lib/wordpress-safe-inline-script.mjs';
-import { SITEWIDE_HEADER_SCRIPT_TAG } from './lib/sitewide-header-template-v6.mjs';
+import { SITEWIDE_HEADER_SCRIPT_TAG, SITEWIDE_HEADER_STYLE_TAG, SITEWIDE_MOBILE_POLISH_STYLE_TAG } from './lib/sitewide-header-template-v6.mjs';
 
 const original=`
 <style id="dtf-commerce-archive-style">.shop{display:grid}</style>
@@ -50,6 +50,12 @@ assert.equal(Buffer.from(payload,'base64').toString('utf8'),originalSource);
 new Function(wrapper);
 new Function(Buffer.from(payload,'base64').toString('utf8'));
 
+for(const token of ['.dtf-global-icon{width:44px!important;height:44px!important', '.dtf-global-menu{min-width:44px!important;height:44px!important']){
+  assert.match(`${SITEWIDE_HEADER_STYLE_TAG}${SITEWIDE_MOBILE_POLISH_STYLE_TAG}`, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g,'\\for(const id of ['dtf-sitewide-header-v6-script','dtf-content-density-v1-script','dtf-sitewide-visual-repair-v2-script']){')));
+}
+assert.doesNotMatch(SITEWIDE_MOBILE_POLISH_STYLE_TAG,/\.dtf-global-icon\{width:(?:3[0-9]|4[0-3])px!important/);
+assert.doesNotMatch(SITEWIDE_MOBILE_POLISH_STYLE_TAG,/\.dtf-global-menu\{min-width:(?:3[0-9]|4[0-3])px!important/);
+
 for(const id of ['dtf-sitewide-header-v6-script','dtf-content-density-v1-script','dtf-sitewide-visual-repair-v2-script']){
   const scripts=[...SITEWIDE_HEADER_SCRIPT_TAG.matchAll(new RegExp(`<script\\b[^>]*id=["']${id}["'][^>]*>([\\s\\S]*?)<\\/script>`,'gi'))];
   assert.equal(scripts.length,1);
@@ -57,4 +63,4 @@ for(const id of ['dtf-sitewide-header-v6-script','dtf-content-density-v1-script'
   new Function(scripts[0][1]);
 }
 
-console.log(JSON.stringify({ok:true,scenarios:['bare-header-with-corrupted-owned-scripts','wordpress-safe-inline-script']}));
+console.log(JSON.stringify({ok:true,scenarios:['bare-header-with-corrupted-owned-scripts','wordpress-safe-inline-script','sitewide-header-44px-touch-targets']}));
