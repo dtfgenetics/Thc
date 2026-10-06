@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "sloId": "project-os.portfolio-slo-v1",
+  "targets": [
+    {
+      "id": "known-production-404s",
+      "metric": "knownProduction404s",
+      "operator": "eq",
+      "target": 0
+    },
+    {
+      "id": "critical-accessibility",
+      "metric": "criticalAccessibilityFindings",
+      "operator": "eq",
+      "target": 0
+    },
+    {
+      "id": "duplicate-active-repair-branches",
+      "metric": "duplicateActiveRepairBranches",
+      "operator": "eq",
+      "target": 0
+    },
+    {
+      "id": "encyclopedia-route-coverage",
+      "metric": "encyclopediaRoutesVerified",
+      "operator": "gte",
+      "target": 420
+    },
+    {
+      "id": "tool-route-coverage",
+      "metric": "toolRoutesVerified",
+      "operator": "gte",
+      "target": 23
+    },
+    {
+      "id": "project-os-main-green",
+      "metric": "canonicalMainGreen",
+      "operator": "eq",
+      "target": 1
+    },
+    {
+      "id": "release-fingerprint-visible",
+      "metric": "releaseFingerprintVisible",
+      "operator": "eq",
+      "target": 1
+    }
+  ]
+}
