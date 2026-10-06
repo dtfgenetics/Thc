@@ -11,7 +11,9 @@ const items=(queue.items||[])
   .flatMap(lesson=>(lesson.visualRoles||[])
     .filter(role=>role.status==='brief_ready_raster_artwork_needed')
     .map(role=>({...lesson,visualRole:role.role,visualOrdinal:role.ordinal})))
-  .sort((a,b)=>b.visualPriorityScore-a.visualPriorityScore||a.number-b.number||a.visualOrdinal-b.visualOrdinal);
+  // Spread early production across lessons and teaching roles instead of allowing
+  // one high-priority lesson to consume ten consecutive task slots.
+  .sort((a,b)=>a.visualOrdinal-b.visualOrdinal||b.visualPriorityScore-a.visualPriorityScore||a.number-b.number);
 
 fs.mkdirSync(outDir,{recursive:true});
 for(const name of fs.readdirSync(outDir)) if(/^batch-\d{3}\.(?:json|md)$/i.test(name)) fs.unlinkSync(path.join(outDir,name));
