@@ -3,7 +3,7 @@
 
 This renderer is intentionally deterministic and conservative:
 - reads the controlled visual-production queue;
-- renders only lessons whose raster artwork is still missing;
+- renders only missing lesson/visual-role raster candidates;
 - uses the complete controlled science-teaching layout-family set assigned by the queue;
 - preserves review boundaries: output is a candidate, never an approval.
 """
@@ -205,7 +205,7 @@ def render_environment(item,im,d):
     panel(d,(210,720,1390,890),"Evidence and target guard",gs[0] if gs else "Use measured response curves and local validation; equal setpoints can produce different tissue conditions or crop responses.",RED)
 
 def output_name(item):
-    return f"{item['lessonId']}_teaching-visual-candidate-v1.png"
+    return f"{item['lessonId']}_{int(item['visualOrdinal']):02d}_{item['visualRole']}.png"
 
 def main():
     ap=argparse.ArgumentParser()
@@ -213,8 +213,20 @@ def main():
     ap.add_argument('--manifest',default='')
     args=ap.parse_args()
     q=json.loads(QUEUE.read_text(encoding='utf-8'))
-    pending=[x for x in q.get('items',[]) if x.get('productionStatus')=='brief_ready_raster_artwork_needed']
-    pending.sort(key=lambda x:(-int(x.get('visualPriorityScore',0)),int(x.get('number',0))))
+    pending=[]
+    for lesson in q.get('items',[]):
+        for role in lesson.get('visualRoles',[]):
+            if role.get('status')!='brief_ready_raster_artwork_needed':
+                continue
+            task=dict(lesson)
+            task['visualRole']=role.get('role')
+            task['visualOrdinal']=role.get('ordinal')
+            task['teachingIntent']=role.get('teachingIntent')
+            task['productionBrief']=role.get('productionBrief')
+            task['altTextDraft']=role.get('altTextDraft')
+            task['captionDraft']=role.get('captionDraft')
+            pending.append(task)
+    pending.sort(key=lambda x:(int(x.get('visualOrdinal',99)),-int(x.get('visualPriorityScore',0)),int(x.get('number',0))))
     chosen=pending[:max(0,args.limit)]
     OUT.mkdir(parents=True,exist_ok=True)
     results=[]
@@ -236,6 +248,7 @@ def main():
         results.append({
           'lessonId':item['lessonId'],'number':item['number'],'title':item['title'],
           'visualFamily':item.get('visualFamily'),'visualPriorityScore':item.get('visualPriorityScore',0),
+          'visualRole':item.get('visualRole'),'visualOrdinal':item.get('visualOrdinal'),
           'path':str(path.relative_to(ROOT)).replace('\\','/'),'status':'produced_pending_asset_qa'
         })
     report={
