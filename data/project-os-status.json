@@ -1,141 +1,142 @@
 {
-  "schema": "dtf-project-os-status@1",
-  "generatedAt": "2026-10-05T01:55:00Z",
+  "schema": "dtf-project-os-status@2",
+  "generatedAt": "2026-10-06T02:35:00Z",
   "portfolioState": "release-closure",
   "canonicalRepositories": {
     "production": {
       "repo": "dtfgenetics/Thc",
-      "sha": "1ee6137059185709f2e22c5daab843b9a659949d",
-      "openPullRequests": 30
+      "sha": "473f572f494ce96a11e00e3533749ceebb45e9fa",
+      "openPullRequests": 18
     },
     "encyclopedia": {
       "repo": "dtfgenetics/thc-grow-hub",
-      "sha": "874d02b502061544e7cfc3dbc6d43bbecc43c654",
+      "sha": "48b05b31523012793c5558f59af01d8a7b63c0fb",
       "openPullRequests": 1
     },
     "academy": {
       "repo": "dtfgenetics/Thc-learning-courses-",
-      "sha": "ea7b3c7e6d62a51c1b37f332bacc85897d49e5aa",
+      "sha": "2ee9fe91c7da16eea6136eee064e6e2df08a3bda",
       "openPullRequests": 0
     },
     "tools": {
       "repo": "dtfgenetics/Tools",
-      "sha": "c4a7025316875d32028fa7530cb898b2c81c98ce",
-      "openPullRequests": 0
+      "sha": "49b6cd302a5131e1d0ac9cfcde7462b44b938431",
+      "openPullRequests": 1
     },
     "growDoc": {
       "repo": "dtfgenetics/Thc-dataset",
-      "sha": "797c2ca3b4b4ca60cebf82bc105d2be93c06a5e9",
-      "openPullRequests": 4
+      "sha": "493aee84f62235d40a1963b8649b127454bd5901",
+      "openPullRequests": 1
     }
   },
-  "lanes": {
-    "encyclopedia": {
-      "state": "release-infrastructure-closed",
-      "evidence": {
-        "canonicalRoutes": "420/420",
-        "topicHubs": "21/21",
-        "searchIndexesPublished": true,
-        "visitorVerificationPassed": true,
-        "volume03Visuals": "20/20 curated visuals persisted after retirement scrub"
-      },
-      "remaining": [
-        "independent science review",
-        "assessment rationale review",
-        "controlled promotion of additional teaching visuals"
-      ]
-    },
-    "tools": {
-      "state": "production-closed",
-      "evidence": {
-        "canonicalRoutes": 23,
-        "liveAvailabilityVerified": "23/23",
-        "canonicalMirrorPinned": "c4a7025316875d32028fa7530cb898b2c81c98ce",
-        "runtimeMimeClosure": "PR #1909 merged"
-      },
-      "remainingOperationalEnhancement": [
-        "Issue #90: optional event-driven Tools → Thc dispatch remains blocked on a least-privilege cross-repository credential; scheduled sync remains the verified recovery path"
-      ]
-    },
-    "growLens": {
-      "state": "integration-verification",
-      "active": [
-        "PR #1914 current-main canonical observation producer replay"
+  "workQueue": [
+    {
+      "project": "genetics",
+      "work_item_id": "seeds-seo-contract",
+      "owner_repo": "dtfgenetics/Thc",
+      "priority": "P1",
+      "state": "ci",
+      "branch": "work/genetics/seeds-seo-contract/20261005-chatgpt",
+      "pr": 2040,
+      "base_sha": "1b770998cb3dde5ab39103b00d7ca6dc82b0de83",
+      "head_sha": "a90485c62ec6ed647629f848f1b7dd6b4dd2a25c",
+      "dependencies": [],
+      "lease_worker": "project-os",
+      "tests": [
+        "Genetics Library Coherence CI",
+        "Parallel Project Safety",
+        "CodeQL Security"
       ],
-      "contract": "thc-cultivation-record@1 plant-observation"
+      "deployment_live_state": "not-merged",
+      "blocker": "fresh CI required after genetics lane registration",
+      "last_action": "registered genetics ownership lane",
+      "next_action": "merge with squash only after exact-head checks are green",
+      "updated_at": "2026-10-06T02:33:37Z"
     },
-    "releaseObservability": {
-      "state": "merged",
-      "evidence": [
-        "PR #1911 merged",
-        "machine-readable release ledger",
-        "SHA-256 artifacts",
-        "GitHub artifact attestations"
-      ]
-    },
-    "security": {
-      "state": "enabled",
-      "evidence": [
-        "CodeQL security-extended on canonical repos",
-        "Python coverage added to Thc and Academy"
-      ]
-    },
-    "webQuality": {
-      "state": "merged",
-      "evidence": [
-        "PR #1912 measured Lighthouse/accessibility regression gates",
-        "measured production baseline rather than invented thresholds"
-      ]
-    },
-    "growDoc": {
-      "state": "evidence-expansion",
-      "openPullRequests": [
-        419,
-        420,
-        422,
-        423
+    {
+      "project": "website",
+      "work_item_id": "editorial-title-hierarchy-replay",
+      "owner_repo": "dtfgenetics/Thc",
+      "priority": "P2",
+      "state": "ci",
+      "branch": "work/platform/editorial-title-hierarchy/20261005-r2",
+      "pr": 2057,
+      "base_sha": "66098512901a47ad74549e440bb590b98ec10647",
+      "head_sha": "2d885fd123bb177e70c0fedd2e07394b74906de7",
+      "dependencies": [],
+      "lease_worker": "project-os",
+      "tests": [
+        "Repository Convergence CI",
+        "Responsive Layout CI",
+        "CodeQL Security"
       ],
-      "remaining": [
-        "reference-media depth",
-        "hard negative/look-alike evaluation data",
-        "live visual API verifier #1880"
-      ]
+      "deployment_live_state": "not-merged",
+      "blocker": "CodeQL still running at last reconciliation",
+      "last_action": "replayed validated #2037 files onto current main",
+      "next_action": "merge after all exact-head checks are green",
+      "updated_at": "2026-10-06T02:32:35Z"
     },
-    "academy": {
-      "state": "machine-layer-complete-human-validation-pending",
-      "machineOpenPullRequests": 0,
-      "humanGates": [
-        "SME review",
-        "manual accessibility review",
-        "pilot cohort",
-        "item analysis",
-        "practical assessor calibration",
-        "standard setting",
-        "production authorization"
-      ]
+    {
+      "project": "website",
+      "work_item_id": "yellow-leaves-metadata-replay",
+      "owner_repo": "dtfgenetics/Thc",
+      "priority": "P2",
+      "state": "ci",
+      "branch": "work/platform/yellow-leaves-metadata/20261005-r2",
+      "pr": 2060,
+      "base_sha": "473f572f494ce96a11e00e3533749ceebb45e9fa",
+      "head_sha": "4ca63022ab86a4bf6de64f27571641e77a916cbc",
+      "dependencies": [],
+      "lease_worker": "project-os",
+      "tests": [
+        "Validate DTFSeeds WordPress Content",
+        "WordPress Content Resilience Qualification",
+        "CodeQL Security"
+      ],
+      "deployment_live_state": "not-merged",
+      "blocker": "fresh exact-head CI in progress",
+      "last_action": "replayed validated #2041 files onto current main",
+      "next_action": "merge after all exact-head checks are green",
+      "updated_at": "2026-10-06T02:33:16Z"
     },
-    "games": {
-      "state": "completion-factory",
-      "remaining": [
-        "engine-agent readiness",
-        "browser playtests",
-        "mobile/touch QA",
-        "live release verification",
-        "salvage Seed Man and Burn Buds assets through bounded current-main work"
-      ]
-    },
-    "migrationRepos": {
-      "Dtf420": {
-        "state": "archive-candidate",
-        "openPullRequests": 0,
-        "archiveAction": "requires repository administration permission"
-      },
-      "dtf-thc-hub": {
-        "state": "archive-candidate",
-        "openPullRequests": 0,
-        "archiveAction": "requires repository administration permission"
-      }
+    {
+      "project": "tools-integration",
+      "work_item_id": "atlas-core-sync-replay",
+      "owner_repo": "dtfgenetics/Thc",
+      "priority": "P1",
+      "state": "ci",
+      "branch": "work/platform/atlas-core-sync/20261005-r2",
+      "pr": 2063,
+      "base_sha": "473f572f494ce96a11e00e3533749ceebb45e9fa",
+      "head_sha": "3e4b64efbf2f1c09656e5d02f23dcb16f6765ad2",
+      "dependencies": [
+        "dtfgenetics/Tools@49b6cd302a5131e1d0ac9cfcde7462b44b938431"
+      ],
+      "lease_worker": "project-os",
+      "tests": [
+        "Canonical tool mirror guard",
+        "Atlas Integration Mirror CI",
+        "Responsive Layout CI",
+        "CodeQL Security"
+      ],
+      "deployment_live_state": "not-merged",
+      "blocker": "fresh exact-head CI required",
+      "last_action": "replayed canonical Tools revision pin on current main",
+      "next_action": "merge after exact-head mirror and release checks pass",
+      "updated_at": "2026-10-06T02:34:03Z"
     }
+  ],
+  "releaseTargets": {
+    "encyclopedia": "420-route release lane remains subject to current owner repo verification",
+    "tools": "live-route verification and production mirror synchronization remain active",
+    "growLens": "canonical scientific observation contract work must be reconciled after closed PR #2046",
+    "releaseObservability": "artifact-attestation lane remains active",
+    "security": "CodeQL enabled; continue exact-head enforcement",
+    "webQuality": "measured responsive/accessibility/Lighthouse gates remain active",
+    "growDoc": "reference/evaluation evidence expansion remains active",
+    "academy": "human validation/pilot remains required",
+    "games": "engine-agent and browser-interaction playtest progression remains active",
+    "archival": "Dtf420/dtf-thc-hub archive only after migration verification"
   },
   "operatingRule": "Optimize for closed blockers, verified live routes, and retired stale branches; do not treat merge success as production success."
 }
