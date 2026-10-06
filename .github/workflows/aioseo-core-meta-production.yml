@@ -2,6 +2,13 @@ name: Reconcile Core DTF SEO Metadata
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - site/wordpress/seo/core-page-meta.json
+      - scripts/validate-core-page-meta.mjs
+      - scripts/reconcile-aioseo-core-meta.mjs
+      - .github/workflows/aioseo-core-meta-production.yml
   push:
     branches: [main]
     paths:
@@ -18,7 +25,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate canonical core metadata
+        run: node scripts/validate-core-page-meta.mjs
+      - name: Validate reconciler syntax
+        run: node --check scripts/reconcile-aioseo-core-meta.mjs
+
   reconcile:
+    if: github.event_name != 'pull_request'
+    needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 25
     environment: production
@@ -45,18 +67,9 @@ jobs:
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/reconcile-aioseo-core-meta.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
-          node - <<'NODE'
-          const fs = require('node:fs');
-          const m = JSON.parse(fs.readFileSync('site/wordpress/seo/core-page-meta.json','utf8'));
-          if (!Array.isArray(m.pages) || m.pages.length !== 3) throw new Error('Expected three canonical core metadata records');
-          for (const p of m.pages) {
-            if (!p.slug || !p.route || !p.title || !p.description) throw new Error('Incomplete metadata record');
-            if (p.title.length > 60) throw new Error(p.slug + ' title too long');
-            if (p.description.length < 80 || p.description.length > 160) throw new Error(p.slug + ' description length invalid: ' + p.description.length);
-          }
-          NODE
+          node scripts/validate-core-page-meta.mjs
 
-      - name: Reconcile Home, Learn, and Courses metadata
+      - name: Reconcile canonical core page metadata
         shell: bash
         run: |
           set +e
@@ -139,6 +152,6 @@ jobs:
                 `Commit: \`${context.sha}\``,
                 `Result: **${process.env.STATUS}**`,
                 '',
-                'Source-controls concise Home, Learn, and Courses metadata, round-trips existing AIOSEO records, rolls back on unrelated critical-field drift, purges LiteSpeed, and verifies visitor-facing description/social tags.'
+                'Source-controls concise metadata for Home, Learn, Courses, Community, Gallery, About, and Contact; round-trips existing AIOSEO records, rolls back on unrelated critical-field drift, purges LiteSpeed, and verifies visitor-facing description/social tags.'
               ].join('\n')
             });
