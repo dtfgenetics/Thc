@@ -14,12 +14,34 @@ export const SITEWIDE_HEADER_MARKER = `data-dtf-shell="header-${SITEWIDE_HEADER_
 export const SITEWIDE_HEADER_REFERENCE = 'site/wordpress/assets/design-references/approved-sitewide-header-reference.json';
 
 export const SITEWIDE_HEADER_STYLE_TAG = `${V5_BASE_STYLE_TAG}<style id="dtf-sitewide-header-v6-style">
-.dtf-global-nav{gap:3px!important}
-.dtf-global-nav a{padding-inline:10px!important}
-@media(max-width:1320px){.dtf-global-nav a{padding-inline:8px!important;font-size:.86rem!important}}
-@media(max-width:1120px){.dtf-global-nav{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
-@media(max-width:700px){.dtf-global-nav{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-@media(max-width:480px){.dtf-global-nav{grid-template-columns:1fr!important}}
+/* V6 presentation correction: keep the canonical IA while reducing header bulk and visual noise. */
+.dtf-global-header{box-shadow:0 6px 20px rgba(0,0,0,.14)!important}
+.dtf-global-header__inner{min-height:74px!important;grid-template-columns:minmax(126px,158px) minmax(0,1fr) auto!important;gap:14px!important}
+.dtf-global-brand{min-width:126px!important}
+.dtf-global-brand__dtf{font-size:2.15rem!important;text-shadow:none!important}
+.dtf-global-brand__genetics{margin-top:6px!important;font-size:.78rem!important;letter-spacing:.16em!important}
+.dtf-global-brand__tag{display:none!important}
+.dtf-global-tagline{display:none!important}
+.dtf-global-nav{gap:2px!important}
+.dtf-global-nav a{min-height:42px!important;padding:9px 9px!important;border-radius:8px!important;font-size:.82rem!important}
+.dtf-global-nav a[aria-current="page"],.dtf-global-nav a.is-active{box-shadow:inset 0 0 0 1px rgba(117,220,125,.13)!important}
+.dtf-global-actions{gap:1px!important}
+.dtf-global-icon{width:38px!important;height:38px!important;border-radius:8px!important}
+.dtf-global-icon svg{width:20px!important;height:20px!important}
+@media(max-width:1320px){
+  .dtf-global-header__inner{grid-template-columns:minmax(118px,146px) minmax(0,1fr) auto!important;gap:9px!important}
+  .dtf-global-nav a{padding-inline:7px!important;font-size:.78rem!important}
+}
+@media(max-width:1120px){
+  .dtf-global-header__inner{min-height:66px!important}
+  .dtf-global-nav{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
+@media(max-width:700px){
+  .dtf-global-nav{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:480px){
+  .dtf-global-nav,.dtf-global-nav.is-open{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
 </style>${SITEWIDE_CONTENT_DENSITY_STYLE_TAG}${SITEWIDE_VISUAL_REPAIR_STYLE_TAG}`;
 
 export const SITEWIDE_MOBILE_POLISH_STYLE_TAG = String.raw`<style id="dtf-sitewide-mobile-polish-v1-style">
