@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-06T09:29:00Z",
+  "updatedAt": "2026-10-06T09:34:00Z",
   "items": [
     {
       "workItemId": "project-os.queue-contract-v1",
@@ -106,7 +106,7 @@
         }
       ],
       "branch": "work/platform/project-os-dod-v1/20261006",
-      "pullRequest": null,
+      "pullRequest": 2075,
       "baseSha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
       "headSha": null,
       "lease": null,
@@ -133,6 +133,81 @@
       "timestamps": {
         "createdAt": "2026-10-06T09:24:00Z",
         "updatedAt": "2026-10-06T09:24:00Z",
+        "completedAt": null
+      }
+    },
+    {
+      "workItemId": "project-os.acceptance-manifests-v1",
+      "project": "platform",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 3,
+        "userImpact": 4,
+        "productionExposure": 5,
+        "unblockValue": 5,
+        "ageDays": 0,
+        "complexity": 3,
+        "collisionRisk": 1,
+        "score": 69
+      },
+      "state": "review",
+      "dependencies": [
+        "project-os.definitions-of-done-v1"
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "domains",
+          "description": "Canonical acceptance domains cover Encyclopedia, Tools, Games, Academy, GrowLens, critical assets, and release infrastructure.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "sources",
+          "description": "Acceptance domains point to existing canonical registries/targets.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "fixtures",
+          "description": "Duplicate domains, missing validators/sources, and invalid live requirements are rejected.",
+          "status": "pending",
+          "evidence": null
+        },
+        {
+          "id": "integration",
+          "description": "Acceptance-manifest verification is part of verify:project-os.",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "branch": "work/platform/project-os-dod-v1/20261006",
+      "pullRequest": 2075,
+      "baseSha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
+      "headSha": null,
+      "lease": null,
+      "tests": [
+        {
+          "name": "project-os-acceptance",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "deployment": {
+        "state": "not_applicable",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": null,
+      "lastAction": "Added registry-backed acceptance manifests, validator, negative fixtures, and Project OS gate integration.",
+      "nextAction": "Require exact-head CI before promoting acceptance evidence.",
+      "evidence": [
+        "data/project-os/acceptance-manifests.json",
+        "scripts/validate-project-os-acceptance-manifests.mjs",
+        "scripts/test-project-os-acceptance-manifests.mjs"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-06T09:34:00Z",
+        "updatedAt": "2026-10-06T09:34:00Z",
         "completedAt": null
       }
     }
