@@ -107,7 +107,7 @@
     "verify:encyclopedia-extensions": "node scripts/validate-encyclopedia-extension-registry.mjs && npm run test:encyclopedia-420plus-extension",
     "verify:encyclopedia-content-control": "npm run verify:encyclopedia-extensions && node scripts/validate-encyclopedia-content-control.mjs",
     "verify:encyclopedia-content-strict": "node scripts/validate-encyclopedia-content-control.mjs --strict-quality --strict-assessment",
-    "build:encyclopedia-evidence": "node scripts/build-encyclopedia-evidence-tracking.mjs",
+    "build:encyclopedia-evidence": "npm run build:encyclopedia-source-queue && node scripts/build-encyclopedia-evidence-tracking.mjs",
     "verify:encyclopedia-evidence": "npm run build:encyclopedia-evidence && node scripts/validate-encyclopedia-evidence-tracking.mjs",
     "build:encyclopedia-assessment-rationales": "node scripts/build-encyclopedia-assessment-rationales.mjs",
     "verify:encyclopedia-assessment-rationales": "npm run build:encyclopedia-assessment-rationales && node scripts/validate-encyclopedia-assessment-rationales.mjs",
