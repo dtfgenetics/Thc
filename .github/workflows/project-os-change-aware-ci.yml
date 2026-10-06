@@ -13,9 +13,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  plan-and-verify:
+  plan:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    outputs:
+      files: ${{ steps.changes.outputs.files }}
+      broad: ${{ steps.plan.outputs.broad }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -34,7 +36,42 @@ jobs:
           head="${{ github.event.pull_request.head.sha || github.sha }}"
           files="$(git diff --name-only "$base...$head" | paste -sd, -)"
           echo "files=$files" >> "$GITHUB_OUTPUT"
-      - name: Print deterministic CI plan
-        run: node scripts/run-project-os-ci-plan.mjs --files "${{ steps.changes.outputs.files }}"
-      - name: Run staged Project OS CI plan
-        run: node scripts/run-project-os-ci-plan.mjs --files "${{ steps.changes.outputs.files }}" --execute
+      - name: Build deterministic CI plan
+        id: plan
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/run-project-os-ci-plan.mjs --files "${{ steps.changes.outputs.files }}" | tee "$RUNNER_TEMP/project-os-plan.json"
+          broad="$(node -e "const p=require(process.argv[1]);process.stdout.write(String((p.broadChecks||[]).length>0))" "$RUNNER_TEMP/project-os-plan.json")"
+          echo "broad=$broad" >> "$GITHUB_OUTPUT"
+
+  narrow:
+    needs: plan
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run narrow changed-area checks
+        run: node scripts/run-project-os-ci-plan.mjs --files "${{ needs.plan.outputs.files }}" --stage narrow --execute
+
+  broad:
+    needs: [plan, narrow]
+    if: needs.plan.outputs.broad == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run broad checks in a clean workspace
+        run: node scripts/run-project-os-ci-plan.mjs --files "${{ needs.plan.outputs.files }}" --stage broad --execute
