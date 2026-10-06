@@ -73,3 +73,4 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(`Encyclopedia visual queue PASS: ${items.length}/${registryState.totalCount} lessons enforce 8-10 raster educational visuals with distinct roles; all produced assets remain review-pending and no artwork is misclassified as approved.`);
+
