@@ -72,7 +72,11 @@ const rows = (projects.projects || []).map(project => {
   const repository = repositoryByName.get(project.repo) || null;
   const contract = project.repo === externalContracts.controlRepository
     ? { mode: 'local', path: null }
-    : externalContractByRepo.get(project.repo) || null;
+    : (!project.repo || project.status === 'drive-only')
+      ? { mode: 'non-github', path: null }
+      : (repository?.status === 'archive_ready' || project.status === 'archive-ready')
+        ? { mode: 'archive-only', path: null }
+        : externalContractByRepo.get(project.repo) || null;
   return {
     id: project.id,
     name: project.name,
