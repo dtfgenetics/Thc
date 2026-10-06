@@ -57,7 +57,7 @@ let zoom = 1;
 let resetArmed = false;
 let resetTimer = null;
 
-const HIGH_LINES_AGENT_VERSION = 'high-lines-observable-v1';
+const HIGH_LINES_AGENT_VERSION = 'high-lines-controllable-v1';
 
 function highLinesAgentSnapshot() {
   if (!data || !state) {
@@ -66,16 +66,76 @@ function highLinesAgentSnapshot() {
       gameId: 'high-lines',
       ready: false,
       phase: 'loading',
-      capabilities: ['snapshot']
+      regions: [],
+      legalActions: [],
+      capabilities: ['snapshot', 'legal-actions']
     };
   }
-  return createAgentObservation(state, data);
+  const observation = createAgentObservation(state, data);
+  const scene = currentScene();
+  return {
+    ...observation,
+    version: HIGH_LINES_AGENT_VERSION,
+    regions: scene.regions.map((id) => ({ id, colorId: state.fills?.[id] ?? null })),
+    legalActions: [
+      'select-color',
+      'fill-region',
+      ...(state.undoStack.length ? ['undo'] : []),
+      'load-code',
+      'new-scene',
+      'reset'
+    ],
+    capabilities: ['snapshot', 'legal-actions']
+  };
+}
+
+function highLinesAgentSelectColor(colorId) {
+  const normalized = String(colorId ?? '');
+  const button = [...ui.palette.querySelectorAll('button[data-color]')].find((candidate) => candidate.dataset.color === normalized);
+  if (!button) throw new Error(`Unsupported High Lines color: ${colorId}`);
+  button.click();
+  return true;
+}
+
+function highLinesAgentFillRegion(regionId) {
+  const normalized = String(regionId ?? '');
+  const region = [...ui.art.querySelectorAll('[data-region]')].find((candidate) => candidate.dataset.region === normalized);
+  if (!region) throw new Error(`Unsupported High Lines region: ${regionId}`);
+  region.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  return true;
+}
+
+function highLinesAgentLoadCode(code) {
+  const normalized = normalizeSceneCode(code);
+  if (!isValidSceneCode(normalized)) throw new Error('A six-character High Lines scene code is required.');
+  ui.code.value = normalized;
+  ui.code.dispatchEvent(new Event('input', { bubbles: true }));
+  ui.code.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+  return true;
+}
+
+function highLinesAgentUndo() {
+  if (ui.undo.disabled) return false;
+  ui.undo.click();
+  return true;
+}
+
+function highLinesAgentReset() {
+  ui.reset.click();
+  if (resetArmed) ui.reset.click();
+  return true;
 }
 
 function installHighLinesObservableAgentBridge() {
   const api = Object.freeze({
     version: HIGH_LINES_AGENT_VERSION,
-    snapshot: highLinesAgentSnapshot
+    snapshot: highLinesAgentSnapshot,
+    selectColor: highLinesAgentSelectColor,
+    fillRegion: highLinesAgentFillRegion,
+    undo: highLinesAgentUndo,
+    loadCode: highLinesAgentLoadCode,
+    newScene: () => { ui.newScene.click(); return true; },
+    reset: highLinesAgentReset
   });
   Object.defineProperty(globalThis, '__HIGH_LINES_AGENT__', {
     value: api,
@@ -115,7 +175,8 @@ function restoreExperience(payload, sourceData) {
   if (!scene) throw new Error('Saved High Lines scene no longer exists.');
   const paletteIds = new Set(sourceData.palette.map((color) => color.id));
   const regionIds = new Set(scene.regions);
-  const hiddenIds = new Set(scene.hiddenObjects.map((item) => item.id));
+  const hiddenIds = new Set();
+  for (const item of scene.hiddenObjects) hiddenIds.add(item.id);
   if (payload.selectedColorId != null) {
     if (!paletteIds.has(payload.selectedColorId)) throw new Error('Saved High Lines color is invalid.');
     next = selectColor(next, payload.selectedColorId, sourceData);
