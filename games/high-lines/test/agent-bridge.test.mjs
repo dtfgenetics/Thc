@@ -10,7 +10,7 @@ import {
 const data = JSON.parse(fs.readFileSync(new URL('../data/scenes.json', import.meta.url), 'utf8'));
 const runtime = fs.readFileSync(new URL('../../../site/public-route-patch/games/high-lines/runtime.mjs', import.meta.url), 'utf8');
 
-assert.match(runtime, /high-lines-observable-v1/);
+assert.match(runtime, /high-lines-controllable-v1/);
 assert.match(runtime, /__HIGH_LINES_AGENT__/);
 assert.match(runtime, /snapshot:\s*highLinesAgentSnapshot/);
 assert.doesNotMatch(runtime, /__HIGH_LINES_AGENT__[\s\S]{0,1000}(?:fillRegion|findHiddenObject|selectColor|undoFill)\s*:/);
