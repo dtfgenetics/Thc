@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "baselineId": "project-os.regression-baseline-v1",
+  "minimums": {
+    "encyclopediaLessons": 420,
+    "toolRegistryEntries": 25,
+    "gameRegistryEntries": 30,
+    "publicApps": 59
+  },
+  "sources": {
+    "encyclopediaCatalog": "content/encyclopedia/catalog.json",
+    "toolRegistry": "data/tool-execution-registry.json",
+    "gameRegistry": "data/game-registry-v2.json",
+    "publicApps": "site/deployment/public-apps.json",
+    "sitemap": "site/public-route-patch/sitemap.xml"
+  }
+}
