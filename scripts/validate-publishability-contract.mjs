@@ -184,7 +184,7 @@ if (!learningV3PublisherSource.includes('already matches desired stored state; s
 if (!educationLiveSource) {
   contractErrors.push('Education release is missing the anonymous production verification step')
 } else {
-  for (const semantic of ['Teaching Healthy Cultivation', 'Learn in a sequence that makes the plant easier to understand.', 'Learn the plant as a connected system.', 'Plant Health & IPM', 'Cultivation Science', 'Symptom Differentials', 'Printable Field Tools', 'Evidence & Sources']) {
+  for (const semantic of ['Teaching Healthy Cultivation', 'Learn in a sequence that makes the plant easier to understand.', 'Learn the plant as one connected system.', 'Plant Health & IPM', 'Cultivation Science', 'Symptom Differentials', 'Printable Field Tools', 'Evidence & Sources']) {
     if (!educationLiveSource.includes(semantic)) contractErrors.push(`Education anonymous Learn verification is missing visible semantic: ${semantic}`)
   }
   if (educationLiveSource.includes('data-dtf-layout=') || educationLiveSource.includes('data-dtf-learning-map=') || educationLiveSource.includes('data-dtf-learning-expanded-reference=')) contractErrors.push('Education anonymous Learn verification again requires private WordPress ownership attributes')
