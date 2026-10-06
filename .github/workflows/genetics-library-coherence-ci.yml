@@ -6,6 +6,7 @@ on:
       - 'data/genetics/**'
       - 'site/wordpress/pages/seeds.html'
       - 'site/wordpress/pages/shop.html'
+      - 'site/wordpress/seo/genetics-page-meta.json'
       - 'site/wordpress/products/genetics.json'
       - 'site/wordpress/products/seed-line-catalog.json'
       - 'site/wordpress/products/genetics-cdn-identities.json'
@@ -14,6 +15,8 @@ on:
       - 'scripts/validate-genetics-commerce.mjs'
       - 'scripts/validate-genetics-library-coherence.mjs'
       - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
+      - 'scripts/reconcile-aioseo-core-meta.mjs'
+      - 'scripts/verify-wordpress-genetics-library-production.mjs'
       - '.github/workflows/genetics-library-coherence-ci.yml'
       - '.github/workflows/wordpress-genetics-library-production.yml'
       - '.github/workflows/wordpress-genetics-line-pages-production.yml'
@@ -39,6 +42,8 @@ jobs:
           set -euo pipefail
           node --check scripts/validate-genetics-library-coherence.mjs
           node --check scripts/publish-wordpress-genetics-library-cdn.mjs
+          node --check scripts/reconcile-aioseo-core-meta.mjs
+          node --check scripts/verify-wordpress-genetics-library-production.mjs
           node scripts/validate-genetics-catalog.mjs
           node scripts/validate-genetics-commerce.mjs
           node scripts/validate-genetics-library-coherence.mjs
@@ -49,6 +54,8 @@ jobs:
           set -euo pipefail
           grep -Fq 'Publish authoritative genetics library and reviewed strain cards' .github/workflows/wordpress-genetics-library-production.yml
           grep -Fq 'node scripts/validate-genetics-library-coherence.mjs' .github/workflows/wordpress-genetics-library-production.yml
+          grep -Fq 'CORE_META_PATH: site/wordpress/seo/genetics-page-meta.json' .github/workflows/wordpress-genetics-library-production.yml
+          grep -Fq 'reconcile-aioseo-core-meta.mjs' .github/workflows/wordpress-genetics-library-production.yml
           grep -Fq 'Legacy two-line publisher is retained only as historical/compatibility code.' .github/workflows/wordpress-genetics-line-pages-production.yml
           ! grep -Fq 'APPLY_GENETICS_LINE_PAGES' .github/workflows/wordpress-genetics-line-pages-production.yml
           ! grep -Fq 'WP_API_PASSWORD' .github/workflows/wordpress-genetics-line-pages-production.yml

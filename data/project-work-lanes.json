@@ -122,6 +122,18 @@
         "scripts/fetch-ncbi-"
       ],
       "description": "Scientific research, bioinformatics, public-dataset provenance, and research ingestion tooling."
+    },
+    "genetics": {
+      "prefixes": [
+        "data/genetics/",
+        "site/wordpress/genetics/",
+        "site/public-route-patch/genetics/",
+        "site/wordpress/seo/genetics-page-meta.json",
+        "scripts/validate-genetics-",
+        "scripts/verify-wordpress-genetics-",
+        "scripts/publish-wordpress-genetics-"
+      ],
+      "description": "Genetics Library, seed catalog, breeder/pedigree, and genetics-owned publication/SEO validation work."
     }
   }
 }

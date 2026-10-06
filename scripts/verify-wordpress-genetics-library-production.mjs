@@ -8,13 +8,19 @@ const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$
 const username = process.env.WP_API_USERNAME || '';
 const password = process.env.WP_API_PASSWORD || '';
 const catalogPath = process.env.SEED_LINE_CATALOG || 'site/wordpress/products/seed-line-catalog.json';
+const metadataPath = process.env.GENETICS_META_PATH || 'site/wordpress/seo/genetics-page-meta.json';
 const reportPath = process.env.GENETICS_VERIFY_REPORT || '/tmp/wordpress-genetics-production/genetics-production-verification.json';
 
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required.');
 
 const catalog = JSON.parse(await fs.readFile(catalogPath, 'utf8'));
+const metadataManifest = JSON.parse(await fs.readFile(metadataPath, 'utf8'));
+const seedsMeta = Array.isArray(metadataManifest?.pages) ? metadataManifest.pages.find((page) => page.slug === 'seeds') : null;
 if (catalog?.schemaVersion !== 1 || !Array.isArray(catalog.lines) || catalog.lines.length === 0) {
   throw new Error('Seed-line catalog is missing or invalid.');
+}
+if (!seedsMeta?.description || seedsMeta.route !== '/seeds/') {
+  throw new Error('Canonical Seeds metadata record is missing or invalid.');
 }
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
@@ -115,6 +121,7 @@ const report = {
   generatedAt: new Date().toISOString(),
   siteUrl,
   catalogPath,
+  metadataPath,
   lineCount: catalog.lines.length,
   authoritativeRest: { status: 'pending', seedsPageId: null, pages: [] },
   publicConvergence: { status: 'pending', pages: [] },
@@ -177,6 +184,19 @@ try {
   report.authoritativeRest.error = error?.message || String(error);
   await persistReport();
   throw error;
+}
+
+function extractPublicMeta(html) {
+  const meta = { description: '', ogDescription: '', twitterDescription: '' };
+  for (const tag of String(html).match(/<meta\b[^>]*>/gi) || []) {
+    const name = tag.match(/name=["']([^"']+)["']/i)?.[1]?.toLowerCase() || '';
+    const property = tag.match(/property=["']([^"']+)["']/i)?.[1]?.toLowerCase() || '';
+    const content = tag.match(/content=["']([^"']*)["']/i)?.[1] || '';
+    if (name === 'description') meta.description = content;
+    if (property === 'og:description') meta.ogDescription = content;
+    if (name === 'twitter:description') meta.twitterDescription = content;
+  }
+  return meta;
 }
 
 function cacheEvidence(response) {
@@ -253,6 +273,13 @@ async function waitForPublicPage(path, required, minImages, attempts, delayMs) {
 try {
   const seedsBody = await waitForPublicPage('/seeds/', 'data-dtf-genetics-structure="release-first-v2"', catalog.lines.length, 12, 10_000);
   if (!seedsBody.includes('Current release projects') || !seedsBody.includes('dtf-genetics-library-disclosure')) throw new Error('Converged public /seeds/ is missing the release-first visual hierarchy.');
+  const publicMeta = extractPublicMeta(seedsBody);
+  for (const [field, value] of Object.entries(publicMeta)) {
+    if (value !== seedsMeta.description) {
+      throw new Error(`Converged public /seeds/ ${field} does not match canonical genetics metadata. expected=${JSON.stringify(seedsMeta.description)} observed=${JSON.stringify(value)}`);
+    }
+  }
+  report.publicConvergence.seedsMetadata = { ...publicMeta, expected: seedsMeta.description, verified: true };
   for (const line of catalog.lines) {
     if (!seedsBody.includes(`/seeds/${line.slug}/`)) throw new Error(`Converged public /seeds/ is missing /seeds/${line.slug}/.`);
   }
