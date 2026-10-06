@@ -21,7 +21,7 @@ const bannedPublicPhrases = [
 const routes = [
   {
     key: 'home', path: '/', minimumText: 900,
-    requiredText: ['Genetics first. Learn the plant behind the pack.', 'Blue Mango', 'Blue Bubblegum', 'Teaching Healthy Cultivation'],
+    requiredText: ['Genetics, cultivation education, and grow tools in one place.', 'Blue Mango', 'Blue Bubblegum', 'Teaching Healthy Cultivation'],
     requiredLinks: ['/seeds/', '/learn/', '/tools/', '/games/', '/community/', '/shop/']
   },
   {
@@ -32,7 +32,12 @@ const routes = [
   {
     key: 'learn', path: '/learn/', minimumText: 1200,
     requiredText: ['Learn in a sequence that makes the plant easier to understand.', 'Plant Biology & Anatomy', 'Environment & VPD', 'Plant Health & IPM'],
-    requiredLinks: ['/learn/start-here/', '/learn/academy/', '/learn/encyclopedia/', '/learn/infographics/']
+    requiredLinks: ['/learn/start-here/', '/courses/', '/learn/encyclopedia/', '/learn/infographics/']
+  },
+  {
+    key: 'courses', path: '/courses/', minimumText: 1500,
+    requiredText: ['Professional Cannabis Cultivation Education', 'Cultivation Technician I', 'Certification roadmap'],
+    requiredLinks: ['/learn/', '/learn/learning-hub/cultivation-technician-i/safety-responsible-practice-cultivation-workflows/']
   },
   {
     key: 'shop', path: '/shop/', minimumText: 250,
