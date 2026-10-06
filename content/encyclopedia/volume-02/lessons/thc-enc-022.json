@@ -24,32 +24,39 @@
   "coreScience": [
     "A cultivar or strain name is not a complete identity. A controlled seed record combines the supplied name with source, breeder or institution, parentage claim, generation, production date if known, receipt date, quantity, package identifiers, and an internally assigned lot ID. Genetic or chemical verification, when available, is stored as evidence rather than substituted for the original supplied information.",
     "Chain of custody matters because lots are opened, sampled, divided, transferred, tested, planted, returned, or discarded. Each event can introduce labeling error, moisture exposure, contamination, or selection bias. A child container must retain the parent lot ID and receive its own unique container or aliquot ID.",
-    "A useful identity system records uncertainty. Terms such as 'unverified supplied pedigree,' 'open-pollinated,' 'mixed lot,' or 'source not documented' are more accurate than inventing certainty. When two lots carry the same commercial name, keep them separate until evidence supports combining their records."
+    "A useful identity system records uncertainty. Terms such as 'unverified supplied pedigree,' 'open-pollinated,' 'mixed lot,' or 'source not documented' are more accurate than inventing certainty. When two lots carry the same commercial name, keep them separate until evidence supports combining their records.",
+    "Traceability also protects the interpretation of phenotype and test data. When a seed lot is subdivided, each aliquot inherits the parent-lot identity but can accumulate its own exposure history, sampling bias, storage conditions, and test results. If those child histories are later recombined without preserving lineage, differences in viability or phenotype can be mistaken for genetic segregation or treatment effects. A lot-management system should therefore preserve parent-child relationships rather than only current container names."
   ],
   "cultivationRelevance": [
     "Traceability protects breeding conclusions, crop comparisons, and inventory decisions. Without it, a high germination result or desirable phenotype cannot be reliably connected to its source.",
-    "Use tamper-evident or otherwise controlled containers where appropriate, restrict label rewriting, and reconcile physical counts with the inventory after each sampling or planting event."
+    "Use tamper-evident or otherwise controlled containers where appropriate, restrict label rewriting, and reconcile physical counts with the inventory after each sampling or planting event.",
+    "Use immutable internal IDs for the lot and every child aliquot. Human-readable names can be corrected or expanded, but the original identifier should remain stable so germination tests, plant records, breeding observations, laboratory samples, and inventory movements continue to point to the same material.",
+    "Before merging physical containers or data records, verify that source, generation, storage history, and sampling purpose are genuinely equivalent. Leftovers with the same commercial name should remain separate when their provenance or handling differs, because pooling can hide contamination, aging, or mislabeled material."
   ],
   "measureAndRecord": [
     {
       "field": "Lot identity",
-      "requirement": "Unique lot ID, supplied name, source, breeder, generation, and parentage claim."
+      "requirement": "Assign a unique immutable lot ID and record supplied name, breeder/source, generation, parentage claim, production/harvest date when known, acquisition date, and whether each identity field is verified, supplied, or unknown."
     },
     {
-      "field": "Receipt",
-      "requirement": "Date, package condition, quantity received, receiver, and photographs where useful."
+      "field": "Receipt and intake",
+      "requirement": "Record received quantity, package/seal condition, receiver, date/time, photographs when useful, label transcription, discrepancies, and the first controlled storage location. Preserve the original package identifier even after repacking."
     },
     {
-      "field": "Container history",
-      "requirement": "Container ID, seal status, storage location, and every opening or transfer."
+      "field": "Container and aliquot history",
+      "requirement": "Every child container receives its own ID linked to the parent lot. Record quantity transferred, date, operator, storage location, seal status, environmental exposure, and whether the aliquot was selected randomly or by a visible trait."
     },
     {
-      "field": "Sampling",
-      "requirement": "Aliquot ID, quantity, purpose, operator, date, and remaining balance."
+      "field": "Sampling event",
+      "requirement": "Record aliquot/sample ID, quantity removed, purpose, randomization or selection method, operator, date, test or planting destination, and remaining balance. Sampling method matters when test results are generalized back to the lot."
     },
     {
-      "field": "Evidence",
-      "requirement": "Germination result, phenotype record, laboratory test, marker test, or unresolved status."
+      "field": "Evidence linkage",
+      "requirement": "Link germination/vigor results, phenotype records, laboratory chemistry, genomic/marker tests, disease tests, breeding use, and photographs to the exact lot or aliquot ID. Do not overwrite supplier claims with later test interpretations."
+    },
+    {
+      "field": "Reconciliation and disposition",
+      "requirement": "At each movement or use, reconcile expected versus physical quantity and record loss, discard, planting, transfer, return, or destruction. Unexplained balance changes and label discrepancies should remain visible as quality-control events."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "Combining leftovers is harmless: Pooling destroys the ability to connect results to a source lot."
   ],
   "evidenceLimits": [
-    "Chain of custody documents handling; it does not prove that a supplier's pedigree or identity claim is genetically correct."
+    "Chain of custody can document who handled a lot, how it was subdivided, and which tests belong to which material, but it cannot independently prove that a supplier's pedigree, cultivar name, or genetic identity claim is correct. Sampling can also bias a child aliquot if units are selected by size, color, or position. Identity confidence therefore depends on provenance plus independent genetic, phenotypic, or analytical evidence where available."
   ],
   "crossLinks": "THC-ENC-002–005, THC-ENC-020, THC-ENC-170, THC-ENC-388, and the seed inventory data standard.",
   "sourceNotes": [
     "Food and Agriculture Organization of the United Nations (2014). Genebank Standards for Plant Genetic Resources for Food and Agriculture. https://www.fao.org/4/i3704e/i3704e.pdf",
-    "International Seed Testing Association. International Rules for Seed Testing 2026, Chapter 2: Sampling. Seed-lot sampling and reporting framework. https://www.seedtest.org/en/publications/international-rules-seed-testing.html"
+    "International Seed Testing Association. International Rules for Seed Testing 2026, Chapter 2: Sampling. Seed-lot sampling and reporting framework. https://www.seedtest.org/en/publications/international-rules-seed-testing.html",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; seed-lot identity, parent-child sample linkage, provenance, and record-control framework."
   ],
   "slug": "seed-lot-identity-provenance-and-chain-of-custody",
   "route": "/encyclopedia/seed-lot-identity-provenance-and-chain-of-custody",
