@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "ruleId": "project-os.ci-impact-rules-v1",
+  "defaultChecks": [
+    "verify:project-os-queue"
+  ],
+  "domains": [
+    {
+      "id": "project-os",
+      "paths": [
+        "data/project-os/",
+        "scripts/project-os-",
+        "scripts/validate-project-os-",
+        "scripts/test-project-os-",
+        "scripts/build-project-os-",
+        "scripts/reconcile-project-os-",
+        "scripts/verify-project-os-",
+        "package.json"
+      ],
+      "checks": [
+        "verify:project-os-queue",
+        "verify:project-os-dod",
+        "verify:project-os-acceptance",
+        "verify:project-os-release-proof"
+      ],
+      "broadChecks": [
+        "verify:project-os"
+      ]
+    },
+    {
+      "id": "encyclopedia",
+      "paths": [
+        "content/encyclopedia/",
+        "site/public-route-patch/learn/encyclopedia/",
+        "site/wordpress/education/encyclopedia-"
+      ],
+      "checks": [
+        "verify:encyclopedia-catalog",
+        "verify:encyclopedia-production-readiness",
+        "verify:encyclopedia-structured-data",
+        "verify:encyclopedia-search-benchmark"
+      ],
+      "broadChecks": [
+        "verify:project-os"
+      ]
+    },
+    {
+      "id": "tools",
+      "paths": [
+        "site/public-route-patch/tools/",
+        "site/public-route-patch/atlas/",
+        "site/public-route-patch/terpene-atlas/",
+        "data/tool-execution-registry.json"
+      ],
+      "checks": [
+        "verify:tool-execution",
+        "verify:cultivation-reference-tools"
+      ],
+      "broadChecks": [
+        "verify:project-os"
+      ]
+    },
+    {
+      "id": "games",
+      "paths": [
+        "games/",
+        "apps/high-land-web/",
+        "site/public-route-patch/games/",
+        "data/game-registry-v2.json",
+        "data/game-location-registry.json"
+      ],
+      "checks": [
+        "games:affected:check",
+        "games:registry:check",
+        "games:locations:check",
+        "games:release-pins:check"
+      ],
+      "broadChecks": [
+        "games:preflight"
+      ]
+    },
+    {
+      "id": "growlens",
+      "paths": [
+        "apps/growlens-web/",
+        "scripts/growlens-",
+        "scripts/validate-growlens-"
+      ],
+      "checks": [
+        "validate:growlens-release-contract",
+        "verify:growlens"
+      ],
+      "broadChecks": [
+        "verify:project-os"
+      ]
+    },
+    {
+      "id": "deployment",
+      "paths": [
+        "site/deployment/",
+        ".github/workflows/",
+        "scripts/package-public-suite-",
+        "scripts/assemble-wordpress-suite-",
+        "scripts/public_suite_resource_ownership.py"
+      ],
+      "checks": [
+        "validate:public-suite-qualification-workflow",
+        "verify:project-os-release-proof"
+      ],
+      "broadChecks": [
+        "verify:project-os"
+      ]
+    },
+    {
+      "id": "shared-ui",
+      "paths": [
+        "site/design-system/",
+        "site/wordpress/assets/",
+        "scripts/lib/sitewide-"
+      ],
+      "checks": [
+        "verify:shared-ui-standard",
+        "verify:responsive"
+      ],
+      "broadChecks": [
+        "verify:project-os"
+      ]
+    }
+  ]
+}
