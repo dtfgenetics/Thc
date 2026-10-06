@@ -24,32 +24,39 @@
   "coreScience": [
     "Imbibition begins when a dry seed contacts available water. Hydrophilic components in the fruit coat, seed coat, embryo, and reserves draw in water. The initial phase is largely physical and can occur in living or dead tissue, so swelling alone does not prove viability.",
     "As hydration progresses, membranes reorganize, stored molecular machinery becomes active, mitochondria resume effective respiration, and repair processes address damage accumulated during drying and storage. In a typical triphasic pattern, rapid initial water uptake is followed by a plateau while metabolism restarts; renewed uptake accompanies embryo expansion and radicle protrusion.",
-    "General seed research—not a cannabis-specific injury experiment—shows that damaged or aged seed can leak solutes during rapid hydration, while inadequate water prevents completion of germination. For cannabis, treat this as a plausible mechanism to test rather than a diagnosis. Maintain repeatable water contact without leaving the unit submerged in stagnant, oxygen-poor conditions."
+    "General seed research—not a cannabis-specific injury experiment—shows that damaged or aged seed can leak solutes during rapid hydration, while inadequate water prevents completion of germination. For cannabis, treat this as a plausible mechanism to test rather than a diagnosis. Maintain repeatable water contact without leaving the unit submerged in stagnant, oxygen-poor conditions.",
+    "The physical phase of water uptake and the biological phase of germination overlap but should not be confused. Early imbibition is driven by water potential and seed structure, whereas continued progress depends on living metabolism, repair, respiration, and embryo growth. A seed can hydrate without completing germination, and two equally swollen units can differ greatly in viability or time to radicle emergence. This is why hydration observations should be linked to later developmental outcomes rather than scored as success by themselves."
   ],
   "cultivationRelevance": [
     "Judge the germination environment by water availability and aeration, not by whether a paper towel, plug, or direct-sow method is fashionable. Multiple methods can work when they provide the same biological requirements.",
-    "Once imbibition begins, avoid repeated drying. The hydrated embryo has restarted vulnerable metabolic processes and is less tolerant of severe desiccation than the stored dry unit."
+    "Once imbibition begins, avoid repeated drying. The hydrated embryo has restarted vulnerable metabolic processes and is less tolerant of severe desiccation than the stored dry unit.",
+    "Standardize the starting moisture condition of the medium so lot comparisons are not confounded by one replicate beginning wetter than another. Record water source, volume or preparation method, drainage, cover, and rewetting events, then relate those conditions to radicle timing and abnormal outcomes.",
+    "If a hydrated unit stalls, investigate temperature, oxygen risk, contamination, and lot history before repeatedly adding water. Additional water may not solve the limiting process and can worsen gas exchange or disease pressure in an already saturated system."
   ],
   "measureAndRecord": [
     {
-      "field": "Method",
-      "requirement": "Substrate or medium, container, cover, and seed placement."
+      "field": "Method and medium",
+      "requirement": "Record lot/aliquot ID, germination medium or substrate, container, cover or enclosure, seed placement/depth, replicate structure, and whether the material was preconditioned before sowing."
     },
     {
-      "field": "Water",
-      "requirement": "Source, initial volume or substrate condition, and rewetting events."
+      "field": "Water condition",
+      "requirement": "Record water source, initial wetting volume or standardized substrate condition, drainage, rewetting amount/time, visible standing water, and any drying episode. Keep the method consistent across replicates."
     },
     {
-      "field": "Temperature",
-      "requirement": "Measured at seed level, including major fluctuations."
+      "field": "Temperature and aeration context",
+      "requirement": "Measure temperature at seed level and record enclosure, compaction, saturation, or other conditions that could reduce oxygen exchange. Room thermostat values should not substitute for seed-zone measurements."
     },
     {
       "field": "Hydration observations",
-      "requirement": "Swelling, coat change, leakage, odor, or visible contamination."
+      "requirement": "Record swelling, coat/pericarp change, visible leakage, odor, contamination, and time since start. Do not score swelling alone as viability."
     },
     {
-      "field": "Outcome timing",
-      "requirement": "Time to radicle protrusion and subsequent normal seedling development."
+      "field": "Germination outcome",
+      "requirement": "Record first radicle protrusion time, final germination, normal/abnormal seedling categories, and any unit that hydrated but failed to progress. Preserve the link between each event and the source lot."
+    },
+    {
+      "field": "Protocol deviations",
+      "requirement": "Record drying, flooding, missed observations, handling damage, temperature excursions, or contamination events so unusual results are not mistaken for intrinsic seed-lot behavior."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "A soaked seed can safely dry again: Post-imbibition drying can injure or kill the activated embryo."
   ],
   "evidenceLimits": [
-    "The exact water-uptake curve depends on lot, temperature, coat properties, and method. Routine growers generally observe outcomes rather than directly measuring seed water content."
+    "The triphasic water-uptake model is a general seed-physiology framework; the exact timing and shape of water uptake in cannabis depend on lot, maturity, storage history, temperature, fruit/seed-coat properties, and method. Swelling demonstrates hydration but not viability, while visible leakage or odor is nonspecific. Routine production rarely measures seed water content directly, so interpretation should stay tied to standardized environmental conditions and later radicle/seedling outcomes."
   ],
   "crossLinks": "THC-ENC-025, THC-ENC-027–030, and THC-ENC-035.",
   "sourceNotes": [
     "El-Maarouf-Bouteau H. (2022). The Seed and the Metabolism Regulation. Biology 11:168.  https://doi.org/10.3390/biology11020168",
-    "Rajjou L. et al. (2012). Seed Germination and Vigor. Annual Review of Plant Biology 63:507-533. https://doi.org/10.1146/annurev-arplant-042811-105550"
+    "Rajjou L. et al. (2012). Seed Germination and Vigor. Annual Review of Plant Biology 63:507-533. https://doi.org/10.1146/annurev-arplant-042811-105550",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; germination environment, moisture/aeration records, and outcome-linked measurement framework."
   ],
   "slug": "imbibition-the-first-phase-of-germination",
   "route": "/encyclopedia/imbibition-the-first-phase-of-germination",
