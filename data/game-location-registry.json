@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-09-22",
+  "updated": "2026-10-06",
   "purpose": "Durable game-location memory for DTFSeeds. Resolve a game here before editing code, assets, deployment, or migration copies.",
   "authority": {
     "productionControlRepository": "dtfgenetics/Thc",
@@ -105,7 +105,9 @@
     "who took it?": "who-took-it",
     "who took it": "who-took-it",
     "thc guess who": "who-took-it",
-    "grow room confessions": "grower-conversations"
+    "grow room confessions": "grower-conversations",
+    "pheno-hunter": "pheno-hunter",
+    "pheno hunter": "pheno-hunter"
   },
   "games": [
     {
@@ -696,6 +698,35 @@
       },
       "notes": [
         "Self-hosted deterministic six-round fictional genetics card draft. Browser runtime now imports the canonical tested engine; regression coverage protects restart confirmation, share fallback, keyboard controls, mobile decision-rail reset, forced colors, and reduced motion. Included in the central public-suite validation gate; exact post-deploy live-route verification remains required."
+      ]
+    },
+    {
+      "id": "pheno-hunter",
+      "title": "Pheno Hunter",
+      "aliases": [
+        "pheno-hunter",
+        "pheno hunter"
+      ],
+      "publicRoute": "/games/pheno-hunter/",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/pheno-hunter"
+        ],
+        "sourceOfTruth": "games/pheno-hunter/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/pheno-hunter",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/pheno-hunter",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/pheno-hunter/scripts/validate-data.mjs && node games/pheno-hunter/test/engine.test.mjs && node --check site/public-route-patch/games/pheno-hunter/app.js && node --check site/public-route-patch/games/pheno-hunter/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-10-05"
+      },
+      "developmentLocations": [],
+      "assets": null,
+      "notes": [
+        "Self-hosted deterministic keeper-selection scouting game salvaged from preserved PR #261 onto current main. Exact post-deploy live-route verification remains required."
       ]
     },
     {
