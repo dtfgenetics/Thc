@@ -140,9 +140,28 @@ jobs:
           set -euo pipefail
           bash scripts/run-workflow-and-wait.sh wordpress-canonical-production.yml --join-existing
 
+      - name: Recheck freshness before education publication
+        id: freshness_after_wordpress
+        if: always() && steps.freshness.outputs.current == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$AUTO_RELEASE" != 'true' ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git fetch --quiet origin main
+          latest="$(git rev-parse origin/main)"
+          if [[ "$latest" == "$GITHUB_SHA" ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'current=false' >> "$GITHUB_OUTPUT"
+            echo "Release became superseded after the WordPress lane. Latest main is $latest; this gateway will skip remaining publication lanes so the newer release can acquire the production lock."
+          fi
+
       - name: Publish education lane
         id: education_publish
-        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.education == 'true'
+        if: always() && steps.freshness_after_wordpress.outputs.current == 'true' && needs.plan.outputs.education == 'true'
         continue-on-error: true
         shell: bash
         run: |
@@ -161,9 +180,28 @@ jobs:
             NORMAL_PUSH=false
           done
 
+      - name: Recheck freshness before Harvest and Outdoor publication
+        id: freshness_after_education
+        if: always() && steps.freshness.outputs.current == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$AUTO_RELEASE" != 'true' ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git fetch --quiet origin main
+          latest="$(git rev-parse origin/main)"
+          if [[ "$latest" == "$GITHUB_SHA" ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'current=false' >> "$GITHUB_OUTPUT"
+            echo "Release became superseded after the education lane. Latest main is $latest; this gateway will skip remaining publication lanes so the newer release can acquire the production lock."
+          fi
+
       - name: Publish canonical Harvest and Outdoor lane
         id: harvest_outdoor_publish
-        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.harvest_outdoor == 'true'
+        if: always() && steps.freshness_after_education.outputs.current == 'true' && needs.plan.outputs.harvest_outdoor == 'true'
         continue-on-error: true
         shell: bash
         run: |
@@ -182,9 +220,28 @@ jobs:
             NORMAL_PUSH=false
           done
 
+      - name: Recheck freshness before Public Suite publication
+        id: freshness_after_harvest_outdoor
+        if: always() && steps.freshness.outputs.current == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$AUTO_RELEASE" != 'true' ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git fetch --quiet origin main
+          latest="$(git rev-parse origin/main)"
+          if [[ "$latest" == "$GITHUB_SHA" ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'current=false' >> "$GITHUB_OUTPUT"
+            echo "Release became superseded after the Harvest / Outdoor lane. Latest main is $latest; this gateway will skip remaining publication lanes so the newer release can acquire the production lock."
+          fi
+
       - name: Publish public application and game lane
         id: public_publish
-        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.public_suite == 'true'
+        if: always() && steps.freshness_after_harvest_outdoor.outputs.current == 'true' && needs.plan.outputs.public_suite == 'true'
         continue-on-error: true
         shell: bash
         run: |
