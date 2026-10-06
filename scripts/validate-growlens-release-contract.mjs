@@ -17,9 +17,11 @@ const privateBackupDocsPath=path.join(root,'docs/GROWLENS_PRIVATE_DATA_BACKUP.md
 const observationProducerPath=path.join(root,'apps/growlens-web/src/scientificObservation.ts');
 const observationProducerTestPath=path.join(root,'apps/growlens-web/src/scientificObservation.test.ts');
 const observationFixturePath=path.join(root,'apps/growlens-web/fixtures/scientific-observation-v1.json');
+const canonicalObservationPath=path.join(root,'apps/growlens-web/src/canonicalObservation.ts');
+const canonicalObservationTestPath=path.join(root,'apps/growlens-web/src/canonicalObservation.test.ts');
 
 const fail=(message)=>{console.error('GrowLens release contract validation failed:',message);process.exitCode=1;};
-for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath,indexPath,readmePath,packagePath,liveAcceptancePath,privateAuditPath,privateBackupWorkflowPath,privateBackupDocsPath,observationProducerPath,observationProducerTestPath,observationFixturePath]){
+for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath,indexPath,readmePath,packagePath,liveAcceptancePath,privateAuditPath,privateBackupWorkflowPath,privateBackupDocsPath,observationProducerPath,observationProducerTestPath,observationFixturePath,canonicalObservationPath,canonicalObservationTestPath]){
   if(!fs.existsSync(file))fail(`Required file missing: ${path.relative(root,file)}`);
 }
 if(process.exitCode)process.exit();
@@ -156,6 +158,30 @@ if(observationFixture?.contract?.repository!=='dtfgenetics/Thc-dataset')fail('Gr
 if(observationFixture?.contract?.gitBlobSha!=='942a74fadb59a2dfe475d71190f6b685d7b81516')fail('GrowLens observation fixture schema hash pin mismatch.');
 if(observationFixture?.expected?.formulaId!=='FORM-DLI-PPFD-PHOTOPERIOD')fail('GrowLens observation fixture DLI formula pin mismatch.');
 if(observationFixture?.expected?.dli!==21.6)fail('GrowLens observation fixture DLI vector must remain 21.6 mol/m2/day for 500 PPFD × 12 h.');
+
+
+const canonicalObservation=fs.readFileSync(canonicalObservationPath,'utf8');
+for(const token of [
+  'environmentAgeMinutes',
+  'irrigationAgeMinutes',
+  'feedingAgeMinutes',
+  'recentInterventionAgesMinutes',
+  'derived: false',
+  'context > observed'
+]){
+  if(!canonicalObservation.includes(token))fail(`GrowLens canonical observation context is missing provenance/age control: ${token}`);
+}
+if(/derived:\s*contextRecordIds\.length/.test(canonicalObservation))fail('GrowLens canonical observation must not mark linked measured context as derived.');
+const canonicalObservationTest=fs.readFileSync(canonicalObservationTestPath,'utf8');
+for(const token of [
+  'environmentAgeMinutes: 15',
+  'irrigationAgeMinutes: 30',
+  'recentInterventionAgesMinutes',
+  'environmentAgeMinutes).toBe(2880)',
+  'provenance.derived).toBe(false)'
+]){
+  if(!canonicalObservationTest.includes(token))fail(`GrowLens canonical observation test is missing context provenance coverage: ${token}`);
+}
 
 const suite=fs.readFileSync(suitePath,'utf8');
 for(const token of [
