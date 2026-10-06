@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Teaching Healthy Cultivation | Cannabis Plant Science Education | DTF Genetics</title>
+  <meta name="description" content="THC — Teaching Healthy Cultivation. Plant science, diagnostics, environment, genetics, and IPM education for cannabis growers. Free tools, atlas modules, infographics and field cards.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://dtfseeds.com/learn/">
+  <meta property="og:title" content="Teaching Healthy Cultivation | Cannabis Plant Science Education">
+  <meta property="og:description" content="Plant science, diagnostics, environment, genetics, and IPM education for cannabis growers. Free tools, atlas, infographics and field cards from DTF Genetics.">
+  <meta property="og:url" content="https://dtfseeds.com/learn/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://dtfseeds.com/assets/education/infographics/THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root{--bg:#06120d;--bg2:#0c1e16;--panel:#0e2419;--line:#254d37;--ink:#f2f7f2;--muted:#9ab5a2;--green:#7ed68a;--gold:#d9bc73;--cream:#f6f2e8;--soft:#1a3d28}
+    *{box-sizing:border-box}
+    html{background:var(--bg)}
+    body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(circle at 20% 0,rgba(60,130,80,.18),transparent 30rem),radial-gradient(circle at 82% 8%,rgba(40,100,65,.12),transparent 28rem),linear-gradient(180deg,#060f0a,#0a1a10 55%,#060f0a);min-height:100vh}
+    a{color:inherit;text-decoration:none}
+    .shell{width:min(1180px,calc(100% - 32px));margin:auto}
+
+    /* Topbar */
+    .topbar{position:sticky;top:0;z-index:50;background:rgba(4,10,7,.88);border-bottom:1px solid rgba(100,180,120,.18);backdrop-filter:blur(18px)}
+    .topbar-inner{max-width:1180px;margin:auto;min-height:68px;padding:10px 16px;display:flex;align-items:center;gap:16px;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand-mark{width:38px;height:38px;border:1px solid rgba(126,214,138,.4);border-radius:50%;display:grid;place-items:center;background:#0b1f14;font-size:1.1rem}
+    .brand strong{font-size:.95rem;letter-spacing:.06em}
+    .brand small{display:block;color:#7fb88c;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase}
+    .top-links{display:flex;flex-wrap:wrap;gap:4px}
+    .top-links a{font-size:.74rem;color:#9ab5a2;padding:7px 10px;border-radius:8px}
+    .top-links a:hover,.top-links a[aria-current]{background:rgba(100,180,120,.1);color:#fff}
+
+    /* Hero */
+    .hero{padding:56px 0 38px}
+    .eyebrow{margin:0 0 10px;color:var(--gold);font-size:.7rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase}
+    .hero h1{margin:0;font-size:clamp(2.6rem,7vw,5.6rem);line-height:.9;letter-spacing:-.04em;max-width:900px}
+    .hero h1 em{font-style:normal;color:var(--green)}
+    .hero-copy{max-width:780px;color:var(--muted);font-size:1rem;line-height:1.7;margin:18px 0 0}
+    .hero-rule{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.5fr);gap:24px;align-items:end}
+    .hero-stat-row{display:flex;gap:14px;flex-wrap:wrap;padding-top:20px;border-top:1px solid rgba(100,180,120,.15)}
+    .hero-stat{padding-right:14px;border-right:1px solid rgba(100,180,120,.12)}
+    .hero-stat:last-child{border-right:none}
+    .hero-stat b{display:block;font-size:1.6rem;font-family:ui-serif,Georgia,serif}
+    .hero-stat span{display:block;color:var(--muted);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+    .hero-aside{padding:20px;border:1px solid rgba(100,180,120,.2);border-radius:18px;background:rgba(14,36,25,.7)}
+    .hero-aside strong{font-size:1.1rem;line-height:1.3}
+    .hero-aside p{margin:8px 0 14px;color:var(--muted);font-size:.84rem;line-height:1.6}
+    .pill-row{display:flex;flex-wrap:wrap;gap:6px}
+    .pill{padding:5px 9px;border:1px solid rgba(100,180,120,.22);border-radius:999px;color:#b5d4be;font-size:.68rem;font-weight:800}
+
+    /* Section */
+    .section{margin-top:36px}
+    .section-head{margin-bottom:14px;display:flex;align-items:end;justify-content:space-between;gap:16px}
+    .section-head h2{margin:0;font-size:clamp(1.4rem,2.5vw,2.1rem);line-height:1.05}
+    .section-head p{margin:0;color:var(--muted);font-size:.82rem;max-width:620px;line-height:1.55}
+    .see-all{font-size:.76rem;color:var(--green);font-weight:900;white-space:nowrap}
+
+    /* Pathway grid */
+    .pathway-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .pathway-card{display:flex;flex-direction:column;border:1px solid rgba(60,130,80,.28);border-radius:18px;padding:20px;background:linear-gradient(160deg,rgba(14,36,25,.9),rgba(8,18,12,.95));transition:.18s}
+    .pathway-card:hover{border-color:rgba(126,214,138,.5);transform:translateY(-2px)}
+    .pathway-icon{font-size:1.6rem;margin-bottom:10px}
+    .pathway-card h3{margin:0 0 8px;font-size:1.05rem}
+    .pathway-card p{margin:0 0 16px;color:var(--muted);font-size:.8rem;line-height:1.6}
+    .pathway-links{margin-top:auto;display:grid;gap:6px}
+    .pathway-link{display:flex;justify-content:space-between;align-items:center;padding:9px 11px;border:1px solid rgba(60,130,80,.2);border-radius:10px;background:rgba(14,36,25,.5);font-size:.78rem;font-weight:800;color:#d8f0dd}
+    .pathway-link:hover{border-color:rgba(126,214,138,.4);background:rgba(14,36,25,.8)}
+    .pathway-link::after{content:"→";color:var(--green);font-size:.9rem}
+
+    /* Featured resources */
+    .resource-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .resource-card{border:1px solid rgba(60,130,80,.22);border-radius:16px;padding:18px;background:rgba(14,36,25,.6)}
+    .resource-card h3{margin:0 0 7px;font-size:1rem}
+    .resource-card p{margin:0 0 14px;color:var(--muted);font-size:.8rem;line-height:1.58}
+    .resource-tag{display:inline-flex;margin-bottom:9px;padding:4px 8px;border:1px solid rgba(100,180,120,.22);border-radius:999px;color:#9dd8a8;font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+    .open-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 13px;border:1px solid rgba(126,214,138,.3);border-radius:10px;background:rgba(30,70,45,.5);color:#c8ecd0;font-size:.79rem;font-weight:900}
+    .open-btn:hover{background:rgba(30,70,45,.8);border-color:rgba(126,214,138,.55)}
+
+    /* Tools strip */
+    .tools-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .tool-card{border:1px solid rgba(60,130,80,.2);border-radius:14px;padding:15px;background:rgba(10,24,16,.7);display:flex;flex-direction:column;gap:6px}
+    .tool-card span{font-size:1.2rem}
+    .tool-card strong{font-size:.88rem}
+    .tool-card p{margin:0;color:var(--muted);font-size:.72rem;line-height:1.45}
+    .tool-card a{margin-top:auto;font-size:.74rem;color:var(--green);font-weight:900}
+
+    /* Principle */
+    .principle{margin-top:32px;padding:18px 20px;border:1px solid rgba(217,188,115,.22);border-radius:16px;background:linear-gradient(90deg,rgba(40,32,14,.7),rgba(14,36,25,.5));display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+    .principle b{color:var(--gold);font-size:1.6rem}
+    .principle p{margin:0;color:#e7d8b3;font-size:.86rem;line-height:1.6}
+
+    /* Footer */
+    .footer{margin-top:40px;padding:20px 0 48px;border-top:1px solid rgba(60,130,80,.14);display:flex;justify-content:space-between;gap:16px;color:var(--muted);font-size:.72rem;flex-wrap:wrap}
+
+    @media(max-width:960px){.pathway-grid{grid-template-columns:repeat(2,1fr)}.tools-strip{grid-template-columns:repeat(2,1fr)}.hero-rule{grid-template-columns:1fr}.hero-aside{max-width:none}}
+    @media(max-width:620px){.pathway-grid,.resource-grid{grid-template-columns:1fr}.tools-strip{grid-template-columns:repeat(2,1fr)}.topbar-inner{flex-direction:column;align-items:flex-start;padding:12px 16px}.section-head{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+
+<nav class="topbar" aria-label="Site navigation">
+  <div class="topbar-inner">
+    <a class="brand" href="/learn/">
+      <div class="brand-mark" aria-hidden="true">🌿</div>
+      <div><strong>Teaching Healthy Cultivation</strong><small>DTF Genetics · Plant Science</small></div>
+    </a>
+    <div class="top-links">
+      <a href="/learn/" aria-current="page">Learn</a>
+      <a href="/atlas/">Atlas</a>
+      <a href="/tools/">Tools</a>
+      <a href="/games/">Games</a>
+      <a href="/growlens/">GrowLens</a>
+    </div>
+  </div>
+</nav>
+
+<div class="shell">
+
+  <section class="hero">
+    <div class="hero-rule">
+      <div>
+        <p class="eyebrow">Teaching Healthy Cultivation</p>
+        <h1>Plant science for <em>growers</em> who want to understand their plants</h1>
+        <p class="hero-copy">THC is the education system inside DTF Genetics. It covers how cannabis plants work — anatomy, physiology, diagnostics, environment, IPM, and genetics — built around observation, evidence, and correct interpretation before action.</p>
+        <div class="hero-stat-row">
+          <div class="hero-stat"><b>16</b><span>Atlas systems</span></div>
+          <div class="hero-stat"><b>18+</b><span>Deep lab lessons</span></div>
+          <div class="hero-stat"><b>10+</b><span>Field tools</span></div>
+          <div class="hero-stat"><b>420+</b><span>Encyclopedia entries</span></div>
+        </div>
+      </div>
+      <aside class="hero-aside">
+        <strong>Core rule</strong>
+        <p>A visible symptom is evidence — not proof of a single cause. Observation must be separated from diagnosis and interpreted with plant stage, environment, root-zone data, and recent changes.</p>
+        <div class="pill-row">
+          <span class="pill">Evidence-based</span>
+          <span class="pill">Free to use</span>
+          <span class="pill">No certification claims</span>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Learning pathways</p>
+        <h2>Start with what you need to understand</h2>
+      </div>
+      <p>Each pathway connects atlas modules, field tools, and printable cards around a single topic area.</p>
+    </div>
+    <div class="pathway-grid">
+
+      <article class="pathway-card">
+        <div class="pathway-icon">🍃</div>
+        <h3>Plant Anatomy & Physiology</h3>
+        <p>How cannabis plants are built and how they function — from roots to flowers, cell to canopy.</p>
+        <div class="pathway-links">
+          <a class="pathway-link" href="/atlas/leaf-module/">Leaf System</a>
+          <a class="pathway-link" href="/atlas/root-system/">Root System</a>
+          <a class="pathway-link" href="/atlas/stem-vascular/">Stem & Vascular</a>
+          <a class="pathway-link" href="/atlas/nodes-branching/">Nodes & Branching</a>
+          <a class="pathway-link" href="/atlas/">Full Plant Atlas →</a>
+        </div>
+      </article>
+
+      <article class="pathway-card">
+        <div class="pathway-icon">🔍</div>
+        <h3>Diagnostics & Symptom Reading</h3>
+        <p>Structured observation before diagnosis. Separate what you see from what it means.</p>
+        <div class="pathway-links">
+          <a class="pathway-link" href="/atlas/diagnostics/">Observation & Diagnostics</a>
+          <a class="pathway-link" href="/atlas/leaf-module/chlorosis/">Chlorosis Patterns</a>
+          <a class="pathway-link" href="/atlas/leaf-module/necrosis/">Necrosis Patterns</a>
+          <a class="pathway-link" href="/atlas/downloads/leaf-diagnostic-field-card/">Leaf Field Card</a>
+          <a class="pathway-link" href="/atlas/downloads/">All Field Cards →</a>
+        </div>
+      </article>
+
+      <article class="pathway-card">
+        <div class="pathway-icon">🌡️</div>
+        <h3>Environment & Climate</h3>
+        <p>Light, temperature, humidity, VPD, airflow, CO₂ — and what each one does to the plant.</p>
+        <div class="pathway-links">
+          <a class="pathway-link" href="/atlas/environmental-physiology/">Environmental Physiology</a>
+          <a class="pathway-link" href="/atlas/water-relations/">Water Relations & Transpiration</a>
+          <a class="pathway-link" href="/vpd-chart/">VPD Chart</a>
+          <a class="pathway-link" href="/ppfd-chart/">PPFD / Light Lab</a>
+          <a class="pathway-link" href="/tools/">All Environment Tools →</a>
+        </div>
+      </article>
+
+      <article class="pathway-card">
+        <div class="pathway-icon">💧</div>
+        <h3>Root Zone & Nutrition</h3>
+        <p>Water uptake, dryback, pH, EC, nutrient availability, and root-zone triage.</p>
+        <div class="pathway-links">
+          <a class="pathway-link" href="/atlas/root-system/">Root System Deep Lab</a>
+          <a class="pathway-link" href="/atlas/mineral-nutrition/">Mineral Nutrition & Ion Transport</a>
+          <a class="pathway-link" href="/atlas/root-system/dryback/">Dryback</a>
+          <a class="pathway-link" href="/atlas/downloads/ph-ec-troubleshooting-card/">pH & EC Card</a>
+          <a class="pathway-link" href="/dryback-lab/">Dryback Lab Tool →</a>
+        </div>
+      </article>
+
+      <article class="pathway-card">
+        <div class="pathway-icon">🧬</div>
+        <h3>Genetics & Breeding</h3>
+        <p>Genotype, phenotype, variation, sex expression, pollen, seed formation, and selection.</p>
+        <div class="pathway-links">
+          <a class="pathway-link" href="/atlas/genetics-phenotype/">Genotype, Phenotype & Variation</a>
+          <a class="pathway-link" href="/atlas/reproductive-biology/">Sex, Pollen & Seed</a>
+          <a class="pathway-link" href="/atlas/flower-anatomy/">Flower Anatomy</a>
+          <a class="pathway-link" href="/breeder-pedigree/">Breeder Pedigree Builder</a>
+          <a class="pathway-link" href="/terpene-atlas/">Terpene Atlas →</a>
+        </div>
+      </article>
+
+      <article class="pathway-card">
+        <div class="pathway-icon">🛡️</div>
+        <h3>IPM & Pest Management</h3>
+        <p>Prevention, scouting, identification, biological controls, and integrated response.</p>
+        <div class="pathway-links">
+          <a class="pathway-link" href="/atlas/stress-defense/">Stress, Defense & Acclimation</a>
+          <a class="pathway-link" href="/atlas/leaf-module/pest-damage/">Pest Damage on Leaves</a>
+          <a class="pathway-link" href="/ipm-scout/">IPM Scout Tool</a>
+          <a class="pathway-link" href="/learn/infographics/">Sanitation & Biosecurity</a>
+          <a class="pathway-link" href="/learn/infographics/">Beneficial Insects →</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Featured resources</p>
+        <h2>Start here</h2>
+      </div>
+      <a class="see-all" href="/atlas/">Open the full Atlas →</a>
+    </div>
+    <div class="resource-grid">
+
+      <article class="resource-card">
+        <span class="resource-tag">Interactive · 3D</span>
+        <h3>THC Living Plant Atlas</h3>
+        <p>Rotate an interactive 3D cannabis plant, hover over real modeled structures, and click any organ to open its complete science module. 16 connected systems from seed to harvest.</p>
+        <a class="open-btn" href="/atlas/">Open the Atlas →</a>
+      </article>
+
+      <article class="resource-card">
+        <span class="resource-tag">Deep lab · 10 lessons</span>
+        <h3>Leaf System</h3>
+        <p>Anatomy, photosynthesis, stomata, transpiration, chlorosis, necrosis, curl, nutrient symptoms, pest damage, and environmental stress — each with a printable field card.</p>
+        <a class="open-btn" href="/atlas/leaf-module/">Open Leaf Lab →</a>
+      </article>
+
+      <article class="resource-card">
+        <span class="resource-tag">Deep lab · 8 lessons</span>
+        <h3>Root System</h3>
+        <p>Root anatomy, rhizosphere, water uptake, nutrient uptake, root oxygen, dryback, root rot, and root-zone diagnostics. Root checks before nutrient corrections.</p>
+        <a class="open-btn" href="/atlas/root-system/">Open Root Lab →</a>
+      </article>
+
+      <article class="resource-card">
+        <span class="resource-tag">Printable · Field tools</span>
+        <h3>Field Cards & Downloads</h3>
+        <p>Printable diagnostic checklists for leaf symptoms, chlorosis patterns, necrosis, leaf curl, environmental stress, watering, pH/EC, root-zone problems, and deficiency vs lockout.</p>
+        <a class="open-btn" href="/atlas/downloads/">Open Downloads →</a>
+      </article>
+
+      <article class="resource-card">
+        <span class="resource-tag">Visual library</span>
+        <h3>Approved Infographics</h3>
+        <p>Plant anatomy, root forensics, stem transport, leaf gas exchange, nutrient uptake, deficiency vs toxicity, sanitation, and biological controls — peer-reviewed education visuals.</p>
+        <a class="open-btn" href="/learn/infographics/">Open Library →</a>
+      </article>
+
+      <article class="resource-card">
+        <span class="resource-tag">Reference · 420+ entries</span>
+        <h3>THC Encyclopedia</h3>
+        <p>A searchable 420-entry cannabis plant science reference covering anatomy, physiology, environment, genetics, diagnostics, and cultivation terminology.</p>
+        <a class="open-btn" href="/learn/encyclopedia/">Open Encyclopedia →</a>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Interactive tools</p>
+        <h2>Measurement and calculation</h2>
+      </div>
+      <a class="see-all" href="/tools/">All tools →</a>
+    </div>
+    <div class="tools-strip">
+      <div class="tool-card">
+        <span>📊</span>
+        <strong>VPD Chart</strong>
+        <p>Temperature and humidity to vapour-pressure deficit — leaf and air-temperature offsets included.</p>
+        <a href="/vpd-chart/">Open VPD Chart →</a>
+      </div>
+      <div class="tool-card">
+        <span>💡</span>
+        <strong>PPFD / Light Lab</strong>
+        <p>Light intensity, DLI, coverage, fixture comparison, and distance modelling.</p>
+        <a href="/ppfd-chart/">Open Light Lab →</a>
+      </div>
+      <div class="tool-card">
+        <span>💧</span>
+        <strong>Dryback Lab</strong>
+        <p>Container weight, moisture rhythm, wet-to-dry cycling, and irrigation decision support.</p>
+        <a href="/dryback-lab/">Open Dryback Lab →</a>
+      </div>
+      <div class="tool-card">
+        <span>⚗️</span>
+        <strong>Fertigation Lab</strong>
+        <p>Nutrient mixing, dilution, EC targets, and irrigation volume modelling.</p>
+        <a href="/fertigation-lab/">Open Fertigation Lab →</a>
+      </div>
+      <div class="tool-card">
+        <span>🧪</span>
+        <strong>pH Meter</strong>
+        <p>pH reference, adjustment calculations, and root-zone interpretation context.</p>
+        <a href="/ph-meter/">Open pH Meter →</a>
+      </div>
+      <div class="tool-card">
+        <span>🔬</span>
+        <strong>IPM Scout</strong>
+        <p>Pest and pathogen identification, scouting records, and integrated response planning.</p>
+        <a href="/ipm-scout/">Open IPM Scout →</a>
+      </div>
+      <div class="tool-card">
+        <span>🌱</span>
+        <strong>Grow Planner</strong>
+        <p>Week-by-week grow timeline with stage milestones and task reminders.</p>
+        <a href="/grow-planner/">Open Planner →</a>
+      </div>
+      <div class="tool-card">
+        <span>🧬</span>
+        <strong>Breeder Pedigree</strong>
+        <p>Breeding records, lineage graphs, generation labels, and cross documentation.</p>
+        <a href="/breeder-pedigree/">Open Pedigree →</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="principle">
+    <b>⌕</b>
+    <p><strong>Observation rule:</strong> a visible pattern is evidence, not proof of a single cause. Confirm location, progression, developmental stage, environment, root-zone conditions, pest and pathogen evidence, and recent changes before acting. The Atlas connects what a structure is, what it does, what changes its behavior, and what evidence supports or weakens a plant-health explanation.</p>
+  </div>
+
+  <footer class="footer">
+    <span>Teaching Healthy Cultivation · DTF Genetics</span>
+    <span>
+      <a href="/atlas/">Plant Atlas</a> ·
+      <a href="/atlas/downloads/">Field Cards</a> ·
+      <a href="/learn/encyclopedia/">Encyclopedia</a> ·
+      <a href="/learn/infographics/">Infographics</a> ·
+      <a href="/tools/">Tools</a> ·
+      <a href="/games/">Games</a>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://dtfseeds.com/sitemap.xml
+
+# Block internal/dev paths
+Disallow: /api/
+Disallow: /games/high-land/api/
+Disallow: /.well-known/
+
+# Crawl-delay for polite bots
+Crawl-delay: 2
