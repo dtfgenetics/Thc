@@ -155,6 +155,8 @@ jobs:
         run: npm run verify:encyclopedia-skill
       - name: Validate controlled lesson structure
         run: npm run verify:encyclopedia-content-control
+      - name: Build lifecycle health report
+        run: npm run build:encyclopedia-lifecycle-report
       - name: Validate release-review control coverage
         shell: bash
         run: |
@@ -205,6 +207,7 @@ jobs:
             data/encyclopedia-learning-quality-audit.json
             data/encyclopedia-substantive-quality-audit.json
             data/encyclopedia-consistency-audit.json
+            data/encyclopedia-lifecycle-audit.json
             live-encyclopedia-copy-audit.json
             site/public-route-patch/learn/encyclopedia/encyclopedia-index.json
             site/public-route-patch/learn/search/search-index.json
