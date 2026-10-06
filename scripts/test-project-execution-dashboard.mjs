@@ -34,6 +34,8 @@ assert.equal(byId.get('discord-music-bot-duplicate')?.agentExecutionMode, 'archi
 assert.equal(byId.get('all-in-one-thc-grow')?.agentExecutionMode, 'archive-only');
 assert.equal(byId.get('monetization-os')?.agentExecutionMode, 'non-github');
 
+assert.equal(byId.get('monetization-os')?.repositoryStatus, 'non_github');
+
 assert.ok(dashboard.completionQueues.archiveReadyRepos.includes('dtfgenetics/code'));
 assert.ok(dashboard.completionQueues.archiveReadyRepos.includes('dtfgenetics/all-in-one-thc-grow-'));
 assert.ok(dashboard.completionQueues.migrationRepos.includes('dtfgenetics/Dtf420'));
