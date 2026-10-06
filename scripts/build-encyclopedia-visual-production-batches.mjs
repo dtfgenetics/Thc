@@ -72,7 +72,7 @@ for(let i=0;i<items.length;i+=batchSize){
   const md=[
     `# ${batchId}`,
     '',
-    `Lessons: **${slice.length}** · Priority: **${packet.priorityRange.high} → ${packet.priorityRange.low}**`,
+    `Visual tasks: **${slice.length}** · Lessons represented: **${packet.lessonCount}** · Priority: **${packet.priorityRange.high} → ${packet.priorityRange.low}**`,
     '',
     'This is a production packet, not approval. Each raster must pass independent science, accessibility, provenance/rights, responsive, and final asset QA.',
     '',
@@ -82,11 +82,15 @@ for(let i=0;i<items.length;i+=batchSize){
       `- Family: \`${item.visualFamily}\``,
       `- Visual role: \`${item.visualRole}\` (#${item.visualOrdinal})`,
       `- Priority: **${item.visualPriorityScore}**`,
+      `- Teaching intent: ${(item.visualRoles||[]).find(role=>role.role===item.visualRole)?.teachingIntent || ''}`,
+      `- Production brief: ${(item.visualRoles||[]).find(role=>role.role===item.visualRole)?.productionBrief || ''}`,
       `- Purpose: ${item.purpose}`,
       `- Required labels: ${item.requiredLabels.join(', ')}`,
       `- Accuracy requirements: ${item.accuracyRequirements.join(' | ')}`,
       `- Misconception guards: ${item.misconceptionGuards.join(' | ')}`,
       `- Sources: ${item.sourceAnchors.join(' | ')}`,
+      `- Alt text draft: ${(item.visualRoles||[]).find(role=>role.role===item.visualRole)?.altTextDraft || ''}`,
+      `- Caption draft: ${(item.visualRoles||[]).find(role=>role.role===item.visualRole)?.captionDraft || ''}`,
       `- Target: \`site/wordpress/assets/infographics/${item.lessonId}_${String(item.visualOrdinal).padStart(2,'0')}_${item.visualRole}.png\``,
       ''
     ])
