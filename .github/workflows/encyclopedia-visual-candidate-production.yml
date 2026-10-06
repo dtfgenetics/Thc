@@ -18,8 +18,8 @@ on:
       - '.github/workflows/encyclopedia-visual-candidate-production.yml'
 
 permissions:
-  actions: write
   contents: write
+  actions: write
   pull-requests: write
 
 concurrency:
