@@ -6,7 +6,7 @@ on:
       batch_size:
         description: 'Maximum missing lesson visuals to render in this run'
         required: false
-        default: '40'
+        default: '72'
   push:
     branches: [main]
     paths:
@@ -47,16 +47,19 @@ jobs:
       - name: Refresh controlled visual queue from current canonical assets
         run: npm run build:encyclopedia-visual-queue
 
+      - name: Validate renderer family coverage
+        run: npm run verify:encyclopedia-visual-renderer-coverage
+
       - name: Render next missing candidate batch
         id: render
         shell: bash
         env:
-          REQUESTED_BATCH: ${{ inputs.batch_size || '40' }}
+          REQUESTED_BATCH: ${{ inputs.batch_size || '72' }}
         run: |
           set -euo pipefail
           limit="$REQUESTED_BATCH"
-          [[ "$limit" =~ ^[0-9]+$ ]] || limit=40
-          [[ "$limit" -ge 1 && "$limit" -le 50 ]] || limit=40
+          [[ "$limit" =~ ^[0-9]+$ ]] || limit=72
+          [[ "$limit" -ge 1 && "$limit" -le 96 ]] || limit=72
           report="$RUNNER_TEMP/encyclopedia-visual-render.json"
           python scripts/render-encyclopedia-visual-candidates.py --limit="$limit" --manifest="$report"
           rendered="$(node -p "require(process.argv[1]).rendered" "$report")"
@@ -123,7 +126,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh workflow run encyclopedia-visual-candidate-production.yml --ref main -f batch_size=40
+          gh workflow run encyclopedia-visual-candidate-production.yml --ref main -f batch_size="$REQUESTED_BATCH"
           echo "Next candidate batch dispatched; remaining before next run: ${{ steps.render.outputs.pending_after }}"
 
       - name: Upload generation evidence
