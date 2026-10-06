@@ -35,8 +35,9 @@ for(const batch of batches){
     if(!item.visualRole || !Number.isInteger(item.visualOrdinal) || item.visualOrdinal<1 || item.visualOrdinal>10) errors.push(`${item.lessonId}: missing or invalid visual role/ordinal`);
     if(!item.teachingIntent || !item.productionBrief) errors.push(`${item.lessonId}:${item.visualRole}: missing role-specific teaching intent or production brief`);
     if(!item.altTextDraft || !item.captionDraft) errors.push(`${item.lessonId}:${item.visualRole}: missing role-specific accessibility copy`);
-    if(!/\.png$/i.test(item.targetFilename||'')) errors.push(`${item.lessonId}: target must be PNG`);
-    if(!String(item.targetRepositoryPath||'').startsWith('site/wordpress/assets/infographics/')) errors.push(`${item.lessonId}: invalid target path`);
+    const expectedFilename=`${item.lessonId}_${String(item.visualOrdinal).padStart(2,'0')}_${item.visualRole}.png`;
+    if(item.targetFilename!==expectedFilename) errors.push(`${item.lessonId}:${item.visualRole}: target filename does not match controlled role identity`);
+    if(item.targetRepositoryPath!==`site/wordpress/assets/infographics/${expectedFilename}`) errors.push(`${item.lessonId}:${item.visualRole}: invalid controlled target path`);
     if(!Array.isArray(item.accuracyRequirements)||item.accuracyRequirements.length<2) errors.push(`${item.lessonId}: insufficient accuracy requirements`);
     if(!Array.isArray(item.requiredLabels)||item.requiredLabels.length<4) errors.push(`${item.lessonId}: insufficient labels`);
     if(!Array.isArray(item.sourceAnchors)||item.sourceAnchors.length<2) errors.push(`${item.lessonId}: insufficient source anchors`);
