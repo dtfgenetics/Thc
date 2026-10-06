@@ -4591,14 +4591,15 @@
         "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/pheno-hunter/"
       },
       "release": {
-        "status": "public-unverified",
+        "status": "vertical-slice",
         "lastVerifiedRevision": null,
         "lastVerifiedAt": null,
         "lastVerifiedUrl": null,
         "blockers": [
+          "Browser/mobile/accessibility release gates are not complete.",
           "Exact current visitor-route verification metadata is not recorded in v2 yet."
         ],
-        "nextMilestone": "Record exact live URL, revision, and timestamp after deployment verification."
+        "nextMilestone": "Pass browser, mobile, accessibility, and exact live-route verification before public promotion."
       },
       "developmentLocations": [],
       "deprecatedLocations": [],
