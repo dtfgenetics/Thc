@@ -1,0 +1,424 @@
+{
+  "schemaVersion": 1,
+  "manifestId": "project-os.definitions-of-done-v1",
+  "requiredProjectTypes": [
+    "web_page",
+    "tool_calculator",
+    "game",
+    "dataset",
+    "encyclopedia_lesson",
+    "academy_certification",
+    "growlens_diagnostic",
+    "visual_asset",
+    "release_infrastructure"
+  ],
+  "projectTypes": {
+    "web_page": {
+      "description": "Production web route/page",
+      "criteria": [
+        {
+          "id": "source",
+          "description": "Canonical source and owner are identified.",
+          "evidence": [
+            "source_path",
+            "owner_repo"
+          ]
+        },
+        {
+          "id": "build",
+          "description": "Relevant build/static validation passes.",
+          "evidence": [
+            "check_result"
+          ]
+        },
+        {
+          "id": "responsive",
+          "description": "Mobile and desktop layouts pass defined responsive checks.",
+          "evidence": [
+            "responsive_check"
+          ]
+        },
+        {
+          "id": "accessibility",
+          "description": "No blocking accessibility defects remain.",
+          "evidence": [
+            "accessibility_check"
+          ]
+        },
+        {
+          "id": "route",
+          "description": "Expected public route and required assets resolve.",
+          "evidence": [
+            "route_check"
+          ]
+        },
+        {
+          "id": "live",
+          "description": "Deployed revision/fingerprint is verified live.",
+          "evidence": [
+            "deployment_fingerprint",
+            "live_check"
+          ]
+        }
+      ]
+    },
+    "tool_calculator": {
+      "description": "Cultivation/science calculator or interactive tool",
+      "criteria": [
+        {
+          "id": "formula",
+          "description": "Formula/version, assumptions and validity domain are declared.",
+          "evidence": [
+            "formula_id",
+            "formula_version",
+            "assumptions"
+          ]
+        },
+        {
+          "id": "units",
+          "description": "Input/output units and conversions are explicit.",
+          "evidence": [
+            "unit_contract"
+          ]
+        },
+        {
+          "id": "vectors",
+          "description": "Deterministic normal, boundary and invalid-input test vectors pass.",
+          "evidence": [
+            "test_vectors"
+          ]
+        },
+        {
+          "id": "ui",
+          "description": "User-facing validation/error states and responsive interaction pass.",
+          "evidence": [
+            "ui_check"
+          ]
+        },
+        {
+          "id": "release",
+          "description": "Canonical source pin and live route/fingerprint are verified.",
+          "evidence": [
+            "source_pin",
+            "deployment_fingerprint",
+            "live_check"
+          ]
+        }
+      ]
+    },
+    "game": {
+      "description": "Playable single- or multi-player game",
+      "criteria": [
+        {
+          "id": "loop",
+          "description": "A complete playable session reaches a valid terminal/reset state.",
+          "evidence": [
+            "gameplay_test"
+          ]
+        },
+        {
+          "id": "state",
+          "description": "Legal transitions, turn/state ownership and serialization pass.",
+          "evidence": [
+            "state_test"
+          ]
+        },
+        {
+          "id": "multiplayer",
+          "description": "When multiplayer applies, room isolation/reconnect/privacy checks pass.",
+          "evidence": [
+            "multiplayer_test"
+          ],
+          "conditional": "multiplayer"
+        },
+        {
+          "id": "responsive",
+          "description": "Input, viewport and responsive presentation pass.",
+          "evidence": [
+            "responsive_check"
+          ]
+        },
+        {
+          "id": "release",
+          "description": "Registered game route and deployed revision are verified.",
+          "evidence": [
+            "registry_entry",
+            "deployment_fingerprint",
+            "live_check"
+          ]
+        }
+      ]
+    },
+    "dataset": {
+      "description": "Machine-readable scientific/product dataset or bundle",
+      "criteria": [
+        {
+          "id": "schema",
+          "description": "Records validate against the versioned schema.",
+          "evidence": [
+            "schema_version",
+            "validation_result"
+          ]
+        },
+        {
+          "id": "provenance",
+          "description": "Required provenance, rights/review state and source identity are preserved.",
+          "evidence": [
+            "provenance_check"
+          ]
+        },
+        {
+          "id": "quality",
+          "description": "Deduplication, invalid-record and leakage/consistency checks pass as applicable.",
+          "evidence": [
+            "quality_check"
+          ]
+        },
+        {
+          "id": "reproducible",
+          "description": "Published/derived bundle is reproducibly generated from canonical inputs.",
+          "evidence": [
+            "builder_version",
+            "bundle_hash"
+          ]
+        },
+        {
+          "id": "consumer",
+          "description": "Consumer pin/version compatibility is verified.",
+          "evidence": [
+            "consumer_check"
+          ]
+        }
+      ]
+    },
+    "encyclopedia_lesson": {
+      "description": "Permanent Encyclopedia lesson",
+      "criteria": [
+        {
+          "id": "identity",
+          "description": "Stable lesson ID, category and canonical route are valid.",
+          "evidence": [
+            "lesson_id",
+            "route_check"
+          ]
+        },
+        {
+          "id": "content",
+          "description": "Required substantive teaching sections and terminology are present.",
+          "evidence": [
+            "content_quality_check"
+          ]
+        },
+        {
+          "id": "evidence",
+          "description": "Claims meet source/evidence and uncertainty requirements.",
+          "evidence": [
+            "evidence_check"
+          ]
+        },
+        {
+          "id": "discovery",
+          "description": "Search/filter/index, glossary and related-lesson discovery are valid.",
+          "evidence": [
+            "discovery_check"
+          ]
+        },
+        {
+          "id": "visuals",
+          "description": "Required purposeful visuals have truthful review/accessibility state.",
+          "evidence": [
+            "visual_check"
+          ]
+        },
+        {
+          "id": "live",
+          "description": "Canonical-to-live fingerprint/route parity is verified.",
+          "evidence": [
+            "deployment_fingerprint",
+            "live_check"
+          ]
+        }
+      ]
+    },
+    "academy_certification": {
+      "description": "Academy course, assessment or certification flow",
+      "criteria": [
+        {
+          "id": "curriculum",
+          "description": "Learning objectives, course content and assessment mapping are valid.",
+          "evidence": [
+            "curriculum_check"
+          ]
+        },
+        {
+          "id": "grading",
+          "description": "Student answer persistence and independent post-submit grading behavior pass.",
+          "evidence": [
+            "grading_test"
+          ]
+        },
+        {
+          "id": "identity",
+          "description": "Required user/application/reference identity contract is validated.",
+          "evidence": [
+            "identity_test"
+          ]
+        },
+        {
+          "id": "certification",
+          "description": "Pass/fail and certificate issuance rules are tested.",
+          "evidence": [
+            "certification_test"
+          ]
+        },
+        {
+          "id": "pilot",
+          "description": "Human pilot/readiness evidence is recorded when required.",
+          "evidence": [
+            "pilot_evidence"
+          ],
+          "conditional": "pilot_required"
+        }
+      ]
+    },
+    "growlens_diagnostic": {
+      "description": "GrowLens observation/diagnostic workflow",
+      "criteria": [
+        {
+          "id": "observation",
+          "description": "Canonical observation envelope and media metadata validate.",
+          "evidence": [
+            "observation_schema_check"
+          ]
+        },
+        {
+          "id": "differential",
+          "description": "Differential output preserves uncertainty, confounders and verification steps.",
+          "evidence": [
+            "diagnostic_regression"
+          ]
+        },
+        {
+          "id": "storage",
+          "description": "Configured persistence/upload paths and privacy boundaries pass.",
+          "evidence": [
+            "storage_test",
+            "privacy_check"
+          ]
+        },
+        {
+          "id": "contracts",
+          "description": "Model/data/formula versions consumed by the workflow are pinned.",
+          "evidence": [
+            "consumer_pins"
+          ]
+        },
+        {
+          "id": "live",
+          "description": "Critical production diagnostic journey and revision are verified.",
+          "evidence": [
+            "deployment_fingerprint",
+            "live_check"
+          ]
+        }
+      ]
+    },
+    "visual_asset": {
+      "description": "Scientific/educational production visual",
+      "criteria": [
+        {
+          "id": "objective",
+          "description": "Teaching objective and intended lesson/concept are explicit.",
+          "evidence": [
+            "concept_id",
+            "teaching_objective"
+          ]
+        },
+        {
+          "id": "quality",
+          "description": "Labels, scientific/botanical accuracy, spelling and legibility pass review.",
+          "evidence": [
+            "visual_qa"
+          ]
+        },
+        {
+          "id": "rights",
+          "description": "Provenance and rights state are explicit.",
+          "evidence": [
+            "rights_state",
+            "provenance"
+          ]
+        },
+        {
+          "id": "accessibility",
+          "description": "Alt text/caption and responsive rendering requirements are satisfied.",
+          "evidence": [
+            "accessibility_metadata"
+          ]
+        },
+        {
+          "id": "approval",
+          "description": "Generated/reused asset remains pending until required independent approval exists.",
+          "evidence": [
+            "review_state"
+          ]
+        },
+        {
+          "id": "integration",
+          "description": "Canonical manifest mapping and production asset reference validate.",
+          "evidence": [
+            "asset_manifest_check"
+          ]
+        }
+      ]
+    },
+    "release_infrastructure": {
+      "description": "CI, deployment, observability or automation infrastructure",
+      "criteria": [
+        {
+          "id": "determinism",
+          "description": "Behavior has deterministic positive and negative fixtures.",
+          "evidence": [
+            "fixture_results"
+          ]
+        },
+        {
+          "id": "idempotency",
+          "description": "Repeated execution does not duplicate/corrupt durable state.",
+          "evidence": [
+            "idempotency_test"
+          ]
+        },
+        {
+          "id": "concurrency",
+          "description": "Lease/collision/stale-state behavior is tested when shared state is mutated.",
+          "evidence": [
+            "concurrency_test"
+          ],
+          "conditional": "shared_state"
+        },
+        {
+          "id": "security",
+          "description": "Permissions, secrets and untrusted-input boundaries are reviewed/tested.",
+          "evidence": [
+            "security_check"
+          ]
+        },
+        {
+          "id": "integration",
+          "description": "Relevant repository-native CI gate executes the new validator.",
+          "evidence": [
+            "ci_check"
+          ]
+        },
+        {
+          "id": "rollback",
+          "description": "Failure/rollback or safe-retry behavior is documented/tested.",
+          "evidence": [
+            "recovery_evidence"
+          ]
+        }
+      ]
+    }
+  }
+}
