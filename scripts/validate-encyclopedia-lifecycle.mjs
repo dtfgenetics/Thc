@@ -88,19 +88,41 @@ const issueCounts=new Map();
 for(const item of [...errors,...warnings])issueCounts.set(item.id,(issueCounts.get(item.id)||0)+1);
 for(const row of rows)row.issues=issueCounts.get(row.id)||0;
 
+const countBy=(items,keyFn)=>items.reduce((acc,item)=>{const key=keyFn(item);acc[key]=(acc[key]||0)+1;return acc;},{});
+const warningCounts=countBy(warnings,x=>x.code);
+const errorCounts=countBy(errors,x=>x.code);
+const repairQueue=rows.filter(x=>x.issues>0).sort((a,b)=>b.issues-a.issues||a.number-b.number).map(row=>({
+  id:row.id,
+  number:row.number,
+  issues:row.issues,
+  actions:[
+    ...(warnings.some(x=>x.id===row.id&&x.code==='legacy_route_metadata')?['migrate_legacy_route_metadata']:[]),
+    ...(warnings.some(x=>x.id===row.id&&['stale_status_text','stale_completion_record'].includes(x.code))?['reconcile_human_readable_status']:[]),
+    ...(errors.some(x=>x.id===row.id)?['resolve_hard_lifecycle_conflict']:[])
+  ]
+}));
+
 const report={
-  schemaVersion:1,
+  schemaVersion:2,
   contract:contract.id,
   generatedAt:new Date().toISOString(),
+  scoringBoundary:'Lifecycle audit reports repository state. It does not grant scientific approval, accessibility approval, or publication authorization.',
   lessonCount:rows.length,
   errorCount:errors.length,
   warningCount:warnings.length,
   cleanLessonCount:rows.filter(x=>x.issues===0).length,
+  legacyRouteCount:warnings.filter(x=>x.code==='legacy_route_metadata').length,
+  staleStatusCount:warnings.filter(x=>['stale_status_text','stale_completion_record'].includes(x.code)).length,
+  independentApprovalCount:rows.filter(x=>x.independentApproval).length,
   lifecycleCounts:{
-    publication:Object.groupBy?Object.fromEntries(Object.entries(Object.groupBy(rows,x=>x.publication)).map(([k,v])=>[k,v.length])):{},
-    scienceReview:Object.groupBy?Object.fromEntries(Object.entries(Object.groupBy(rows,x=>x.scienceReview)).map(([k,v])=>[k,v.length])):{},
-    assessment:Object.groupBy?Object.fromEntries(Object.entries(Object.groupBy(rows,x=>x.assessment)).map(([k,v])=>[k,v.length])):{}
+    publication:countBy(rows,x=>x.publication),
+    scienceReview:countBy(rows,x=>x.scienceReview),
+    assessment:countBy(rows,x=>x.assessment)
   },
+  errorCounts,
+  warningCounts,
+  repairQueue,
+  lessons:rows,
   errors,
   warnings
 };
