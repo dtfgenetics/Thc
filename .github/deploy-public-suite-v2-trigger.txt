@@ -61,3 +61,5 @@ Release trigger: pinned-cultivation-verifier-final-2026-10-04.
 2026-10-04 final Tools convergence release: publish and verify canonical Tools 703be9e832daea7702be64f688614494ef146148, including Environment Control optional telemetry/live-adapter fail-safe boundaries in the production acceptance contract.
 2026-10-04 final canonical Tools acceptance rerun: deploy current 23-route canonical Tools mirror pinned to 703be9e832daea7702be64f688614494ef146148, then execute the fixed cultivation live verifier unconditionally after deployment completion.
 2026-10-04 final canonical Tools completion release: publish the exact 23-route mirror pinned to Tools cecd9fc61cc43e89d36fe0493628a269adf9bf47, including accessible root-zone and plant-growth primary results plus the canonical formula-registry head; then run the unconditional live cultivation verifier.
+
+2026-10-06 production closure redeploy: republish the current Public Suite from main after PR #2071, require Crossword package/build validation and visitor-facing /games/crossword/ plus /puzzles/ verification. Release trigger: crossword-production-repair-2026-10-06.
