@@ -101,7 +101,7 @@ describe('GrowLens canonical observation producer', () => {
       provenance: {
         method: 'growlens-observation',
         estimated: false,
-        derived: false,
+        derived: true,
       },
     });
     expect(result.canonicalRecord.values.candidateDifferentials).toEqual(['Heat stress', 'Root-zone stress']);
