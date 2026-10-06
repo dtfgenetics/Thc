@@ -526,6 +526,15 @@ jobs:
               rm -f "$body" "$headers"
               return 1
             fi
+            if [[ "$url" == https://dtfseeds.com/games/* && "$url" != "https://dtfseeds.com/games/" ]]; then
+              for placeholder in 'class="route-placeholder"' 'class="route-placeholder-card"' 'Check the Game Hub for live status updates'; do
+                if grep -Fqi "$placeholder" "$body"; then
+                  echo "Playable game route is still serving a source placeholder at $url: $placeholder" >&2
+                  rm -f "$body" "$headers"
+                  return 1
+                fi
+              done
+            fi
             rm -f "$body" "$headers"
           }
           check 'https://dtfseeds.com/games/' '23 playable browser games'
