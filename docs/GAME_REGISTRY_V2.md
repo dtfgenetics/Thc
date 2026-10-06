@@ -2,10 +2,10 @@
 
 > GENERATED FROM data/game-registry-v2.json. Do not manually edit this file; run `npm run games:registry:docs`.
 
-Updated: 2026-09-28
+Updated: 2026-10-06
 
-Tracked games: **30**  
-Concept bank: **18**
+Tracked games: **31**  
+Concept bank: **17**
 
 ## Canonical game portfolio
 
@@ -26,6 +26,7 @@ Concept bank: **18**
 | Lost in the Terps | `lost-in-the-terps` | dtfgenetics/Thc | /games/lost-in-the-terps/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Mystery Strain | `mystery-strain` | dtfgenetics/Thc | /games/mystery-strain/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Pheno Draft | `pheno-draft` | dtfgenetics/Thc | /games/pheno-draft/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
+| Pheno Hunter | `pheno-hunter` | dtfgenetics/Thc | /games/pheno-hunter/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL, revision, and timestamp after deployment verification. |
 | PhenoQuest: The Living Seed Vault | `phenoquest` | dtfgenetics/Catching-phenos | /games/phenoquest/ | `public-unverified` | dtfgenetics/Thc | Record exact live URL/revision/timestamp after verification. |
 | Quack & Bake: Stoner Duck Race | `stoner-duck-race` | dtfgenetics/Dtf420 | /games/stoner-duck-race | `playable-local` | dtfgenetics/Thc | Complete multiplayer/browser presentation QA, lock production ownership/public route, then package through the DTFSeeds release pipeline. |
 | Root Cause | `root-cause` | dtfgenetics/Thc | /games/root-cause/ | `vertical-slice` | dtfgenetics/Thc | Reconcile public-hub intent, run full route QA, and promote only after exact live verification. |
@@ -115,7 +116,6 @@ Concept bank: **18**
 - **Pest Patrol** — `pest-patrol` — concept
 - **Pest Siege** — `pest-siege` — concept
 - **Pest War** — `pest-war` — concept
-- **Pheno Hunter** — `pheno-hunter` — concept
 - **Reputation Economy** — `reputation-economy` — concept
 - **Seed Bank Builder** — `seed-bank-builder` — concept
 - **Selection Pressure** — `selection-pressure` — concept
