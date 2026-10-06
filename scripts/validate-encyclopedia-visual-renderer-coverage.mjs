@@ -15,6 +15,11 @@ for(const family of families){
   if(count<1)errors.push('Visual family has zero queue items: '+family);
 }
 if(!renderer.includes("candidateOnly")||!renderer.includes("approvalEffect"))errors.push('Renderer must preserve candidate-only approval boundary metadata.');
+if(!renderer.includes("visualRoles")||!renderer.includes("visualRole")||!renderer.includes("visualOrdinal"))errors.push('Renderer must consume role-level visual tasks.');
+if(!renderer.includes("{item['lessonId']}_{int(item['visualOrdinal']):02d}_{item['visualRole']}.png"))errors.push('Renderer must emit controlled role-addressed PNG filenames.');
+const roleTaskCount=(queue.items||[]).reduce((sum,item)=>sum+(item.visualRoles||[]).filter(role=>role.status==='brief_ready_raster_artwork_needed').length,0);
+if(queue.summary?.visualTasksNeeded!==roleTaskCount)errors.push(`Queue visualTasksNeeded must equal role-level missing task count ${roleTaskCount}.`);
+if(queue.summary?.targetVisualsPerLesson!==10||queue.summary?.minimumVisualsPerLesson!==8)errors.push('Renderer coverage requires the 8-minimum/10-target visual-depth contract.');
 if(errors.length){
   console.error('Encyclopedia visual renderer coverage failed:');
   errors.forEach(x=>console.error(' - '+x));
