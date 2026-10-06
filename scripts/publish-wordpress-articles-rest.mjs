@@ -103,6 +103,11 @@ function validateArticle(article, sourcePath) {
   assert(typeof article.content === 'string' && article.content.trim().length >= 500, `${label}: content must contain at least 500 characters`);
   assert(typeof article.excerpt === 'string' && article.excerpt.trim().length >= 40, `${label}: excerpt is required`);
   assert(allowedStatuses.has(article.status || 'draft'), `${label}: unsupported status '${article.status}'`);
+  if ((article.status || 'draft') === 'publish') {
+    assert(article.title.trim().length <= 60, `${label}: published title must be 60 characters or fewer`);
+    const excerptLength = article.excerpt.trim().length;
+    assert(excerptLength >= 80 && excerptLength <= 160, `${label}: published excerpt must be 80–160 characters; saw ${excerptLength}`);
+  }
   assert(Array.isArray(article.categories) && article.categories.length > 0, `${label}: at least one category is required`);
   assert(article.categories.every((value) => typeof value === 'string' && value.trim()), `${label}: category names must be non-empty strings`);
   assert(!article.tags || (Array.isArray(article.tags) && article.tags.every((value) => typeof value === 'string' && value.trim())), `${label}: tags must be an array of non-empty strings`);
