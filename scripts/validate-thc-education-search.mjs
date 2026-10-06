@@ -77,6 +77,7 @@ if(!errors.length){
  const wordpressRuntime=fs.readFileSync(files.wordpressRuntime,'utf8');
  const wordpressRuntimeBuilder=fs.readFileSync(files.wordpressRuntimeBuilder,'utf8');
  for(const marker of ['register_rest_route','wp_footer','data-dtf-learning-search-runtime="mu-v1"','current_user_can(\'manage_options\')']) if(!wordpressRuntime.includes(marker)) errors.push('WordPress learning search runtime missing '+marker);
+ for(const marker of ['data-dtf-age-gate-safeguard="mu-v1"','data.dtfAgeGateNo = \'safe-v1\'','I am not old enough to enter','MutationObserver']) if(!wordpressRuntime.includes(marker)) errors.push('WordPress public-shell age-gate safeguard missing '+marker);
  if(!wordpressRuntimeBuilder.includes('build-wordpress-learning-search-runtime')&&!wordpressRuntimeBuilder.includes('dtf-learning-search')) errors.push('WordPress learning search runtime builder contract missing');
  const searchPage=fs.readFileSync(files.page,'utf8');
  const fallbackBuilder=fs.readFileSync('scripts/build-static-search-fallbacks.mjs','utf8');
