@@ -19,8 +19,32 @@ export type GrowLensCanonicalObservationRecord = {
   stage: string | null;
   cultivar: string | null;
   observedAt: string;
-  metrics: Record<string, never>;
-  units: Record<string, never>;
+  metrics: Partial<Record<
+    'temperatureC'
+    | 'humidityPercent'
+    | 'ppfdUmolM2S'
+    | 'inputPh'
+    | 'inputEcMsCm'
+    | 'runoffPh'
+    | 'runoffEcMsCm'
+    | 'vwcPercent'
+    | 'drybackPercent'
+    | 'volumeMl',
+    number
+  >>;
+  units: Partial<Record<
+    'temperatureC'
+    | 'humidityPercent'
+    | 'ppfdUmolM2S'
+    | 'inputPh'
+    | 'inputEcMsCm'
+    | 'runoffPh'
+    | 'runoffEcMsCm'
+    | 'vwcPercent'
+    | 'drybackPercent'
+    | 'volumeMl',
+    string
+  >>;
   values: {
     symptoms: string[];
     candidateDifferentials: string[];
@@ -28,6 +52,11 @@ export type GrowLensCanonicalObservationRecord = {
     locationOnPlant?: ObservationPlantLocation;
     tissue?: ObservationTissue;
     notes?: string;
+    contextRecordIds?: string[];
+    environmentObservedAt?: string;
+    irrigationObservedAt?: string;
+    feedingObservedAt?: string;
+    recentInterventions?: string[];
   };
   mediaRefs: Array<{
     ref: string;
@@ -41,7 +70,7 @@ export type GrowLensCanonicalObservationRecord = {
     deviceModel: null;
     calibrationId: null;
     estimated: false;
-    derived: false;
+    derived: boolean;
   };
 };
 
@@ -66,9 +95,28 @@ function cleanList(values: string[], maxItems = 50, maxLength = 120): string[] {
   return [...new Set(values.map((value) => cleanText(value, maxLength)).filter(Boolean))].slice(0, maxItems);
 }
 
+function latestAtOrBefore<T extends { createdAt: string }>(
+  rows: readonly T[],
+  observedAt: string,
+  predicate: (row: T) => boolean,
+): T | undefined {
+  const cutoff = Date.parse(observedAt);
+  return rows
+    .filter((row) => predicate(row) && Number.isFinite(Date.parse(row.createdAt)) && Date.parse(row.createdAt) <= cutoff)
+    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))[0];
+}
+
+function finiteMetric(value: number | null | undefined): number | undefined {
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+}
+
+function observationPlantId(value: string | null): value is string {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
 export function createGrowLensObservationArtifacts(
   input: ObservationInput,
-  state: Pick<GrowLensState, 'plants'>,
+  state: Pick<GrowLensState, 'plants'> & Partial<Pick<GrowLensState, 'readings' | 'irrigationRecords' | 'feedingRecords' | 'diary'>>,
 ): {
   observation: Observation;
   diary: DiaryEntry;
@@ -83,6 +131,48 @@ export function createGrowLensObservationArtifacts(
   const locationOnPlant = input.locationOnPlant || undefined;
   const tissue = input.tissue || undefined;
   const observedAt = new Date(input.observedAt).toISOString();
+
+  const environment = plant?.spaceId
+    ? latestAtOrBefore(state.readings ?? [], observedAt, (row) => row.spaceId === plant.spaceId)
+    : undefined;
+  const irrigation = observationPlantId(input.plantId)
+    ? latestAtOrBefore(state.irrigationRecords ?? [], observedAt, (row) => row.plantId === input.plantId)
+    : undefined;
+  const feeding = observationPlantId(input.plantId)
+    ? latestAtOrBefore(state.feedingRecords ?? [], observedAt, (row) => row.plantId === input.plantId)
+    : undefined;
+  const recentInterventions = (state.diary ?? [])
+    .filter((entry) => entry.plantId === input.plantId
+      && Number.isFinite(Date.parse(entry.createdAt))
+      && Date.parse(entry.createdAt) <= Date.parse(observedAt)
+      && ['watering', 'feeding', 'training', 'transplant', 'pest-check'].includes(entry.type))
+    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+    .slice(0, 5)
+    .map((entry) => `${entry.type} · ${entry.createdAt} · ${cleanText(entry.title, 80)}`);
+
+  const metrics: GrowLensCanonicalObservationRecord['metrics'] = {};
+  const units: GrowLensCanonicalObservationRecord['units'] = {};
+  const addMetric = (key: keyof GrowLensCanonicalObservationRecord['metrics'], value: number | undefined, unit: string) => {
+    if (value === undefined) return;
+    metrics[key] = value;
+    units[key] = unit;
+  };
+  addMetric('temperatureC', finiteMetric(environment?.temperatureC), 'C');
+  addMetric('humidityPercent', finiteMetric(environment?.humidity), '%');
+  addMetric('ppfdUmolM2S', finiteMetric(environment?.ppfd), 'umol/m2/s');
+  addMetric('inputPh', finiteMetric(irrigation?.inputPh) ?? finiteMetric(feeding?.finalPh), 'pH');
+  addMetric('inputEcMsCm', finiteMetric(irrigation?.inputEcMsCm) ?? finiteMetric(feeding?.finalEcMsCm), 'mS/cm');
+  addMetric('runoffPh', finiteMetric(irrigation?.runoffPh), 'pH');
+  addMetric('runoffEcMsCm', finiteMetric(irrigation?.runoffEcMsCm), 'mS/cm');
+  addMetric('vwcPercent', finiteMetric(irrigation?.substrateMoisturePercent), '%');
+  addMetric('drybackPercent', finiteMetric(irrigation?.drybackPercent), '%');
+  addMetric('volumeMl', finiteMetric(irrigation?.volumeAppliedMl), 'mL');
+
+  const contextRecordIds = cleanList([
+    environment?.id ?? '',
+    irrigation?.id ?? '',
+    feeding?.id ?? '',
+  ], 12, 120);
 
   const observation: Observation = {
     id: input.id,
@@ -124,8 +214,8 @@ export function createGrowLensObservationArtifacts(
     stage: plant?.stage || null,
     cultivar: plant?.strain || null,
     observedAt,
-    metrics: {},
-    units: {},
+    metrics,
+    units,
     values: {
       symptoms,
       candidateDifferentials,
@@ -133,6 +223,11 @@ export function createGrowLensObservationArtifacts(
       ...(locationOnPlant ? { locationOnPlant } : {}),
       ...(tissue ? { tissue } : {}),
       ...(notes ? { notes } : {}),
+      ...(contextRecordIds.length ? { contextRecordIds } : {}),
+      ...(environment ? { environmentObservedAt: environment.createdAt } : {}),
+      ...(irrigation ? { irrigationObservedAt: irrigation.createdAt } : {}),
+      ...(feeding ? { feedingObservedAt: feeding.createdAt } : {}),
+      ...(recentInterventions.length ? { recentInterventions } : {}),
     },
     mediaRefs: photoIds.map((ref) => ({
       ref,
@@ -146,7 +241,7 @@ export function createGrowLensObservationArtifacts(
       deviceModel: null,
       calibrationId: null,
       estimated: false,
-      derived: false,
+      derived: contextRecordIds.length > 0 || recentInterventions.length > 0,
     },
   };
 
