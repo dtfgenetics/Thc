@@ -58,9 +58,6 @@ for(const lesson of lessons){
   const canonicalRoute=encyclopediaLessonRoute(id);
   assert(!routes.has(canonicalRoute),`${id}: duplicate canonical route ${canonicalRoute}`);
   routes.add(canonicalRoute);
-  if(lesson.route&&lesson.route!==canonicalRoute){
-    warnings.push(`${id}: legacy stored route ${lesson.route} is deprecated; canonical public route is ${canonicalRoute}`);
-  }
   if(lesson.slug){
     assert(!slugs.has(lesson.slug),`${id}: duplicate slug ${lesson.slug}`);
     slugs.add(lesson.slug);
