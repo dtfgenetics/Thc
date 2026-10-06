@@ -20,6 +20,41 @@ describe('GrowLens canonical observation producer', () => {
       notes: '',
       createdAt: observedAt,
     }],
+    readings: [
+      { id: 'reading-before', spaceId: 'space-12345678', temperatureC: 26, humidity: 58, ppfd: 720, createdAt: '2026-10-05T00:45:00.000Z' },
+      { id: 'reading-after', spaceId: 'space-12345678', temperatureC: 31, humidity: 40, ppfd: 900, createdAt: '2026-10-05T01:15:00.000Z' },
+    ],
+    irrigationRecords: [{
+      id: 'irrigation-before',
+      plantId: 'plant-12345678',
+      cycleId: 'cycle-12345678',
+      spaceId: 'space-12345678',
+      sourceWater: 'RO',
+      volumeAppliedMl: 900,
+      runoffVolumeMl: 120,
+      inputPh: 6.1,
+      inputEcMsCm: 1.8,
+      runoffPh: 6.3,
+      runoffEcMsCm: 2.1,
+      substrateMoisturePercent: 47,
+      drybackPercent: 19,
+      irrigationTimeMinutes: 4,
+      reservoirId: 'reservoir-1',
+      recipeNotes: '',
+      productsUsed: [],
+      createdAt: '2026-10-05T00:30:00.000Z',
+      updatedAt: '2026-10-05T00:30:00.000Z',
+    }],
+    feedingRecords: [],
+    diary: [{
+      id: 'entry-training',
+      plantId: 'plant-12345678',
+      cycleId: 'cycle-12345678',
+      type: 'training' as const,
+      title: 'Canopy adjustment',
+      notes: '',
+      createdAt: '2026-10-04T22:00:00.000Z',
+    }],
   };
 
   it('produces one normalized observation, diary entry, and cultivation record', () => {
@@ -70,7 +105,35 @@ describe('GrowLens canonical observation producer', () => {
       },
     });
     expect(result.canonicalRecord.values.candidateDifferentials).toEqual(['Heat stress', 'Root-zone stress']);
-    expect(result.canonicalRecord.values).toMatchObject({ severity: 'moderate', locationOnPlant: 'upper-canopy', tissue: 'leaf' });
+    expect(result.canonicalRecord.values).toMatchObject({
+      severity: 'moderate',
+      locationOnPlant: 'upper-canopy',
+      tissue: 'leaf',
+      environmentObservedAt: '2026-10-05T00:45:00.000Z',
+      irrigationObservedAt: '2026-10-05T00:30:00.000Z',
+      contextRecordIds: ['reading-before', 'irrigation-before'],
+    });
+    expect(result.canonicalRecord.metrics).toMatchObject({
+      temperatureC: 26,
+      humidityPercent: 58,
+      ppfdUmolM2S: 720,
+      inputPh: 6.1,
+      inputEcMsCm: 1.8,
+      runoffPh: 6.3,
+      runoffEcMsCm: 2.1,
+      vwcPercent: 47,
+      drybackPercent: 19,
+      volumeMl: 900,
+    });
+    expect(result.canonicalRecord.units).toMatchObject({
+      temperatureC: 'C',
+      humidityPercent: '%',
+      ppfdUmolM2S: 'umol/m2/s',
+      inputPh: 'pH',
+      inputEcMsCm: 'mS/cm',
+    });
+    expect(result.canonicalRecord.values.recentInterventions?.[0]).toContain('training');
+    expect(result.canonicalRecord.provenance.derived).toBe(true);
     expect(result.canonicalRecord.mediaRefs).toHaveLength(1);
   });
 
@@ -87,6 +150,28 @@ describe('GrowLens canonical observation producer', () => {
 
     expect(result.canonicalRecord.values).not.toHaveProperty('diagnosis');
     expect(result.canonicalRecord.provenance.estimated).toBe(false);
+    expect(result.canonicalRecord.provenance.derived).toBe(false);
+  });
+
+  it('never attaches cultivation context recorded after the observation timestamp', () => {
+    const result = createGrowLensObservationArtifacts({
+      id: 'observation-no-future',
+      plantId: 'plant-12345678',
+      symptoms: ['leaf-curl'],
+      notes: '',
+      candidateDifferentials: [],
+      photoIds: [],
+      observedAt,
+    }, {
+      ...state,
+      readings: [{ id: 'future-only', spaceId: 'space-12345678', temperatureC: 35, humidity: 30, ppfd: 1000, createdAt: '2026-10-05T02:00:00.000Z' }],
+      irrigationRecords: [],
+      diary: [],
+    });
+
+    expect(result.canonicalRecord.metrics).toEqual({});
+    expect(result.canonicalRecord.values).not.toHaveProperty('environmentObservedAt');
+    expect(result.canonicalRecord.values).not.toHaveProperty('contextRecordIds');
     expect(result.canonicalRecord.provenance.derived).toBe(false);
   });
 
