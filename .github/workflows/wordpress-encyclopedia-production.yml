@@ -77,6 +77,7 @@ jobs:
           npm run build:encyclopedia-discovery
           node scripts/build-thc-education-search-index.mjs
           node scripts/validate-thc-education-search.mjs
+          npm run verify:encyclopedia-lifecycle
           npm run verify:encyclopedia-renderer
           npm run verify:encyclopedia-skill
           npm run verify:encyclopedia-assessments
