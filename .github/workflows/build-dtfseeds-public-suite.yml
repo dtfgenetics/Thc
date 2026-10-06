@@ -128,6 +128,20 @@ jobs:
             grep -Fq 'class="route-placeholder-card"' "$page"
             ! grep -Fq '<style>' "$page"
           done
+          for slug in weedopolis crossword who-took-it; do
+            grep -Fq 'data-route-state="candidate"' "site/public-route-patch/games/$slug/index.html"
+          done
+          node - <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync('site/public-route-patch/games/index.html', 'utf8');
+          for (const slug of ['weedopolis','crossword','who-took-it']) {
+            const re = new RegExp('<article[^>]*data-release-state="candidate"[^>]*>[\\s\\S]*?href="/games/' + slug + '/"[\\s\\S]*?</article>');
+            const match = html.match(re);
+            if (!match) throw new Error('Candidate game card is missing for ' + slug);
+            if (/Play now|>Play [^<]*→/.test(match[0])) throw new Error('Candidate game is still advertised as playable: ' + slug);
+            if (!/Release candidate/.test(match[0])) throw new Error('Candidate status label missing for ' + slug);
+          }
+          NODE
 
       - name: Build canonical sitemap inventory
         run: |
