@@ -28,28 +28,30 @@
   ],
   "cultivationRelevance": [
     "Accurate naming prevents records from mixing unlike plants. It is essential when comparing morphology, disease response, flowering time, chemistry, and postharvest behavior.",
-    "Use botanical names for species-level discussion, controlled genetic identifiers for actual plant material, and legal terms only when discussing a defined jurisdiction."
+    "Use botanical names for species-level discussion, controlled genetic identifiers for actual plant material, and legal terms only when discussing a defined jurisdiction.",
+    "Identity records should persist across seed intake, cloning, mother-plant maintenance, trials, breeding, harvest, laboratory testing, and storage. Use one internal material ID that does not change when a marketing name changes. Keep the supplied name as metadata rather than as the sole identifier so observations can be traced back to the actual seed lot, clone, accession, or parent plant.",
+    "When a phenotype or laboratory result appears inconsistent with the expected line, do not rename the plant from appearance alone. Verify label history, propagation records, sample identity, generation, source material, and analytical or marker results where available. Identity errors can mimic biological variation and can invalidate comparisons across rooms, seasons, or breeding generations."
   ],
   "measureAndRecord": [
     {
-      "field": "Botanical name",
-      "requirement": "Cannabis sativa L. under the stated authority."
+      "field": "Botanical baseline",
+      "requirement": "Record the scientific name and the taxonomic authority being followed, including the date reviewed. Separate the accepted species name from disputed historical or infraspecific labels so later taxonomic revisions can be tracked without changing the material ID."
     },
     {
-      "field": "Supplied name",
-      "requirement": "The exact cultivar, line, accession, or clone name received."
+      "field": "Supplied commercial or breeder name",
+      "requirement": "Record the exact spelling received, breeder or source, acquisition date, seed pack or clone label, and any claimed lineage. Preserve the claim as supplied; do not silently convert a marketing name into verified botanical or genetic identity."
     },
     {
-      "field": "Source",
-      "requirement": "Breeder, nursery, institution, vendor, or internal parent plant."
+      "field": "Material identity",
+      "requirement": "Assign a durable internal seed-lot, accession, plant, clone, mother, or breeding-generation identifier. Record filial generation, parent IDs, propagation date, and every relabeling or transfer so chain of identity remains auditable."
     },
     {
-      "field": "Material ID",
-      "requirement": "Seed lot, generation, clone ID, or accession number."
+      "field": "Verification evidence",
+      "requirement": "Record pedigree documents, accession records, chemotype results, genomic or marker data, morphology observations, and which evidence directly verifies identity versus merely describes phenotype. Include laboratory, method, sample ID, and date for analytical evidence."
     },
     {
-      "field": "Verification",
-      "requirement": "Chemotype test, genotype marker result, pedigree, or unknown."
+      "field": "Identity discrepancies",
+      "requirement": "When labels, phenotype, chemistry, or marker evidence conflict, record the discrepancy, quarantine the interpretation, trace the chain of custody, and resolve the record before combining the material with other datasets or breeding decisions."
     }
   ],
   "misconceptions": [
@@ -58,7 +60,7 @@
     "Legal hemp is a separate species: In U.S. law, hemp is a statutory category within Cannabis sativa, not a separate botanical species."
   ],
   "evidenceLimits": [
-    "Taxonomy can change as authorities evaluate new evidence. The accepted-name statement is tied to Kew and NCBI records reviewed July 30, 2026. The U.S. legal-hemp statement is jurisdiction-specific and must be reviewed again at each release."
+    "Taxonomic authorities can revise accepted names and ranks as new evidence is evaluated, while commercial naming systems often have no central registration or identity-control standard. The one-species baseline used here follows the cited taxonomic authorities and should not be interpreted as proof that every commercial line is genetically uniform or that disputed infraspecific categories are biologically meaningless. Legal definitions are separate from botanical identity and must be checked against the current jurisdiction at release time."
   ],
   "crossLinks": "THC-ENC-003, THC-ENC-005, THC-ENC-170, THC-ENC-400, and the genetic identity data standard.",
   "sourceNotes": [
