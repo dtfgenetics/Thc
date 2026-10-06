@@ -123,3 +123,110 @@
 @media(prefers-reduced-motion:reduce){
   .route-placeholder-button{transition:none}
 }
+
+
+/* Shared rich game-detail shell.
+ * Use for full game landing pages that need more depth than route-placeholder.
+ * Game pages customize only --detail-accent / --detail-accent-soft. */
+.game-detail-page{
+  --detail-bg:#05090a;
+  --detail-surface:#0b1517;
+  --detail-line:#1a3038;
+  --detail-text:#eef6f7;
+  --detail-muted:#7da4a8;
+  --detail-accent:#9fe870;
+  --detail-accent-soft:#c7f5aa;
+  --detail-gold:#d9bc73;
+  --detail-radius:18px;
+  --detail-serif:ui-serif,Georgia,Cambria,"Times New Roman",serif;
+  min-height:100dvh;
+  margin:0;
+  color:var(--detail-text);
+  background:
+    radial-gradient(circle at 50% -10%,color-mix(in srgb,var(--detail-accent) 16%,transparent),transparent 40rem),
+    radial-gradient(circle at 15% 60%,color-mix(in srgb,var(--detail-accent) 8%,transparent),transparent 32rem),
+    linear-gradient(180deg,#04090b,#071418 55%,#040a0c);
+  font-family:Inter,ui-sans-serif,system-ui,sans-serif
+}
+.game-detail-page.high-land-page{--detail-accent:#7dd8e6;--detail-accent-soft:#a5eff9}
+.game-detail-page a{color:inherit;text-decoration:none}
+.game-detail-page .skip-link{
+  position:fixed;left:12px;top:10px;z-index:1000;
+  transform:translateY(-160%);
+  padding:10px 14px;border-radius:8px;background:var(--detail-accent);color:#04090b;
+  font-weight:900
+}
+.game-detail-page .skip-link:focus{transform:translateY(0)}
+.game-detail-page>.detail-nav{
+  background:rgba(4,9,11,.88);
+  border-bottom:1px solid color-mix(in srgb,var(--detail-accent) 26%,transparent);
+  padding:14px 20px;display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;z-index:50;backdrop-filter:blur(18px)
+}
+.game-detail-page .nav-brand strong{font-family:var(--detail-serif);font-size:.95rem;letter-spacing:.03em}
+.game-detail-page .nav-brand small{display:block;color:var(--detail-gold);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase}
+.game-detail-page .nav-links{display:flex;gap:2px}
+.game-detail-page .nav-links a{padding:8px 10px;border-radius:8px;font-size:.76rem;font-weight:700;color:var(--detail-muted)}
+.game-detail-page .nav-links a:hover,.game-detail-page .nav-links a:focus-visible{background:color-mix(in srgb,var(--detail-accent) 8%,transparent);color:var(--detail-text)}
+.game-detail-page .shell{width:min(1200px,calc(100% - 32px));margin:0 auto;padding-bottom:60px}
+.game-detail-page .detail-hero{padding:70px 0 44px;text-align:center;position:relative}
+.game-detail-page .eyebrow{color:var(--detail-muted);font-size:.68rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;margin:0 0 16px}
+.game-detail-page .detail-hero h1{margin:0;font-family:var(--detail-serif);font-size:clamp(3.5rem,9vw,8rem);line-height:.85;letter-spacing:-.05em;font-weight:500}
+.game-detail-page .detail-hero h1 .line2{display:block;color:var(--detail-accent);font-size:.65em}
+.game-detail-page .detail-hero h1 .line3{display:block;font-size:.5em;color:var(--detail-muted);letter-spacing:.01em;margin-top:8px}
+.game-detail-page .hero-sub{max-width:700px;margin:24px auto 0;color:var(--detail-muted);font-size:1.04rem;line-height:1.72}
+.game-detail-page .cta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:30px 0}
+.game-detail-page .btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;min-height:48px;padding:14px 22px;border-radius:999px;font-size:.95rem;font-weight:900;letter-spacing:.02em;border:1px solid transparent;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+.game-detail-page .btn-primary{background:var(--detail-accent);color:#04090b}
+.game-detail-page .btn-primary:hover{background:var(--detail-accent-soft);transform:translateY(-1px)}
+.game-detail-page .btn-ghost{border-color:color-mix(in srgb,var(--detail-accent) 30%,transparent);color:var(--detail-muted);background:transparent}
+.game-detail-page .btn-ghost:hover{border-color:var(--detail-accent);color:var(--detail-text);background:color-mix(in srgb,var(--detail-accent) 6%,transparent)}
+.game-detail-page .stat-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--detail-line);border-radius:var(--detail-radius);overflow:hidden;max-width:700px;margin:0 auto 50px}
+.game-detail-page .stat{padding:18px 12px;text-align:center;border-right:1px solid var(--detail-line)}
+.game-detail-page .stat:last-child{border-right:0}
+.game-detail-page .stat b{display:block;font-family:var(--detail-serif);font-size:1.7rem;font-weight:600;color:var(--detail-text)}
+.game-detail-page .stat span{display:block;color:var(--detail-muted);font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;margin-top:3px}
+.game-detail-page .features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:44px}
+.game-detail-page .feature{border:1px solid var(--detail-line);border-radius:var(--detail-radius);padding:22px;background:rgba(11,21,23,.7);position:relative;overflow:hidden}
+.game-detail-page .feature::before{content:"";position:absolute;left:0;top:0;width:48px;height:2px;background:linear-gradient(90deg,color-mix(in srgb,var(--detail-accent) 60%,transparent),transparent)}
+.game-detail-page .feature .icon{font-size:1.6rem;margin-bottom:12px}
+.game-detail-page .feature h3{margin:0 0 8px;font-family:var(--detail-serif);font-size:1.15rem;font-weight:600;color:var(--detail-text);text-transform:none}
+.game-detail-page .feature p{margin:0;color:var(--detail-muted);font-size:.8rem;line-height:1.62}
+.game-detail-page .how-to{border:1px solid var(--detail-line);border-radius:22px;padding:32px;background:rgba(11,21,23,.6);margin-bottom:44px}
+.game-detail-page .how-to h2{margin:0 0 22px;font-family:var(--detail-serif);font-size:2rem;font-weight:500;text-transform:none}
+.game-detail-page .steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;counter-reset:s}
+.game-detail-page .step{counter-increment:s;border:1px solid var(--detail-line);border-radius:14px;padding:16px;background:rgba(4,9,11,.5)}
+.game-detail-page .step::before{content:counter(s);display:block;color:var(--detail-gold);font-size:.66rem;font-weight:900;letter-spacing:.1em;margin-bottom:8px}
+.game-detail-page .step h4{margin:0 0 6px;font-size:.9rem;font-weight:800;color:var(--detail-text)}
+.game-detail-page .step p{margin:0;font-size:.76rem;color:var(--detail-muted);line-height:1.55}
+.game-detail-page .cta-footer{text-align:center;padding:32px 0;border-top:1px solid var(--detail-line)}
+.game-detail-page .cta-footer .detail-cta-main{font-size:1.05rem;padding:16px 28px}
+.game-detail-page .cta-footer p{color:var(--detail-muted);font-size:.9rem;margin:14px 0 0}
+.game-detail-page>.detail-footer{border-top:1px solid var(--detail-line);padding:20px 0 44px;display:flex;justify-content:flex-start;flex-wrap:wrap;gap:8px;color:var(--detail-muted);font-size:.74rem}
+.game-detail-page>.detail-footer a{color:var(--detail-muted);font-weight:700}
+.game-detail-page>.detail-footer a:hover{color:var(--detail-accent)}
+.game-detail-page :where(a,button,[tabindex]):focus-visible{outline:3px solid var(--detail-accent);outline-offset:3px}
+@media(max-width:820px){
+  .game-detail-page .stat-strip{grid-template-columns:repeat(2,1fr)}
+  .game-detail-page .stat:nth-child(2){border-right:0}
+  .game-detail-page .features{grid-template-columns:1fr}
+  .game-detail-page .steps{grid-template-columns:1fr 1fr}
+  .game-detail-page .nav-links{max-width:65vw;overflow-x:auto;scrollbar-width:none}
+  .game-detail-page .nav-links::-webkit-scrollbar{display:none}
+  .game-detail-page .nav-links a{min-height:48px;display:inline-flex;align-items:center;white-space:nowrap}
+}
+@media(max-width:500px){
+  .game-detail-page>.detail-nav{padding:10px 12px;gap:8px}
+  .game-detail-page .nav-brand small{display:none}
+  .game-detail-page .shell{width:min(100% - 24px,1200px)}
+  .game-detail-page .detail-hero{padding:48px 0 34px}
+  .game-detail-page .detail-hero h1{font-size:clamp(3rem,18vw,5rem)}
+  .game-detail-page .stat-strip{grid-template-columns:repeat(2,1fr)}
+  .game-detail-page .steps{grid-template-columns:1fr}
+  .game-detail-page .cta-row .btn{width:100%}
+  .game-detail-page .how-to{padding:24px 18px}
+}
+@media(prefers-reduced-motion:reduce){
+  .game-detail-page .btn{transition:none}
+  .game-detail-page .btn:hover{transform:none}
+}

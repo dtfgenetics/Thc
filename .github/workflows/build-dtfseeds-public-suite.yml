@@ -111,6 +111,15 @@ jobs:
           grep -Fq '23 playable browser games' site/public-route-patch/games/index.html
           test -s site/public-route-patch/games/dtf-route.css
           grep -Fq '.route-placeholder-card' site/public-route-patch/games/dtf-route.css
+          grep -Fq '.game-detail-page' site/public-route-patch/games/dtf-route.css
+          high_land='site/public-route-patch/games/high-land/index.html'
+          test -s "$high_land"
+          grep -Fq 'href="/games/dtf-route.css"' "$high_land"
+          grep -Fq 'class="game-detail-page high-land-page"' "$high_land"
+          grep -Fq 'class="skip-link"' "$high_land"
+          grep -Fq 'aria-label="Game navigation"' "$high_land"
+          ! grep -Fq '<style>' "$high_land"
+          ! grep -Fq 'style="' "$high_land"
           for slug in weedopolis crossword who-took-it ganjumanji thc-rpg; do
             page="site/public-route-patch/games/$slug/index.html"
             test -s "$page"
