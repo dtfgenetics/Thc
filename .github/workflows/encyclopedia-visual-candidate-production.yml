@@ -15,6 +15,7 @@ on:
       - 'scripts/render-encyclopedia-visual-candidates.py'
       - 'scripts/build-encyclopedia-visual-production-queue.mjs'
       - 'scripts/validate-encyclopedia-visual-renderer-coverage.mjs'
+      - 'scripts/validate-encyclopedia-visual-production-queue.mjs'
       - '.github/workflows/encyclopedia-visual-candidate-production.yml'
 
 permissions:
