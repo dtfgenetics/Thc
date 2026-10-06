@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-06T00:20:00Z",
+  "items": [
+    {
+      "workItemId": "project-os.queue-contract-v1",
+      "project": "platform",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {"severity":3,"userImpact":4,"productionExposure":4,"unblockValue":5,"ageDays":0,"complexity":2,"collisionRisk":1,"score":67},
+      "state": "review",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {"id":"schema","description":"Queue contract is machine-readable and rejects unsafe or incomplete state.","status":"passed","evidence":"scripts/validate-project-os-work-queue.mjs"},
+        {"id":"collision","description":"Duplicate work IDs and conflicting active branches are rejected.","status":"passed","evidence":"scripts/test-project-os-work-queue.mjs"},
+        {"id":"stale","description":"Expired leases cannot remain claimed or in progress.","status":"passed","evidence":"scripts/test-project-os-work-queue.mjs"}
+      ],
+      "branch": "work/platform/project-os-queue-v1/20261005-1940",
+      "pullRequest": null,
+      "baseSha": "1b770998cb3dde5ab39103b00d7ca6dc82b0de83",
+      "headSha": null,
+      "lease": null,
+      "tests": [{"name":"project-os-work-queue","status":"pending","evidence":null}],
+      "deployment": {"state":"not_applicable","fingerprint":null,"verifiedAt":null},
+      "blocker": null,
+      "lastAction": "Created canonical Project OS queue contract and deterministic validator.",
+      "nextAction": "Run CI and integrate queue validation into the broader Project OS gate after exact-head checks pass.",
+      "evidence": ["data/project-os/work-queue.schema.json"],
+      "timestamps": {"createdAt":"2026-10-06T00:20:00Z","updatedAt":"2026-10-06T00:20:00Z","completedAt":null}
+    }
+  ]
+}
