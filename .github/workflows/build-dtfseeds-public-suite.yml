@@ -121,6 +121,16 @@ jobs:
           grep -Fq 'https://dtfseeds.com/atlas/' site/public-route-patch/sitemap.xml
           grep -Fq 'https://dtfseeds.com/tools/' site/public-route-patch/sitemap.xml
 
+      - name: Build Project OS release fingerprint
+        env:
+          PROJECT_OS_SOURCE_REVISION: ${{ github.sha }}
+          PROJECT_OS_BUILD_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          npm run build:project-os-fingerprint
+          test -s site/public-route-patch/assets/project-os-release-fingerprint.json
+          grep -Fq '"sourceRevision": "${{ github.sha }}"' site/public-route-patch/assets/project-os-release-fingerprint.json
+
       - name: Validate cultivation reference tools
         run: |
           set -euo pipefail
