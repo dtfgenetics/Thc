@@ -155,9 +155,26 @@ async function liveAssetAudit(game, html, finalUrl, timeoutMs) {
 
 async function readLocalGame(game) {
   const route = normalizeRoute(game.route);
-  const relative = route.replace(/^\/+/, '').replace(/\/$/, '');
-  const indexPath = path.join(STATIC_ROOT, relative, 'index.html');
-  if (!fs.existsSync(indexPath)) return { skipped: true, reason: `no checked-in local index for ${route}` };
+
+  // Local deterministic HTML QA is authoritative only for checked-in static
+  // integrations. Build-backed games have native build/test gates and must not
+  // be judged from a landing page or stale integration placeholder. Live QA
+  // still evaluates the actual visitor route after publication.
+  if (game.integrationMode !== 'local-static') {
+    return {
+      skipped: true,
+      reason: `integration mode ${game.integrationMode ?? 'unknown'} is build-backed; use its registered native build gate and live QA for ${route}`,
+    };
+  }
+
+  if (!game.integrationPath) {
+    return { skipped: true, reason: `local-static integration has no registered path for ${route}` };
+  }
+
+  const indexPath = path.join(ROOT, game.integrationPath, 'index.html');
+  if (!fs.existsSync(indexPath)) {
+    return { skipped: true, reason: `registered local-static index is missing for ${route}: ${game.integrationPath}/index.html` };
+  }
   const html = fs.readFileSync(indexPath, 'utf8');
   const assets = localAssetAudit(game, html);
   return { html, url: `file://${indexPath}`, status: 200, assetFailures: assets.failures, assetWarnings: assets.warnings, assetsChecked: assets.checked };
