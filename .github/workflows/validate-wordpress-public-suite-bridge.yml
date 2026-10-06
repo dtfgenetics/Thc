@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
+      - scripts/package-public-suite-wordpress.py
       - scripts/assemble-wordpress-suite-v2.py
       - scripts/wordpress-suite-v2/**
       - .github/workflows/validate-wordpress-public-suite-bridge.yml
@@ -138,6 +139,9 @@ jobs:
               manifest = json.loads(manifest_raw)
               assert manifest['purpose'] == 'dtfseeds-public-apps-only'
               assert {'/', '/learn/', '/blog/'}.issubset(set(manifest['wordPressOwnedRoutesExcluded']))
+              assert 'atlas/assets' in manifest.get('requiredDirectories', []), manifest.get('requiredDirectories')
+              atlas_asset_files = [n for n in names if n.startswith('atlas/assets/') and not n.endswith('/')]
+              assert atlas_asset_files, 'atlas/assets must contain at least one packaged file'
               archive_files = sorted(n for n in names if n != '.dtf-suite-manifest.json' and not n.endswith('/'))
               assert archive_files == sorted(manifest['files'])
               for rel, meta in manifest['files'].items():
