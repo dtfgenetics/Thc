@@ -35,22 +35,27 @@ for (const item of items) {
   if (!Array.isArray(item.misconceptionGuards) || item.misconceptionGuards.length < 2) errors.push(`${item.lessonId}: needs at least 2 misconception guards.`);
   if (!Array.isArray(item.sourceAnchors) || item.sourceAnchors.length < 2) errors.push(`${item.lessonId}: needs at least 2 source anchors.`);
   if (!item.altTextDraft || !item.captionDraft) errors.push(`${item.lessonId}: accessibility copy is incomplete.`);
+  if (item.minimumVisualsRequired !== 8 || item.targetVisuals !== 10) errors.push(`${item.lessonId}: visual depth contract must require minimum 8 and target 10 visuals.`);
+  if (!Array.isArray(item.visualRoles) || item.visualRoles.length !== 10) errors.push(`${item.lessonId}: must define 10 distinct educational visual roles.`);
+  else if (new Set(item.visualRoles.map(role=>role.role)).size !== 10) errors.push(`${item.lessonId}: educational visual roles must be unique.`);
+  if (!Number.isInteger(item.visualGapCount) || item.visualGapCount !== Math.max(0, 10 - Number(item.assetCandidateCount || 0))) errors.push(`${item.lessonId}: target visual gap count is inconsistent.`);
+  if (!Number.isInteger(item.minimumVisualGapCount) || item.minimumVisualGapCount !== Math.max(0, 8 - Number(item.assetCandidateCount || 0))) errors.push(`${item.lessonId}: minimum visual gap count is inconsistent.`);
   if (item.approvedAssetId !== null) errors.push(`${item.lessonId}: queue builder must not approve an asset.`);
-  if (item.productionStatus === 'raster_artwork_produced_review_pending') {
+  if (item.assetCandidateCount > 0) {
     if (!item.canonicalAssetPath) errors.push(`${item.lessonId}: produced artwork must name its canonical asset path.`);
     else if (!fs.existsSync(path.join(root, item.canonicalAssetPath))) errors.push(`${item.lessonId}: canonical produced artwork is missing from the repository.`);
     if (!Array.isArray(item.canonicalAssetPaths) || item.canonicalAssetPaths.length < 1) errors.push(`${item.lessonId}: produced artwork must retain its canonical candidate list.`);
     else {
       for (const assetPath of item.canonicalAssetPaths) {
         if (!fs.existsSync(path.join(root, assetPath))) errors.push(`${item.lessonId}: visual candidate is missing from the repository: ${assetPath}`);
-        if (!/\.(?:png|jpe?g|webp)$/i.test(String(assetPath))) errors.push(`${item.lessonId}: production visual candidate must be raster: ${assetPath}`);
+        if (!/\\.(?:png|jpe?g|webp)$/i.test(String(assetPath))) errors.push(`${item.lessonId}: production visual candidate must be raster: ${assetPath}`);
       }
       if (Number(item.assetCandidateCount) !== item.canonicalAssetPaths.length) errors.push(`${item.lessonId}: asset candidate count does not match canonical asset paths.`);
     }
     if (item.assetQaStatus !== 'produced_pending_asset_qa') errors.push(`${item.lessonId}: produced artwork must remain pending asset QA.`);
-  } else if (item.productionStatus !== 'brief_ready_raster_artwork_needed') {
-    errors.push(`${item.lessonId}: unsupported visual production status ${item.productionStatus}.`);
   }
+  const expectedStatus = item.minimumVisualGapCount > 0 ? 'multi_visual_artwork_needed' : 'minimum_visual_depth_produced_review_pending';
+  if (item.productionStatus !== expectedStatus) errors.push(`${item.lessonId}: production status must reflect the 8-visual minimum depth contract.`);
   if (!/pending/.test(String(item.accuracyReview))) errors.push(`${item.lessonId}: accuracy review must remain pending.`);
   if (item.publicationEffect !== 'none_review_state_unchanged') errors.push(`${item.lessonId}: visual brief must not change publication state.`);
 }
@@ -61,4 +66,4 @@ if (errors.length) {
   errors.slice(0, 80).forEach(error => console.error(` - ${error}`));
   process.exit(1);
 }
-console.log(`Encyclopedia visual queue PASS: ${items.length}/${registryState.totalCount} lessons have raster-only controlled briefs; ${items.filter(item=>item.productionStatus==='raster_artwork_produced_review_pending').length} produced raster assets remain review-pending and no artwork is misclassified as approved.`);
+console.log(`Encyclopedia visual queue PASS: ${items.length}/${registryState.totalCount} lessons enforce 8-10 raster educational visuals with distinct roles; all produced assets remain review-pending and no artwork is misclassified as approved.`);
