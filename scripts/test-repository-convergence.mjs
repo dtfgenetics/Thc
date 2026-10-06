@@ -43,12 +43,16 @@ for (const [name, workflow, exhaustedIssue] of [
 assert.ok(watch.includes('Publish preflight summary'), 'WordPress canonical preflight must publish a job summary.')
 assert.ok(lightingBridge.includes('Publish bridge summary'), 'Lighting asset bridge must publish a job summary.')
 
-assert.ok(titleScript.includes("const targetSlugs=['community','gallery']"), 'Editorial title normalizer must keep its scope explicit.')
+assert.ok(titleScript.includes("const targetSlugs=['community','gallery','about','contact']"), 'Editorial title normalizer must cover all WordPress support pages with custom hero H1s.')
 assert.ok(titleScript.includes('site/wordpress/pages/${slug}.html'), 'Editorial title markers must come from canonical page files.')
 assert.ok(titleScript.includes('canonical page has no usable H1 marker'), 'Missing canonical H1s must fail closed.')
 assert.ok(titleWorkflow.includes('canonical_h1(){'), 'Live title verification must derive the same canonical H1 markers.')
 assert.ok(titleWorkflow.includes('site/wordpress/pages/community.html'), 'Community canonical source must drive title verification.')
 assert.ok(titleWorkflow.includes('site/wordpress/pages/gallery.html'), 'Gallery canonical source must drive title verification.')
+assert.ok(titleWorkflow.includes('site/wordpress/pages/about.html'), 'About canonical source must drive title verification.')
+assert.ok(titleWorkflow.includes('site/wordpress/pages/contact.html'), 'Contact canonical source must drive title verification.')
+assert.ok(titleWorkflow.includes("verify '/about/' 'about' 'site/wordpress/pages/about.html'"), 'About live title verification must be enforced.')
+assert.ok(titleWorkflow.includes("verify '/contact/' 'contact' 'site/wordpress/pages/contact.html'"), 'Contact live title verification must be enforced.')
 for (const stale of ['Grow together. Learn together. Build together.','DTF Visual Library','See the plant science, genetics, tools, games, and community work.']) {
   assert.ok(!titleScript.includes(stale), `Stale hard-coded title marker must not return: ${stale}`)
   assert.ok(!titleWorkflow.includes(stale), `Stale workflow title marker must not return: ${stale}`)
