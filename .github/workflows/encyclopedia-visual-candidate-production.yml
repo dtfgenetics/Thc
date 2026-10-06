@@ -10,7 +10,7 @@ on:
   push:
     branches:
       - main
-      - 'improve/encyclopedia/**'
+      - 'improve/encyclopedia*'
     paths:
       - 'scripts/render-encyclopedia-visual-candidates.py'
       - 'scripts/build-encyclopedia-visual-production-queue.mjs'
@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.ref }}
           fetch-depth: 0
 
       - uses: actions/setup-node@v4
