@@ -1,141 +1,118 @@
 {
-  "schema": "dtf-project-os-status@1",
-  "generatedAt": "2026-10-05T01:55:00Z",
+  "schema": "dtf-project-os-status@2",
+  "generatedAt": "2026-10-06T09:26:00Z",
   "portfolioState": "release-closure",
   "canonicalRepositories": {
     "production": {
       "repo": "dtfgenetics/Thc",
-      "sha": "1ee6137059185709f2e22c5daab843b9a659949d",
-      "openPullRequests": 30
+      "sha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
+      "openPullRequests": 19
     },
     "encyclopedia": {
       "repo": "dtfgenetics/thc-grow-hub",
-      "sha": "874d02b502061544e7cfc3dbc6d43bbecc43c654",
+      "sha": "48b05b31523012793c5558f59af01d8a7b63c0fb",
       "openPullRequests": 1
     },
     "academy": {
       "repo": "dtfgenetics/Thc-learning-courses-",
-      "sha": "ea7b3c7e6d62a51c1b37f332bacc85897d49e5aa",
+      "sha": "2ee9fe91c7da16eea6136eee064e6e2df08a3bda",
       "openPullRequests": 0
     },
     "tools": {
       "repo": "dtfgenetics/Tools",
-      "sha": "c4a7025316875d32028fa7530cb898b2c81c98ce",
-      "openPullRequests": 0
+      "sha": "49b6cd302a5131e1d0ac9cfcde7462b44b938431",
+      "openPullRequests": 1
     },
     "growDoc": {
       "repo": "dtfgenetics/Thc-dataset",
-      "sha": "797c2ca3b4b4ca60cebf82bc105d2be93c06a5e9",
-      "openPullRequests": 4
+      "sha": "6633d50428f41208b72868d05c8217597b7b1e74",
+      "openPullRequests": 0
     }
   },
-  "lanes": {
-    "encyclopedia": {
-      "state": "release-infrastructure-closed",
-      "evidence": {
-        "canonicalRoutes": "420/420",
-        "topicHubs": "21/21",
-        "searchIndexesPublished": true,
-        "visitorVerificationPassed": true,
-        "volume03Visuals": "20/20 curated visuals persisted after retirement scrub"
-      },
-      "remaining": [
-        "independent science review",
-        "assessment rationale review",
-        "controlled promotion of additional teaching visuals"
-      ]
-    },
-    "tools": {
-      "state": "production-closed",
-      "evidence": {
-        "canonicalRoutes": 23,
-        "liveAvailabilityVerified": "23/23",
-        "canonicalMirrorPinned": "c4a7025316875d32028fa7530cb898b2c81c98ce",
-        "runtimeMimeClosure": "PR #1909 merged"
-      },
-      "remainingOperationalEnhancement": [
-        "Issue #90: optional event-driven Tools → Thc dispatch remains blocked on a least-privilege cross-repository credential; scheduled sync remains the verified recovery path"
-      ]
-    },
-    "growLens": {
-      "state": "integration-verification",
-      "active": [
-        "PR #1914 current-main canonical observation producer replay"
+  "workQueue": [
+    {
+      "project": "growlens",
+      "work_item_id": "observation-context-current-main",
+      "owner_repo": "dtfgenetics/Thc",
+      "priority": "P1",
+      "state": "ci",
+      "branch": "work/growlens/observation-context/20261006-current-main",
+      "pr": 2069,
+      "base_sha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
+      "head_sha": "340eaa1a47b8ddc5d12aad66692eeb24d03f0965",
+      "dependencies": [
+        "Dtf420 overlay ownership contract #2067 merged",
+        "Grow Doc observation consumer #432 merged"
       ],
-      "contract": "thc-cultivation-record@1 plant-observation"
-    },
-    "releaseObservability": {
-      "state": "merged",
-      "evidence": [
-        "PR #1911 merged",
-        "machine-readable release ledger",
-        "SHA-256 artifacts",
-        "GitHub artifact attestations"
-      ]
-    },
-    "security": {
-      "state": "enabled",
-      "evidence": [
-        "CodeQL security-extended on canonical repos",
-        "Python coverage added to Thc and Academy"
-      ]
-    },
-    "webQuality": {
-      "state": "merged",
-      "evidence": [
-        "PR #1912 measured Lighthouse/accessibility regression gates",
-        "measured production baseline rather than invented thresholds"
-      ]
-    },
-    "growDoc": {
-      "state": "evidence-expansion",
-      "openPullRequests": [
-        419,
-        420,
-        422,
-        423
+      "lease_worker": "project-os",
+      "tests": [
+        "GrowLens CI",
+        "Build DTFSeeds Public Suite",
+        "Public Suite Build Qualification",
+        "CodeQL Security",
+        "Publishability Contract CI"
       ],
-      "remaining": [
-        "reference-media depth",
-        "hard negative/look-alike evaluation data",
-        "live visual API verifier #1880"
-      ]
+      "deployment_live_state": "not-merged",
+      "blocker": "fresh exact-head CI required",
+      "last_action": "replayed #2055 onto current main after overlay contract merge",
+      "next_action": "merge with squash only after all exact-head checks are green; then verify production publication/live behavior",
+      "updated_at": "2026-10-06T09:25:14Z"
     },
-    "academy": {
-      "state": "machine-layer-complete-human-validation-pending",
-      "machineOpenPullRequests": 0,
-      "humanGates": [
-        "SME review",
-        "manual accessibility review",
-        "pilot cohort",
-        "item analysis",
-        "practical assessor calibration",
-        "standard setting",
-        "production authorization"
-      ]
-    },
-    "games": {
-      "state": "completion-factory",
-      "remaining": [
-        "engine-agent readiness",
-        "browser playtests",
-        "mobile/touch QA",
-        "live release verification",
-        "salvage Seed Man and Burn Buds assets through bounded current-main work"
-      ]
-    },
-    "migrationRepos": {
-      "Dtf420": {
-        "state": "archive-candidate",
-        "openPullRequests": 0,
-        "archiveAction": "requires repository administration permission"
-      },
-      "dtf-thc-hub": {
-        "state": "archive-candidate",
-        "openPullRequests": 0,
-        "archiveAction": "requires repository administration permission"
-      }
+    {
+      "project": "games-crossword",
+      "work_item_id": "crossword-release-source-platform-replay",
+      "owner_repo": "dtfgenetics/Thc",
+      "priority": "P1",
+      "state": "ci",
+      "branch": "work/platform/crossword-release-gate/20261006",
+      "pr": 2070,
+      "base_sha": "003d56001a353973cd8b912ea17e0a4c8cba6b85",
+      "head_sha": "93b066eed81d24d18cdf8701de287bc21370d0e0",
+      "dependencies": [],
+      "lease_worker": "project-os",
+      "tests": [
+        "Validate Crossword Release Source",
+        "Parallel Project Safety",
+        "Build DTFSeeds Public Suite",
+        "CodeQL Security"
+      ],
+      "deployment_live_state": "not-merged",
+      "blocker": "fresh exact-head CI required",
+      "last_action": "replayed #2065 onto platform integration lane",
+      "next_action": "merge after exact-head platform/safety/release checks pass; then revalidate live /games/crossword/",
+      "updated_at": "2026-10-06T09:25:20Z"
     }
+  ],
+  "completedThisCycle": [
+    {
+      "project": "platform",
+      "work_item_id": "dtf420-overlay-contract",
+      "pr": 2067,
+      "merge_sha": "cd62f449496c6f8f34ec3f9e21da602766b7f3b6",
+      "state": "merged",
+      "updated_at": "2026-10-06T09:24:37Z"
+    },
+    {
+      "project": "grow-doc",
+      "work_item_id": "growlens-observation-import",
+      "repo": "dtfgenetics/Thc-dataset",
+      "pr": 432,
+      "merge_sha": "6633d50428f41208b72868d05c8217597b7b1e74",
+      "state": "merged",
+      "updated_at": "2026-10-06T09:24:43Z"
+    }
+  ],
+  "releaseTargets": {
+    "encyclopedia": "420-route release lane remains subject to current owner-repo acceptance and specialized visual-worker coordination",
+    "tools": "live-route verification and canonical mirror synchronization remain active",
+    "growLens": "producer/consumer contract merged downstream; measured-context replay #2069 is active",
+    "releaseObservability": "artifact-attestation lane remains active",
+    "security": "CodeQL remains enabled on canonical repos; exact-head enforcement stays required",
+    "webQuality": "measured responsive/accessibility/Lighthouse gates remain active",
+    "growDoc": "reference/evaluation evidence expansion remains active; observation import is merged",
+    "academy": "human validation/pilot remains required",
+    "games": "engine-agent and browser-interaction playtest progression remains active; Crossword release gate replay #2070 is active",
+    "archival": "Dtf420/dtf-thc-hub archive only after canonical migration and asset acceptance"
   },
   "operatingRule": "Optimize for closed blockers, verified live routes, and retired stale branches; do not treat merge success as production success."
 }
