@@ -54,9 +54,13 @@ export type GrowLensCanonicalObservationRecord = {
     notes?: string;
     contextRecordIds?: string[];
     environmentObservedAt?: string;
+    environmentAgeMinutes?: number;
     irrigationObservedAt?: string;
+    irrigationAgeMinutes?: number;
     feedingObservedAt?: string;
+    feedingAgeMinutes?: number;
     recentInterventions?: string[];
+    recentInterventionAgesMinutes?: number[];
   };
   mediaRefs: Array<{
     ref: string;
@@ -114,6 +118,14 @@ function observationPlantId(value: string | null): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
+function ageMinutes(observedAt: string, contextAt: string | undefined): number | undefined {
+  if (!contextAt) return undefined;
+  const observed = Date.parse(observedAt);
+  const context = Date.parse(contextAt);
+  if (!Number.isFinite(observed) || !Number.isFinite(context) || context > observed) return undefined;
+  return Math.round(((observed - context) / 60_000) * 10) / 10;
+}
+
 export function createGrowLensObservationArtifacts(
   input: ObservationInput,
   state: Pick<GrowLensState, 'plants'> & Partial<Pick<GrowLensState, 'readings' | 'irrigationRecords' | 'feedingRecords' | 'diary'>>,
@@ -141,14 +153,18 @@ export function createGrowLensObservationArtifacts(
   const feeding = observationPlantId(input.plantId)
     ? latestAtOrBefore(state.feedingRecords ?? [], observedAt, (row) => row.plantId === input.plantId)
     : undefined;
-  const recentInterventions = (state.diary ?? [])
+  const recentInterventionRows = (state.diary ?? [])
     .filter((entry) => entry.plantId === input.plantId
       && Number.isFinite(Date.parse(entry.createdAt))
       && Date.parse(entry.createdAt) <= Date.parse(observedAt)
       && ['watering', 'feeding', 'training', 'transplant', 'pest-check'].includes(entry.type))
     .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
-    .slice(0, 5)
+    .slice(0, 5);
+  const recentInterventions = recentInterventionRows
     .map((entry) => `${entry.type} · ${entry.createdAt} · ${cleanText(entry.title, 80)}`);
+  const recentInterventionAgesMinutes = recentInterventionRows
+    .map((entry) => ageMinutes(observedAt, entry.createdAt))
+    .filter((value): value is number => value !== undefined);
 
   const metrics: GrowLensCanonicalObservationRecord['metrics'] = {};
   const units: GrowLensCanonicalObservationRecord['units'] = {};
@@ -224,10 +240,22 @@ export function createGrowLensObservationArtifacts(
       ...(tissue ? { tissue } : {}),
       ...(notes ? { notes } : {}),
       ...(contextRecordIds.length ? { contextRecordIds } : {}),
-      ...(environment ? { environmentObservedAt: environment.createdAt } : {}),
-      ...(irrigation ? { irrigationObservedAt: irrigation.createdAt } : {}),
-      ...(feeding ? { feedingObservedAt: feeding.createdAt } : {}),
-      ...(recentInterventions.length ? { recentInterventions } : {}),
+      ...(environment ? {
+        environmentObservedAt: environment.createdAt,
+        environmentAgeMinutes: ageMinutes(observedAt, environment.createdAt),
+      } : {}),
+      ...(irrigation ? {
+        irrigationObservedAt: irrigation.createdAt,
+        irrigationAgeMinutes: ageMinutes(observedAt, irrigation.createdAt),
+      } : {}),
+      ...(feeding ? {
+        feedingObservedAt: feeding.createdAt,
+        feedingAgeMinutes: ageMinutes(observedAt, feeding.createdAt),
+      } : {}),
+      ...(recentInterventions.length ? {
+        recentInterventions,
+        recentInterventionAgesMinutes,
+      } : {}),
     },
     mediaRefs: photoIds.map((ref) => ({
       ref,
@@ -241,7 +269,7 @@ export function createGrowLensObservationArtifacts(
       deviceModel: null,
       calibrationId: null,
       estimated: false,
-      derived: contextRecordIds.length > 0 || recentInterventions.length > 0,
+      derived: false,
     },
   };
 
