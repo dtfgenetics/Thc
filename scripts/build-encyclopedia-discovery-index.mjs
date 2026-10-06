@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { discoverEncyclopediaVolumes } from './lib/encyclopedia-canonical-lessons.mjs';
 import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
+import { encyclopediaLessonRoute } from './lib/encyclopedia-routes.mjs';
 
 const root=process.cwd();
 const registryState=loadEncyclopediaRegistry(root);
@@ -47,6 +48,32 @@ for(const name of fs.readdirSync(evidenceRoot).filter(name=>/^evidence-batch-\d+
   }
 }
 const topicByPart=new Map(topics.map(topic=>[Number(topic.part),topic]));
+
+const visualAssetRoot=path.join(root,'site','wordpress','assets','infographics');
+const visualMapRoot=path.join(root,'site','wordpress','education','encyclopedia');
+const curatedVisualById=new Map();
+if(fs.existsSync(visualMapRoot)){
+  for(const name of fs.readdirSync(visualMapRoot).filter(name=>/^volume\\d+-visual-map\\.json$/i.test(name)).sort()){
+    const doc=JSON.parse(fs.readFileSync(path.join(visualMapRoot,name),'utf8'));
+    for(const item of arr(doc.items)){
+      if(/^THC-ENC-\\d{3,}$/.test(String(item?.id||'')))curatedVisualById.set(item.id,{...item,mapFile:name});
+    }
+  }
+}
+const visualCandidatesById=new Map();
+if(fs.existsSync(visualAssetRoot)){
+  for(const name of fs.readdirSync(visualAssetRoot).filter(name=>/\\.(?:png|jpe?g|webp)$/i.test(name)).sort()){
+    const match=name.match(/^(THC-ENC-\\d{3,})(?:_|\\b)/i);if(!match)continue;
+    const id=match[1].toUpperCase();const rows=visualCandidatesById.get(id)||[];rows.push(name);visualCandidatesById.set(id,rows);
+  }
+}
+function visualStateFor(id,lesson,entry){
+  const curated=curatedVisualById.get(id)||null;
+  const candidates=visualCandidatesById.get(id)||[];
+  if(curated)return {state:'curated',hasAsset:true,assetKind:'review-controlled',assetFile:curated.assetPath||null,requiredTeachingVisual:entry.teachingVisual||lesson.requiredTeachingVisual||null,altText:curated.altText||\`${entry.title||lesson.title} — reviewed companion teaching visual\`};
+  if(candidates.length)return {state:'candidate',hasAsset:true,assetKind:'review-pending',assetFile:candidates[0],candidateCount:candidates.length,requiredTeachingVisual:entry.teachingVisual||lesson.requiredTeachingVisual||null,altText:\`${entry.title||lesson.title} — teaching visual candidate pending controlled review\`};
+  return {state:'needed',hasAsset:false,assetKind:'not-produced',assetFile:null,candidateCount:0,requiredTeachingVisual:entry.teachingVisual||lesson.requiredTeachingVisual||null,altText:null};
+}
 
 
 const lessonById=new Map();
@@ -117,6 +144,7 @@ const lessons=(registry.entries||[]).map(entry=>{
   const slug=lesson.slug||slugify(entry.title);
   const tools=toolIdsFor(Number(entry.part));
   const aliases=aliasesFor(entry);
+  const visual=visualStateFor(entry.id,lesson,entry);
   const evidenceRows=evidenceByLesson.get(entry.id)||[];
   const evidenceSourceIds=[...new Set(evidenceRows.flatMap(row=>row.sourceIds))];
   const evidenceSources=evidenceSourceIds.map(id=>sourceById.get(id)).filter(Boolean);
@@ -154,8 +182,9 @@ const lessons=(registry.entries||[]).map(entry=>{
     title:entry.title,
     primaryFormat:entry.primaryFormat||lesson.primaryFormat||'Reference',
     teachingVisual:entry.teachingVisual||lesson.requiredTeachingVisual||null,
+    visual,
     status:published?'published':'catalogued-review',
-    route:published?`/learn/encyclopedia/thc-enc-${String(entry.number).padStart(3,'0')}/`:`/learn/encyclopedia/?lesson=${encodeURIComponent(entry.id)}`,
+    route:published?encyclopediaLessonRoute(entry.id):`/learn/encyclopedia/?lesson=${encodeURIComponent(entry.id)}`,
     tools,
     aliases,
     evidence:publicEvidence,
@@ -182,15 +211,16 @@ const topicRows=parts.map(part=>{
 const facets={
   topic:Object.fromEntries(topicRows.map(x=>[x.title,x.count])),
   format:Object.fromEntries([...new Set(lessons.map(x=>x.primaryFormat))].sort().map(format=>[format,lessons.filter(x=>x.primaryFormat===format).length])),
-  status:Object.fromEntries([...new Set(lessons.map(x=>x.status))].map(status=>[status,lessons.filter(x=>x.status===status).length]))
+  status:Object.fromEntries([...new Set(lessons.map(x=>x.status))].map(status=>[status,lessons.filter(x=>x.status===status).length])),
+  visual:Object.fromEntries(['curated','candidate','needed'].map(state=>[state,lessons.filter(x=>x.visual?.state===state).length]))
 };
 const output={
-  schemaVersion:3,
+  schemaVersion:4,
   generatedAt:new Date().toISOString(),
   publicationCutoff,
   lessonCount:lessons.length,
   searchLanguageVersion:Number(searchLanguage.schemaVersion||1),
-  note:`Generated from the protected ${registryState.coreCount}-lesson core plus ${registryState.extensionCount} extension entries, canonical lesson source, and claim-level evidence registry. Review-only entries stay discoverable without exposing unreleased lesson bodies; evidence mappings do not imply scientific approval.`,
+  note:`Generated from the protected ${registryState.coreCount}-lesson core plus ${registryState.extensionCount} extension entries, canonical lesson source, claim-level evidence registry, and controlled teaching-visual state. Review-only entries stay discoverable without exposing unreleased lesson bodies; evidence mappings and visual candidates do not imply scientific approval.`,
   facets,
   topics:topicRows,
   lessons
