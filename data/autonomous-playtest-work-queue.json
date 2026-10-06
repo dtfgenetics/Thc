@@ -25,8 +25,8 @@
     {
       "gameId": "high-lines",
       "title": "High Lines",
-      "currentProfile": "controllable",
-      "nextTarget": "agent-ready",
+      "currentProfile": "observable",
+      "nextTarget": "controllable",
       "estimatedEffortScore": 2,
       "releasePriority": 0,
       "gameplayProfile": "casual-puzzle",
@@ -40,7 +40,7 @@
       "verificationCommands": [
         "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node games/high-lines/test/public-runtime.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/runtime.mjs && cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs"
       ],
-      "recommendedWork": "Add telemetry, stall/soft-lock detection, executable agent-contract coverage, and promote to agent-ready.",
+      "recommendedWork": "Add legal action methods that route through the same validated input/UI/gameplay paths used by players.",
       "rank": 1
     },
     {
