@@ -18,13 +18,14 @@ const promoById=new Map((promo.items||[]).map(x=>[x.lessonId,x]));
 
 fs.mkdirSync(outDir,{recursive:true});
 
-const preservedReviewInputByLesson=new Map();
+const reviewKey=item=>item.visualTaskId||item.targetRepositoryPath||`${item.lessonId}:${item.visualRole||'legacy'}:${item.visualOrdinal||0}`;
+const preservedReviewInputByTask=new Map();
 for(const file of fs.readdirSync(outDir).filter(x=>/^(?:batch-\d{3}|produced-review-\d{3})\.json$/i.test(x))){
   const prior=JSON.parse(fs.readFileSync(path.join(outDir,file),'utf8'));
   for(const item of prior.items||[]){
     const reviewInput=item.reviewInput||{};
     const hasReviewerInput=Object.values(reviewInput).some(value=>value!==null&&value!=='');
-    if(hasReviewerInput) preservedReviewInputByLesson.set(item.lessonId,reviewInput);
+    if(hasReviewerInput) preservedReviewInputByTask.set(reviewKey(item),reviewInput);
   }
 }
 
@@ -39,12 +40,15 @@ const covered=new Set();
 for(const file of batchFiles){
   const batch=JSON.parse(fs.readFileSync(path.join(batchesDir,file),'utf8'));
   const rows=(batch.items||[]).map(item=>{
-    covered.add(item.lessonId);
+    covered.add(reviewKey(item));
     const p=preById.get(item.lessonId)||{};
     const ev=evidenceById.get(item.lessonId)||{};
     const promotion=promoById.get(item.lessonId)||{};
     return {
       lessonId:item.lessonId,
+      visualTaskId:item.visualTaskId||`${item.lessonId}:${item.visualRole||'legacy'}:${item.visualOrdinal||0}`,
+      visualRole:item.visualRole||null,
+      visualOrdinal:item.visualOrdinal||null,
       title:item.title,
       visualFamily:item.visualFamily,
       purpose:item.purpose,
@@ -57,7 +61,7 @@ for(const file of batchFiles){
         claimEvidenceIds:ev.evidence?.claimEvidenceIds||[],
         reviewState:ev.evidence?.reviewState||null
       },
-      reviewInput:preservedReviewInputByLesson.get(item.lessonId)||{
+      reviewInput:preservedReviewInputByTask.get(reviewKey(item))||{
         decision:null,
         reviewerId:null,
         reviewerName:null,
@@ -121,13 +125,13 @@ for(const file of batchFiles){
   fs.writeFileSync(path.join(outDir,`batch-${num}.md`),md+'\n');
   index.push({batchId:batch.batchId,json:`review/encyclopedia-visuals/batch-${num}.json`,markdown:`review/encyclopedia-visuals/batch-${num}.md`,itemCount:rows.length});
 }
-const producedRows=producedVisuals.filter(item=>!covered.has(item.lessonId)).map(item=>{
+const producedRows=producedVisuals.flatMap(item=>(item.visualRoles||[]).filter(role=>role.status==='produced_pending_asset_qa').map(role=>({item,role}))).filter(({item,role})=>!covered.has(role.assetPath||`${item.lessonId}:${role.role}:${role.ordinal}`)).map(({item,role})=>{
   const ev=evidenceById.get(item.lessonId)||{};
   return {
-    lessonId:item.lessonId,title:item.title,visualFamily:item.visualFamily,purpose:item.purpose,
-    candidateAssetPaths:item.canonicalAssetPaths||[],candidateCount:Number(item.assetCandidateCount||0),
+    lessonId:item.lessonId,visualTaskId:`${item.lessonId}:${role.role}:${role.ordinal}`,visualRole:role.role,visualOrdinal:role.ordinal,title:item.title,visualFamily:item.visualFamily,purpose:role.productionBrief||item.purpose,
+    candidateAssetPaths:role.assetPath?[role.assetPath]:[],candidateCount:role.assetPath?1:0,
     evidence:{claimEvidenceCount:Number(ev.evidence?.claimEvidenceCount||0),authoritativeSourceIds:ev.evidence?.authoritativeSourceIds||[],claimEvidenceIds:ev.evidence?.claimEvidenceIds||[],reviewState:ev.evidence?.reviewState||null},
-    reviewInput:preservedReviewInputByLesson.get(item.lessonId)||{decision:null,reviewerId:null,reviewerName:null,reviewedAt:null,reviewNotes:null,scienceAccuracy:null,labelingAccuracy:null,misconceptionSafety:null,accessibilityQuality:null,provenanceRights:null,responsiveLegibility:null}
+    reviewInput:preservedReviewInputByTask.get(`${item.lessonId}:${role.role}:${role.ordinal}`)||{decision:null,reviewerId:null,reviewerName:null,reviewedAt:null,reviewNotes:null,scienceAccuracy:null,labelingAccuracy:null,misconceptionSafety:null,accessibilityQuality:null,provenanceRights:null,responsiveLegibility:null}
   };
 });
 if(producedRows.length){
@@ -139,4 +143,4 @@ if(producedRows.length){
 }
 const total=index.reduce((n,x)=>n+x.itemCount,0);
 fs.writeFileSync(path.join(outDir,'index.json'),JSON.stringify({schemaVersion:'1.0.0',batchCount:index.length,candidateCount:total,existingRasterReviewCount:producedRows.length,productionBriefReviewCount:total-producedRows.length,batches:index},null,2)+'\n');
-console.log(`Built ${index.length} independent-review packets covering ${total} visual candidates/briefs, including ${producedRows.length} existing raster candidates; preserved reviewer input for ${preservedReviewInputByLesson.size} lesson(s).`);
+console.log(`Built ${index.length} independent-review packets covering ${total} visual candidates/briefs, including ${producedRows.length} existing raster candidates; preserved reviewer input for ${preservedReviewInputByTask.size} visual task(s).`);
