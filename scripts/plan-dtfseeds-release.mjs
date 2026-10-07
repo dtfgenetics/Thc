@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execFileSync } from 'node:child_process';
-import { readFileSync, appendFileSync } from 'node:fs';
+import { readFileSync, appendFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
 const args = Object.fromEntries(process.argv.slice(2).map((arg) => {
   const normalized = arg.replace(/^--/, '');
@@ -110,6 +110,12 @@ const plan = {
 };
 
 const compact = JSON.stringify(plan);
+const planFile = args['plan-file'] || process.env.RELEASE_PLAN_FILE || '';
+if (planFile) {
+  const parent = planFile.includes('/') ? planFile.slice(0, planFile.lastIndexOf('/')) : '';
+  if (parent) mkdirSync(parent, { recursive: true });
+  writeFileSync(planFile, `${JSON.stringify(plan, null, 2)}\n`);
+}
 console.log(JSON.stringify(plan, null, 2));
 
 if (process.env.GITHUB_OUTPUT) {
@@ -118,5 +124,7 @@ if (process.env.GITHUB_OUTPUT) {
   appendFileSync(process.env.GITHUB_OUTPUT, `wordpress=${lanes.wordpress}\n`);
   appendFileSync(process.env.GITHUB_OUTPUT, `education=${lanes.education}\n`);
   appendFileSync(process.env.GITHUB_OUTPUT, `harvest_outdoor=${lanes.harvestOutdoor}\n`);
-  appendFileSync(process.env.GITHUB_OUTPUT, `plan=${compact}\n`);
+  // Keep the full changed-file plan out of step outputs: large visual releases can
+  // exceed the OS process environment limit when Actions expands this output.
+  appendFileSync(process.env.GITHUB_OUTPUT, `plan_file=${planFile}\n`);
 }
