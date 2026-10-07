@@ -9,48 +9,78 @@ if(!fs.existsSync(manifestPath)) throw new Error('Missing independent-review man
 if(!fs.existsSync(reviewDir)) throw new Error('Missing review/encyclopedia-visuals reviewer packets.');
 
 const manifest=JSON.parse(fs.readFileSync(manifestPath,'utf8'));
+const reviewIndexPath=path.join(reviewDir,'index.json');
+if(!fs.existsSync(reviewIndexPath)) throw new Error('Missing reviewer packet index.');
+const reviewIndex=JSON.parse(fs.readFileSync(reviewIndexPath,'utf8'));
 const byId=new Map((manifest.lessons||[]).map(x=>[x.lessonId,x]));
 const decisions=new Set(['approved','changes_requested','rejected']);
 const bools=['scienceAccuracy','labelingAccuracy','misconceptionSafety','accessibilityQuality','provenanceRights','responsiveLegibility'];
 const files=fs.readdirSync(reviewDir).filter(x=>/^(?:batch-\d{3}|produced-review-\d{3})\.json$/i.test(x)).sort();
-const seen=new Set(),errors=[]; let completed=0,approved=0;
+const taskKey=item=>item.visualTaskId||item.targetRepositoryPath||(Array.isArray(item.candidateAssetPaths)&&item.candidateAssetPaths[0])||`${item.lessonId}:${item.visualRole||'legacy'}:${item.visualOrdinal||0}`;
+const seen=new Set(),errors=[]; let completed=0,approved=0,changesRequested=0,rejected=0;
+
+for(const lesson of manifest.lessons||[]){
+  lesson.reviewTasks=lesson.reviewTasks||{};
+  lesson.reviewTasks.teachingVisual=lesson.reviewTasks.teachingVisual||{};
+  lesson.reviewTasks.teachingVisual.visualReviews={};
+  // A lesson-level approval must never authorize every role. Exact visual-task reviews are authoritative.
+  lesson.reviewTasks.teachingVisual.reviewerDecision=null;
+  lesson.reviewTasks.teachingVisual.reviewerId=null;
+  lesson.reviewTasks.teachingVisual.reviewerName=null;
+  lesson.reviewTasks.teachingVisual.reviewedAt=null;
+  lesson.reviewTasks.teachingVisual.reviewNotes=null;
+  lesson.reviewTasks.teachingVisual.reviewChecks={};
+  lesson.reviewTasks.teachingVisual.reviewSourcePacket=null;
+}
 
 for(const file of files){
   const packet=JSON.parse(fs.readFileSync(path.join(reviewDir,file),'utf8'));
   for(const item of packet.items||[]){
-    if(seen.has(item.lessonId)) errors.push(`${item.lessonId}: duplicate review row across packets`);
-    seen.add(item.lessonId);
+    const key=taskKey(item);
+    if(seen.has(key)) errors.push(`${key}: duplicate visual review task across packets`);
+    seen.add(key);
     const target=byId.get(item.lessonId);
-    if(!target){errors.push(`${item.lessonId}: unknown lesson`);continue;}
+    if(!target){errors.push(`${key}: unknown lesson`);continue;}
     const r=item.reviewInput||{};
     const any=Object.values(r).some(v=>v!==null&&v!=='');
     if(!any) continue;
     completed++;
-    if(!decisions.has(r.decision)) errors.push(`${item.lessonId}: invalid decision`);
-    if(!String(r.reviewerId||'').trim()) errors.push(`${item.lessonId}: reviewerId required`);
-    if(!String(r.reviewerName||'').trim()) errors.push(`${item.lessonId}: reviewerName required`);
-    if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/.test(String(r.reviewedAt||''))) errors.push(`${item.lessonId}: reviewedAt must be UTC ISO 8601`);
-    if(String(r.reviewNotes||'').trim().length<40) errors.push(`${item.lessonId}: reviewNotes must be at least 40 characters`);
-    for(const key of bools) if(typeof r[key]!=='boolean') errors.push(`${item.lessonId}: ${key} must be boolean`);
-    if(r.decision==='approved'&&bools.some(key=>r[key]!==true)) errors.push(`${item.lessonId}: approval requires every controlled review check=true`);
-    if(r.decision==='approved'&&Number(item.evidence?.claimEvidenceCount||0)<1) errors.push(`${item.lessonId}: approval requires claim evidence`);
-    if(errors.some(e=>e.startsWith(item.lessonId+':'))) continue;
-    target.reviewTasks.teachingVisual.reviewerDecision=r.decision;
-    target.reviewTasks.teachingVisual.reviewerId=String(r.reviewerId).trim();
-    target.reviewTasks.teachingVisual.reviewerName=String(r.reviewerName).trim();
-    target.reviewTasks.teachingVisual.reviewedAt=r.reviewedAt;
-    target.reviewTasks.teachingVisual.reviewNotes=String(r.reviewNotes).trim();
-    target.reviewTasks.teachingVisual.reviewChecks=Object.fromEntries(bools.map(key=>[key,r[key]]));
-    target.reviewTasks.teachingVisual.reviewSourcePacket=file;
+    const itemErrors=[];
+    if(!decisions.has(r.decision)) itemErrors.push('invalid decision');
+    if(!String(r.reviewerId||'').trim()) itemErrors.push('reviewerId required');
+    if(!String(r.reviewerName||'').trim()) itemErrors.push('reviewerName required');
+    if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/.test(String(r.reviewedAt||''))) itemErrors.push('reviewedAt must be UTC ISO 8601');
+    if(String(r.reviewNotes||'').trim().length<40) itemErrors.push('reviewNotes must be at least 40 characters');
+    for(const check of bools) if(typeof r[check]!=='boolean') itemErrors.push(`${check} must be boolean`);
+    if(r.decision==='approved'&&bools.some(check=>r[check]!==true)) itemErrors.push('approval requires every controlled review check=true');
+    if(r.decision==='approved'&&Number(item.evidence?.claimEvidenceCount||0)<1) itemErrors.push('approval requires claim evidence');
+    if(itemErrors.length){errors.push(...itemErrors.map(e=>`${key}: ${e}`));continue;}
+    target.reviewTasks.teachingVisual.visualReviews[key]={
+      visualTaskId:key,
+      visualRole:item.visualRole||null,
+      visualOrdinal:item.visualOrdinal||null,
+      targetRepositoryPath:item.targetRepositoryPath||(item.candidateAssetPaths||[])[0]||null,
+      decision:r.decision,
+      reviewerId:String(r.reviewerId).trim(),
+      reviewerName:String(r.reviewerName).trim(),
+      reviewedAt:r.reviewedAt,
+      reviewNotes:String(r.reviewNotes).trim(),
+      reviewChecks:Object.fromEntries(bools.map(check=>[check,r[check]])),
+      reviewSourcePacket:file
+    };
     if(r.decision==='approved') approved++;
+    if(r.decision==='changes_requested') changesRequested++;
+    if(r.decision==='rejected') rejected++;
   }
 }
-if(seen.size!==420) errors.push(`Expected 420 unique visual review rows; found ${seen.size}`);
+const expected=Number(reviewIndex.candidateCount||0);
+if(seen.size!==expected) errors.push(`Expected ${expected} unique visual review tasks from review index; found ${seen.size}`);
 if(errors.length){console.error('Visual review ingestion failed:');errors.slice(0,200).forEach(x=>console.error(' - '+x));process.exit(1);}
+manifest.summary.visualReviewTasks=seen.size;
 manifest.summary.visualReviewDecisionsImported=completed;
 manifest.summary.visualReviewsApproved=approved;
-manifest.summary.visualReviewsChangesRequested=(manifest.lessons||[]).filter(x=>x.reviewTasks.teachingVisual.reviewerDecision==='changes_requested').length;
-manifest.summary.visualReviewsRejected=(manifest.lessons||[]).filter(x=>x.reviewTasks.teachingVisual.reviewerDecision==='rejected').length;
-manifest.reviewBoundary+=' Reviewer-packet decisions are imported only after fail-closed identity, timestamp, notes, controlled-check, evidence, uniqueness, and coverage validation.';
+manifest.summary.visualReviewsChangesRequested=changesRequested;
+manifest.summary.visualReviewsRejected=rejected;
+manifest.reviewBoundary+=' Reviewer-packet decisions are imported per exact visual task; one reviewed role can never authorize sibling visuals for the same lesson.';
 fs.writeFileSync(manifestPath,JSON.stringify(manifest,null,2)+'\n');
-console.log(JSON.stringify({reviewRows:seen.size,completed,approved},null,2));
+console.log(JSON.stringify({reviewTasks:seen.size,completed,approved,changesRequested,rejected},null,2));
