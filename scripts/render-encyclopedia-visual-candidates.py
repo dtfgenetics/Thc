@@ -207,6 +207,55 @@ def render_environment(item,im,d):
     d.text((90,675),"RESPONSE IS CONTEXT-DEPENDENT — NO UNIVERSAL THRESHOLD IMPLIED",font=font(20,True),fill=RED)
     panel(d,(210,720,1390,890),"Evidence and target guard",gs[0] if gs else "Use measured response curves and local validation; equal setpoints can produce different tissue conditions or crop responses.",RED)
 
+def render_overview(item,im,d):
+    labs=labels(item); pts=science_points(item); gs=guards(item)
+    panel(d,(90,230,510,520),"Core idea",pts[0] if pts else item.get('purpose',''),GREEN)
+    panel(d,(590,230,1010,520),"Why it matters",pts[1] if len(pts)>1 else "Connect the core concept to the lesson's biological or cultivation context.",BLUE)
+    panel(d,(1090,230,1510,520),"Use it correctly",pts[2] if len(pts)>2 else "Apply the concept only within the evidence and measurement limits taught by the lesson.",ORANGE)
+    arrow(d,(510,375),(590,375),GREEN); arrow(d,(1010,375),(1090,375),BLUE)
+    y=575; d.text((90,y),"KEY TERMS / SIGNALS",font=font(20,True),fill=INK); y+=40
+    x=90
+    for lab in labs[:5]:
+        w=min(270,max(150,15*len(lab)))
+        if x+w>1510: break
+        d.rounded_rectangle((x,y,x+w,y+48),radius=14,fill=(239,246,241),outline=(181,203,188),width=2)
+        d.text((x+14,y+12),short(lab,25),font=font(17,True),fill=GREEN); x+=w+16
+    panel(d,(250,710,1350,885),"Boundary / misconception",gs[0] if gs else "This overview is a concept map, not a substitute for measurement, diagnosis, or lesson-specific evidence.",RED)
+
+def render_microscopy(item,im,d):
+    labs=labels(item); pts=science_points(item); gs=guards(item)
+    cx,cy=470,470
+    d.ellipse((170,210,770,810),fill=(248,250,248),outline=GREEN,width=8)
+    d.ellipse((245,285,695,735),outline=LINE,width=4)
+    d.ellipse((330,370,610,650),outline=BLUE,width=5)
+    d.line((610,510,850,360),fill=BLUE,width=5)
+    panel(d,(850,220,1510,470),"Detail to identify",pts[0] if pts else item.get('purpose',''),BLUE)
+    panel(d,(850,500,1510,720),"What the detail can support",pts[1] if len(pts)>1 else "Use scale, tissue location, preparation, and comparison context before interpreting a fine-detail observation.",GREEN)
+    d.text((205,835),"DETAIL VIEW · schematic, not to scale",font=font(19,True),fill=MUTED)
+    panel(d,(850,755,1510,900),"Interpretation guard",gs[0] if gs else "Magnification or appearance alone does not establish identity, function, maturity, pathology, or quality.",RED)
+
+def render_misconception(item,im,d):
+    pts=science_points(item); gs=guards(item)
+    claim=gs[0] if gs else "Common shortcut or oversimplified claim"
+    correction=pts[0] if pts else item.get('purpose','Use the lesson evidence to replace the shortcut with a testable explanation.')
+    panel(d,(100,245,720,650),"MISCONCEPTION",claim,RED)
+    panel(d,(880,245,1500,650),"EVIDENCE-BASED CORRECTION",correction,GREEN)
+    arrow(d,(720,445),(880,445),ORANGE,9)
+    panel(d,(250,720,1350,895),"How to verify instead",pts[1] if len(pts)>1 else "Observe the relevant structure or response, measure context, compare plausible explanations, and retain uncertainty where evidence is incomplete.",BLUE)
+
+def render_summary(item,im,d):
+    labs=labels(item); pts=science_points(item); gs=guards(item)
+    cards=[
+      ("Remember",pts[0] if pts else item.get('purpose',''),GREEN),
+      ("Observe / measure",pts[1] if len(pts)>1 else "Record the lesson-specific variables, units, timing, location, and method.",BLUE),
+      ("Interpret",pts[2] if len(pts)>2 else "Connect the evidence to mechanism without exceeding the stated limits.",ORANGE),
+      ("Avoid",gs[0] if gs else "Do not turn a contextual relationship into a universal diagnosis or target.",RED),
+    ]
+    coords=[(90,230,760,500),(840,230,1510,500),(90,555,760,825),(840,555,1510,825)]
+    for (title,body,col),xy in zip(cards,coords): panel(d,xy,title,body,col)
+    if labs:
+        d.text((90,865),"REFERENCE TERMS: "+short(" · ".join(labs[:5]),115),font=font(18,True),fill=MUTED)
+
 def output_name(item):
     return f"{item['lessonId']}_{int(item['visualOrdinal']):02d}_{item['visualRole']}.png"
 
@@ -233,7 +282,7 @@ def main():
     chosen=pending[:max(0,args.limit)]
     OUT.mkdir(parents=True,exist_ok=True)
     results=[]
-    renderers={
+    family_renderers={
       'diagnostic-decision-tree':render_diagnostic,
       'mechanism-process-diagram':render_mechanism,
       'comparison-matrix':render_comparison,
@@ -243,11 +292,24 @@ def main():
       'postharvest-process-diagram':render_postharvest,
       'environment-response-chart':render_environment,
     }
+    role_renderers={
+      'core-concept-overview':render_overview,
+      'labeled-anatomy-or-structure':render_structure,
+      'mechanism-or-process-sequence':render_mechanism,
+      'measurement-or-data-reference':render_measurement,
+      'comparison-or-contrast':render_comparison,
+      'diagnostic-or-observation-example':render_diagnostic,
+      'environment-or-cultivation-context':render_environment,
+      'microscopy-or-detail-view':render_microscopy,
+      'misconception-correction':render_misconception,
+      'summary-reference-graphic':render_summary,
+    }
     for item in chosen:
         im,d=canvas(item)
         render_item=dict(item)
         render_item['purpose']=item.get('productionBrief') or item.get('teachingIntent') or item.get('purpose')
-        renderers.get(item.get('visualFamily'),render_mechanism)(render_item,im,d)
+        renderer=role_renderers.get(item.get('visualRole')) or family_renderers.get(item.get('visualFamily'),render_mechanism)
+        renderer(render_item,im,d)
         path=OUT/output_name(item)
         im.save(path,'PNG',optimize=True,dpi=(144,144))
         results.append({
