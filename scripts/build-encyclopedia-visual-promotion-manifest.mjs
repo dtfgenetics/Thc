@@ -21,8 +21,10 @@ const visualById=new Map((visualQueue.items||[]).map(x=>[x.lessonId,x]));
 
 for(const candidate of preflight.candidates||[]){
   const external=reviewById.get(candidate.lessonId);
-  const visualTask=external?.reviewTasks?.teachingVisual||{};
-  const decision=visualTask.reviewerDecision;
+  const visualReviewRoot=external?.reviewTasks?.teachingVisual||{};
+  const candidateTaskId=candidate.visualTaskId||`${candidate.lessonId}:${candidate.visualRole||'legacy'}:${candidate.visualOrdinal||0}`;
+  const visualTask=visualReviewRoot.visualReviews?.[candidateTaskId]||{};
+  const decision=visualTask.decision;
   const reviewerId=visualTask.reviewerId;
   const reviewedAt=visualTask.reviewedAt;
   const reviewNotes=visualTask.reviewNotes;
@@ -34,9 +36,12 @@ for(const candidate of preflight.candidates||[]){
   const expectedTarget=String(candidate.targetRepositoryPath||'');
   const assetPresent=assetPaths.includes(expectedTarget) && fs.existsSync(path.join(root,expectedTarget));
   const eligible=Boolean(candidate.machinePreflightPassed) && reviewerEvidenceComplete && assetPresent;
-  if(decision==='approved'&&!reviewerEvidenceComplete) errors.push(`${candidate.lessonId}: approval is incomplete without reviewer identity, date, notes, and all six controlled review checks`);
+  if(decision==='approved'&&!reviewerEvidenceComplete) errors.push(`${candidateTaskId}: approval is incomplete without reviewer identity, date, notes, and all six controlled review checks`);
   rows.push({
     lessonId:candidate.lessonId,
+    visualTaskId:candidateTaskId,
+    visualRole:candidate.visualRole||null,
+    visualOrdinal:candidate.visualOrdinal||null,
     targetRepositoryPath:candidate.targetRepositoryPath,
     machinePreflightPassed:Boolean(candidate.machinePreflightPassed),
     candidateAssetPresent:assetPresent,
@@ -58,7 +63,7 @@ const output={
   schemaVersion:'1.0.0',
   artifactId:'thc-encyclopedia-visual-promotion-manifest',
   generatedBy:'scripts/build-encyclopedia-visual-promotion-manifest.mjs',
-  boundary:'This manifest can identify externally approved visual assets but never writes public assets, never invents reviewer evidence, and never grants publication authorization. Promotion eligibility also requires the exact target raster to exist in the canonical visual queue/repository.',
+  boundary:'This manifest evaluates each visual task independently. Approval of one role never authorizes sibling visuals for the same lesson. It never writes public assets, invents reviewer evidence, or grants publication authorization; eligibility also requires the exact target raster to exist in the canonical queue/repository.',
   summary:{
     candidateCount:rows.length,
     machinePreflightPassed:rows.filter(x=>x.machinePreflightPassed).length,
