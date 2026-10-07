@@ -451,6 +451,15 @@ jobs:
               .addRaw(`Advanced ${process.env.CHECKPOINT_TAG} to ${sha}. Future automatic releases will include every production-owned change after this commit.`)
               .write();
 
+      - name: Rebuild release plan file for observability
+        if: always()
+        env:
+          RELEASE_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'auto' }}
+          RELEASE_BASE: ''
+          RELEASE_FALLBACK_BASE: ${{ github.event_name == 'push' && github.event.before || '' }}
+        shell: bash
+        run: node scripts/plan-dtfseeds-release.mjs --mode="$RELEASE_MODE" --base="$RELEASE_BASE" --fallback-base="$RELEASE_FALLBACK_BASE" --head="$GITHUB_SHA"
+
       - name: Build release observability ledger
         id: release_observability
         if: always()
