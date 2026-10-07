@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execFileSync } from 'node:child_process';
-import { readFileSync, appendFileSync } from 'node:fs';
+import { readFileSync, appendFileSync, writeFileSync } from 'node:fs';
 
 const args = Object.fromEntries(process.argv.slice(2).map((arg) => {
   const normalized = arg.replace(/^--/, '');
@@ -109,8 +109,11 @@ const plan = {
   changedFiles: files
 };
 
-const compact = JSON.stringify(plan);
-console.log(JSON.stringify(plan, null, 2));
+const pretty = JSON.stringify(plan, null, 2);
+console.log(pretty);
+if (process.env.RUNNER_TEMP) {
+  writeFileSync(`${process.env.RUNNER_TEMP}/dtfseeds-release-plan.json`, `${pretty}\n`);
+}
 
 if (process.env.GITHUB_OUTPUT) {
   appendFileSync(process.env.GITHUB_OUTPUT, `deploy=${deploy}\n`);
@@ -118,5 +121,4 @@ if (process.env.GITHUB_OUTPUT) {
   appendFileSync(process.env.GITHUB_OUTPUT, `wordpress=${lanes.wordpress}\n`);
   appendFileSync(process.env.GITHUB_OUTPUT, `education=${lanes.education}\n`);
   appendFileSync(process.env.GITHUB_OUTPUT, `harvest_outdoor=${lanes.harvestOutdoor}\n`);
-  appendFileSync(process.env.GITHUB_OUTPUT, `plan=${compact}\n`);
 }
