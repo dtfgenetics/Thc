@@ -22,6 +22,7 @@ import {
   type AuthenticatedSession,
 } from './remoteStore';
 import { createId, loadState, saveState } from './storage';
+import { growLensVisionApi, type MoondreamVisualObservation } from './moondreamObservation';
 import type { ObservationPlantLocation, ObservationSeverity, ObservationTissue } from './types';
 import {
   createGrowLensObservationArtifacts,
@@ -56,6 +57,8 @@ export default function CameraObservationWidget() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [visionObservation, setVisionObservation] = useState<MoondreamVisualObservation | null>(null);
+  const [visionBusy, setVisionBusy] = useState(false);
 
   const state = loadState();
   const diagnosisResults = useMemo(() => diagnoseSymptoms(selectedSymptoms), [selectedSymptoms]);
@@ -135,6 +138,7 @@ export default function CameraObservationWidget() {
       const result = await processImage(file);
       if (previewUrl) URL.revokeObjectURL(previewUrl);
       setProcessed(result);
+      setVisionObservation(null);
       setPreviewUrl(URL.createObjectURL(result.blob));
       setSourceName(file.name);
       setMessage(`Photo prepared: ${result.width} × ${result.height}, ${formatBytes(result.outputBytes)}.`);
@@ -145,6 +149,29 @@ export default function CameraObservationWidget() {
     } finally {
       setBusy(false);
       event.target.value = '';
+    }
+  }
+
+  async function analyzePreparedPhoto(): Promise<void> {
+    if (!processed) {
+      setErrorMessage('Choose or capture a photo first.');
+      return;
+    }
+    clearMessages();
+    setVisionBusy(true);
+    try {
+      const activeSession = await resolveAuthenticatedSession();
+      if (!activeSession) {
+        throw new Error('Sign in to use AI visual observation. GrowLens photo capture still works offline without AI.');
+      }
+      const observation = await growLensVisionApi.analyze(processed.blob, activeSession.csrfToken);
+      setVisionObservation(observation);
+      setMessage('AI visual observation completed. Review it as visible evidence, not a diagnosis.');
+    } catch (error) {
+      setVisionObservation(null);
+      setErrorMessage(readableError(error));
+    } finally {
+      setVisionBusy(false);
     }
   }
 
@@ -215,6 +242,7 @@ export default function CameraObservationWidget() {
       const refreshed = await listPhotos();
       setAssets(refreshed);
       setProcessed(null);
+      setVisionObservation(null);
       if (previewUrl) URL.revokeObjectURL(previewUrl);
       setPreviewUrl('');
       setSourceName('');
@@ -321,6 +349,8 @@ export default function CameraObservationWidget() {
                 <label>Plant<select value={plantId} onChange={(event) => setPlantId(event.target.value)}><option value="">Unassigned observation</option>{state.plants.map((plant) => <option key={plant.id} value={plant.id}>{plant.name} · {plant.strain}</option>)}</select></label>
                 <label className="camera-file-input">Photo<input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleFile} /><span>{busy ? 'Processing…' : 'Use camera or choose photo'}</span></label>
                 {previewUrl ? <figure className="camera-preview"><img src={previewUrl} alt="Prepared plant observation" /><figcaption>{sourceName} · metadata removed by re-encoding</figcaption></figure> : null}
+                {processed ? <button className="secondary-button" type="button" disabled={busy || visionBusy} onClick={analyzePreparedPhoto}>{visionBusy ? 'Analyzing visible evidence…' : 'Analyze visible evidence with AI'}</button> : null}
+                {visionObservation ? <div className="warning-note"><strong>AI visual observation</strong><span>{visionObservation.summary}</span><small>Moondream reports visible image features only. It does not confirm a deficiency, pest, pathogen, disease, or treatment.</small></div> : null}
                 <fieldset className="symptom-grid"><legend>Visible symptoms</legend>{symptomOptions.map(([code, label]) => <label className={selectedSymptoms.includes(code) ? 'symptom-option selected' : 'symptom-option'} key={code}><input type="checkbox" checked={selectedSymptoms.includes(code)} onChange={() => toggleSymptom(code)} /><span>{label}</span></label>)}</fieldset>
                 <label>Observed severity<select value={severity} onChange={(event) => setSeverity(event.target.value as ObservationSeverity | '')}><option value="">Not recorded</option><option value="mild">Mild</option><option value="moderate">Moderate</option><option value="severe">Severe</option></select></label>
                 <label>Location on plant<select value={locationOnPlant} onChange={(event) => setLocationOnPlant(event.target.value as ObservationPlantLocation | '')}><option value="">Not recorded</option><option value="new-growth">New growth</option><option value="upper-canopy">Upper canopy</option><option value="middle-canopy">Middle canopy</option><option value="lower-canopy">Lower canopy</option><option value="whole-plant">Whole plant</option><option value="flowers">Flowers</option><option value="root-zone">Root zone</option></select></label>
