@@ -34,7 +34,6 @@ jobs:
       wordpress: ${{ steps.plan.outputs.wordpress }}
       education: ${{ steps.plan.outputs.education }}
       harvest_outdoor: ${{ steps.plan.outputs.harvest_outdoor }}
-      plan: ${{ steps.plan.outputs.plan }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -56,8 +55,6 @@ jobs:
           node scripts/plan-dtfseeds-release.mjs --mode="$RELEASE_MODE" --base="$RELEASE_BASE" --fallback-base="$RELEASE_FALLBACK_BASE" --head="$GITHUB_SHA"
 
       - name: Record release plan
-        env:
-          RELEASE_PLAN: ${{ steps.plan.outputs.plan }}
         shell: bash
         run: |
           {
@@ -73,7 +70,7 @@ jobs:
             echo '- Automatic releases include every production-owned change since the last successful `dtfseeds-production` checkpoint.'
             echo
             echo '```json'
-            printf '%s\n' "$RELEASE_PLAN"
+            cat "$RUNNER_TEMP/dtfseeds-release-plan.json"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
