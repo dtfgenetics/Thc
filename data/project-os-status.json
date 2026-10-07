@@ -1,6 +1,6 @@
 {
   "schema": "dtf-project-os-status@1",
-  "generatedAt": "2026-10-06T10:00:00Z",
+  "generatedAt": "2026-10-07T16:28:00Z",
   "portfolioState": "release-closure",
   "canonicalRepositories": {
     "production": {
@@ -60,9 +60,14 @@
     "growLens": {
       "state": "integration-verification",
       "active": [
-        "PR #1914 current-main canonical observation producer replay"
+        "PR #2090 merged measured-context canonical observation producer",
+        "Public /growlens/ route reachable on 2026-10-07 with cultivation journal, environmental measurements, observation history, diagnosis linkage, and local-first workflow"
       ],
-      "contract": "thc-cultivation-record@1 plant-observation"
+      "contract": "thc-cultivation-record@1 plant-observation",
+      "remaining": [
+        "verify exact deployed release fingerprint contains the GrowLens merge",
+        "run registered live GrowLens behavior verification against production"
+      ]
     },
     "releaseObservability": {
       "state": "merged",
