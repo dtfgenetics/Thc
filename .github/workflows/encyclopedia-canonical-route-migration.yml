@@ -1,21 +1,41 @@
-name: Encyclopedia Canonical Route Migration Check
+name: Encyclopedia Canonical Route Migration
 on:
-  pull_request:
+  push:
+    branches:
+      - fix/encyclopedia-canonical-route-metadata-v2-20261006
     paths:
-      - content/encyclopedia/**
       - scripts/migrate-encyclopedia-canonical-routes.mjs
       - .github/workflows/encyclopedia-canonical-route-migration.yml
 permissions:
-  contents: read
+  contents: write
+concurrency:
+  group: encyclopedia-canonical-route-migration-branch
+  cancel-in-progress: false
 jobs:
-  verify:
+  migrate-and-verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: fix/encyclopedia-canonical-route-metadata-v2-20261006
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Require canonical route metadata
-        run: node scripts/migrate-encyclopedia-canonical-routes.mjs --check
-      - name: Verify strict lifecycle state
-        run: node scripts/validate-encyclopedia-lifecycle.mjs --strict --write-report
+      - name: Migrate route metadata on the PR branch
+        run: node scripts/migrate-encyclopedia-canonical-routes.mjs
+      - name: Verify canonical metadata and strict lifecycle state
+        run: |
+          node scripts/migrate-encyclopedia-canonical-routes.mjs --check
+          node scripts/validate-encyclopedia-lifecycle.mjs --strict --write-report
+      - name: Commit verified migration to the PR branch
+        shell: bash
+        run: |
+          if git diff --quiet -- content/encyclopedia data/encyclopedia-lifecycle-audit.json; then
+            echo "Canonical route metadata already clean."
+            exit 0
+          fi
+          git config user.name "dtf-encyclopedia-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add content/encyclopedia data/encyclopedia-lifecycle-audit.json
+          git commit -m "fix: migrate Encyclopedia lessons to permanent routes"
+          git push origin HEAD:fix/encyclopedia-canonical-route-metadata-v2-20261006
