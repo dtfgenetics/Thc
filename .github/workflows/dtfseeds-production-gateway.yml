@@ -56,10 +56,10 @@ jobs:
           node scripts/plan-dtfseeds-release.mjs --mode="$RELEASE_MODE" --base="$RELEASE_BASE" --fallback-base="$RELEASE_FALLBACK_BASE" --head="$GITHUB_SHA"
 
       - name: Record release plan
-        env:
-          RELEASE_PLAN: ${{ steps.plan.outputs.plan }}
         shell: bash
         run: |
+          plan_file="$RUNNER_TEMP/dtfseeds-release-plan.json"
+          printf '%s' '${{ steps.plan.outputs.plan }}' > "$plan_file"
           {
             echo '## DTFSeeds release plan'
             echo
@@ -73,7 +73,8 @@ jobs:
             echo '- Automatic releases include every production-owned change since the last successful `dtfseeds-production` checkpoint.'
             echo
             echo '```json'
-            printf '%s\n' "$RELEASE_PLAN"
+            cat "$plan_file"
+            echo
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
