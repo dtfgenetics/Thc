@@ -61,6 +61,12 @@ function decodeHtml(value=''){
     .replaceAll('&amp;','&')
     .replaceAll('&quot;','"')
     .replaceAll('&#39;',"'")
+    .replace(/&#(?:8216|8217);/g,"'")
+    .replace(/&#(?:8220|8221);/g,'"')
+    .replace(/&#(?:8211|8212);/g,'-')
+    .replace(/&#x(?:2018|2019);/gi,"'")
+    .replace(/&#x(?:201c|201d);/gi,'"')
+    .replace(/&#x(?:2013|2014);/gi,'-')
     .replace(/\s+/g,' ')
     .trim();
 }
