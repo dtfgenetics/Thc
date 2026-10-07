@@ -13,7 +13,7 @@ import {
   deletePhoto,
   listPhotos,
   markPhotoUploaded,
-  putPhoto,
+  putPhotos,
   type LocalPhotoAsset,
 } from './photoStore';
 import {
@@ -32,6 +32,14 @@ function readableError(error: unknown): string {
   return error instanceof Error ? error.message : 'The photo action failed.';
 }
 
+type PreparedPhoto = {
+  processed: ProcessedImage;
+  previewUrl: string;
+  sourceName: string;
+};
+
+const MAX_OBSERVATION_PHOTOS = 6;
+
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
@@ -47,9 +55,7 @@ export default function CameraObservationWidget() {
   const [locationOnPlant, setLocationOnPlant] = useState<ObservationPlantLocation | ''>('');
   const [tissue, setTissue] = useState<ObservationTissue | ''>('');
   const [notes, setNotes] = useState('');
-  const [processed, setProcessed] = useState<ProcessedImage | null>(null);
-  const [previewUrl, setPreviewUrl] = useState('');
-  const [sourceName, setSourceName] = useState('');
+  const [preparedPhotos, setPreparedPhotos] = useState<PreparedPhoto[]>([]);
   const [assets, setAssets] = useState<LocalPhotoAsset[]>([]);
   const [assetUrls, setAssetUrls] = useState<Record<string, string>>({});
   const [session, setSession] = useState<AuthenticatedSession | null>(null);
@@ -100,8 +106,8 @@ export default function CameraObservationWidget() {
   }, [assets]);
 
   useEffect(() => () => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-  }, [previewUrl]);
+    for (const photo of preparedPhotos) URL.revokeObjectURL(photo.previewUrl);
+  }, [preparedPhotos]);
 
   function clearMessages(): void {
     setMessage('');
@@ -127,20 +133,27 @@ export default function CameraObservationWidget() {
   }
 
   async function handleFile(event: ChangeEvent<HTMLInputElement>): Promise<void> {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(event.target.files ?? []).slice(0, MAX_OBSERVATION_PHOTOS);
+    if (!files.length) return;
     clearMessages();
     setBusy(true);
     try {
-      const result = await processImage(file);
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      setProcessed(result);
-      setPreviewUrl(URL.createObjectURL(result.blob));
-      setSourceName(file.name);
-      setMessage(`Photo prepared: ${result.width} × ${result.height}, ${formatBytes(result.outputBytes)}.`);
+      const processedBatch = await Promise.all(files.map(async (source) => ({
+        processed: await processImage(source),
+        sourceName: source.name,
+      })));
+      for (const photo of preparedPhotos) URL.revokeObjectURL(photo.previewUrl);
+      const next = processedBatch.map(({ processed, sourceName }) => ({
+        processed,
+        sourceName,
+        previewUrl: URL.createObjectURL(processed.blob),
+      }));
+      setPreparedPhotos(next);
+      const totalBytes = next.reduce((sum, photo) => sum + photo.processed.outputBytes, 0);
+      setMessage(`${next.length} photo${next.length === 1 ? '' : 's'} prepared · ${formatBytes(totalBytes)} total. Capture a whole-plant view plus close-ups when useful.`);
     } catch (error) {
-      setProcessed(null);
-      setSourceName('');
+      for (const photo of preparedPhotos) URL.revokeObjectURL(photo.previewUrl);
+      setPreparedPhotos([]);
       setErrorMessage(readableError(error));
     } finally {
       setBusy(false);
@@ -155,18 +168,17 @@ export default function CameraObservationWidget() {
 
   async function saveObservation(event: FormEvent): Promise<void> {
     event.preventDefault();
-    if (!processed) {
-      setErrorMessage('Choose or capture a photo first.');
+    if (!preparedPhotos.length) {
+      setErrorMessage('Choose or capture at least one photo first.');
       return;
     }
 
     clearMessages();
     setBusy(true);
     const observationId = createId('observation');
-    const photoId = createId('photo');
     const capturedAt = new Date().toISOString();
-    const asset: LocalPhotoAsset = {
-      id: photoId,
+    const observationAssets: LocalPhotoAsset[] = preparedPhotos.map(({ processed }) => ({
+      id: createId('photo'),
       blob: processed.blob,
       plantId: plantId || null,
       observationId,
@@ -176,10 +188,10 @@ export default function CameraObservationWidget() {
       mimeType: processed.mimeType,
       bytes: processed.outputBytes,
       uploaded: false,
-    };
+    }));
 
     try {
-      await putPhoto(asset);
+      await putPhotos(observationAssets);
       const current = loadState();
       const artifacts = createGrowLensObservationArtifacts({
         id: observationId,
@@ -190,7 +202,7 @@ export default function CameraObservationWidget() {
         severity,
         locationOnPlant,
         tissue,
-        photoIds: [photoId],
+        photoIds: observationAssets.map((asset) => asset.id),
         observedAt: capturedAt,
       }, current);
       const next = {
@@ -201,31 +213,29 @@ export default function CameraObservationWidget() {
       saveState(next);
       publishGrowLensCanonicalObservation(artifacts.canonicalRecord);
 
-      let uploaded = false;
+      let uploadedCount = 0;
       const activeSession = await resolveAuthenticatedSession();
       if (activeSession) {
-        try {
-          await uploadAsset(asset, activeSession);
-          uploaded = true;
-        } catch {
-          uploaded = false;
-        }
+        const uploads = await Promise.allSettled(
+          observationAssets.map((asset) => uploadAsset(asset, activeSession)),
+        );
+        uploadedCount = uploads.filter((result) => result.status === 'fulfilled').length;
       }
 
       const refreshed = await listPhotos();
       setAssets(refreshed);
-      setProcessed(null);
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      setPreviewUrl('');
-      setSourceName('');
+      for (const photo of preparedPhotos) URL.revokeObjectURL(photo.previewUrl);
+      setPreparedPhotos([]);
       setNotes('');
       setSelectedSymptoms([]);
       setSeverity('');
       setLocationOnPlant('');
       setTissue('');
-      setMessage(uploaded
-        ? 'Observation saved locally and uploaded privately.'
-        : 'Observation saved locally. Private upload remains pending.');
+      setMessage(uploadedCount === observationAssets.length
+        ? `Observation saved with ${observationAssets.length} photo${observationAssets.length === 1 ? '' : 's'} and all private uploads completed.`
+        : uploadedCount > 0
+          ? `Observation saved with ${observationAssets.length} photos; ${uploadedCount} uploaded privately and the rest remain pending.`
+          : `Observation saved locally with ${observationAssets.length} photo${observationAssets.length === 1 ? '' : 's'}. Private uploads remain pending.`);
     } catch (error) {
       setErrorMessage(readableError(error));
     } finally {
@@ -319,14 +329,14 @@ export default function CameraObservationWidget() {
             <div className="camera-columns">
               <form className="camera-form" onSubmit={saveObservation}>
                 <label>Plant<select value={plantId} onChange={(event) => setPlantId(event.target.value)}><option value="">Unassigned observation</option>{state.plants.map((plant) => <option key={plant.id} value={plant.id}>{plant.name} · {plant.strain}</option>)}</select></label>
-                <label className="camera-file-input">Photo<input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={handleFile} /><span>{busy ? 'Processing…' : 'Use camera or choose photo'}</span></label>
-                {previewUrl ? <figure className="camera-preview"><img src={previewUrl} alt="Prepared plant observation" /><figcaption>{sourceName} · metadata removed by re-encoding</figcaption></figure> : null}
+                <label className="camera-file-input">Photos<input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple onChange={handleFile} /><span>{busy ? 'Processing…' : `Use camera or choose up to ${MAX_OBSERVATION_PHOTOS} photos`}</span></label>
+                {preparedPhotos.length ? <div className="camera-gallery" aria-label="Prepared observation photos">{preparedPhotos.map((photo, index) => <figure className="camera-preview" key={photo.previewUrl}><img src={photo.previewUrl} alt={`Prepared plant observation ${index + 1} of ${preparedPhotos.length}`} /><figcaption>{photo.sourceName} · {photo.processed.width} × {photo.processed.height} · metadata removed</figcaption></figure>)}</div> : null}
                 <fieldset className="symptom-grid"><legend>Visible symptoms</legend>{symptomOptions.map(([code, label]) => <label className={selectedSymptoms.includes(code) ? 'symptom-option selected' : 'symptom-option'} key={code}><input type="checkbox" checked={selectedSymptoms.includes(code)} onChange={() => toggleSymptom(code)} /><span>{label}</span></label>)}</fieldset>
                 <label>Observed severity<select value={severity} onChange={(event) => setSeverity(event.target.value as ObservationSeverity | '')}><option value="">Not recorded</option><option value="mild">Mild</option><option value="moderate">Moderate</option><option value="severe">Severe</option></select></label>
                 <label>Location on plant<select value={locationOnPlant} onChange={(event) => setLocationOnPlant(event.target.value as ObservationPlantLocation | '')}><option value="">Not recorded</option><option value="new-growth">New growth</option><option value="upper-canopy">Upper canopy</option><option value="middle-canopy">Middle canopy</option><option value="lower-canopy">Lower canopy</option><option value="whole-plant">Whole plant</option><option value="flowers">Flowers</option><option value="root-zone">Root zone</option></select></label>
                 <label>Observed tissue<select value={tissue} onChange={(event) => setTissue(event.target.value as ObservationTissue | '')}><option value="">Not recorded</option><option value="leaf">Leaf</option><option value="stem">Stem</option><option value="flower">Flower</option><option value="root">Root</option><option value="whole-plant">Whole plant</option></select></label>
                 <label>Context notes<textarea rows={4} value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Location, progression, recent changes, pH/EC, pests, irrigation…" /></label>
-                <button className="primary-button" type="submit" disabled={busy || !processed}>{busy ? 'Saving…' : 'Save photo observation'}</button>
+                <button className="primary-button" type="submit" disabled={busy || preparedPhotos.length === 0}>{busy ? 'Saving…' : `Save observation · ${preparedPhotos.length} photo${preparedPhotos.length === 1 ? '' : 's'}`}</button>
               </form>
 
               <aside className="camera-analysis">
