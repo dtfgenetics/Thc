@@ -222,6 +222,7 @@
     "verify:project-os-acceptance": "node scripts/validate-project-os-acceptance-manifests.mjs && node scripts/test-project-os-acceptance-manifests.mjs",
     "build:project-os-fingerprint": "node scripts/build-project-os-release-fingerprint.mjs",
     "verify:project-os-release-proof": "node scripts/test-project-os-release-fingerprint.mjs && node scripts/test-project-os-release-fingerprint-live.mjs",
-    "verify:local-ai-integration": "node scripts/validate-local-ai-integration.mjs"
+    "verify:local-ai-integration": "node scripts/validate-local-ai-integration.mjs && node scripts/test-local-ai-worker-plan.mjs",
+    "plan:local-ai-worker": "node scripts/plan-local-ai-worker.mjs"
   }
 }
