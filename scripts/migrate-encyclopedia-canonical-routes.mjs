@@ -6,6 +6,8 @@ import { encyclopediaLessonRoute } from './lib/encyclopedia-routes.mjs';
 const ROOT=process.cwd();
 const ENC=path.join(ROOT,'content','encyclopedia');
 const checkOnly=process.argv.includes('--check');
+const apply=process.argv.includes('--apply');
+if(!checkOnly&&!apply) throw new Error('Refusing to rewrite lesson metadata without --apply. Use --check in CI or --apply for an intentional migration.');
 const files=[];
 function walk(dir){
   for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
