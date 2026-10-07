@@ -109,7 +109,7 @@ const plan = {
   changedFiles: files
 };
 
-const compact = JSON.stringify(plan);
+const outputPlan = { ...plan, changedFileCount: files.length };\ndelete outputPlan.changedFiles;\nconst compact = JSON.stringify(outputPlan);
 console.log(JSON.stringify(plan, null, 2));
 
 if (process.env.GITHUB_OUTPUT) {
