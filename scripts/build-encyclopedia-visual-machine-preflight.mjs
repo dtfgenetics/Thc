@@ -30,6 +30,9 @@ for(const file of files){
     if(!passed) errors.push(...Object.entries(checks).filter(([,ok])=>!ok).map(([name])=>`${item.lessonId}: ${name}`));
     rows.push({
       lessonId:item.lessonId,
+      visualTaskId:item.visualTaskId||`${item.lessonId}:${item.visualRole||'legacy'}:${item.visualOrdinal||0}`,
+      visualRole:item.visualRole||null,
+      visualOrdinal:item.visualOrdinal||null,
       batchId:batch.batchId,
       title:item.title,
       visualFamily:item.visualFamily,
