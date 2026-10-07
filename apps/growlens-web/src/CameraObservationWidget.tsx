@@ -58,7 +58,7 @@ export default function CameraObservationWidget() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const state = loadState();
-  const diagnosisResults = useMemo(() => diagnoseSymptoms(selectedSymptoms), [selectedSymptoms]);
+  const diagnosisResults = useMemo(() => diagnoseSymptoms(selectedSymptoms, { locationOnPlant, tissue }), [selectedSymptoms, locationOnPlant, tissue]);
   const referencedPhotoIds = useMemo(() => {
     const ids = new Set<string>();
     for (const observation of state.observations) {
@@ -331,7 +331,7 @@ export default function CameraObservationWidget() {
 
               <aside className="camera-analysis">
                 <h3>Current possibilities</h3>
-                {diagnosisResults.length ? diagnosisResults.map((result) => <article className="camera-diagnosis" key={result.cause}><div><strong>{result.cause}</strong><span className={`confidence ${result.confidence}`}>{result.confidence}</span></div><small>{result.verifyNext[0]}</small></article>) : <p>Select visible symptoms to compare possible causes. A photo alone does not confirm a deficiency, pest, or disease.</p>}
+                {diagnosisResults.length ? diagnosisResults.map((result) => <article className="camera-diagnosis" key={result.cause}><div><strong>{result.cause}</strong><span className={`confidence ${result.confidence}`}>{result.confidence} · {result.evidenceQuality}</span></div><small>{result.verifyNext[0]}</small></article>) : <p>Select visible symptoms to compare possible causes. A photo alone does not confirm a deficiency, pest, or disease.</p>}
                 <div className="warning-note"><strong>Evidence rule</strong><span>Verify root-zone conditions, environment, symptom location, and pest evidence before treatment.</span></div>
               </aside>
             </div>
