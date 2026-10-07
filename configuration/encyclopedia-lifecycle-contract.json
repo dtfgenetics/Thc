@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "id": "thc-encyclopedia-lifecycle-v1",
+  "purpose": "Single machine-readable lifecycle vocabulary for canonical THC Encyclopedia lessons. Publication, scientific review, visual review, assessment review, accessibility review, and live verification are independent states.",
+  "canonicalPublicRoutePattern": "/learn/encyclopedia/thc-enc-{NNN}/",
+  "fields": {
+    "publication": [
+      "not_authorized",
+      "authorized",
+      "published"
+    ],
+    "scienceReview": [
+      "not_started",
+      "in_review",
+      "reviewed_with_limitations",
+      "independently_approved"
+    ],
+    "visual": [
+      "not_required",
+      "needed",
+      "candidate",
+      "approved",
+      "published"
+    ],
+    "assessment": [
+      "not_started",
+      "draft",
+      "rationale_complete",
+      "independent_review_pending",
+      "approved"
+    ],
+    "accessibility": [
+      "not_started",
+      "machine_checked",
+      "human_review_pending",
+      "approved"
+    ],
+    "liveVerification": [
+      "not_applicable",
+      "pending",
+      "passed",
+      "failed"
+    ]
+  },
+  "invariants": [
+    "publication=published does not imply scienceReview=independently_approved",
+    "scienceReview=independently_approved requires reviewControl.independentApproval=true",
+    "canonical public lesson routes use permanent THC-ENC IDs rather than mutable title slugs",
+    "human-readable status text must not claim publication is unauthorized when publicationAuthorized=true",
+    "legacy route metadata may be detected during migration but must never override the generated canonical public route"
+  ]
+}

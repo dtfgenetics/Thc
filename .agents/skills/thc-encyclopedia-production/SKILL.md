@@ -4,7 +4,7 @@ description: Build, audit, repair, expand, index, render, validate, and safely p
 compatibility: dtfgenetics/Thc with GitHub/repository access. Use current authoritative sources for scientific updates and repository release controls for publication.
 metadata:
   author: dtfgenetics
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # THC Encyclopedia Production
@@ -115,7 +115,7 @@ A lesson is not production-quality merely because every field exists. Before it 
 - sources/evidence: normally at least three source notes, prioritizing Tier 1-3 material and distinguishing cannabis-specific evidence from general horticulture;
 - quantitative claims: units, context, population/system, and whether the value is regulatory, evidence-based, manufacturer-specific, cultivar-specific, or a practical starting range;
 - diagnostic topics: differential explanations and disconfirming evidence, not symptom-color matching;
-- visuals: teaching purpose, caption, alt text, factual labels, rights status, and QA state;
+- visuals: a controlled multi-visual teaching set with 8 educational visuals minimum and 10 as the production target; each visual needs a distinct teaching role, caption, alt text, factual labels, evidence/source anchors, rights status, and QA state;
 - assessment: mechanism/application, measurement/verification, and misconception/evidence-limit reasoning.
 
 These are default production gates, not an excuse for filler. Shorter lessons require a topic-specific justification; longer lessons still fail if they repeat generic wording instead of teaching mechanism, evidence, and application.
@@ -172,7 +172,7 @@ Every published lesson should use the canonical renderer. It should provide:
 - measure-and-record panel;
 - misconceptions/corrections;
 - evidence limits;
-- real approved teaching visual when available;
+- approved multi-visual teaching set when available, rendered by instructional role rather than one generic image;
 - related tools;
 - related lessons;
 - knowledge check;
@@ -201,18 +201,56 @@ Encyclopedia-to-course links are navigation aids only. A lesson must remain comp
 
 ### 6. Visual production
 
-Use the lesson visual contract. A visual brief needs:
-- asset ID;
-- teaching purpose;
-- factual/label requirements;
-- type;
-- placement;
-- caption;
-- alt text;
-- rights status;
-- QA status.
+Visual depth is a first-class lesson requirement, not a single-image checkbox.
 
-Only approved/verified assets count as scorecard visual coverage.
+For every controlled lesson, plan **10 distinct educational visual roles** and treat **8 completed role-addressed visuals as the minimum depth gate** and **10 as the production target**. Across the 420-lesson controlled base this means 3,360 visuals minimum and 4,200 target visuals. Existing legacy artwork does not satisfy a role merely because a file exists; it must be explicitly classified to that role and pass the same evidence and QA controls.
+
+The controlled roles are:
+1. core-concept overview;
+2. labeled anatomy or structure;
+3. mechanism or process sequence;
+4. measurement or data reference;
+5. comparison or contrast;
+6. diagnostic or observation example;
+7. environment or cultivation context;
+8. microscopy or detail view;
+9. misconception correction;
+10. summary reference graphic.
+
+Do not create ten cosmetic variants of one composition. Each role must materially change what the learner can understand, observe, compare, measure, diagnose, or remember. Choose presentation/layout by educational role while preserving lesson-specific scientific context. Anatomy, process, measurement, comparison, diagnostic, environmental, microscopy, misconception, and summary roles should look and function differently when the subject supports those distinctions.
+
+Every role-specific visual task needs:
+- stable lesson ID plus visual ordinal and role;
+- role-specific teaching intent;
+- role-specific production brief;
+- factual/label requirements;
+- source/evidence anchors sufficient to verify the depicted claims;
+- raster production target using the canonical role-addressed filename;
+- lesson-specific caption;
+- lesson-specific alt text;
+- placement/use intent;
+- rights/provenance state;
+- asset QA state;
+- independent science review state where required.
+
+Canonical generated candidate filenames use:
+`THC-ENC-###_NN_<visual-role>.png`
+
+Generated or discovered artwork remains **review-pending**. Generation, successful CI, file existence, or metadata completeness must never auto-approve science, accessibility, rights, or final visual quality. Only approved/verified assets count as approved scorecard visual coverage.
+
+Prefer original educational diagrams, labeled illustrations, charts, microscopy/detail representations, anatomy views, process diagrams, diagnostic comparisons, and measurement references over decorative imagery. Do not copy copyrighted scientific figures merely to satisfy the visual count. When external references inform an original visual, retain useful provenance/source anchors.
+
+Use the controlled production pipeline rather than hand-marking lessons complete:
+- build the visual production queue;
+- verify the 8-minimum/10-target depth contract;
+- render missing role-addressed raster candidates in controlled batches;
+- validate dimensions, raster format, role identity, metadata, and uniqueness;
+- rebuild the queue against produced candidates;
+- preserve review-pending state;
+- integrate candidate binaries only through the protected main/release lane;
+- send candidates through explicit visual/science/accessibility/rights review before approval.
+
+A lesson below 8 role-addressed approved visuals remains visually incomplete. A lesson with 8 or 9 may meet minimum depth but still has target work remaining. Production priority reaches zero only when all 10 controlled roles are satisfied.
 
 ### 7. Assessments
 
@@ -284,6 +322,9 @@ npm run verify:encyclopedia-content-control
 npm run verify:encyclopedia-content-strict
 npm run verify:encyclopedia-assessments
 npm run verify:encyclopedia-renderer
+npm run build:encyclopedia-visual-queue
+npm run verify:encyclopedia-visual-depth
+npm run verify:encyclopedia-visual-renderer-coverage
 npm run verify:project-os
 ```
 
@@ -306,6 +347,7 @@ The encyclopedia system is healthy when:
 - published lessons use the canonical renderer;
 - search covers lesson content, not only titles;
 - relevant tools and atlases connect back to lessons, while course links remain optional navigation;
+- every lesson has a controlled 10-role visual plan, at least 8 approved role-addressed educational visuals for minimum depth, and a measurable path to the 10-visual target;
 - review-only content remains protected;
 - new 421+ topics can be added without changing old identities;
 - validation fails closed when required contracts drift;

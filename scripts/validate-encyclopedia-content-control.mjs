@@ -4,6 +4,7 @@ import path from 'node:path';
 import { effectiveLessonAssessment } from './lib/encyclopedia-assessment-v2.mjs';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 import { CORE_ENCYCLOPEDIA_LESSON_COUNT, loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
+import { encyclopediaLessonRoute } from './lib/encyclopedia-routes.mjs';
 
 const root=process.cwd();
 const strictQuality=process.argv.includes('--strict-quality');
@@ -54,10 +55,9 @@ for(const lesson of lessons){
     assert(String(lesson.requiredTeachingVisual||'')===current.teachingVisual,`${id}: teaching visual mismatch; repo="${lesson.requiredTeachingVisual||''}", controlled="${current.teachingVisual}"`);
   }
 
-  if(lesson.route){
-    assert(!routes.has(lesson.route),`${id}: duplicate route ${lesson.route}`);
-    routes.add(lesson.route);
-  } else qualityIssues.push(`${id}: route missing`);
+  const canonicalRoute=encyclopediaLessonRoute(id);
+  assert(!routes.has(canonicalRoute),`${id}: duplicate canonical route ${canonicalRoute}`);
+  routes.add(canonicalRoute);
   if(lesson.slug){
     assert(!slugs.has(lesson.slug),`${id}: duplicate slug ${lesson.slug}`);
     slugs.add(lesson.slug);

@@ -6,31 +6,39 @@ on:
       batch_size:
         description: 'Maximum missing lesson visuals to render in this run'
         required: false
-        default: '40'
+        default: '72'
   push:
-    branches: [main]
+    branches:
+      - main
+      - 'improve/encyclopedia*'
     paths:
       - 'scripts/render-encyclopedia-visual-candidates.py'
+      - 'scripts/build-encyclopedia-visual-production-queue.mjs'
+      - 'scripts/validate-encyclopedia-visual-renderer-coverage.mjs'
+      - 'scripts/validate-encyclopedia-visual-production-queue.mjs'
       - '.github/workflows/encyclopedia-visual-candidate-production.yml'
 
 permissions:
-  actions: write
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
-  group: encyclopedia-visual-candidate-production
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  render:
-    name: Render next controlled candidate batch
+  verify:
+    name: Verify controlled candidate batch
     runs-on: ubuntu-latest
     timeout-minutes: 35
+    permissions:
+      contents: read
+    outputs:
+      rendered: ${{ steps.render.outputs.rendered }}
+      pending_after: ${{ steps.render.outputs.pending_after }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.ref }}
           fetch-depth: 0
 
       - uses: actions/setup-node@v4
@@ -47,16 +55,19 @@ jobs:
       - name: Refresh controlled visual queue from current canonical assets
         run: npm run build:encyclopedia-visual-queue
 
+      - name: Validate renderer family coverage
+        run: npm run verify:encyclopedia-visual-renderer-coverage
+
       - name: Render next missing candidate batch
         id: render
         shell: bash
         env:
-          REQUESTED_BATCH: ${{ inputs.batch_size || '40' }}
+          REQUESTED_BATCH: ${{ inputs.batch_size || '72' }}
         run: |
           set -euo pipefail
           limit="$REQUESTED_BATCH"
-          [[ "$limit" =~ ^[0-9]+$ ]] || limit=40
-          [[ "$limit" -ge 1 && "$limit" -le 50 ]] || limit=40
+          [[ "$limit" =~ ^[0-9]+$ ]] || limit=72
+          [[ "$limit" -ge 1 && "$limit" -le 96 ]] || limit=72
           report="$RUNNER_TEMP/encyclopedia-visual-render.json"
           python scripts/render-encyclopedia-visual-candidates.py --limit="$limit" --manifest="$report"
           rendered="$(node -p "require(process.argv[1]).rendered" "$report")"
@@ -79,8 +90,20 @@ jobs:
           report=json.load(open(sys.argv[1],encoding='utf-8'))
           if not report.get('candidateOnly') or report.get('approvalEffect')!='none':
               raise SystemExit('Visual generation report crossed the approval boundary')
+          seen=set()
           for row in report.get('results',[]):
+              role=row.get('visualRole')
+              ordinal=row.get('visualOrdinal')
+              if not role or not isinstance(ordinal,int) or ordinal < 1 or ordinal > 10:
+                  raise SystemExit(f'Candidate missing controlled visual role identity: {row}')
+              task=(row.get('lessonId'),role)
+              if task in seen: raise SystemExit(f'Duplicate visual task in render report: {task}')
+              seen.add(task)
+              expected=f"{row['lessonId']}_{ordinal:02d}_{role}.png"
               path=Path(row['path'])
+              if path.name != expected: raise SystemExit(f'Role-addressed filename mismatch: {path.name} != {expected}')
+              if not row.get('teachingIntent') or not row.get('altTextDraft') or not row.get('captionDraft'):
+                  raise SystemExit(f'Candidate missing role-specific teaching/accessibility metadata: {expected}')
               if not path.exists(): raise SystemExit(f'Missing candidate: {path}')
               with Image.open(path) as im:
                   if im.format!='PNG' or im.size!=(1600,1000):
@@ -96,8 +119,92 @@ jobs:
           npm run build:encyclopedia-visual-queue
           node scripts/validate-encyclopedia-visual-production-queue.mjs
 
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: encyclopedia-visual-candidate-verification-${{ github.run_id }}
+          path: ${{ steps.render.outputs.report }}
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report verification state
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          RENDERED: ${{ steps.render.outputs.rendered }}
+          PENDING: ${{ steps.render.outputs.pending_after }}
+        with:
+          script: |
+            const body=[
+              '## Encyclopedia visual candidate verification',
+              '',
+              `Result: **${process.env.STATUS}**`,
+              `Rendered in isolated verification workspace: **${process.env.RENDERED || '0'}**`,
+              `Remaining machine artwork queue: **${process.env.PENDING || 'unknown'}**`,
+              '',
+              'This job is read-only. Generated PNGs remain review-pending candidates and cannot be integrated by this job.'
+            ].join('\n');
+            await core.summary.addRaw(body).write();
+
+  produce:
+    name: Integrate controlled candidate batch on main
+    if: github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deterministic raster dependency
+        run: python -m pip install --disable-pip-version-check --no-cache-dir pillow==12.0.0
+
+      - name: Rebuild and validate current main queue
+        run: |
+          npm run build:encyclopedia-visual-queue
+          npm run verify:encyclopedia-visual-renderer-coverage
+
+      - name: Render production candidate batch
+        id: render
+        shell: bash
+        env:
+          REQUESTED_BATCH: ${{ inputs.batch_size || '72' }}
+        run: |
+          set -euo pipefail
+          limit="$REQUESTED_BATCH"
+          [[ "$limit" =~ ^[0-9]+$ ]] || limit=72
+          [[ "$limit" -ge 1 && "$limit" -le 96 ]] || limit=72
+          report="$RUNNER_TEMP/encyclopedia-visual-render.json"
+          python scripts/render-encyclopedia-visual-candidates.py --limit="$limit" --manifest="$report"
+          rendered="$(node -p "require(process.argv[1]).rendered" "$report")"
+          pending_after="$(node -p "require(process.argv[1]).pendingAfter" "$report")"
+          echo "rendered=$rendered" >> "$GITHUB_OUTPUT"
+          echo "pending_after=$pending_after" >> "$GITHUB_OUTPUT"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+
+      - name: Rebuild and validate queue with production candidates
+        if: steps.render.outputs.rendered != '0'
+        run: |
+          npm run build:encyclopedia-visual-queue
+          node scripts/validate-encyclopedia-visual-production-queue.mjs
+
       - name: Safely integrate candidate binaries through moving-main PR lane
-        id: integrate
         if: steps.render.outputs.rendered != '0'
         shell: bash
         env:
@@ -114,44 +221,14 @@ jobs:
             --message="assets(encyclopedia): integrate next visual candidate batch" \
             "$dispatch" \
             "${paths[@]}"
-          echo 'changed=true' >> "$GITHUB_OUTPUT"
 
       - name: Continue next batch until machine artwork queue is drained
         if: steps.render.outputs.pending_after != '0' && steps.render.outputs.rendered != '0'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          REQUESTED_BATCH: ${{ inputs.batch_size || '72' }}
         run: |
           set -euo pipefail
-          gh workflow run encyclopedia-visual-candidate-production.yml --ref main -f batch_size=40
+          gh workflow run encyclopedia-visual-candidate-production.yml --ref main -f batch_size="$REQUESTED_BATCH"
           echo "Next candidate batch dispatched; remaining before next run: ${{ steps.render.outputs.pending_after }}"
-
-      - name: Upload generation evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: encyclopedia-visual-candidate-production-${{ github.run_id }}
-          path: |
-            ${{ steps.render.outputs.report }}
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Report candidate production state
-        if: always()
-        uses: actions/github-script@v7
-        env:
-          STATUS: ${{ job.status }}
-          RENDERED: ${{ steps.render.outputs.rendered }}
-          PENDING: ${{ steps.render.outputs.pending_after }}
-        with:
-          script: |
-            const body=[
-              '## Encyclopedia visual candidate production',
-              '',
-              `Result: **${process.env.STATUS}**`,
-              `Rendered this run: **${process.env.RENDERED || '0'}**`,
-              `Remaining machine artwork queue: **${process.env.PENDING || 'unknown'}**`,
-              '',
-              'Generated PNGs remain review-pending candidates. This automation does not mark independent science review, accessibility approval, rights approval, or final visual approval complete.'
-            ].join('\n');
-            await core.summary.addRaw(body).write();
