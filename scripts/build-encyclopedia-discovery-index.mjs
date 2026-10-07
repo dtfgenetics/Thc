@@ -70,8 +70,8 @@ if(fs.existsSync(visualAssetRoot)){
 function visualStateFor(id,lesson,entry){
   const curated=curatedVisualById.get(id)||null;
   const candidates=visualCandidatesById.get(id)||[];
-  if(curated)return {state:'curated',hasAsset:true,assetKind:'review-controlled',assetFile:curated.assetPath||null,requiredTeachingVisual:entry.teachingVisual||lesson.requiredTeachingVisual||null,altText:curated.altText||\`${entry.title||lesson.title} — reviewed companion teaching visual\`};
-  if(candidates.length)return {state:'candidate',hasAsset:true,assetKind:'review-pending',assetFile:candidates[0],candidateCount:candidates.length,requiredTeachingVisual:entry.teachingVisual||lesson.requiredTeachingVisual||null,altText:\`${entry.title||lesson.title} — teaching visual candidate pending controlled review\`};
+  if(curated)return {state:'curated',hasAsset:true,assetKind:'review-controlled',assetFile:curated.assetPath||null,requiredTeachingVisual:entry.teachingVisual||lesson.requiredTeachingVisual||null,altText:curated.altText||`${entry.title||lesson.title} — reviewed companion teaching visual`};
+  if(candidates.length)return {state:'candidate',hasAsset:true,assetKind:'review-pending',assetFile:candidates[0],candidateCount:candidates.length,requiredTeachingVisual:entry.teachingVisual||lesson.requiredTeachingVisual||null,altText:`${entry.title||lesson.title} — teaching visual candidate pending controlled review`};
   return {state:'needed',hasAsset:false,assetKind:'not-produced',assetFile:null,candidateCount:0,requiredTeachingVisual:entry.teachingVisual||lesson.requiredTeachingVisual||null,altText:null};
 }
 
