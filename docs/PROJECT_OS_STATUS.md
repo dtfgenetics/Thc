@@ -1,6 +1,6 @@
 # Project OS status
 
-Generated from canonical repository state on 2026-10-06 UTC.
+Generated from canonical repository state on 2026-10-07 UTC.
 
 ## Portfolio mode
 
@@ -10,7 +10,7 @@ Generated from canonical repository state on 2026-10-06 UTC.
 | --- | --- | --- |
 | Encyclopedia | **Infrastructure closed** | 420/420 canonical routes, 21/21 topic hubs, search indexes published, visitor verification passed, Volume 03 curated visuals persisted after retirement scrub |
 | Tools | **Production closed** | 23/23 canonical routes verified live; runtime/MIME closure #1909 merged; THC mirror pinned to Tools `49b6cd3…`. Issue #90 is an operational speed enhancement for event-driven sync, not a production blocker. |
-| GrowLens | **Integration verification** | #1914 replays the canonical observation producer on current main |
+| GrowLens | **Integration verification** | PR #2090 merged the measured-context canonical observation producer to main; the public `/growlens/` route is reachable with the cultivation journal/measurement workflow. Exact deployed-fingerprint and registered live-behavior verification remain the closure gate. |
 | Release observability | **Merged** | #1911 adds release ledger, hashes, and artifact attestations |
 | Security | **Enabled** | CodeQL security-extended across canonical repos; Python coverage added to Thc and Academy |
 | Web quality | **Merged** | #1912 adds measured Lighthouse/accessibility regression gates |
