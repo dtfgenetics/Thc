@@ -34,7 +34,7 @@ jobs:
       wordpress: ${{ steps.plan.outputs.wordpress }}
       education: ${{ steps.plan.outputs.education }}
       harvest_outdoor: ${{ steps.plan.outputs.harvest_outdoor }}
-      plan: ${{ steps.plan.outputs.plan }}
+      plan_file: ${{ steps.plan.outputs.plan_file }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -53,11 +53,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/plan-dtfseeds-release.mjs --mode="$RELEASE_MODE" --base="$RELEASE_BASE" --fallback-base="$RELEASE_FALLBACK_BASE" --head="$GITHUB_SHA"
+          node scripts/plan-dtfseeds-release.mjs --mode="$RELEASE_MODE" --base="$RELEASE_BASE" --fallback-base="$RELEASE_FALLBACK_BASE" --head="$GITHUB_SHA" --plan-file="$RUNNER_TEMP/dtfseeds-release-plan.json"
 
       - name: Record release plan
-        env:
-          RELEASE_PLAN: ${{ steps.plan.outputs.plan }}
         shell: bash
         run: |
           {
@@ -73,7 +71,7 @@ jobs:
             echo '- Automatic releases include every production-owned change since the last successful `dtfseeds-production` checkpoint.'
             echo
             echo '```json'
-            printf '%s\n' "$RELEASE_PLAN"
+            cat "$RUNNER_TEMP/dtfseeds-release-plan.json"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -463,7 +461,7 @@ jobs:
           RELEASE_RUN_ATTEMPT: ${{ github.run_attempt }}
           RELEASE_EVENT_NAME: ${{ github.event_name }}
           RELEASE_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'auto' }}
-          RELEASE_PLAN_JSON: ${{ needs.plan.outputs.plan }}
+          RELEASE_PLAN_FILE: ${{ runner.temp }}/dtfseeds-release-plan.json
           RELEASE_FRESHNESS: ${{ steps.freshness.outputs.current }}
           RELEASE_VERIFY_FRESHNESS: ${{ steps.verify_freshness.outputs.current }}
           RELEASE_WANT_WORDPRESS: ${{ needs.plan.outputs.wordpress }}
