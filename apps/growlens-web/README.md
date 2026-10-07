@@ -19,6 +19,7 @@ GrowLens is a mobile-first, local-first cultivation management PWA. It is isolat
 - Browser-side image resizing, JPEG re-encoding, and original metadata removal
 - Offline IndexedDB photo storage
 - Optional authenticated private photo upload on Hostinger
+- Optional authenticated Moondream visual-observation pass for visible image evidence
 - Plant-filtered photo history and chronological comparison
 - Structured irrigation and runoff records
 - Structured feeding and nutrient-mix records
@@ -101,6 +102,21 @@ Accepted camera sources are JPEG, PNG, and WebP up to 15 MB. Before local storag
 
 Private uploads are validated again by PHP and stored in the authenticated user’s directory outside `public_html`. Private images are streamed only through an authenticated endpoint with `Cache-Control: private, no-store`. The service worker excludes all `/api/` traffic.
 
+## Optional Moondream visual observation
+
+GrowLens can use Moondream as an optional visual-observation provider after the browser has already resized and re-encoded the selected image. The feature is intentionally evidence-only: it describes visible color changes, spots or lesions, leaf shape/posture, visible pests or residue, tissue/distribution, and image-quality limits. It does not confirm a nutrient deficiency, toxicity, pest, pathogen, disease, environmental cause, or treatment.
+
+The user must be signed in and explicitly select **Analyze visible evidence with AI**. The processed image is then sent through the authenticated GrowLens PHP endpoint; the Moondream credential never enters browser code. Normal photo capture, symptom intake, local storage, and rule-based possible causes continue to work when Moondream is disabled or unavailable.
+
+Server configuration:
+
+```txt
+MOONDREAM_API_KEY=<server-side secret>
+MOONDREAM_API_BASE=https://api.moondream.ai/v1
+```
+
+`MOONDREAM_API_BASE` is optional and defaults to the official cloud API base. Do not store `MOONDREAM_API_KEY` in the repository, frontend environment variables, localStorage, IndexedDB, or synchronized GrowLens state.
+
 ## Commands
 
 From the repository root:
@@ -151,6 +167,7 @@ Configure private storage according to `docs/GROWLENS_HOSTINGER_BACKEND.md`. Pro
 
 - Lux-to-PPFD and phone-camera-derived readings are estimates requiring fixture/device-specific calibration.
 - Diagnostic results are possible causes, not confirmed deficiencies, diseases, or pests.
+- Moondream output is machine-generated visual evidence only; it must not be promoted to a diagnosis or treatment recommendation without independent verification.
 - Analytics are descriptive and do not prove that a cultivar, environment, feeding, irrigation event, or treatment caused an outcome.
 - PPM values are not meaningful without the recorded conversion scale.
 - Browser reminders require the app to be open or active; closed-app push delivery is not active.
