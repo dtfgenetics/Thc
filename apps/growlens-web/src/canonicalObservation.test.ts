@@ -67,7 +67,7 @@ describe('GrowLens canonical observation producer', () => {
       severity: 'moderate',
       locationOnPlant: 'upper-canopy',
       tissue: 'leaf',
-      photoIds: ['photo-12345678'],
+      photoIds: ['photo-12345678', 'photo-abcdefgh'],
       observedAt,
     }, state);
 
@@ -78,7 +78,7 @@ describe('GrowLens canonical observation producer', () => {
       severity: 'moderate',
       locationOnPlant: 'upper-canopy',
       tissue: 'leaf',
-      photoIds: ['photo-12345678'],
+      photoIds: ['photo-12345678', 'photo-abcdefgh'],
     });
     expect(result.diary).toMatchObject({
       plantId: 'plant-12345678',
@@ -137,7 +137,8 @@ describe('GrowLens canonical observation producer', () => {
     expect(result.canonicalRecord.values.recentInterventions?.[0]).toContain('training');
     expect(result.canonicalRecord.values.recentInterventionAgesMinutes).toEqual([180]);
     expect(result.canonicalRecord.provenance.derived).toBe(false);
-    expect(result.canonicalRecord.mediaRefs).toHaveLength(1);
+    expect(result.canonicalRecord.mediaRefs).toHaveLength(2);
+    expect(result.canonicalRecord.mediaRefs.map((item) => item.ref)).toEqual(['photo-12345678', 'photo-abcdefgh']);
   });
 
   it('does not convert candidate differentials into a confirmed diagnosis', () => {
