@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
+      - scripts/package-public-suite-wordpress.py
       - scripts/assemble-wordpress-suite-v2.py
       - scripts/wordpress-suite-v2/**
       - .github/workflows/validate-wordpress-public-suite-bridge.yml
@@ -130,6 +131,13 @@ jobs:
                   'games/phenoquest/index.html','games/phenoquest/game.js','games/phenoquest/lineage-runtime.js','games/phenoquest/build-meta.json',
                   'games/weedopolis/index.html','games/crossword/index.html','games/who-took-it/index.html',
                   'growlens/index.html','thc-grow-doc/index.html','thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json',
+                  'atlas/index.html','atlas/atlas-v5.css','atlas/data/systems.json',
+                  'atlas/assets/THC-ENC-068_Stomata_Guard_Cells_and_Gas_Exchange.jpg',
+                  'atlas/assets/THC-ENC-041_Root_Tip_Development_and_Functional_Zones.jpg',
+                  'atlas/assets/THC-ENC-001_VIS-07_Trichomes_on_Cannabis_Surfaces_v3.0.0.jpg',
+                  'atlas/assets/THC-ENC-001_VIS-06_Achene_Embryo_Germination_v3.0.0.jpg',
+                  'atlas/assets/THC-ENC-001_VIS-05_Reproductive_Structures_v3.0.0.jpg',
+                  'atlas/assets/THC-ENC-001_VIS-03_Nodes_Internodes_Branching_v3.0.0.jpg',
                   'assets/project-os-release-fingerprint.json'
               ]
               for path in required: assert path in names, path
