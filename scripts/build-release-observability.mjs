@@ -94,7 +94,8 @@ const overallState=superseded?'superseded'
   :'incomplete';
 
 let releasePlan=null;
-const rawPlan=String(process.env.RELEASE_PLAN_JSON||'').trim();
+const planFile=String(process.env.RELEASE_PLAN_FILE||'').trim();
+const rawPlan=planFile&&fs.existsSync(planFile)?fs.readFileSync(planFile,'utf8').trim():String(process.env.RELEASE_PLAN_JSON||'').trim();
 if(rawPlan){
   try{releasePlan=JSON.parse(rawPlan);}catch{releasePlan={unparsed:rawPlan};}
 }
