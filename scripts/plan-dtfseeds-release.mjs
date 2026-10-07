@@ -110,7 +110,8 @@ const plan = {
 };
 
 const compact = JSON.stringify(plan);
-console.log(JSON.stringify(plan, null, 2));
+const summary = { ...plan, changedFileCount: files.length, changedFiles: files.slice(0, 50) };
+console.log(JSON.stringify(summary, null, 2));
 
 if (process.env.GITHUB_OUTPUT) {
   appendFileSync(process.env.GITHUB_OUTPUT, `deploy=${deploy}\n`);
@@ -118,5 +119,6 @@ if (process.env.GITHUB_OUTPUT) {
   appendFileSync(process.env.GITHUB_OUTPUT, `wordpress=${lanes.wordpress}\n`);
   appendFileSync(process.env.GITHUB_OUTPUT, `education=${lanes.education}\n`);
   appendFileSync(process.env.GITHUB_OUTPUT, `harvest_outdoor=${lanes.harvestOutdoor}\n`);
-  appendFileSync(process.env.GITHUB_OUTPUT, `plan=${compact}\n`);
+  // Keep cross-job outputs small: large education/image releases can contain thousands of paths.
+  appendFileSync(process.env.GITHUB_OUTPUT, `changed_file_count=${files.length}\n`);
 }
