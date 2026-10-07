@@ -134,12 +134,15 @@ jobs:
           node - <<'NODE'
           const fs = require('fs');
           const html = fs.readFileSync('site/public-route-patch/games/index.html', 'utf8');
+          const articles = [...html.matchAll(/<article\\b[^>]*>[\\s\\S]*?<\\/article>/g)].map((match) => match[0]);
           for (const slug of ['weedopolis','crossword','who-took-it']) {
-            const re = new RegExp('<article[^>]*data-release-state="candidate"[^>]*>[\\s\\S]*?href="/games/' + slug + '/"[\\s\\S]*?</article>');
-            const match = html.match(re);
-            if (!match) throw new Error('Candidate game card is missing for ' + slug);
-            if (/Play now|>Play [^<]*→/.test(match[0])) throw new Error('Candidate game is still advertised as playable: ' + slug);
-            if (!/Release candidate/.test(match[0])) throw new Error('Candidate status label missing for ' + slug);
+            const card = articles.find((article) =>
+              /data-release-state=["']candidate["']/.test(article) &&
+              article.includes('href="/games/' + slug + '/"')
+            );
+            if (!card) throw new Error('Candidate game card is missing for ' + slug);
+            if (/Play now|>Play [^<]*→/.test(card)) throw new Error('Candidate game is still advertised as playable: ' + slug);
+            if (!/Release candidate/.test(card)) throw new Error('Candidate status label missing for ' + slug);
           }
           NODE
 
