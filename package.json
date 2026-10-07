@@ -222,7 +222,7 @@
     "verify:project-os-acceptance": "node scripts/validate-project-os-acceptance-manifests.mjs && node scripts/test-project-os-acceptance-manifests.mjs",
     "build:project-os-fingerprint": "node scripts/build-project-os-release-fingerprint.mjs",
     "verify:project-os-release-proof": "node scripts/test-project-os-release-fingerprint.mjs && node scripts/test-project-os-release-fingerprint-live.mjs",
-    "verify:encyclopedia-lifecycle": "npm run test:encyclopedia-routes && node scripts/validate-encyclopedia-lifecycle.mjs",
+    "verify:encyclopedia-lifecycle": "npm run test:encyclopedia-routes && npm run verify:encyclopedia-canonical-routes && node scripts/validate-encyclopedia-lifecycle.mjs",
     "audit:encyclopedia-lifecycle:strict": "node scripts/validate-encyclopedia-lifecycle.mjs --strict --write-report",
     "build:encyclopedia-lifecycle-report": "node scripts/validate-encyclopedia-lifecycle.mjs --write-report",
     "test:encyclopedia-routes": "node scripts/test-encyclopedia-routes.mjs",
@@ -230,6 +230,8 @@
     "verify:encyclopedia-visual-renderer-coverage": "node scripts/validate-encyclopedia-visual-renderer-coverage.mjs",
     "build:encyclopedia-experience-readiness": "npm run build:encyclopedia-lifecycle-report && npm run build:encyclopedia-visual-queue && npm run build:encyclopedia-discovery && node scripts/build-encyclopedia-experience-readiness.mjs",
     "verify:local-ai-integration": "node scripts/validate-local-ai-integration.mjs && node scripts/test-local-ai-worker-plan.mjs",
-    "plan:local-ai-worker": "node scripts/plan-local-ai-worker.mjs"
+    "plan:local-ai-worker": "node scripts/plan-local-ai-worker.mjs",
+    "migrate:encyclopedia-canonical-routes": "node scripts/migrate-encyclopedia-canonical-routes.mjs",
+    "verify:encyclopedia-canonical-routes": "node scripts/migrate-encyclopedia-canonical-routes.mjs --check"
   }
 }

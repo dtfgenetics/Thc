@@ -1,0 +1,21 @@
+name: Encyclopedia Canonical Route Migration Check
+on:
+  pull_request:
+    paths:
+      - content/encyclopedia/**
+      - scripts/migrate-encyclopedia-canonical-routes.mjs
+      - .github/workflows/encyclopedia-canonical-route-migration.yml
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Require canonical route metadata
+        run: node scripts/migrate-encyclopedia-canonical-routes.mjs --check
+      - name: Verify strict lifecycle state
+        run: node scripts/validate-encyclopedia-lifecycle.mjs --strict
