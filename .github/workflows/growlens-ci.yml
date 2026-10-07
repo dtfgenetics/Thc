@@ -112,6 +112,7 @@ jobs:
           test -f apps/growlens-web/dist/api/list-images.php
           test -f apps/growlens-web/dist/api/image.php
           test -f apps/growlens-web/dist/api/delete-image.php
+          test -f apps/growlens-web/dist/api/vision-observe.php
           test -f apps/growlens-web/dist/api/_shared.php
           test -f apps/growlens-web/dist/api/_state-v2.php
           test -f apps/growlens-web/dist/api/_images.php
