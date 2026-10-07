@@ -115,3 +115,26 @@ Before assigning a worker, check for an existing active branch/PR for the job/pr
 ## Production authority boundary
 
 Implementation workers can produce candidates but cannot declare production success. The release worker owns deployment actions; live-qa owns post-deploy evidence. A job with production impact cannot be marked `DONE` solely from a merged PR or green build.
+
+
+## Local AI provider router
+
+Project OS remains the durable control plane. Local models and agent runtimes are replaceable execution providers, not alternate sources of job truth.
+
+Read `configuration/ai/local-ai-providers.json` before assigning a local AI runtime. The provider router may select Qwen or gpt-oss for local language-model work and OpenCode or Hermes for agent execution when the job allows it. Provider selection must not bypass canonical repository ownership, job leases, branch isolation, verification profiles, PR review, release authority, or live QA.
+
+For GrowLens work, preserve the observation-before-diagnosis boundary:
+
+```text
+media intake
+ -> object localization (YOLO-compatible provider)
+ -> visual description (Moondream-compatible provider)
+ -> canonical machine observation
+ -> independent differential
+ -> dataset/evidence verification
+ -> final response
+```
+
+Machine vision providers return visible evidence, regions, confidence, provenance, and limitations. They do not directly author final diagnostic claims. Speech providers such as Whisper feed transcription/structured intake; Piper is presentation-only. No local AI provider is allowed to actuate grow hardware automatically through this control plane.
+
+OpenCode and Hermes are worker runtimes. Qwen and gpt-oss are model providers. Any of them may be replaced without changing Project OS job identity or acceptance criteria.

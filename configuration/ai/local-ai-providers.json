@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-06",
+  "principles": {
+    "providerIndependent": true,
+    "observationBeforeDiagnosis": true,
+    "humanReviewForClinicalClaims": true,
+    "serverSideSecretsOnly": true,
+    "noAutomaticActuation": true
+  },
+  "providers": [
+    {
+      "id": "moondream",
+      "kind": "vision-language",
+      "roles": ["visual-observation"],
+      "defaultFor": ["growlens.visual-observation"],
+      "status": "candidate",
+      "boundary": "Describe visible evidence only; do not issue final diagnoses."
+    },
+    {
+      "id": "ultralytics-yolo",
+      "kind": "object-detection",
+      "roles": ["localization", "region-proposals"],
+      "defaultFor": ["growlens.object-localization"],
+      "status": "candidate",
+      "boundary": "Return labels, confidence, and bounding regions; diagnostic interpretation remains downstream."
+    },
+    {
+      "id": "whisper",
+      "kind": "speech-to-text",
+      "roles": ["voice-intake", "grow-log-transcription"],
+      "defaultFor": ["growlens.voice-intake", "academy.voice-intake"],
+      "status": "candidate",
+      "boundary": "Transcribe speech and preserve uncertainty; structured extraction is a separate step."
+    },
+    {
+      "id": "piper",
+      "kind": "text-to-speech",
+      "roles": ["spoken-feedback"],
+      "defaultFor": [],
+      "status": "optional",
+      "boundary": "Presentation only; never authorizes diagnoses, controls, or releases."
+    },
+    {
+      "id": "qwen-local",
+      "kind": "language-model",
+      "roles": ["agent-worker", "structured-extraction"],
+      "defaultFor": ["project-os.local-worker"],
+      "status": "candidate",
+      "boundary": "Runs behind Project OS job, branch, verification, and release gates."
+    },
+    {
+      "id": "gpt-oss-local",
+      "kind": "language-model",
+      "roles": ["agent-worker", "reasoning-worker"],
+      "defaultFor": [],
+      "status": "candidate",
+      "boundary": "Runs behind Project OS job, branch, verification, and release gates."
+    },
+    {
+      "id": "opencode",
+      "kind": "coding-agent-runtime",
+      "roles": ["code-worker-runtime"],
+      "defaultFor": ["project-os.code-runtime"],
+      "status": "candidate",
+      "boundary": "Execution runtime only; Project OS remains the control plane and release authority."
+    },
+    {
+      "id": "hermes-agent",
+      "kind": "agent-runtime",
+      "roles": ["persistent-worker-runtime", "subagent-runtime"],
+      "defaultFor": [],
+      "status": "prototype",
+      "boundary": "Worker runtime only; durable DTF job state stays in Project OS."
+    }
+  ],
+  "pipelines": {
+    "growlensVisual": [
+      "image-intake",
+      "ultralytics-yolo",
+      "moondream",
+      "canonical-visual-observation",
+      "independent-differential",
+      "dataset-verification",
+      "final-response"
+    ],
+    "growlensVoice": [
+      "audio-intake",
+      "whisper",
+      "structured-extraction",
+      "canonical-observation"
+    ],
+    "projectOsLocalWorker": [
+      "job-claim",
+      "provider-router",
+      "agent-runtime",
+      "verification-profile",
+      "pull-request",
+      "release-controller",
+      "live-qa"
+    ]
+  }
+}
