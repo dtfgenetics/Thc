@@ -17,12 +17,14 @@ make_archive() {
   local complete="${3:-yes}"
   local payload="$TMP/payload-$sha"
   rm -rf "$payload"
-  mkdir -p "$payload/games/bud-or-bluff"
+  mkdir -p "$payload/games/bud-or-bluff" "$payload/games/protect-the-plants"
 
   printf '%s\n' '23 playable browser games - replacement' > "$payload/games/index.html"
   printf '%s\n' '<title>Bud or Bluff</title>' > "$payload/games/bud-or-bluff/index.html"
+  printf '%s\n' '<title>Burn Buds</title>' > "$payload/games/protect-the-plants/index.html"
   if [[ "$complete" == "yes" ]]; then
     printf '%s\n' '<?php echo "ok";' > "$payload/games/bud-or-bluff/api-v2.php"
+    printf '%s\n' '<?php echo "ok";' > "$payload/games/protect-the-plants/api.php"
   fi
   printf '{"master":"%s"}\n' "$sha" > "$payload/dtf-build.json"
   printf '%s\n' "$sha" > "$payload/.dtf-source-sha"
@@ -38,6 +40,7 @@ make_public_suite_archive() {
     "$payload/assets" \
     "$payload/blog" \
     "$payload/games/bud-or-bluff" \
+    "$payload/games/protect-the-plants" \
     "$payload/projects" \
     "$payload/tools" \
     "$payload/atlas" \
@@ -45,6 +48,7 @@ make_public_suite_archive() {
     "$payload/ph-meter" \
     "$payload/tds-meter" \
     "$payload/vpd-chart" \
+    "$payload/ppfd-chart" \
     "$payload/growlens" \
     "$payload/thc-grow-doc" \
     "$payload/puzzles" \
@@ -61,6 +65,9 @@ make_public_suite_archive() {
   printf '%s\n' 'pH meter replacement' > "$payload/ph-meter/index.html"
   printf '%s\n' 'TDS meter replacement' > "$payload/tds-meter/index.html"
   printf '%s\n' 'VPD chart replacement' > "$payload/vpd-chart/index.html"
+  printf '%s\n' 'PPFD chart replacement' > "$payload/ppfd-chart/index.html"
+  printf '%s\n' '<title>Burn Buds</title>' > "$payload/games/protect-the-plants/index.html"
+  printf '%s\n' '<?php echo "ok";' > "$payload/games/protect-the-plants/api.php"
   printf '%s\n' 'growlens replacement' > "$payload/growlens/index.html"
   printf '%s\n' 'grow doc replacement' > "$payload/thc-grow-doc/index.html"
   printf '%s\n' '{}' > "$payload/puzzles/current.json"
