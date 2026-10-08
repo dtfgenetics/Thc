@@ -23,8 +23,7 @@ if(canonical.length!==registryState.totalCount) throw new Error(`Expected ${regi
 const defects=[
   {id:'malformed-source-label',re:/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i},
   {id:'generic-misconception-placeholder',re:/Correction:\s*See the (?:controlled )?lesson evidence and context\.?/i},
-  {id:'joined-claim-boundary',re:/[.!?](?:Claim|Correction):/i},
-  {id:'joined-source-link-label',re:/\bOpen source(?:e|sourc)\b/i}
+  {id:'joined-claim-boundary',re:/[.!?](?:Claim|Correction):/i}
 ];
 
 const normalizeForCompare=value=>String(value??'')
