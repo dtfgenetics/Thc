@@ -33,6 +33,15 @@ const style = `<style id="${marker}">
 .lhv4-context .lhv3-toc a:hover,.lhv4-context .lhv3-toc a:focus-visible{background:#eef4ef;color:#0c532b!important}
 .lhv3-layout.lhv4-lesson-layout .lhv3-content{border-radius:14px!important;box-shadow:0 10px 26px rgba(13,42,25,.045)!important}
 .lhv3-layout.lhv4-lesson-layout .lhv3-visual{border-radius:14px!important}
+/* Rich lessons must stay readable without clipping on narrow displays. */
+.lhv3-layout.lhv4-lesson-layout .lhv3-content{min-width:0!important;overflow-wrap:anywhere}
+.lhv3-layout.lhv4-lesson-layout .lhv3-content img,.lhv3-layout.lhv4-lesson-layout .lhv3-content svg,.lhv3-layout.lhv4-lesson-layout .lhv3-content video{max-width:100%!important;height:auto}
+.lhv3-layout.lhv4-lesson-layout .lhv3-table{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.lhv3-layout.lhv4-lesson-layout .lhv3-table table{width:max-content;min-width:100%;border-collapse:collapse}
+.lhv3-layout.lhv4-lesson-layout .lhv3-content a:focus-visible,.lhv3-layout.lhv4-lesson-layout .lhv3-sidebar a:focus-visible,.lhv3-layout.lhv4-lesson-layout .lhv3-nextprev a:focus-visible{outline:3px solid #26784a!important;outline-offset:3px!important}
+.lhv3-layout.lhv4-lesson-layout .lhv3-content h2,.lhv3-layout.lhv4-lesson-layout .lhv3-content h3{scroll-margin-top:120px}
+@media(prefers-reduced-motion:reduce){.lhv3-layout.lhv4-lesson-layout *{scroll-behavior:auto!important}}
+
 .lhv3-layout.lhv4-lesson-layout .lhv3-actions{align-items:center}
 .lhv3-layout.lhv4-lesson-layout .lhv3-complete,.lhv3-layout.lhv4-lesson-layout .lhv3-button{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
 .lhv3-layout.lhv4-lesson-layout .lhv3-nextprev a{min-height:74px;display:flex;flex-direction:column;justify-content:center}
@@ -90,6 +99,9 @@ if (validateOnly) {
   must(style.includes('max-height:calc(100dvh - 132px)'), 'Viewport-safe desktop sidebar height is missing.');
   must(script.includes("root.style.width=width+'px'"), 'WordPress theme breakout width synchronization is missing.');
   must(script.includes("layout.classList.add('lhv4-lesson-layout')"), 'Lesson layout enhancer is missing.');
+  must(style.includes('overflow-x:auto;overscroll-behavior-x:contain'), 'Responsive lesson tables must support horizontal scrolling.');
+  must(style.includes('.lhv3-content a:focus-visible'), 'Keyboard focus for lesson links is missing.');
+  must(style.includes('scroll-margin-top:120px'), 'Anchored lesson headings need an offset.');
   console.log(JSON.stringify({ result: 'success', version: 4, marker, rootSlug }, null, 2));
   process.exit(0);
 }
