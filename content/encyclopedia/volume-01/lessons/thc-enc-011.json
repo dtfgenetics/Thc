@@ -24,32 +24,39 @@
   "coreScience": [
     "Nodes are repeated developmental units. Each node can bear leaves and an axillary meristem capable of forming a branch or reproductive structure. Internodes separate those units and determine much of the plant’s height and openness. Node number and internode length answer different questions: a tall plant may have many nodes, long internodes, or both.",
     "Internode length reflects genetics, developmental stage, light environment, spectrum, temperature relationships, competition, hormones, root conditions, and stress. One measurement therefore cannot establish one cause. A useful record samples defined positions and compares the same positions through time or among plants grown under matched conditions.",
-    "Branch attachments carry increasing weight as shoots elongate and flowers develop. Attachment geometry, tissue development, previous injury, and uneven loading may contribute to failure, but the encyclopedia does not assign a universal cannabis failure threshold to any branch angle. The node is also a key observation site for preflowers and sex expression."
+    "Branch attachments carry increasing weight as shoots elongate and flowers develop. Attachment geometry, tissue development, previous injury, and uneven loading may contribute to failure, but the encyclopedia does not assign a universal cannabis failure threshold to any branch angle. The node is also a key observation site for preflowers and sex expression.",
+    "Node and internode development records the history of meristem activity. Each node is a repeated developmental unit carrying leaf, axillary-bud, and vascular connections, while internode length reflects both genetic architecture and environmental signaling. Light quantity and spectrum, temperature, plant density, hormones, root-zone status, and developmental stage can all alter elongation. Branch attachment strength is therefore influenced by tissue maturation and geometry, not simply by the number of nodes."
   ],
   "cultivationRelevance": [
     "Count nodes using a written rule, such as fully visible nodes on the main stem, and state whether cotyledon or incomplete nodes are excluded.",
-    "Measure internodes at comparable positions. Averaging the last three fully elongated internodes is more interpretable than choosing the longest segment."
+    "Measure internodes at comparable positions. Averaging the last three fully elongated internodes is more interpretable than choosing the longest segment.",
+    "Use node maps when training, cloning, diagnosing damage, or comparing architecture. Record where a branch originates, whether its axillary bud was retained or removed, internode length at defined positions, and whether branch attachments are carrying unusual load. This creates a repeatable architecture record rather than a vague description such as 'stretchy' or 'bushy'.",
+    "When internodes suddenly lengthen or shorten, compare the change with light, temperature, irrigation, root-zone stress, plant density, pruning, and developmental stage before changing one input. A position-specific time series can show whether the response is systemic, canopy-localized, or associated with a particular treatment."
   ],
   "measureAndRecord": [
     {
       "field": "Node-count rule",
-      "requirement": "What counts and what is excluded."
+      "requirement": "Define whether cotyledonary nodes, incomplete nodes, damaged nodes, and reproductive nodes are counted. Use the same rule across plants and dates so node number can be compared without changing the denominator."
     },
     {
       "field": "Main-stem node count",
-      "requirement": "Date and current count."
+      "requirement": "Record date, plant ID, developmental stage, current fully visible node count, and any removed or obscured nodes. If topping occurred, preserve the original node position and identify the new dominant shoots separately."
     },
     {
       "field": "Internode sample",
-      "requirement": "Node positions, lengths, and units."
+      "requirement": "Record the exact node-to-node positions, length, units, whether the segment is fully elongated, and measurement date. Compare equivalent positions or a defined moving window such as the most recent three fully elongated internodes."
     },
     {
-      "field": "Branch order",
-      "requirement": "Primary and secondary branch counts."
+      "field": "Branch order and attachment",
+      "requirement": "Record primary and secondary branch number, branch origin node, attachment angle or geometry, visible crease or split, support status, and load. Photographs from a consistent angle improve follow-up."
     },
     {
-      "field": "Attachment risk",
-      "requirement": "Weak angle, split, load, support, or no concern."
+      "field": "Environmental context",
+      "requirement": "Pair architecture measurements with light level or canopy position, temperature, plant density, root-zone status, recent pruning/training, and developmental stage. These variables can alter internode elongation and branch growth."
+    },
+    {
+      "field": "Change over time",
+      "requirement": "Track internode length and node production rate through repeated observations. Sudden changes should be interpreted against environmental and management records rather than assigned to one cause from appearance alone."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "Every bump on a stem is a node: A node is a repeated organ-attachment position, not any surface feature."
   ],
   "evidenceLimits": [
-    "Architecture measurements are valuable only when definitions, positions, units, and developmental stage are consistent."
+    "Architecture measurements become useful only when node definitions, stem positions, units, developmental stage, and environmental context are consistent. Internode length is a multicausal phenotype and cannot uniquely diagnose light intensity, spectrum, nutrition, or stress. Cannabis-specific branch-failure thresholds are not established well enough to justify a universal safe angle, load, or support rule; use measured architecture and observed failure history instead."
   ],
   "crossLinks": "THC-ENC-012–014, THC-ENC-181–200, and canopy measurement records.",
   "sourceNotes": [
     "Hesami M., Pepe M., and Jones A.M.P. (2023). Morphological Characterization of Cannabis sativa L. Throughout Its Complete Life Cycle. Plants 12(20):3646.",
-    "Onoda Y. and Anten N.P.R. (2011). Challenges to understand plant responses to wind. Plant Signaling & Behavior 6(7):1057–1059."
+    "Onoda Y. and Anten N.P.R. (2011). Challenges to understand plant responses to wind. Plant Signaling & Behavior 6(7):1057–1059.",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; architecture measurement, node mapping, branch observation, and evidence-context framework."
   ],
   "slug": "nodes-internodes-and-branch-attachment",
   "route": "/learn/encyclopedia/thc-enc-011/",

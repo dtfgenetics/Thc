@@ -24,32 +24,39 @@
   "coreScience": [
     "The shoot apical meristem generates new stem and leaf primordia. Axillary meristems are positioned at nodes and can remain small, grow into branches, or transition toward reproductive development. Plant architecture emerges from which meristems grow, how fast they grow, and how long their internodes become.",
     "Apical dominance is often summarized as “auxin from the top suppresses lower branches,” but the real system involves auxin transport, cytokinins, strigolactones, sugar availability, light, vascular connections, and sink competition. Removing the main apex changes those relationships and commonly releases one or more axillary buds. Bending can reduce the apex’s positional dominance and improve light exposure without removing tissue.",
-    "The response is not instant or identical across plants. Stage, genotype, root health, temperature, light, water status, and cut location affect recovery. A cut can also create a wound and remove photosynthetic or future reproductive tissue."
+    "The response is not instant or identical across plants. Stage, genotype, root health, temperature, light, water status, and cut location affect recovery. A cut can also create a wound and remove photosynthetic or future reproductive tissue.",
+    "Bud outgrowth is also constrained by resource supply and vascular integration. An axillary bud must transition from a relatively quiescent state into sustained cell division, establish transport relationships, and compete for sugars, minerals, and water. Light exposure can alter local sugar status and signaling, while root-derived cytokinins and shoot-derived auxin/strigolactone interactions influence whether buds remain suppressed or grow. This is why the same topping or bending treatment can produce different branch patterns on plants with different vigor or canopy conditions."
   ],
   "cultivationRelevance": [
     "Project procedure THC-GROW-110 requires assessing plant vigor, water status, bud viability, target node, and support before training. This is a risk-control procedure, not a universal biological law. Record the exact node and technique so recovery can be compared.",
-    "Judge success by resumed growth, balanced branch development, and absence of wound decline—not simply by the number of new tips."
+    "Judge success by resumed growth, balanced branch development, and absence of wound decline—not simply by the number of new tips.",
+    "Before topping, pruning, or bending, identify the active meristems that will remain after the action. Record target node, expected replacement shoots, plant water status, stem flexibility, recent stress, and support. The goal is to create a predictable architecture while preserving enough healthy leaf area and vascular continuity for recovery.",
+    "After training, evaluate the response as a time series rather than from the immediate visual result. Record days to renewed extension, which axillary buds activate, branch growth rate, wound condition, and whether the canopy actually becomes more even. A larger number of tips is not automatically an improvement if the plant cannot support them with light, roots, or space."
   ],
   "measureAndRecord": [
     {
-      "field": "Action",
-      "requirement": "Bend, top, prune, trellis, or no treatment."
+      "field": "Pre-action architecture",
+      "requirement": "Record plant stage, node count, active main and axillary meristems, branch order, canopy dimensions, stem flexibility, water status, and any existing wound or stress. Photograph the target region before treatment."
     },
     {
-      "field": "Location",
-      "requirement": "Node, branch order, and remaining growth points."
+      "field": "Training action",
+      "requirement": "Record topping, pruning, bending, low-stress tie, trellis repositioning, or control; exact node/branch location; tissue removed; direction and degree of bend when relevant; tool/sanitation method; and date/time."
     },
     {
-      "field": "Plant status",
-      "requirement": "Stage, water status, vigor, and recent stress."
+      "field": "Remaining growth points",
+      "requirement": "Identify which axillary buds and apices remain after treatment. This makes later shoot counts interpretable and distinguishes newly activated buds from pre-existing branches."
     },
     {
-      "field": "Response time",
-      "requirement": "Days to visible axillary growth and resumed extension."
+      "field": "Early recovery",
+      "requirement": "Record turgor, wound appearance, breakage, discoloration, and days until visible axillary growth or resumed extension. Pair the response with temperature, light, irrigation, and any subsequent manipulation."
     },
     {
-      "field": "Outcome",
-      "requirement": "Shoot count, symmetry, wound condition, and canopy change."
+      "field": "Architectural outcome",
+      "requirement": "At a defined follow-up interval record active shoot count, branch symmetry, canopy width/height, internode behavior, support need, and whether any dominant shoot re-established disproportionate control."
+    },
+    {
+      "field": "Performance interpretation",
+      "requirement": "Keep architecture outcomes separate from yield or potency claims unless those endpoints are measured with an appropriate comparison. More tips alone should not be scored as a biological benefit."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "Auxin alone explains every branch response: Branching is controlled by an interacting network."
   ],
   "evidenceLimits": [
-    "Training responses are strongly context-dependent. Claims of guaranteed yield or potency increases require controlled evidence."
+    "Apical-dominance mechanisms are well supported in plant science, but the magnitude and production consequence of a particular cannabis training method depend on genotype, developmental stage, root and water status, light distribution, recovery time, wound severity, and crop density. A response in branch number does not by itself prove a yield or potency benefit. Controlled comparisons are needed before transferring a training result beyond the tested system."
   ],
   "crossLinks": "THC-ENC-011, THC-ENC-014, THC-ENC-073–078, THC-ENC-181–200, and THC-GROW-110 — Training and canopy management.",
   "sourceNotes": [
     "Beveridge C.A., Rameau C., and Wijerathna-Yapa A. (2023). Lessons from a century of apical dominance research. Journal of Experimental Botany 74(14):3903–3922.",
-    "Savatin D.V., Gramegna G., Modesti V., and Cervone F. (2014). Wounding in the plant tissue: the defense of a dangerous passage. Frontiers in Plant Science 5:470."
+    "Savatin D.V., Gramegna G., Modesti V., and Cervone F. (2014). Wounding in the plant tissue: the defense of a dangerous passage. Frontiers in Plant Science 5:470.",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; training, plant-status assessment, architecture records, and response-validation framework."
   ],
   "slug": "meristems-buds-and-apical-dominance",
   "route": "/learn/encyclopedia/thc-enc-013/",

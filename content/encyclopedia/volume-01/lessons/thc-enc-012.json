@@ -24,32 +24,39 @@
   "coreScience": [
     "Cannabis leaves are commonly palmately compound with serrated leaflets. Leaflet number, width, length, serration, petiole length, pigment, and surface traits vary with genetics, developmental stage, shoot position, nutrition, environment, and stress. Juvenile and reproductive shoots can produce simpler leaves than vigorous mature vegetative shoots.",
     "Young cannabis commonly shows opposite leaf pairs at early nodes. Later growth often shifts toward alternate leaf arrangement, especially with maturity and reproductive development. This transition is useful as a developmental observation but is not a perfect clock.",
-    "Leaves are major photosynthetic and transpiring organs. Their position and angle affect light interception and boundary-layer conditions. As a controlled diagnostic procedure, symptoms should be recorded by leaf age, canopy location, tissue pattern, distribution, and progression before a cause is assigned. These observations narrow hypotheses; they do not prove a nutrient, pest, pathogen, heat, light, or root-zone diagnosis by themselves."
+    "Leaves are major photosynthetic and transpiring organs. Their position and angle affect light interception and boundary-layer conditions. As a controlled diagnostic procedure, symptoms should be recorded by leaf age, canopy location, tissue pattern, distribution, and progression before a cause is assigned. These observations narrow hypotheses; they do not prove a nutrient, pest, pathogen, heat, light, or root-zone diagnosis by themselves.",
+    "Leaf form is also developmentally plastic. A single plant can produce leaves with different leaflet numbers, proportions, petiole lengths, and orientations as it moves from juvenile growth into mature vegetative and reproductive development. Because leaf expansion integrates genotype, light exposure, temperature, water status, mineral supply, hormones, and shoot position, morphology should be treated as a measured phenotype. Repeated position-matched observations are more informative than comparing one leaf from the top of one plant with an older shaded leaf from another."
   ],
   "cultivationRelevance": [
     "Do not diagnose from color alone. Record whether symptoms begin on old, middle, or new leaves; whether they are interveinal, marginal, spotted, distorted, or uniform; and whether they face a light, fan, spray, or wet surface.",
-    "For comparison photographs, use the same leaf position, background, scale, color reference, and light source."
+    "For comparison photographs, use the same leaf position, background, scale, color reference, and light source.",
+    "Use leaf position as part of every diagnostic record. Mobile nutrient limitations, root problems, light injury, pests, pathogens, spray damage, and normal senescence can create overlapping colors but often differ in age class, canopy distribution, lesion pattern, progression, or exposure history. Mapping those features before intervention greatly improves differential reasoning.",
+    "For cultivar or breeding comparisons, photograph and measure leaves at matched developmental positions and stages. Record leaflet count, leaflet length and width, petiole length, leaf angle, and abnormal asymmetry using the same scale and lighting. This separates stable morphological tendencies from differences caused by sampling position or environment."
   ],
   "measureAndRecord": [
     {
-      "field": "Leaf position",
-      "requirement": "Node, branch, canopy layer, and age class."
+      "field": "Leaf identity",
+      "requirement": "Record plant ID, node, branch, canopy layer, developmental stage, and whether the leaf is young expanding, recently mature, fully mature, or senescing. Position and age must be comparable across repeated observations."
     },
     {
-      "field": "Leaf form",
-      "requirement": "Leaflet count, dimensions, petiole, angle, and asymmetry."
+      "field": "Morphology",
+      "requirement": "Record leaflet number, central leaflet length and width, petiole length, leaf angle, serration or margin abnormalities, symmetry, and any transition from opposite to alternate phyllotaxy. Use consistent units and reference points."
     },
     {
-      "field": "Color pattern",
-      "requirement": "Uniform, interveinal, marginal, mottled, spotted, or pigmented."
+      "field": "Symptom pattern",
+      "requirement": "Describe chlorosis, necrosis, mottling, spotting, distortion, edema, pigmentation, marginal injury, or interveinal pattern; state which tissues and leaf ages are affected and whether symptoms are progressing."
     },
     {
-      "field": "Surface finding",
-      "requirement": "Trichomes, residue, pests, lesions, edema, or mechanical injury."
+      "field": "Surface inspection",
+      "requirement": "Inspect upper and lower surfaces for pests, eggs, frass, webbing, lesions, residues, trichomes, mechanical damage, or spray deposits. Record magnification or imaging method when used."
     },
     {
       "field": "Image standard",
-      "requirement": "Date, scale, lighting, front/back, and plant ID."
+      "requirement": "Capture date, plant ID, leaf position, front and reverse surfaces, scale, neutral background, consistent light source, and a color reference when color comparisons matter. Avoid diagnostic conclusions from auto-adjusted images alone."
+    },
+    {
+      "field": "Context and follow-up",
+      "requirement": "Record recent irrigation, pH/EC, nutrition, light exposure, airflow, temperature, sprays, transplant stress, and neighboring-plant distribution. Re-image the same class of leaf to document progression or recovery."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "Every yellow leaf is nitrogen deficiency: Many root, water, pH, light, disease, and senescence processes cause chlorosis."
   ],
   "evidenceLimits": [
-    "Morphology is descriptive evidence. It becomes diagnostic only when combined with distribution, history, measurements, and confirmatory checks."
+    "Leaf morphology and color are descriptive evidence rather than unique diagnoses. Genetics, developmental stage, canopy position, environment, and stress all influence leaflet number, dimensions, phyllotaxy, pigment, and angle. Image processing and lighting can further alter apparent color. Diagnostic conclusions therefore require distribution, history, environmental/root-zone measurements, and confirmatory inspection rather than one photograph or one morphology label."
   ],
   "crossLinks": "THC-ENC-071–072, THC-ENC-143, THC-ENC-271–290, and plant-health photography standards.",
   "sourceNotes": [
     "Hesami M., Pepe M., and Jones A.M.P. (2023). Morphological Characterization of Cannabis sativa L. Throughout Its Complete Life Cycle. Plants 12(20):3646.",
-    "Papoutsoglou E.A. et al. (2020). Enabling reusability of plant phenomic datasets with MIAPPE 1.1. New Phytologist 227(1):260–273."
+    "Papoutsoglou E.A. et al. (2020). Enabling reusability of plant phenomic datasets with MIAPPE 1.1. New Phytologist 227(1):260–273.",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; leaf morphology, diagnostic observation, photography, and evidence-control framework."
   ],
   "slug": "leaf-morphology-leaflets-and-phyllotaxy",
   "route": "/learn/encyclopedia/thc-enc-012/",

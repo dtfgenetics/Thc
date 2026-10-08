@@ -28,32 +28,39 @@
   "coreScience": [
     "Cannabis bears glandular and nonglandular trichomes. Glandular categories commonly include bulbous, capitate-sessile, and capitate-stalked forms. Their abundance and proportions change with organ, developmental stage, and genotype. Capitate-stalked trichomes become especially prominent on female floral bracts and nearby small leaves.",
     "The glandular head contains secretory disk cells beneath a storage cavity where cannabinoid-rich resin and volatile compounds accumulate. The stalk elevates the head above the epidermis. These structures are fragile: abrasion, compression, excessive handling, heat, oxidation, and time can change appearance or material recovery.",
-    "Classification is not always a set of perfectly separate boxes. Research shows developmental and morphological transitions, and apparent size depends on magnification, lighting, focus, sample orientation, and plant age. Sampling only the most exposed top leaf produces a biased picture of the inflorescence."
+    "Classification is not always a set of perfectly separate boxes. Research shows developmental and morphological transitions, and apparent size depends on magnification, lighting, focus, sample orientation, and plant age. Sampling only the most exposed top leaf produces a biased picture of the inflorescence.",
+    "Trichome function is tied to epidermal development and specialized secretory metabolism. In capitate glands, secretory cells synthesize metabolites that accumulate beneath the cuticle and expand the storage cavity as the gland matures. Morphological maturation and chemical composition are related but not interchangeable measurements: glands can change size, stalk development, optical appearance, and metabolite profile on different schedules. This is one reason harvest decisions should not reduce the entire inflorescence to a single percentage of clear, cloudy, or amber heads."
   ],
   "cultivationRelevance": [
     "For observation, define tissue type, flower position, side of the plant, magnification, illumination, and image method. Compare bract with bract, not bract with sugar leaf.",
-    "Trichome color is a field observation, not a direct cannabinoid assay. Combine it with development, cultivar history, flower condition, production goal, and laboratory data when available."
+    "Trichome color is a field observation, not a direct cannabinoid assay. Combine it with development, cultivar history, flower condition, production goal, and laboratory data when available.",
+    "Use a stratified sampling plan when trichomes inform harvest or research observations. Sample the same tissue type at defined top, middle, and lower positions; avoid mixing bracts and sugar leaves; record magnification and lighting; and capture enough fields of view to show within-plant variation rather than selecting only the most dramatic image.",
+    "Handle samples gently and minimize heat, pressure, and repeated contact before imaging or analysis. Detached or collapsed heads, smeared resin, dust, foliar residues, or image glare can be mistaken for developmental changes. When chemistry matters, link microscopy to a laboratory sample from the same tissue class and developmental window."
   ],
   "measureAndRecord": [
     {
-      "field": "Tissue",
-      "requirement": "Bract, sugar leaf, fan leaf, stem, or other organ."
+      "field": "Tissue class",
+      "requirement": "Record bract, sugar leaf, fan leaf, stem, or other organ and whether the surface is adaxial/abaxial or otherwise position-defined. Do not combine unlike tissues in one maturity percentage."
     },
     {
-      "field": "Position",
-      "requirement": "Plant, branch, canopy level, and surface orientation."
+      "field": "Canopy and flower position",
+      "requirement": "Record plant ID, branch, top/middle/lower canopy, distance from apex or another repeatable landmark, and developmental stage. Sampling location must remain comparable across dates."
     },
     {
-      "field": "Class",
-      "requirement": "Bulbous, capitate-sessile, capitate-stalked, nonglandular, or unresolved."
+      "field": "Trichome class",
+      "requirement": "Record bulbous, capitate-sessile, capitate-stalked, nonglandular, transitional/unresolved, and whether classification is based on morphology visible at the chosen magnification."
     },
     {
-      "field": "Image method",
-      "requirement": "Magnification, light, camera, focus method, and scale."
+      "field": "Imaging method",
+      "requirement": "Record device, objective/magnification, illumination type and angle, focus method, scale calibration where available, image processing, and number of fields of view. Preserve original images."
     },
     {
-      "field": "Condition",
-      "requirement": "Intact, collapsed, detached, clear, cloudy, amber, or contaminated."
+      "field": "Condition and color",
+      "requirement": "Record intact, bent, collapsed, detached, contaminated, clear/translucent, opaque/cloudy, amber/brown, or unresolved without converting appearance directly into chemistry or effect claims."
+    },
+    {
+      "field": "Linked analytical sample",
+      "requirement": "When laboratory chemistry is available, record sample ID, tissue class, canopy position, harvest stage, collection time, method, and result so optical observations can be compared with measured composition."
     }
   ],
   "misconceptions": [
@@ -62,7 +69,7 @@
     "Amber percentage directly equals THC or sedation: Color is subjective and does not directly quantify chemistry or effect."
   ],
   "evidenceLimits": [
-    "Field microscopes cannot replace validated chemical testing. Trichome classifications should follow the source method and acknowledge transitional forms."
+    "Field microscopy is useful for morphology and repeated sampling but cannot replace validated cannabinoid or volatile analysis. Apparent trichome size, class, and color depend on tissue, genotype, age, orientation, illumination, magnification, focus, and sample handling, and transitional morphologies can blur category boundaries. Claims that a particular amber percentage directly predicts THC concentration, degradation, or subjective effect exceed what a visual count alone can establish."
   ],
   "crossLinks": "THC-ENC-017, THC-ENC-241–260, THC-ENC-341–343, and harvest-maturity sampling.",
   "sourceNotes": [
