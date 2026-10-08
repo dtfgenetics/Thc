@@ -12,7 +12,7 @@ export function reconcileItem(item, github, live) {
       if(['claimed','in_progress','blocked'].includes(item.state) && pr.state==='closed' && !pr.merged) issues.push({code:'active_pr_closed_unmerged',message:'active item PR closed without merge'});
     }
   }
-  if(item.deployment?.state==='verified'){
+  if(['verified','verified_live'].includes(item.deployment?.state)){
     if(!item.deployment.fingerprint) issues.push({code:'verified_without_fingerprint',message:'verified deployment has no fingerprint'});
     const observed=live?.[item.workItemId];
     if(!observed) issues.push({code:'live_evidence_missing',message:'verified deployment has no live snapshot'});
