@@ -25,7 +25,7 @@ scope_items() {
   local scope="$1"
   if [[ "$scope" == "games" ]]; then
     ITEMS=(games dtf-build.json)
-    REQUIRED=(games/index.html games/bud-or-bluff/index.html games/bud-or-bluff/api-v2.php dtf-build.json)
+    REQUIRED=(games/index.html games/bud-or-bluff/index.html games/bud-or-bluff/api-v2.php games/protect-the-plants/index.html games/protect-the-plants/api.php dtf-build.json)
   else
     # WordPress-owned editorial roots (including /blog) and Learning-owned
     # roots such as /learn are intentionally excluded. The public-suite worker
@@ -54,6 +54,8 @@ scope_items() {
       games/index.html
       games/bud-or-bluff/index.html
       games/bud-or-bluff/api-v2.php
+      games/protect-the-plants/index.html
+      games/protect-the-plants/api.php
       projects
       tools
       atlas/index.html
@@ -211,6 +213,7 @@ activate() {
   [[ -s "$public_root/games/index.html" ]] || die "activated game hub is missing"
   [[ -s "$public_root/games/bud-or-bluff/index.html" ]] || die "activated Bud or Bluff route is missing"
   [[ -s "$public_root/games/bud-or-bluff/api-v2.php" ]] || die "activated Bud or Bluff PHP API is missing"
+  [[ -s "$public_root/games/protect-the-plants/api.php" ]] || die "activated Burn Buds PHP API is missing"
   grep -Fq '23 playable browser games' "$public_root/games/index.html" || die "activated game hub failed marker validation"
 
   trap - ERR INT TERM
