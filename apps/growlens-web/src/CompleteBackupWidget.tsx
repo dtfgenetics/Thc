@@ -121,8 +121,15 @@ export default function CompleteBackupWidget() {
   async function applyArchive(mode: 'replace' | 'merge'): Promise<void> {
     if (!pending) return;
     clearMessages();
-    const currentState = loadState();
-    const currentPhotos = await listPhotos();
+    let currentState: GrowLensState;
+    let currentPhotos: LocalPhotoAsset[];
+    try {
+      currentState = loadState();
+      currentPhotos = await listPhotos();
+    } catch (error) {
+      setErrorMessage(`Unable to read current local records or photos; no import was applied: ${readableError(error)}`);
+      return;
+    }
     const target = mode === 'merge'
       ? mergeCompleteBackup(currentState, currentPhotos, pending)
       : { state: pending.state, photos: pending.photos };
