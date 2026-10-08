@@ -6,6 +6,11 @@ import { encyclopediaLessonRoute } from './lib/encyclopedia-routes.mjs';
 const root=process.cwd();
 const enc=path.join(root,'content','encyclopedia');
 const checkOnly=process.argv.includes('--check');
+const apply=process.argv.includes('--apply');
+if(checkOnly===apply){
+  console.error('Specify exactly one of --check or --apply; refusing implicit writes.');
+  process.exit(2);
+}
 const changed=[]; const errors=[];
 
 function walk(dir){
