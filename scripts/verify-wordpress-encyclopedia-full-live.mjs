@@ -30,6 +30,8 @@ async function verify(id){
       const res=await fetch(`${site}/learn/encyclopedia/${slug}/?dtf_full_verify=${Date.now()}-${attempt}`,{headers:{'Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},redirect:'follow',signal:AbortSignal.timeout(30_000)});
       const html=await res.text();
       if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const finalPath=new URL(res.url).pathname.replace(/\/+$/,'/');
+      if(finalPath!==`/learn/encyclopedia/${slug}/`) throw new Error(`unexpected redirect target: ${finalPath}`);
       if(!html.includes(`data-thc-encyclopedia-id="${id}"`)) throw new Error('missing canonical lesson marker');
       if(!html.includes('Key concepts · Terms to know')) throw new Error('missing key concepts / terms section');
       verified+=1; return;
