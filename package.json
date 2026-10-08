@@ -232,6 +232,7 @@
     "verify:local-ai-integration": "node scripts/validate-local-ai-integration.mjs && node scripts/test-local-ai-worker-plan.mjs",
     "plan:local-ai-worker": "node scripts/plan-local-ai-worker.mjs",
     "migrate:encyclopedia-canonical-routes": "node scripts/migrate-encyclopedia-canonical-routes.mjs --apply",
+    "verify:encyclopedia-changed-depth": "node scripts/validate-encyclopedia-changed-depth.mjs",
     "verify:encyclopedia-canonical-routes": "node scripts/migrate-encyclopedia-canonical-routes.mjs --check"
   }
 }
