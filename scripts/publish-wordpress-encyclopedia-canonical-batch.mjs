@@ -134,7 +134,7 @@ const downloadsHtml=a=>{
 };
 const records=a=>`<div class="thc-records">${(a||[]).map((x,i)=>{if(x&&typeof x==='object')return `<article><h3>${esc(x.field||`Record ${i+1}`)}</h3><p>${esc(x.requirement||x.description||'')}</p></article>`;return `<article><h3>Record ${i+1}</h3><p>${esc(x)}</p></article>`}).join('')}</div>`;
 const misconceptionPairs=a=>(a||[]).map(x=>{if(x&&typeof x==='object'){return [String(x.claim||x.misconception||'').trim(),String(x.correction||x.explanation||'').trim()]};const s=String(x);const i=s.indexOf(':');return i>0?[s.slice(0,i).trim(),s.slice(i+1).trim()]:[s.trim(),''];}).filter(([claim])=>claim);
-const paired=a=>`<div class="thc-paired">${a.map(([claim,correction])=>`<article><strong>Misconception:</strong> ${esc(claim)}${correction?`<br><strong>Correction:</strong> ${esc(correction)}`:''}</article>`).join('')}</div>`;
+const paired=a=>`<div class="thc-paired">${a.map(([claim,correction])=>`<article><p><strong>Misconception:</strong> ${esc(claim)}</p>${correction?`<p><strong>Correction:</strong> ${esc(correction)}</p>`:''}</article>`).join('')}</div>`;
 const evidence=a=>Array.isArray(a)?a:[a].filter(Boolean);
 const sourceNotes=a=>Array.isArray(a)?a:[];
 const practicalResources=a=>(Array.isArray(a?.practicalResources)?a.practicalResources:[]).filter(x=>x&&x.status==='approved'&&x.publicRoute);
