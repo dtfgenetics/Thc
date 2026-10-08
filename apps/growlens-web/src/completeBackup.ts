@@ -199,7 +199,13 @@ export async function parseCompleteBackup(raw: string): Promise<ParsedCompleteBa
     throw new Error('Complete backup has an invalid export date.');
   }
 
-  const photoValues = Array.isArray(decoded.photos) ? decoded.photos : [];
+  if (!Array.isArray(decoded.photos)) {
+    throw new Error('Complete backup must contain a photos array.');
+  }
+  if (!isRecord(decoded.state)) {
+    throw new Error('Complete backup must contain a state object.');
+  }
+  const photoValues = decoded.photos;
   if (photoValues.length > MAX_COMPLETE_BACKUP_PHOTOS) {
     throw new Error(`Complete backup contains more than ${MAX_COMPLETE_BACKUP_PHOTOS} photos.`);
   }
