@@ -16,6 +16,7 @@ if(!user||!pass) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are requir
 const auth='Basic '+Buffer.from(`${user}:${pass}`).toString('base64');
 const malformedPublicCopy=/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i;
 const genericMisconceptionPlaceholder=/Correction:\s*See the (?:controlled )?lesson evidence and context\.?/i;
+const joinedClaimBoundary=/[.!?](?:Claim|Correction):/i;
 const fingerprintOf=a=>createHash('sha256').update(JSON.stringify({
   id:a.id,title:a.title,objective:a.objective,terms:a.terms,coreScience:a.coreScience,
   cultivationRelevance:a.cultivationRelevance,measureAndRecord:a.measureAndRecord,
@@ -102,6 +103,7 @@ const copyDefectKinds=html=>{
   const kinds=[];
   if(malformedPublicCopy.test(html)) kinds.push('malformed-source-copy');
   if(genericMisconceptionPlaceholder.test(html)) kinds.push('generic-misconception-placeholder');
+  if(joinedClaimBoundary.test(decodeHtml(html))) kinds.push('joined-claim-boundary');
   return kinds;
 };
 const fingerprintDefectKinds=(raw,expectedFingerprint)=>{
