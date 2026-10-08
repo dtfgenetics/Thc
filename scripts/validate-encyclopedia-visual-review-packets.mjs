@@ -9,7 +9,10 @@ const decisions=new Set(['approved','changes_requested','rejected']);
 const booleanFields=['scienceAccuracy','labelingAccuracy','misconceptionSafety','accessibilityQuality','provenanceRights','responsiveLegibility'];
 const files=fs.existsSync(reviewDir)?fs.readdirSync(reviewDir).filter(x=>/^(?:batch-\d{3}|produced-review-\d{3})\.json$/i.test(x)).sort():[];
 const indexPath=path.join(reviewDir,'index.json');
-const index=fs.existsSync(indexPath)?JSON.parse(fs.readFileSync(indexPath,'utf8')):{batches:[]};
+const hasIndex=fs.existsSync(indexPath);
+if(!hasIndex) errors.push('Visual review index.json is required, including for empty queues.');
+const index=hasIndex?JSON.parse(fs.readFileSync(indexPath,'utf8')):{batches:[]};
+const packetFiles=fs.existsSync(reviewDir)?fs.readdirSync(reviewDir).filter(x=>/^(?:batch-\d{3}|produced-review-\d{3})\.(?:json|md)$/i.test(x)):[];
 let rows=0, productionBriefRows=0, existingRasterRows=0, completed=0, approved=0;
 for(const file of files){
   const packet=JSON.parse(fs.readFileSync(path.join(reviewDir,file),'utf8'));
@@ -43,7 +46,7 @@ if(rows!==expectedRows) errors.push(`Review row count must match generated revie
 if(Number(index.candidateCount||0)!==rows) errors.push(`Review index candidateCount must equal parsed review rows ${rows}.`);
 if(Number(index.productionBriefReviewCount||0)!==productionBriefRows) errors.push(`Review index productionBriefReviewCount must equal ${productionBriefRows}.`);
 if(Number(index.existingRasterReviewCount||0)!==existingRasterRows) errors.push(`Review index existingRasterReviewCount must equal ${existingRasterRows}.`);
-if(rows<1 && (index.batches||[]).length>0) errors.push('Nonempty visual review batch index must contain at least one controlled review row.');
+if(rows===0 && (packetFiles.length>0 || (index.batches||[]).length>0 || Number(index.candidateCount||0)!==0)) errors.push('Empty visual review queue requires zero candidates, zero batches and no JSON/Markdown packets.');
 if(errors.length){
   console.error(`Visual review packet validation failed with ${errors.length} issue(s):`);
   errors.slice(0,200).forEach(e=>console.error(' - '+e));
