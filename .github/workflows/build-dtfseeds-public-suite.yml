@@ -84,7 +84,10 @@ concurrency:
   # Build artifacts are disposable until promotion. A newer run for the same
   # event/ref supersedes an older build, while production publication remains
   # serialized separately by the Production Gateway.
-  group: dtfseeds-public-suite-${{ github.event_name }}-${{ github.ref_name }}
+  # Explicit dispatches are immutable candidate-fixture builds. Give each its own
+  # concurrency key so a second validation cannot cancel the first fixture.
+  # Scheduled/PR/push runs retain supersession per event and ref.
+  group: dtfseeds-public-suite-${{ github.event_name }}-${{ github.event_name == 'workflow_dispatch' && github.run_id || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
