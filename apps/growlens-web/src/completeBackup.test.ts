@@ -78,6 +78,23 @@ describe('GrowLens complete backups', () => {
     }))).rejects.toThrow('not a supported GrowLens complete backup');
   });
 
+  it('rejects incomplete archives rather than silently omitting records or photos', async () => {
+    const valid = JSON.parse(await serializeCompleteBackup(state, [photo]));
+    const missingPhotos = { ...valid };
+    delete missingPhotos.photos;
+    await expect(parseCompleteBackup(JSON.stringify(missingPhotos))).rejects.toThrow('photos array');
+
+    const invalidPhotos = { ...valid, photos: {} };
+    await expect(parseCompleteBackup(JSON.stringify(invalidPhotos))).rejects.toThrow('photos array');
+
+    const missingState = { ...valid };
+    delete missingState.state;
+    await expect(parseCompleteBackup(JSON.stringify(missingState))).rejects.toThrow('state object');
+
+    const invalidState = { ...valid, state: [] };
+    await expect(parseCompleteBackup(JSON.stringify(invalidState))).rejects.toThrow('state object');
+  });
+
   it('rejects duplicate photo IDs and byte-length mismatches', async () => {
     const valid = JSON.parse(await serializeCompleteBackup(state, [photo]));
     valid.photos.push(valid.photos[0]);
