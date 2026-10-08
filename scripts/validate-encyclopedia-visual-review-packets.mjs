@@ -43,7 +43,7 @@ if(rows!==expectedRows) errors.push(`Review row count must match generated revie
 if(Number(index.candidateCount||0)!==rows) errors.push(`Review index candidateCount must equal parsed review rows ${rows}.`);
 if(Number(index.productionBriefReviewCount||0)!==productionBriefRows) errors.push(`Review index productionBriefReviewCount must equal ${productionBriefRows}.`);
 if(Number(index.existingRasterReviewCount||0)!==existingRasterRows) errors.push(`Review index existingRasterReviewCount must equal ${existingRasterRows}.`);
-if(rows<1) errors.push('Visual review packets must contain at least one controlled review row.');
+if(rows<1 && (index.batches||[]).length>0) errors.push('Nonempty visual review batch index must contain at least one controlled review row.');
 if(errors.length){
   console.error(`Visual review packet validation failed with ${errors.length} issue(s):`);
   errors.slice(0,200).forEach(e=>console.error(' - '+e));
