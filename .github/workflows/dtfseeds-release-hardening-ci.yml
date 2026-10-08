@@ -25,6 +25,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Test live release fingerprint HTTP verification
+        run: node scripts/test-project-os-live-state.mjs
+
       - name: Validate hardened release sources
         shell: bash
         run: |
