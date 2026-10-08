@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-06T10:13:00Z",
+  "updatedAt": "2026-10-08T02:29:00Z",
   "items": [
     {
       "workItemId": "project-os.queue-contract-v1",
@@ -750,5 +750,35 @@
         "completedAt": null
       }
     }
-  ]
+  ],
+  "reconciliation": {
+    "observedAt": "2026-10-08T02:29:00Z",
+    "productionMain": "b36bd2391aaab321b5a4053b1f8ddad3ff1373b6",
+    "toolsMain": "1497676ea71add2842ccf527df2e22368a10712c",
+    "datasetMain": "f3ab2eb4077d593855b0f6dee527006267f14a38",
+    "mergedPRs": [
+      {
+        "repo": "dtfgenetics/Thc",
+        "number": 2268
+      },
+      {
+        "repo": "dtfgenetics/Thc",
+        "number": 2281
+      },
+      {
+        "repo": "dtfgenetics/Tools",
+        "number": 148
+      },
+      {
+        "repo": "dtfgenetics/Thc-dataset",
+        "number": 447
+      },
+      {
+        "repo": "dtfgenetics/Thc-dataset",
+        "number": 449
+      }
+    ],
+    "deploymentStatus": "not_verified",
+    "nextAction": "Validate production deployment fingerprints and refresh live routes; reconcile canonical Tools mirror and remaining CodeQL failures."
+  }
 }
