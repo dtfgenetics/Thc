@@ -7,9 +7,12 @@ export async function fetchJsonWithRetry(url,{attempts=6,delayMs=5000,fetchImpl=
  for(let i=0;i<attempts;i++){
   try{
    const sep=url.includes('?')?'&':'?';
-   const res=await fetchImpl(url+sep+'project_os_verify='+Date.now(),{headers:{'cache-control':'no-cache, no-store, max-age=0'}});
+   const res=await fetchImpl(url+sep+'project_os_verify='+Date.now(),{headers:{'Accept':'application/json','cache-control':'no-cache, no-store, max-age=0'}});
    if(!res.ok) throw new Error('HTTP '+res.status);
-   return await res.json();
+   const value=await res.json();
+   if(!value||typeof value!=='object'||Array.isArray(value)) throw new TypeError('Live release fingerprint response must be a JSON object');
+   if(typeof value.sourceRevision!=='string'||!(/^[0-9a-f]{40}$/i).test(value.sourceRevision)) throw new Error('Live release fingerprint must include a valid Git sourceRevision');
+   return value;
   }catch(err){
    last=err;
    if(i+1<attempts) await new Promise(r=>setTimeout(r,delayMs));
