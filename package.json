@@ -131,7 +131,7 @@
     "verify:encyclopedia-scorecard": "npm run build:encyclopedia-scorecard && node scripts/validate-encyclopedia-completion-scorecard.mjs",
     "build:encyclopedia-quality-scorecard": "node scripts/build-encyclopedia-quality-scorecard.mjs",
     "verify:encyclopedia-quality-scorecard": "npm run build:encyclopedia-scorecard && npm run build:encyclopedia-evidence && npm run build:encyclopedia-evidence-priority && npm run verify:encyclopedia-production-queues && npm run build:encyclopedia-quality-scorecard && node scripts/validate-encyclopedia-quality-scorecard.mjs",
-    "verify:encyclopedia-renderer": "node scripts/validate-encyclopedia-renderer-contract.mjs",
+    "verify:encyclopedia-renderer": "node scripts/validate-encyclopedia-renderer-contract.mjs && node scripts/test-encyclopedia-misconception-renderer.mjs",
     "verify:encyclopedia-structured-data": "node scripts/validate-encyclopedia-structured-data.mjs",
     "build:encyclopedia-source-freshness": "node scripts/build-encyclopedia-source-freshness.mjs",
     "verify:encyclopedia-source-freshness": "npm run build:encyclopedia-source-queue && npm run build:encyclopedia-source-freshness && node scripts/validate-encyclopedia-source-freshness.mjs",
