@@ -205,6 +205,21 @@ export async function parseCompleteBackup(raw: string): Promise<ParsedCompleteBa
   if (!isRecord(decoded.state)) {
     throw new Error('Complete backup must contain a state object.');
   }
+  // Complete backups must never silently normalize omitted collections to empty arrays.
+  // Legacy partial state belongs in the separate legacy import path, not this archive.
+  const requiredCollections = [
+    'spaces', 'cycles', 'plants', 'diary', 'tasks', 'readings',
+    'calibrationProfiles', 'observations', 'irrigationRecords',
+    'feedingRecords', 'reservoirRecords', 'harvestRecords', 'observationOutcomes',
+  ] as const;
+  if (decoded.state.schemaVersion !== 2) {
+    throw new Error('Complete backup has an unsupported state schema version.');
+  }
+  for (const key of requiredCollections) {
+    if (!Array.isArray(decoded.state[key])) {
+      throw new Error(`Complete backup state is missing or has invalid collection: ${key}.`);
+    }
+  }
   const photoValues = decoded.photos;
   if (photoValues.length > MAX_COMPLETE_BACKUP_PHOTOS) {
     throw new Error(`Complete backup contains more than ${MAX_COMPLETE_BACKUP_PHOTOS} photos.`);
