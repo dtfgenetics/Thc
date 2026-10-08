@@ -5,6 +5,16 @@ setDefaultResultOrder('ipv4first');
 const siteUrl = (process.env.DTF_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const publicModulePages = [
+  ['/atlas/diagnostics/', 'Observation & Differential Diagnostics'],
+  ['/atlas/environmental-physiology/', 'Environmental Physiology'],
+  ['/atlas/flowers/', 'Flower & Inflorescence Anatomy'],
+  ['/atlas/nodes-branching/', 'Nodes, Meristems & Branching'],
+  ['/atlas/seed-germination/', 'Seed & Germination'],
+  ['/atlas/stem-vascular/', 'Stem & Vascular System'],
+  ['/atlas/trichomes-resin/', 'Trichomes & Secretory Biology'],
+];
+
 const pages = [
   ['/learn/atlas/', 'THC Living Plant Atlas'],
   ['/learn/atlas/seed-germination/thermal-limits-and-germination-rate/', 'Thermal limits & germination rate'],
@@ -86,6 +96,24 @@ async function verifyPage(route, marker) {
   });
 }
 
+async function verifyPublicModule(route, marker) {
+  return retry(route, async () => {
+    const response = await fetchFresh(route);
+    const text = await response.text();
+    const location = response.headers.get('location') || '';
+    const ok = response.status === 200
+      && !location
+      && text.includes(marker)
+      && text.includes('atlas-module-v1.css')
+      && text.includes('https://dtfseeds.com')
+      && !/https?:\/\/(?:www\.)?dtf420\.com/i.test(text);
+    return {
+      ok,
+      reason: `HTTP ${response.status}; location=${location || '<none>'}; marker=${text.includes(marker)}; sharedModuleCss=${text.includes('atlas-module-v1.css')}; canonical=${text.includes('https://dtfseeds.com')}; retiredDomain=${/https?:\/\/(?:www\.)?dtf420\.com/i.test(text)}`,
+    };
+  });
+}
+
 async function verifyRuntimeFile(route, markers) {
   return retry(route, async () => {
     const response = await fetchFresh(route);
@@ -105,6 +133,11 @@ async function verifyRuntimeFile(route, markers) {
 
 for (const [route, marker] of pages) {
   await verifyPage(route, marker);
+  console.log(`verified ${route}`);
+}
+
+for (const [route, marker] of publicModulePages) {
+  await verifyPublicModule(route, marker);
   console.log(`verified ${route}`);
 }
 
@@ -128,6 +161,7 @@ console.log(JSON.stringify({
   ok: true,
   site: siteUrl,
   atlasPagesVerified: pages.length,
+  publicModulePagesVerified: publicModulePages.length,
   atlasSystemsRepresented: 10,
   runtimeFilesVerified: 2,
   canonicalRoute: '/learn/atlas/',
