@@ -7,6 +7,10 @@ const good=reconcile({items:[item]},{pullRequests:{'7':{state:'closed',merged:tr
 assert.equal(good.ok,true);
 assert.equal(good.summary.drifted,0);
 
+const verifiedLive={...item,deployment:{...item.deployment,state:'verified_live'}};
+assert.equal(reconcile({items:[verifiedLive]},{pullRequests:{'7':{state:'closed',merged:true,headSha:'abc'}}},{}).items[0].issues.some(x=>x.code==='live_evidence_missing'),true,'verified_live must not bypass missing live evidence');
+assert.equal(reconcile({items:[verifiedLive]},{pullRequests:{'7':{state:'closed',merged:true,headSha:'abc'}}},{w1:{sourceRevision:'old'}}).items[0].issues.some(x=>x.code==='live_revision_drift'),true,'verified_live must reject wrong deployed revision');
+
 const headDrift=reconcile({items:[item]},{pullRequests:{'7':{state:'closed',merged:true,headSha:'def'}}},{w1:{sourceRevision:'abc'}});
 assert.equal(headDrift.ok,false);
 assert.ok(headDrift.items[0].issues.some(x=>x.code==='github_head_drift'));
