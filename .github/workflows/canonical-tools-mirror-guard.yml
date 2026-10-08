@@ -28,8 +28,18 @@ jobs:
       - name: Checkout THC integration repository
         uses: actions/checkout@v4
 
-      - name: Clone canonical Tools repository
-        run: git clone --depth 1 https://github.com/dtfgenetics/Tools.git /tmp/tools
+      - name: Checkout pinned canonical Tools revision
+        shell: bash
+        run: |
+          TOOLS_COMMIT="$(sed -n 's/^commit=//p' site/public-route-patch/assets/release-source-revisions/tools.txt)"
+          if [[ ! "$TOOLS_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Invalid canonical Tools source revision pin: $TOOLS_COMMIT"
+            exit 1
+          fi
+          git init /tmp/tools
+          git -C /tmp/tools remote add origin https://github.com/dtfgenetics/Tools.git
+          git -C /tmp/tools fetch --depth 1 origin "$TOOLS_COMMIT"
+          git -C /tmp/tools checkout --detach FETCH_HEAD
 
       - name: Verify THC deployment mirror equals canonical Tools
         run: node scripts/validate-canonical-tools-mirror.mjs /tmp/tools
