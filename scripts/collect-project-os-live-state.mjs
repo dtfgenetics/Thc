@@ -18,6 +18,7 @@ export async function fetchJson(url,{fetchImpl=fetch}={}){
  if(!response.ok) throw new Error(`live fingerprint request failed: ${response.status}`);
  const value=await response.json();
  if(!value||typeof value!=='object'||Array.isArray(value)) throw new Error('live fingerprint response must be an object');
+ if(typeof value.sourceRevision!=='string'||!(/^[0-9a-f]{40}$/i).test(value.sourceRevision)) throw new Error('live fingerprint must include a valid Git sourceRevision');
  return value;
 }
 if(import.meta.url===new URL('file://'+process.argv[1]).href){
