@@ -24,32 +24,39 @@
   "coreScience": [
     "Readiness is not an exact plant age. A transplantable seedling has active new growth, an intact apex, a root system that holds or occupies the propagation unit without being severely bound, manageable water demand, and no unresolved disease or pest issue. The receiving environment must also be prepared.",
     "Transplant changes multiple variables at once: container volume, media chemistry, moisture distribution, root-zone oxygen, light, temperature, humidity, airflow, and sometimes outdoor ultraviolet and wind. Hardening-off reduces the size of that step by gradually increasing exposure while monitoring water balance and injury.",
-    "Root disturbance can damage fine absorptive tissue and temporarily alter establishment, but severity depends on plug integrity, method, and recovery conditions. Use an internal transplant procedure: preserve the root ball, match plug and receiving-media contact, avoid unsupported burial of injured stem tissue, and document planting depth, compaction, irrigation, and solution EC. These are project controls, not universal cannabis thresholds."
+    "Root disturbance can damage fine absorptive tissue and temporarily alter establishment, but severity depends on plug integrity, method, and recovery conditions. Use an internal transplant procedure: preserve the root ball, match plug and receiving-media contact, avoid unsupported burial of injured stem tissue, and document planting depth, compaction, irrigation, and solution EC. These are project controls, not universal cannabis thresholds.",
+    "Hardening-off is acclimation of multiple coupled systems. Leaves adjust photoprotective capacity, stomatal behavior, cuticle and water relations; stems experience different mechanical loading; and roots encounter a new hydraulic, thermal, and chemical environment after transplant. If light, wind, vapor-pressure demand, temperature, and root disturbance all increase abruptly, the combined demand can exceed water uptake and repair capacity even when each factor alone would be tolerable."
   ],
   "cultivationRelevance": [
     "Prepare and verify the destination before removing seedlings from trays. Match media moisture on both sides of the interface, preserve labels, and record the new container or bed position.",
-    "For outdoor movement, use staged exposure to brighter light, wind, temperature swings, and lower humidity. Pause or step back if leaves scorch, wilt persistently, stems lodge, or growth stops."
+    "For outdoor movement, use staged exposure to brighter light, wind, temperature swings, and lower humidity. Pause or step back if leaves scorch, wilt persistently, stems lodge, or growth stops.",
+    "Separate destination preparation from plant removal. Verify receiving media or soil condition, irrigation availability, root-zone temperature, spacing, light/wind exposure, labels, and pest/disease status before disturbing the propagation unit. A ready seedling can still fail in an unprepared destination.",
+    "For outdoor or greenhouse transitions, increase exposure in planned steps and measure representative light and temperature rather than relying only on hours outside. Observe midday wilt recovery, leaf injury, stem lodging, and new growth; hold or reduce the exposure step when injury persists."
   ],
   "measureAndRecord": [
     {
-      "field": "Readiness check",
-      "requirement": "True-leaf growth, root occupation, plug integrity, health, and irrigation status."
+      "field": "Readiness assessment",
+      "requirement": "Record active true-leaf growth, apex condition, root occupancy, root-ball/plug integrity, root color/lesions, water status, pest/disease inspection, and whether the plant can be removed without major root loss."
     },
     {
       "field": "Destination",
-      "requirement": "Container or bed ID, media batch, prewet condition, environment, and spacing."
+      "requirement": "Record container/bed ID, media/soil batch or condition, prewet status, temperature, pH/EC where relevant, spacing, support, light exposure, wind/airflow, and irrigation availability."
     },
     {
-      "field": "Acclimation",
-      "requirement": "Daily duration, light or outdoor exposure, temperature, wind, and response."
+      "field": "Acclimation schedule",
+      "requirement": "Record each exposure date, duration, PPFD/DLI or outdoor light class where measured, temperature range, humidity/VPD where used, wind exposure, irrigation, and visible response."
     },
     {
       "field": "Transplant event",
-      "requirement": "Date, operator, depth, root disturbance, label verification, and initial irrigation."
+      "requirement": "Record date/time, operator, planting depth, root disturbance, plug/root-ball condition, media-interface contact, label verification, initial irrigation volume/solution, and any support."
     },
     {
       "field": "Recovery",
-      "requirement": "Turgor, new growth, root-zone moisture, injury, survival, and days to resumed growth."
+      "requirement": "Record turgor immediately and at later checks, new leaf/root growth, injury, root-zone moisture, survival, and days to resumed extension. Distinguish transient wilt from persistent decline."
+    },
+    {
+      "field": "Deviation and adjustment",
+      "requirement": "Record weather changes, unexpected high light/wind/heat/cold, broken root balls, irrigation delays, and any step-back or environmental correction so recovery can be interpreted correctly."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "Bigger containers eliminate transplant stress: Media interface, water distribution, root handling, and environment still matter."
   ],
   "evidenceLimits": [
-    "General hardening schedules are starting frameworks. Cannabis response, weather, greenhouse conditions, and receiving systems require local adjustment."
+    "Hardening responses vary with prior growth environment, genotype, seedling size, root development, receiving system, season, and weather. General horticultural schedules are starting frameworks rather than cannabis-specific universal durations. Transplant shock is also not one mechanism: root injury, hydraulic mismatch, high light, wind, temperature, salinity, and disease can produce overlapping symptoms, so acclimation and recovery should be documented with environmental and root-zone context."
   ],
   "crossLinks": "THC-ENC-031–036, THC-ENC-038, THC-ENC-059, THC-ENC-199, and transplant SOPs.",
   "sourceNotes": [
     "University of Illinois Extension. Starting a Garden: Hardening Off Indoor Seedlings. General horticultural transplant guidance.  https://extension.illinois.edu/blogs/good-growing/2020-04-06-starting-garden-hardening-indoor-seedlings",
-    "Langenfeld N.J. and Bugbee B. (2022). Germination and seedling establishment for hydroponics: The benefit of slant boards. PLOS ONE 17:e0275710. https://doi.org/10.1371/journal.pone.0275710"
+    "Langenfeld N.J. and Bugbee B. (2022). Germination and seedling establishment for hydroponics: The benefit of slant boards. PLOS ONE 17:e0275710. https://doi.org/10.1371/journal.pone.0275710",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; seedling establishment, transplant, nutrition, measurement, and diagnostic framework."
   ],
   "slug": "transplant-readiness-and-hardening-off",
   "route": "/learn/encyclopedia/thc-enc-039/",

@@ -24,32 +24,39 @@
   "coreScience": [
     "A useful test begins with an unbiased sample from one traceable lot. It defines sample size, replicate structure, substrate, water preparation, temperature, light after emergence, scoring endpoint, observation times, final count, and abnormal-seedling rules. Conditions must be recorded, not described only as 'standard.'",
     "Final germination percentage estimates how many units reached the endpoint. Time metrics describe speed and uniformity. Emergence percentage, normal-seedling percentage, and survival identify later losses. These measures should not be collapsed: a lot can germinate well but emerge poorly because of depth, crusting, transfer injury, disease, or seedling environment.",
-    "Use the sequence as an editorial troubleshooting framework, not a diagnostic key. Record the last completed stage—no swelling, swelling without radicle emergence, radicle death, emergence failure, or post-emergence collapse—then test multiple plausible causes with controls and measurements. No stage or symptom identifies water contact, viability, dormancy, salinity, hypoxia, disease, depth, or coat effects by itself."
+    "Use the sequence as an editorial troubleshooting framework, not a diagnostic key. Record the last completed stage—no swelling, swelling without radicle emergence, radicle death, emergence failure, or post-emergence collapse—then test multiple plausible causes with controls and measurements. No stage or symptom identifies water contact, viability, dormancy, salinity, hypoxia, disease, depth, or coat effects by itself.",
+    "A strong failure analysis adds denominator discipline and uncertainty. Percentages depend on how many units were tested, which units were sampled, how replicates varied, and which units were censored or excluded. Comparing two percentages without sample size or protocol can create false confidence. The sequence map becomes more powerful when each loss is assigned to a transition—lot to imbibition, imbibition to radicle, radicle to emergence, emergence to normal seedling, or seedling to survival—while unresolved losses remain explicitly unresolved."
   ],
   "cultivationRelevance": [
     "Include a known-performing reference lot when comparing a new method, and change one major factor at a time. Without a control, a method improvement can be confused with a better seed sample.",
-    "Translate results into action: accept for routine use, increase sowing quantity, reserve for rescue, retest, improve storage, investigate disease, or reject. Preserve raw counts so future calculations remain possible."
+    "Translate results into action: accept for routine use, increase sowing quantity, reserve for rescue, retest, improve storage, investigate disease, or reject. Preserve raw counts so future calculations remain possible.",
+    "Use the test as a decision system rather than a scorecard. Define before testing what result would trigger routine planting, higher sowing quantity, storage review, rescue work, sanitation investigation, environmental correction, retesting, or rejection. This prevents changing the acceptance rule after seeing the outcome.",
+    "When a method change appears to improve germination, repeat it with a known-performing reference lot and matched control. Preserve raw time-series counts and failure categories so improvement in final percentage can be separated from faster timing, fewer abnormal seedlings, or simply a better sampled aliquot."
   ],
   "measureAndRecord": [
     {
-      "field": "Design",
-      "requirement": "Question, lot, sample selection, sample size, replicates, control, and protocol."
+      "field": "Question and design",
+      "requirement": "Record the decision question, lot/aliquot, unbiased sample-selection method, sample size, replicate count, reference/control lot or treatment, protocol version, and predefined acceptance/disposition criteria."
     },
     {
-      "field": "Raw counts",
-      "requirement": "New events by replicate and exact observation time."
+      "field": "Environment and method",
+      "requirement": "Record substrate/medium, water preparation, temperature time series or range, aeration/enclosure, light after emergence, planting depth/transfer method, observation interval, final count time, and any deviation."
+    },
+    {
+      "field": "Raw event data",
+      "requirement": "By replicate, record newly germinated units at each observation, cumulative events, transfers, emergence, normal/abnormal seedlings, deaths, and missing/censored units. Preserve raw counts separately from calculated metrics."
     },
     {
       "field": "Metrics",
-      "requirement": "Final germination, emergence, normal seedlings, survival, and selected time or spread metric."
+      "requirement": "Calculate final germination, emergence, normal-seedling percentage, survival, and a named timing/uniformity metric with sample size and replicate results. Document formulas or software/version where calculations are automated."
     },
     {
       "field": "Failure map",
-      "requirement": "Counts at imbibition, radicle, emergence, cotyledon, true-leaf, disease, and survival gates."
+      "requirement": "Count units whose last verified stage is no imbibition/unknown, hydrated but no radicle, radicle then failure, emergence failure, abnormal seedling, disease/collapse, or later death; retain unresolved classifications where evidence is insufficient."
     },
     {
-      "field": "Decision",
-      "requirement": "Disposition, rationale, corrective action, owner, and next test date."
+      "field": "Decision and CAPA",
+      "requirement": "Record disposition, rationale, suspected contributors, corrective/preventive action, responsible person, completion date, retest design/date, and whether follow-up evidence supported the original hypothesis."
     }
   ],
   "misconceptions": [
@@ -58,7 +65,7 @@
     "Every failure means bad genetics: Storage, method, environment, disease, and handling must be separated from heredity."
   ],
   "evidenceLimits": [
-    "Statistical confidence depends on sample size and design. Certification, commerce, or legal disputes may require an accredited laboratory and jurisdiction-specific rules."
+    "Confidence in germination and failure-rate estimates depends on unbiased sampling, sample size, replicate variation, observation frequency, endpoint definitions, and protocol consistency. A production test can guide internal decisions but does not replace an accredited seed test where certification, commerce, legal disputes, or regulated claims require one. Failure-stage mapping narrows where a process failed; it does not uniquely diagnose the biological cause without additional controlled measurements or pathogen/quality testing."
   ],
   "crossLinks": "THC-ENC-021–039, THC-ENC-401–420, seed inventory controls, and crop-review CAPA records.",
   "sourceNotes": [

@@ -24,32 +24,39 @@
   "coreScience": [
     "Evaluation should examine the whole seedling: primary and lateral root development, hypocotyl integrity, cotyledons, shoot apex, first true leaves, symmetry, color, lesions, and continued growth. Under a declared internal triage rule, isolated cotyledon damage may be monitored while loss of the shoot apex or progressive root decay triggers a higher-risk classification. This is an operational disposition rule, not a universal prognosis.",
     "Weak is not the same as abnormal. A late but structurally complete seedling may recover under good conditions, while a fast seedling with a severe root or apex defect may not. Classification should include trend over a defined observation period rather than one photograph.",
-    "Causes overlap. Genetic defects, immaturity, aging, mechanical injury, coat retention, deep placement, salinity, low oxygen, temperature stress, pathogens, and handling can produce similar appearances. The evaluator should separate the phenotype observed from the cause hypothesized."
+    "Causes overlap. Genetic defects, immaturity, aging, mechanical injury, coat retention, deep placement, salinity, low oxygen, temperature stress, pathogens, and handling can produce similar appearances. The evaluator should separate the phenotype observed from the cause hypothesized.",
+    "Seedling classification is most useful when it separates phenotype, likely production risk, and causal interpretation. Structural evaluation asks whether essential root and shoot systems are present and progressing; performance evaluation asks how rapidly and uniformly the seedling grows; diagnosis asks why an abnormality occurred. Keeping those questions separate prevents a slow but intact seedling from being mislabeled as genetically defective and prevents an obvious lesion from being dismissed because growth was initially fast."
   ],
   "cultivationRelevance": [
     "Set acceptance rules before the test and apply them consistently. If weak seedlings are retained for valuable genetics, isolate and label them so rescue outcomes do not distort lot-quality statistics.",
-    "Do not breed from or discard a plant based on an early anomaly without considering recovery and the objective. Some early injuries are environmental and not heritable."
+    "Do not breed from or discard a plant based on an early anomaly without considering recovery and the objective. Some early injuries are environmental and not heritable.",
+    "Use a predefined triage rubric before looking at treatment groups or genotype labels. Score essential structures and progression first, then record suspected causes separately. This reduces hindsight bias and makes lot or treatment comparisons more reproducible.",
+    "When retaining a weak or unusual high-value seedling, isolate it from lot-quality calculations and create a rescue record. Track whether the abnormality resolves, persists, spreads, or changes architecture. A recovered plant can be valuable, but its early rescue should not artificially improve the original germination/normal-seedling statistic."
   ],
   "measureAndRecord": [
     {
-      "field": "Classification",
-      "requirement": "Normal, weak/delayed, abnormal, diseased, dead, or unresolved under a stated rule."
+      "field": "Classification rule",
+      "requirement": "Define normal, delayed/weak, abnormal, diseased/suspect, dead, and unresolved categories before scoring, including which missing or damaged structures trigger each internal disposition."
     },
     {
-      "field": "Structures",
-      "requirement": "Root, hypocotyl, cotyledons, apex, and true-leaf condition."
+      "field": "Structural assessment",
+      "requirement": "Record primary/lateral roots, root tips, hypocotyl integrity, cotyledons, shoot apex, first true leaves, symmetry, lesions, decay, and photographs with scale."
     },
     {
-      "field": "Timing",
-      "requirement": "Germination, emergence, first evaluation, recheck, and resolution dates."
+      "field": "Development timing",
+      "requirement": "Record germination, emergence, first evaluation, repeat evaluation, first true leaves, and resolution dates so delay can be distinguished from arrested development."
+    },
+    {
+      "field": "Growth trend",
+      "requirement": "Measure or score root/shoot extension, leaf expansion, turgor, color pattern, and survival across at least two time points when the outcome is uncertain."
     },
     {
       "field": "Cause evidence",
-      "requirement": "Environment, lot pattern, injury, laboratory finding, or no cause established."
+      "requirement": "Record seed-lot pattern, planting depth, temperature, moisture/aeration, pH/EC, handling injury, coat retention, disease signs/tests, and whether similar abnormalities occur in matched controls."
     },
     {
       "field": "Disposition",
-      "requirement": "Retained, isolated, rescued, culled, sampled, or excluded from lot statistics."
+      "requirement": "Record retained, isolated, rescued, culled, sampled/tested, excluded from lot statistics, or returned to routine production, with rationale and the date of the decision."
     }
   ],
   "misconceptions": [
@@ -58,7 +65,7 @@
     "A damaged cotyledon means certain failure: Outcome depends on roots, apex, true leaves, disease, and recovery."
   ],
   "evidenceLimits": [
-    "Accredited seed-testing definitions may be more detailed and crop-specific. This framework supports education and internal quality review, not certification."
+    "Accredited seed-testing organizations can define normal and abnormal seedlings with crop- and method-specific detail beyond this internal educational framework. Early morphology is also affected by environment, mechanical injury, pathogens, seed maturity, and genotype; a single abnormal seedling does not establish heritability. Operational triage rules should therefore be stated explicitly, applied consistently, and kept separate from causal or breeding conclusions."
   ],
   "crossLinks": "THC-ENC-023, THC-ENC-030–033, THC-ENC-037, THC-ENC-039–040, and breeding selection records.",
   "sourceNotes": [

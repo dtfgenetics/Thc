@@ -24,32 +24,39 @@
   "coreScience": [
     "Light is both energy and information. After emergence, adequate light limits excessive hypocotyl elongation and supports cotyledon and true-leaf photosynthesis. The relevant exposure depends on PPFD, photoperiod, spectrum, distance, uniformity, leaf temperature, carbon dioxide, water status, and prior acclimation.",
     "Low-light-acclimated plants can experience photoinhibition when exposure suddenly exceeds their acclimated capacity; this mechanism is established in plant research but has not been reduced to a universal cannabis-seedling threshold. Increase exposure in measured steps while tracking leaf temperature, water status, and response. The rate of acclimation depends on prior light, spectrum, duration, genotype, and environment.",
-    "There is no defensible single cannabis seedling PPFD that fits every genotype and system. Use a calibrated meter, map the tray rather than one point, and record photoperiod and leaf temperature. Stretch, bleaching, distortion, stalled expansion, or localized injury are non-diagnostic observations; interpret them only alongside measured light, temperature, water status, nutrition, disease, and genotype."
+    "There is no defensible single cannabis seedling PPFD that fits every genotype and system. Use a calibrated meter, map the tray rather than one point, and record photoperiod and leaf temperature. Stretch, bleaching, distortion, stalled expansion, or localized injury are non-diagnostic observations; interpret them only alongside measured light, temperature, water status, nutrition, disease, and genotype.",
+    "Daily light exposure also matters in addition to instantaneous PPFD. The daily light integral combines photon flux and photoperiod, so two seedling environments can deliver different total doses despite similar spot measurements. Spectrum and direction influence morphology through photoreceptors, while leaf temperature, carbon dioxide, humidity, and water status determine how much light can be used safely. Acclimation therefore needs both dose control and whole-environment context."
   ],
   "cultivationRelevance": [
     "Begin with uniform, moderate exposure and change one variable at a time. Increase intensity, duration, or outdoor exposure in steps while maintaining water and temperature control.",
-    "Rotate trays only if rotation is part of the protocol and recorded; otherwise rotation can hide a poor light map. Correct fixture geometry and edge effects instead of relying on memory."
+    "Rotate trays only if rotation is part of the protocol and recorded; otherwise rotation can hide a poor light map. Correct fixture geometry and edge effects instead of relying on memory.",
+    "Map PPFD across the entire seedling area at the actual canopy height after fixture or tray changes. Adjust fixture height, dimming, spacing, or tray position to reduce large gradients rather than assuming the center reading represents every seedling.",
+    "Increase light in defined steps and keep a comparison record of PPFD, photoperiod/DLI, leaf temperature, watering demand, and morphology. If bleaching, upward/downward leaf posture, stalled expansion, or rapid drying appears, verify heat and water status before attributing the response solely to light."
   ],
   "measureAndRecord": [
     {
       "field": "Light map",
-      "requirement": "PPFD grid, meter, date, fixture setting, height, and photoperiod."
+      "requirement": "Record calibrated/verified meter, grid positions, PPFD readings, fixture model/setting, height, optics, date, and seedling canopy height. Report minimum, maximum, mean, and uniformity where useful."
+    },
+    {
+      "field": "Photoperiod and dose",
+      "requirement": "Record lights-on/off schedule and calculate or retain DLI from measured PPFD when the exposure is stable enough for that calculation. Note outdoor/cloud variability where relevant."
     },
     {
       "field": "Dose change",
-      "requirement": "Previous and new setting, date, reason, and expected response."
+      "requirement": "Record previous versus new PPFD/photoperiod, date/time, reason, acclimation step size, and expected observation window. Change one major light variable at a time when evaluating response."
     },
     {
-      "field": "Morphology",
-      "requirement": "Hypocotyl length, leaf angle, color, expansion, and injury."
+      "field": "Plant response",
+      "requirement": "Record hypocotyl length, leaf/cotyledon angle, leaf expansion, color, bleaching, distortion, turgor, and growth trend at defined intervals rather than relying on a final photograph."
     },
     {
-      "field": "Temperature",
-      "requirement": "Air and leaf temperature near representative seedlings."
+      "field": "Thermal/water context",
+      "requirement": "Record air and representative leaf temperature, humidity/VPD when used, root-zone moisture or irrigation frequency, and any heat from fixtures because light and water/temperature responses interact."
     },
     {
-      "field": "Uniformity",
-      "requirement": "Tray position, edge effects, rotation practice, and outlier plants."
+      "field": "Spatial outliers",
+      "requirement": "Track tray position, edge/corner effects, rotation practice, and outlier seedlings. If trays are rotated, document the schedule so position effects are not hidden."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "Fixture percentage is a universal measurement: Output depends on fixture, distance, optics, and geometry; measure PPFD."
   ],
   "evidenceLimits": [
-    "Cannabis-specific seedling response curves are limited. Use plant response and measurements, and do not borrow mature-flowering targets for newly emerged seedlings."
+    "Cannabis-specific quantitative seedling light-response and acclimation curves remain limited compared with mature-crop lighting research, so flowering-stage PPFD or DLI targets should not be copied onto newly emerged seedlings. Photoinhibition and elongation responses depend on prior acclimation, spectrum, temperature, water status, genotype, CO2, and duration. Use measured dose plus repeated plant response rather than a universal fixture percentage or one PPFD target."
   ],
   "crossLinks": "THC-ENC-032–033, THC-ENC-039, THC-ENC-101–120, and environmental mapping lessons.",
   "sourceNotes": [
     "Tian Y. et al. (2017). Effects of periodic photoinhibitory light exposure on physiology and productivity of Arabidopsis plants grown under low light. Journal of Experimental Botany 68:4249-4262. https://doi.org/10.1093/jxb/erx213",
-    "Zhang Y. et al. (2024). Strategies for adaptation to high light in plants. Plant Communications 5:100857. https://pmc.ncbi.nlm.nih.gov/articles/PMC11399379/"
+    "Zhang Y. et al. (2024). Strategies for adaptation to high light in plants. Plant Communications 5:100857. https://pmc.ncbi.nlm.nih.gov/articles/PMC11399379/",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; seedling physiology, measurement, root-zone, light, and diagnostic context framework."
   ],
   "slug": "seedling-light-acclimation",
   "route": "/learn/encyclopedia/thc-enc-034/",

@@ -24,32 +24,39 @@
   "coreScience": [
     "Cannabis is a dicot. Its two cotyledons are formed in the embryo, contain stored resources, and expand after emergence. Once exposed to light they can photosynthesize, supporting the seedling while the root system and first true leaves develop.",
     "The first true leaves arise from the shoot apex between the cotyledons. Early leaf form is simpler than the mature palmately compound pattern; later leaves typically develop more leaflets as the plant and meristem mature. Leaflet number alone should not be used as a rigid age clock.",
-    "Cotyledons naturally lose importance as true leaves expand. Early yellowing, necrosis, distortion, or loss is non-specific and cannot establish seed quality, disease, salinity, or another cause by itself. Record timing and distribution, then evaluate new growth, roots, moisture, temperature, pH, EC, and disease signs rather than trying to keep cotyledons permanently green."
+    "Cotyledons naturally lose importance as true leaves expand. Early yellowing, necrosis, distortion, or loss is non-specific and cannot establish seed quality, disease, salinity, or another cause by itself. Record timing and distribution, then evaluate new growth, roots, moisture, temperature, pH, EC, and disease signs rather than trying to keep cotyledons permanently green.",
+    "The autotrophic transition is gradual rather than instantaneous. Cotyledons initially supply stored carbon and nutrients, then contribute photosynthesis after greening, while expanding true leaves progressively become the dominant photosynthetic source. At the same time, root surface area and uptake capacity increase. Damage to one component can therefore be partly compensated by the others, but severe injury to the shoot apex or roots can limit continued development even when cotyledons remain green."
   ],
   "cultivationRelevance": [
     "Delay major stress and unnecessary transplant handling until the seedling is photosynthetically active and producing healthy new growth. A green cotyledon pair does not prove a functional root system.",
-    "Inspect the shoot apex. Damage there can permanently alter early architecture, while cotyledon injury may be survivable if the apex, roots, and true leaves remain functional."
+    "Inspect the shoot apex. Damage there can permanently alter early architecture, while cotyledon injury may be survivable if the apex, roots, and true leaves remain functional.",
+    "Evaluate establishment from coordinated new growth: expanding true leaves, an intact active apex, increasing root exploration, and stable turgor. Cotyledon color alone is a poor pass/fail test because normal senescence and injury can occur while the seedling continues to develop.",
+    "When cotyledons yellow or spot early, record whether new leaves and roots are also affected before changing nutrition. Check moisture, pH/EC, temperature, light, abrasion from retained coverings, and disease signs. Protect the growing apex because injury there can alter branching and seedling architecture long after cotyledon damage has become irrelevant."
   ],
   "measureAndRecord": [
     {
-      "field": "Cotyledons",
-      "requirement": "Opening date, color, symmetry, damage, lesions, and senescence date."
+      "field": "Cotyledon development",
+      "requirement": "Record opening date, symmetry, color, lesions, abrasion, retained-covering damage, necrosis, and senescence date using the same descriptive scale across seedlings."
     },
     {
-      "field": "True leaves",
-      "requirement": "First appearance, expansion, form, color, and distortion."
+      "field": "True-leaf development",
+      "requirement": "Record first appearance, expansion milestones, leaf form, color pattern, distortion, and node production. Do not use leaflet count alone as an exact-age marker."
     },
     {
       "field": "Shoot apex",
-      "requirement": "Intact, damaged, missing, stalled, or producing multiple shoots."
+      "requirement": "Record intact/active, damaged, missing, stalled, distorted, or producing multiple shoots. Photograph apex abnormalities at consistent magnification where practical."
     },
     {
       "field": "Growth timing",
-      "requirement": "Days from radicle to emergence and from emergence to first true leaves."
+      "requirement": "Record radicle-to-emergence interval, emergence-to-cotyledon-opening interval, and emergence-to-first-true-leaf interval, plus observation frequency so comparisons are interpretable."
     },
     {
-      "field": "Context",
-      "requirement": "Lot, light, temperature, root-zone moisture, pH, EC, and disease observations."
+      "field": "Root and environment context",
+      "requirement": "Record root development where observable, root-zone moisture, temperature, drainage, solution/root-zone pH and EC when relevant, PPFD/photoperiod, and disease observations."
+    },
+    {
+      "field": "Outcome",
+      "requirement": "At a defined follow-up, classify normal continued development, delayed but recovering growth, persistent abnormality, death, or architecture change; retain the earlier observations rather than replacing them with the final label."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "Leaflet count gives exact plant age: Development varies with genotype and environment."
   ],
   "evidenceLimits": [
-    "Normal timing and early leaf form vary among lots and environments. Trend and symmetry are more useful than a universal day-by-day chart."
+    "The sequence of cotyledon expansion, true-leaf development, and increasing photosynthetic independence is broadly applicable, but timing and morphology vary with seed lot, genotype, light, temperature, root-zone conditions, and stress. Cotyledon yellowing, spotting, or early loss is nonspecific and should not be assigned to a nutrient deficiency or seed-quality problem without supporting measurements and progression data."
   ],
   "crossLinks": "THC-ENC-008, THC-ENC-012–013, THC-ENC-031–036, and whole-plant photosynthesis lessons.",
   "sourceNotes": [
     "El-Maarouf-Bouteau H. (2022). The Seed and the Metabolism Regulation. Biology 11:168.  https://doi.org/10.3390/biology11020168",
-    "Canadian Food Inspection Agency (2021). The Biology of Cannabis sativa L. (Cannabis, hemp, marijuana).  https://inspection.canada.ca/en/plant-varieties/plants-novel-traits/applicants/directive-94-08/biology-documents/cannabis-sativa"
+    "Canadian Food Inspection Agency (2021). The Biology of Cannabis sativa L. (Cannabis, hemp, marijuana).  https://inspection.canada.ca/en/plant-varieties/plants-novel-traits/applicants/directive-94-08/biology-documents/cannabis-sativa",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; seedling physiology, measurement, root-zone, light, and diagnostic context framework."
   ],
   "slug": "cotyledon-function-and-the-first-true-leaves",
   "route": "/learn/encyclopedia/thc-enc-033/",

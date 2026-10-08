@@ -24,32 +24,39 @@
   "coreScience": [
     "A seedling's water use and the wetted volume are system-specific. In propagation substrates, water-air balance changes with substrate properties, packing, container height, irrigation method, and root occupancy. Whole-container and stem-focused applications can therefore create different wetting patterns; neither is universally correct. Measure application volume and moisture distribution in the actual container rather than copying an adult schedule.",
     "Watering decisions depend on media pore structure, container height, plant size, evaporation, transpiration, temperature, airflow, and drainage. Container mass, sensor readings, or a standardized touch-and-appearance method are more reliable than a calendar. The same surface appearance can conceal a wet lower zone or a dry plug center.",
-    "Roots respire. When pores remain water-filled, gas diffusion slows and oxygen supply can fall. Hypoxia reduces root growth and uptake and can predispose seedlings to root disease. The correction is not forced drought; it is a wetting and drying pattern that maintains available water and restores aeration."
+    "Roots respire. When pores remain water-filled, gas diffusion slows and oxygen supply can fall. Hypoxia reduces root growth and uptake and can predispose seedlings to root disease. The correction is not forced drought; it is a wetting and drying pattern that maintains available water and restores aeration.",
+    "As seedlings grow, the balance changes continuously: root occupancy increases, transpiring leaf area expands, and the same irrigation volume represents a different fraction of plant demand and container water storage. Irrigation strategy therefore needs to scale with both plant growth and substrate hydraulic behavior. Repeated small applications can maintain a localized wet zone, while large applications can saturate unused media; either pattern can be unsuitable depending on container, substrate, evaporation, and root distribution."
   ],
   "cultivationRelevance": [
     "Use measured volumes and document where water is applied. As roots expand, deliberately widen the wetted zone and revise frequency instead of scaling by guesswork.",
-    "Check drainage openings, tray standing water, plug-to-media contact, and container weight. A drooping seedling can be dry, waterlogged, diseased, heat stressed, or root damaged; inspect before watering."
+    "Check drainage openings, tray standing water, plug-to-media contact, and container weight. A drooping seedling can be dry, waterlogged, diseased, heat stressed, or root damaged; inspect before watering.",
+    "Build an irrigation baseline from container mass, sensor trends, or a defined observational method rather than a calendar. Weighing representative containers before and after irrigation can show application, drainage, and dryback trends even when no sophisticated sensor is available.",
+    "When a seedling droops or slows, compare affected and healthy containers before watering automatically. Check mass/moisture, drainage, root distribution, temperature, EC/pH, lesions, and odor. Similar shoot symptoms can result from excessive water, insufficient water, salinity, heat, transplant injury, or disease."
   ],
   "measureAndRecord": [
     {
-      "field": "Container/media",
-      "requirement": "Dimensions, media batch, initial wetting, drainage, and plug interface."
+      "field": "Container and medium",
+      "requirement": "Record dimensions, substrate/media batch, packing or fill condition, initial wetting, plug/interface condition, drainage design, and plant age/root occupancy class."
     },
     {
-      "field": "Irrigation",
-      "requirement": "Date, time, volume, method, solution EC/pH if used, and operator."
+      "field": "Irrigation event",
+      "requirement": "Record date/time, applied volume, method and location, solution temperature, pH/EC when nutrients are present, operator, and whether the application targets a small zone or the whole container."
     },
     {
-      "field": "Moisture trend",
-      "requirement": "Mass, sensor value, or defined observational score before and after watering."
+      "field": "Moisture/dryback trend",
+      "requirement": "Use representative container mass, validated sensor values, or a defined visual/tactile score before and after watering. Record method, location, and timing consistently."
     },
     {
-      "field": "Drainage",
-      "requirement": "Time to drainage, standing water, runoff volume if relevant, and blocked cells."
+      "field": "Drainage/aeration evidence",
+      "requirement": "Record time to drainage, runoff if relevant, standing water, blocked cells, persistent lower-zone wetness, compaction, odor, and any known air-filled-porosity information."
     },
     {
-      "field": "Plant response",
-      "requirement": "Turgor, root growth, color, odor, and recovery or decline."
+      "field": "Root and shoot response",
+      "requirement": "Record root distribution/condition where observable, turgor, leaf expansion, color, lesions, growth rate, and recovery or decline after irrigation. Link symptoms to the preceding water history."
+    },
+    {
+      "field": "Adjustment",
+      "requirement": "When changing volume or frequency, document the reason, magnitude, expected result, and follow-up window. Avoid changing irrigation, nutrition, light, and temperature simultaneously unless immediate safety requires it."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "No runoff proves perfect watering: Runoff interpretation depends on container, media, plant size, and purpose."
   ],
   "evidenceLimits": [
-    "A universal volume or interval would be misleading. Build a repeatable irrigation method for the actual container-media-environment combination."
+    "There is no defensible universal seedling irrigation volume or interval because water use depends on container geometry, media physical properties, packing, root occupancy, plant size, temperature, humidity, airflow, light, and irrigation method. Container mass and sensors also require method consistency and interpretation. Root-zone hypoxia cannot be confirmed from droop or wet appearance alone, and wet conditions can coexist with disease or salinity stress."
   ],
   "crossLinks": "THC-ENC-029, THC-ENC-031, THC-ENC-036–037, THC-ENC-043, and irrigation lessons.",
   "sourceNotes": [
     "Ocamb C.M. (rev. 2026). Hemp (Cannabis sativa) - Damping-off. Pacific Northwest Plant Disease Management Handbook.  https://pnwhandbooks.org/plantdisease/host-disease/hemp-cannabis-sativa-damping",
-    "Yafuso E.J. et al. (2019). Water and Air Relations in Propagation Substrates. HortScience 54:2024-2030. https://doi.org/10.21273/HORTSCI14145-19"
+    "Yafuso E.J. et al. (2019). Water and Air Relations in Propagation Substrates. HortScience 54:2024-2030. https://doi.org/10.21273/HORTSCI14145-19",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; seedling physiology, measurement, root-zone, light, and diagnostic context framework."
   ],
   "slug": "seedling-watering-and-root-zone-oxygen",
   "route": "/learn/encyclopedia/thc-enc-035/",

@@ -24,32 +24,39 @@
   "coreScience": [
     "After radicle establishment, hypocotyl cells elongate and lift the cotyledons. In an epigeal emergence pattern, the hypocotyl often curves as it moves through or out of the medium, reducing direct injury to the shoot apex. Light and mechanical release then support straightening and cotyledon expansion.",
     "A retained fruit or seed covering is an observation, not a diagnosis. Record planting depth, moisture history, emergence time, and visible damage, but do not assign a cause from appearance alone; the current evidence does not support a universal causal list for cannabis. Manual removal creates a mechanical-injury risk, so any intervention should be cautious, documented, and compared with non-intervention when practical.",
-    "Excessive hypocotyl length commonly reflects low light, delayed light exposure after emergence, crowding, or a warm environment that drives elongation faster than structural development. Depth and obstruction also affect emergence energy. Long, thin seedlings are not made stronger by adding more water or fertilizer."
+    "Excessive hypocotyl length commonly reflects low light, delayed light exposure after emergence, crowding, or a warm environment that drives elongation faster than structural development. Depth and obstruction also affect emergence energy. Long, thin seedlings are not made stronger by adding more water or fertilizer.",
+    "Emergence is a mechanical and developmental transition. Hypocotyl elongation depends on cell expansion powered by seed reserves and later photosynthesis, while the surrounding medium imposes friction and resistance. Light perception after emergence suppresses dark-grown elongation programs and promotes chloroplast development and cotyledon expansion. A retained covering can therefore coincide with moisture, planting-depth, mechanical, or developmental differences without any one of them being proven as the cause."
   ],
   "cultivationRelevance": [
     "Observe before intervening. If cotyledons are still expanding and tissue is not constricted, gentle hydration and time may be safer than pulling. Forced removal can tear cotyledons or the shoot apex.",
-    "Provide measured light promptly after emergence and enough air movement to prevent stagnant humidity without desiccating tissue. Correct the environment, then assess new growth rather than expecting stretched tissue to shorten."
+    "Provide measured light promptly after emergence and enough air movement to prevent stagnant humidity without desiccating tissue. Correct the environment, then assess new growth rather than expecting stretched tissue to shorten.",
+    "Standardize planting depth and surface condition before comparing emergence. Deep placement, crusting, compacted media, uneven moisture, and delayed light exposure can all change the force and distance required for emergence, so inconsistent sowing can look like a genetic or vigor difference.",
+    "If a covering remains attached, document whether cotyledons are expanding, whether tissue is constricted, and whether gentle humidification changes the condition before attempting removal. If intervention is necessary, use clean fine tools and minimal force, then record damage and subsequent apex/leaf development."
   ],
   "measureAndRecord": [
     {
       "field": "Placement",
-      "requirement": "Depth, orientation if controlled, substrate texture, and surface condition."
+      "requirement": "Record lot/plant ID, sowing depth, seed orientation if intentionally controlled, substrate texture, packing method, surface crust or mulch, and moisture condition at planting."
     },
     {
-      "field": "Emergence timing",
-      "requirement": "Radicle event, surface emergence, straightening, and cotyledon opening."
+      "field": "Emergence sequence",
+      "requirement": "Record radicle event when known, first surface emergence, hypocotyl-hook appearance, straightening, cotyledon release, and cotyledon opening with timestamps or observation intervals."
     },
     {
-      "field": "Morphology",
-      "requirement": "Hypocotyl length, diameter, curvature, color, and lodging."
+      "field": "Hypocotyl morphology",
+      "requirement": "Measure hypocotyl length from a defined reference, approximate diameter when useful, curvature, color, lodging, lesions, and mechanical damage. Compare at the same developmental point."
     },
     {
-      "field": "Coat status",
-      "requirement": "Released, partially retained, constricting, hydrated, manually treated, or damaged."
+      "field": "Covering status",
+      "requirement": "Record released, partially retained, tightly constricting, hydrated, manually treated, or associated with damaged cotyledons/apex. Photograph before and after intervention."
     },
     {
-      "field": "Environment",
-      "requirement": "Light timing and PPFD if measured, temperature, humidity, and airflow."
+      "field": "Light environment",
+      "requirement": "Record time from emergence to light exposure, PPFD at seedling height, photoperiod, fixture geometry or outdoor condition, and any major spatial gradient."
+    },
+    {
+      "field": "Thermal and humidity context",
+      "requirement": "Record seedling-zone temperature, humidity, airflow, enclosure/dome use, and abrupt changes because elongation and tissue drying respond to the combined environment."
     }
   ],
   "misconceptions": [
@@ -58,12 +65,13 @@
     "A tall seedling is more vigorous: Excessive elongation can indicate weak structural development."
   ],
   "evidenceLimits": [
-    "Intervention decisions depend on tissue condition and operator skill. There is no universal number of hours after emergence at which coat removal becomes necessary."
+    "Cannabis-specific controlled evidence for seed-coat/pericarp-retention interventions is limited. Retained coverings can resolve spontaneously or coexist with mechanical obstruction, uneven moisture, weak seedlings, or other factors. Likewise, excessive hypocotyl elongation is influenced by light quantity/spectrum, temperature, density, developmental timing, and genotype. Avoid fixed-hour removal rules or a single stretch diagnosis; use tissue condition, environmental measurements, and subsequent growth."
   ],
   "crossLinks": "THC-ENC-008, THC-ENC-030–034, THC-ENC-038, and light-acclimation records.",
   "sourceNotes": [
     "El-Maarouf-Bouteau H. (2022). The Seed and the Metabolism Regulation. Biology 11:168.  https://doi.org/10.3390/biology11020168",
-    "Canadian Food Inspection Agency (2021). The Biology of Cannabis sativa L. (Cannabis, hemp, marijuana).  https://inspection.canada.ca/en/plant-varieties/plants-novel-traits/applicants/directive-94-08/biology-documents/cannabis-sativa"
+    "Canadian Food Inspection Agency (2021). The Biology of Cannabis sativa L. (Cannabis, hemp, marijuana).  https://inspection.canada.ca/en/plant-varieties/plants-novel-traits/applicants/directive-94-08/biology-documents/cannabis-sativa",
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; seedling physiology, measurement, root-zone, light, and diagnostic context framework."
   ],
   "slug": "hypocotyl-elongation-and-seed-coat-shedding",
   "route": "/learn/encyclopedia/thc-enc-032/",
