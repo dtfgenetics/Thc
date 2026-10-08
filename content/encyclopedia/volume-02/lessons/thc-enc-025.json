@@ -24,32 +24,39 @@
   "coreScience": [
     "Failure to germinate is not automatically dormancy. The unit may be dead, immature, infected, mechanically damaged, exposed to unsuitable temperature or water status, deprived of oxygen, or scored too early. Dormancy is a specific physiological state in a viable seed and requires evidence that suitable conditions were provided.",
     "Cannabis lots vary. Maternal environment, maturation, drying, storage age, genotype, fruit-coat properties, and testing method can all change response. Research on low-germinating industrial hemp lots found that priming and pericarp removal altered germination performance, supporting the possibility that coat-related restriction and physiological state can contribute in some lots. That result does not justify routinely cutting or removing coats from production seed.",
-    "Hormonal regulation, especially the balance of abscisic acid and germination-promoting signals, interacts with metabolism and environment. These mechanisms are complex and largely derived from general seed science. The operational task is to use controlled comparison tests, not to label every delayed seed with a presumed mechanism."
+    "Hormonal regulation, especially the balance of abscisic acid and germination-promoting signals, interacts with metabolism and environment. These mechanisms are complex and largely derived from general seed science. The operational task is to use controlled comparison tests, not to label every delayed seed with a presumed mechanism.",
+    "Dormancy diagnosis is therefore an exclusion process. First demonstrate that a unit is likely viable, then verify that water, oxygen, temperature, and test duration are appropriate, and only then interpret persistent non-germination as possible dormancy or coat-related restriction. Treatments such as priming, temperature shifts, or pericarp manipulation can change several processes at once, so a response to treatment supports a hypothesis without uniquely identifying the mechanism."
   ],
   "cultivationRelevance": [
     "When a lot underperforms, first verify identity, temperature, moisture, oxygen, test duration, and scoring. Then compare an untreated control with any justified diagnostic treatment on a separate sample.",
-    "Reserve invasive methods such as coat removal for research, rescue, or germplasm work with appropriate skill; they can injure the embryo and bias the test."
+    "Reserve invasive methods such as coat removal for research, rescue, or germplasm work with appropriate skill; they can injure the embryo and bias the test.",
+    "Structure troubleshooting as a small controlled comparison. Keep an untreated sample under verified favorable conditions, apply one diagnostic treatment to a matched sample, and score both with the same timing and normal-seedling criteria. This makes a treatment effect visible without sacrificing the entire lot.",
+    "When germination improves after a rescue treatment, preserve the result as lot-specific evidence. Do not automatically convert the successful treatment into a routine production SOP, because invasive or physiological treatments can change injury risk, microbial exposure, synchrony, and later seedling performance."
   ],
   "measureAndRecord": [
     {
-      "field": "Baseline",
-      "requirement": "Untreated sample conditions, observation schedule, and final categories."
+      "field": "Baseline control",
+      "requirement": "Record lot/aliquot ID, unbiased sample size, medium, temperature, moisture method, oxygen/aeration conditions, start date, observation schedule, endpoint definition, and final normal/abnormal/ungerminated categories."
     },
     {
-      "field": "Suspected barrier",
-      "requirement": "Evidence for dormancy, coat restriction, immaturity, infection, or environment."
+      "field": "Viability evidence",
+      "requirement": "Before diagnosing dormancy, record prior germination history, physical damage, maturity/storage history, and any independent viability test. A dead or severely deteriorated seed cannot be classified as dormant from non-germination alone."
+    },
+    {
+      "field": "Suspected limitation",
+      "requirement": "State the evidence for inadequate environment, coat/pericarp restriction, physiological dormancy, immaturity, infection, or unresolved cause. Include what observation would weaken each hypothesis."
     },
     {
       "field": "Comparison treatment",
-      "requirement": "Exact treatment, sample size, control, duration, and operator."
+      "requirement": "Record one treatment per comparison where practical, exact duration/concentration/temperature or mechanical method, operator, sample size, and matched untreated control. Invasive treatments should use expendable diagnostic material."
     },
     {
       "field": "Response",
-      "requirement": "Change in timing, final germination, abnormal seedlings, and injury."
+      "requirement": "Record time to radicle emergence, final germination, normal/abnormal seedlings, injuries, contamination, and any change in spread/synchrony. Faster emergence and higher final percentage are different outcomes."
     },
     {
-      "field": "Conclusion",
-      "requirement": "Supported mechanism, unresolved hypothesis, or reason to reject the lot."
+      "field": "Interpretation",
+      "requirement": "Classify the result as supported hypothesis, unresolved hypothesis, rejected explanation, or lot-specific rescue response. Avoid naming a physiological mechanism more precisely than the evidence allows."
     }
   ],
   "misconceptions": [
@@ -58,7 +65,7 @@
     "One rescue treatment proves the cause: Treatment effects can have multiple mechanisms and require controls."
   ],
   "evidenceLimits": [
-    "Cannabis-specific dormancy classification is less developed than for many model and crop species. State observations and tested responses without overstating the mechanism."
+    "Cannabis-specific dormancy classification remains less developed than in many model and crop species. Non-germination can result from nonviability, immature development, unsuitable temperature or water status, oxygen limitation, infection, physical damage, coat/pericarp effects, or physiological dormancy. A treatment response is useful evidence but may act through multiple mechanisms, so causal labels require controlled comparisons and should remain lot-specific unless replicated more broadly."
   ],
   "crossLinks": "THC-ENC-023–024, THC-ENC-026–030, and THC-ENC-040.",
   "sourceNotes": [

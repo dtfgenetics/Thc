@@ -24,32 +24,39 @@
   "coreScience": [
     "Dry hemp seed has shown moisture- and temperature-dependent storage behavior consistent with orthodox seed management in tested lots. Lower seed moisture and cooler, stable storage preserved germination and vigor better in the available hemp experiments, but lifetime prediction remains lot- and condition-specific. Initial maturity, genetic background, damage, contamination, and pre-storage handling can still change the result.",
     "Seed moisture follows the surrounding humidity unless packaging effectively limits exchange. A refrigerator does not automatically provide dry storage; an unsealed container can experience moisture cycling and condensation. A sealed container protects only the condition placed inside it, so seed should enter storage at an appropriate, stable moisture condition rather than being sealed while damp.",
-    "Storage atmosphere can affect deterioration, but the hemp longevity evidence used here primarily evaluates moisture and temperature. This volume therefore assigns neither a universal oxygen target nor an atmosphere hierarchy. The controlled practice is stable dry and cool storage, moisture-protective packaging, minimized temperature cycling, and periodic testing rather than an assumed expiration date."
+    "Storage atmosphere can affect deterioration, but the hemp longevity evidence used here primarily evaluates moisture and temperature. This volume therefore assigns neither a universal oxygen target nor an atmosphere hierarchy. The controlled practice is stable dry and cool storage, moisture-protective packaging, minimized temperature cycling, and periodic testing rather than an assumed expiration date.",
+    "Seed deterioration is cumulative and can involve membrane damage, oxidation, loss of repair capacity, enzyme/protein damage, and declining mitochondrial function. Drying and cooling slow many deterioration reactions in orthodox seeds, but they do not reverse damage that occurred during seed development, poor drying, previous warm/humid storage, or repeated moisture cycling. Storage history therefore matters as much as the current refrigerator or freezer setting."
   ],
   "cultivationRelevance": [
     "Separate working stock from long-term reserve stock so routine access does not repeatedly expose the entire lot. Allow a sealed cold container to approach room temperature before opening when condensation risk exists.",
-    "Use a storage map and alarm or inspection plan. A freezer or refrigerator failure is a lot event and should trigger condition review and, when warranted, a new germination test."
+    "Use a storage map and alarm or inspection plan. A freezer or refrigerator failure is a lot event and should trigger condition review and, when warranted, a new germination test.",
+    "Create separate working and reserve containers so routine openings do not repeatedly expose the whole lot. When cold seed must be accessed, equilibrate the sealed container toward room temperature before opening if condensation is plausible, remove only the needed aliquot, then reseal and return the reserve under controlled conditions.",
+    "Treat power failures, broken seals, wet desiccant indicators, freezer defrost events, or unknown transport conditions as documented storage excursions. Review the duration and severity of the event and schedule an earlier germination/vigor retest when the remaining storage life is uncertain."
   ],
   "measureAndRecord": [
     {
-      "field": "Initial condition",
-      "requirement": "Harvest or receipt date, visible condition, drying history, and baseline germination."
+      "field": "Initial lot condition",
+      "requirement": "Record lot ID, harvest/receipt date, maturity/handling notes, visible defects, baseline germination and vigor when available, and the conditioning/drying method used before long-term packaging."
     },
     {
-      "field": "Package",
-      "requirement": "Container type, seal, desiccant or humidity indicator if used, and fill date."
+      "field": "Packaging",
+      "requirement": "Record container material, seal type, fill date, aliquot size, desiccant or humidity indicator if used, number of prior openings, and whether the package is intended as working stock or reserve stock."
     },
     {
-      "field": "Environment",
-      "requirement": "Storage location, temperature history, humidity information, and excursions."
+      "field": "Storage environment",
+      "requirement": "Record location, set temperature, measured temperature history where available, humidity information outside the package, alarms, defrost cycles, transport periods, and excursions. 'Refrigerated' alone is not enough context."
     },
     {
-      "field": "Access history",
-      "requirement": "Dates opened, quantities removed, warming practice, and resealing."
+      "field": "Access events",
+      "requirement": "Record date/time opened, quantity removed, whether the sealed container was warmed before opening, room conditions, time open, desiccant/indicator condition, and resealing time. Frequent access can create moisture and temperature cycling."
     },
     {
-      "field": "Retest",
-      "requirement": "Scheduled date, sample size, result, vigor notes, and disposition decision."
+      "field": "Retest schedule",
+      "requirement": "Record planned and actual test dates, sample size, protocol, final germination, time distribution/vigor notes, abnormal seedlings, and comparison with the baseline. Adjust retest intervals when decline or storage excursions are observed."
+    },
+    {
+      "field": "Disposition decision",
+      "requirement": "Record whether the lot remains suitable for production, is reserved for conservation/rescue, requires regeneration, or should be discarded. Tie the decision to test results and storage history rather than calendar age alone."
     }
   ],
   "misconceptions": [
@@ -58,7 +65,7 @@
     "Old seed is automatically dead: Age raises risk, but actual viability must be tested."
   ],
   "evidenceLimits": [
-    "Do not assign a universal shelf life. Species-level storage principles are strong, but cannabis lot longevity under a specific package and moisture condition requires measured history."
+    "General orthodox-seed storage principles strongly support reducing seed moisture and temperature within appropriate limits, but exact cannabis lot longevity depends on initial maturity, genotype, damage, contamination, conditioning, packaging, and the full storage history. Refrigerator or freezer temperature alone cannot define shelf life, and published hemp studies should not be converted into a guaranteed expiration date for all cannabis seed."
   ],
   "crossLinks": "THC-ENC-021–023, THC-ENC-040, THC-ENC-388, and germplasm preservation records.",
   "sourceNotes": [

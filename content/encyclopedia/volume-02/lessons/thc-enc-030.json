@@ -24,32 +24,39 @@
   "coreScience": [
     "In physiological studies, germination commonly ends at radicle protrusion. This macroscopic endpoint can be scored consistently and timed. Production success continues beyond it: the radicle must grow, the hypocotyl must emerge, cotyledons must open, and a normal seedling must establish.",
     "The scoring rule must be written before the test. Define the minimum visible radicle criterion, observation interval, final test time, handling method, and categories for contamination, damage, and abnormal development. More frequent checks improve time resolution. Whether inspection alters moisture or temperature depends on the container and method; closed imaging can avoid that potential disturbance.",
-    "Counts should record new events at each interval rather than only cumulative totals. This supports final germination percentage, median or mean time, spread, and comparison among replicates. A seed transferred immediately after scoring must retain its lot and event-time identity if later seedling quality is evaluated."
+    "Counts should record new events at each interval rather than only cumulative totals. This supports final germination percentage, median or mean time, spread, and comparison among replicates. A seed transferred immediately after scoring must retain its lot and event-time identity if later seedling quality is evaluated.",
+    "Separating germination, emergence, and establishment creates a simple failure-analysis framework. If radicle protrusion is poor, investigate seed viability, dormancy, temperature, moisture, oxygen, and early disease. If radicles form but emergence is poor, investigate planting depth, crusting, mechanical resistance, hypocotyl injury, or handling. If seedlings emerge but fail to establish, shift attention toward light, watering, root-zone oxygen, salinity, pathogens, and structural abnormalities. The same final stand count can therefore arise from very different biological failure points."
   ],
   "cultivationRelevance": [
     "Separate three acceptance gates: germinated, emerged, and established as a normal seedling. This reveals whether failure occurs before radicle protrusion, during mechanical emergence, or after exposure to the seedling environment.",
-    "Use photographs with scale and IDs for ambiguous cases. Do not repeatedly touch the radicle; it is a delicate growing organ and a major contamination route."
+    "Use photographs with scale and IDs for ambiguous cases. Do not repeatedly touch the radicle; it is a delicate growing organ and a major contamination route.",
+    "Predefine the scoring schedule and endpoint before starting a comparison. When observation frequency changes between tests, apparent mean or median germination time can change even if the biology does not. Use the same interval when comparing lots or treatments.",
+    "Keep every scored unit linked to its later seedling fate when practical. This allows you to test whether very early, average, or late germinators differ in abnormal-seedling rate or establishment instead of assuming germination speed alone predicts quality."
   ],
   "measureAndRecord": [
     {
-      "field": "Criterion",
-      "requirement": "Exact radicle threshold and final observation time."
+      "field": "Scoring criterion",
+      "requirement": "Write the exact radicle-protrusion threshold, whether length is required, observation interval, final observation time, handling method, and rules for ambiguous or partially emerged units before the test begins."
     },
     {
       "field": "Observation series",
-      "requirement": "Date and time plus newly germinated count in each replicate."
+      "requirement": "For each replicate record date/time, newly germinated count, cumulative count, and any unit removed or transferred. Preserve raw event times so timing metrics can be recalculated."
     },
     {
       "field": "Non-germinated categories",
-      "requirement": "Firm, soft, moldy, damaged, empty, or not classified."
+      "requirement": "At final count separate intact/firm, soft/decayed, moldy, mechanically damaged, empty/unfilled, and unresolved units when distinguishable. Do not combine all into one generic failure category."
     },
     {
       "field": "Post-germination fate",
-      "requirement": "Transferred, direct-sown, emerged, abnormal, died, or established."
+      "requirement": "Link each transferred or direct-sown unit to emergence, normal/abnormal seedling status, death, establishment, and time to those milestones. Germination success and establishment success should remain separate."
     },
     {
       "field": "Protocol deviations",
-      "requirement": "Temperature excursion, drying, flooding, missed count, or handling injury."
+      "requirement": "Record temperature excursions, drying, flooding, missed counts, opened enclosures, handling injury, contamination, or changes in observation interval. Deviations can alter both timing and final outcome."
+    },
+    {
+      "field": "Calculated metrics",
+      "requirement": "Report final germination with sample size, replicate results, and a named timing/uniformity metric. Avoid comparing percentages or means from protocols with different duration, endpoints, or observation frequency without qualification."
     }
   ],
   "misconceptions": [
@@ -58,7 +65,7 @@
     "More handling improves inspection: Handling can damage the root and contaminate the test."
   ],
   "evidenceLimits": [
-    "Laboratory certification rules may define normal seedlings and test duration differently. The encyclopedia protocol is an educational and production record, not a substitute for accredited testing."
+    "Radicle protrusion is a useful physiological endpoint, but certification and laboratory standards can use different normal-seedling criteria, test duration, substrate, and counting schedules. Time-to-event metrics are also sensitive to observation interval and censoring. The encyclopedia protocol is intended for controlled educational/production comparisons and should not be represented as an accredited seed-certification method."
   ],
   "crossLinks": "THC-ENC-023, THC-ENC-028, THC-ENC-031–033, THC-ENC-038, and THC-ENC-040.",
   "sourceNotes": [

@@ -28,28 +28,34 @@
   ],
   "cultivationRelevance": [
     "Treat seed production as a controlled crop with separate parent, pollination, maturation, harvest, and lot records. Harvesting mixed maturity classes into one unlabeled container hides the source of later germination problems.",
-    "Before storage, separate visibly damaged, incompletely filled, or contaminated units for evaluation. Visual grading can improve lot consistency, but a germination test is still needed."
+    "Before storage, separate visibly damaged, incompletely filled, or contaminated units for evaluation. Visual grading can improve lot consistency, but a germination test is still needed.",
+    "Use staged harvest classes when seed maturation is visibly uneven. Keep early, intermediate, and apparently mature units physically separated, label their plant/branch positions, and test them independently. That creates evidence about whether later germination differences reflect position or maturity instead of averaging unlike material into one lot.",
+    "Maternal-plant stress records matter most when tied to timing. A drought, disease episode, heat event, nutrient disruption, or pollination problem during early embryogenesis may have a different consequence than the same event late in seed filling. Record when the event occurred relative to pollination and harvest rather than only noting that the mother plant was 'stressed'."
   ],
   "measureAndRecord": [
     {
       "field": "Parent identities",
-      "requirement": "Maternal and pollen parent IDs, source, generation, and verification status."
+      "requirement": "Record maternal and pollen parent IDs, source, generation, clone/seed-lot identifiers, and verification status. Link every harvested seed lot to both parents and preserve unknown or unverified pedigree elements explicitly."
     },
     {
       "field": "Pollination event",
-      "requirement": "Date, branch or plant, method, flower stage, and containment."
+      "requirement": "Record date/time, branch or plant, flower stage, pollen batch, method, operator, containment, and whether a negative-control branch or plant was maintained. This anchors subsequent development to a known reproductive event."
     },
     {
       "field": "Maturation context",
-      "requirement": "Plant health, major environmental events, irrigation or nutrition deviations, and disease observations."
+      "requirement": "Record major temperature/light events, irrigation or nutrition deviations, disease or pest pressure, physical injury, and maternal plant health with dates relative to pollination. Avoid retrospective causal claims when timing is unknown."
     },
     {
       "field": "Harvest classes",
-      "requirement": "Date, plant position, appearance, firmness, damage, and separate container ID."
+      "requirement": "Record harvest date, plant and branch position, developmental class, exterior appearance, firmness, visible fill, mechanical damage, contamination, and separate container ID. Keep visibly different maturity classes separated for later testing."
     },
     {
       "field": "Postharvest handling",
-      "requirement": "Drying conditions, cleaning method, final lot ID, and storage entry date."
+      "requirement": "Record drying conditions and duration, cleaning method, handling damage, final lot ID, storage package, storage entry date, and any period of uncontrolled humidity or temperature before storage."
+    },
+    {
+      "field": "Quality verification",
+      "requirement": "After an appropriate storage/conditioning interval, record sample size, germination method, normal and abnormal seedlings, ungerminated/dead categories, timing metrics, and whether results differ among harvest classes or maternal positions."
     }
   ],
   "misconceptions": [
@@ -58,7 +64,7 @@
     "Storage fixes immature seed: Cold, dry storage can slow deterioration; it cannot complete missing development after a poor harvest."
   ],
   "evidenceLimits": [
-    "Cannabis-specific maturation timelines vary by genotype and production environment. Use repeated lot testing rather than a universal number of days after pollination."
+    "Cannabis-specific seed maturation timelines vary with genotype, pollination timing, maternal environment, branch/flower position, and production conditions. Exterior coat color, firmness, or days-after-pollination can support harvest decisions but do not directly establish embryo maturity, viability, or vigor. Maternal stress records are explanatory context rather than proof of causation unless matched comparisons or experiments isolate the factor."
   ],
   "crossLinks": "THC-ENC-007–008, THC-ENC-018, THC-ENC-228–236, and THC-ENC-398–400.",
   "sourceNotes": [
