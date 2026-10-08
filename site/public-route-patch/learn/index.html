@@ -37,6 +37,10 @@
 .principle p { margin:0; color:#c8b98e; font-size:.87rem; line-height:1.68 }
 @media(max-width:1000px){ .pathway-grid,.tools-grid{ grid-template-columns:repeat(2,1fr) } }
 @media(max-width:680px){ .pathway-grid,.resource-grid,.tools-grid{ grid-template-columns:1fr } .principle{ grid-template-columns:1fr; gap:10px } }
+
+/* Educational landing page keyboard access */
+a:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+@media(prefers-reduced-motion:reduce){.pathway-card,.pathway-link,.open-btn{transition:none!important;transform:none!important}}
 </style>
 </head><body>
 
@@ -61,6 +65,33 @@
       <div class="stat"><b>18+</b><span>Deep lab lessons</span></div>
       <div class="stat"><b>10+</b><span>Field tools</span></div>
       <div class="stat"><b>420+</b><span>Encyclopedia entries</span></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="choose-learning-route">
+    <div class="section-head">
+      <h2 id="choose-learning-route">Choose how you want to learn</h2>
+      <p>Start with guided courses, research a plant-science question, or find a reference when you need it.</p>
+    </div>
+    <div class="pathway-grid">
+      <article class="pathway-card">
+        <div class="pathway-icon" aria-hidden="true">🎓</div>
+        <h3>Follow a course</h3>
+        <p>Build knowledge step by step with the Teaching Healthy Cultivation learning curriculum.</p>
+        <div class="pathway-links"><a class="pathway-link" href="/learn/courses/">Explore courses</a><a class="pathway-link" href="/learn/start-here/">Start with foundations</a></div>
+      </article>
+      <article class="pathway-card">
+        <div class="pathway-icon" aria-hidden="true">📚</div>
+        <h3>Explore the encyclopedia</h3>
+        <p>Look up concepts, compare explanations, and follow related scientific topics.</p>
+        <div class="pathway-links"><a class="pathway-link" href="/learn/encyclopedia/">Browse encyclopedia</a><a class="pathway-link" href="/learn/sources/">Evaluate evidence and sources</a></div>
+      </article>
+      <article class="pathway-card">
+        <div class="pathway-icon" aria-hidden="true">🔎</div>
+        <h3>Find a specific answer</h3>
+        <p>Search educational material by subject or terminology, then inspect the original lesson and its references.</p>
+        <div class="pathway-links"><a class="pathway-link" href="/learn/search/">Search education</a><a class="pathway-link" href="/learn/symptoms/">Compare symptom explanations</a></div>
+      </article>
     </div>
   </section>
 
