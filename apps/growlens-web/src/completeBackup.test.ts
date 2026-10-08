@@ -95,6 +95,21 @@ describe('GrowLens complete backups', () => {
     await expect(parseCompleteBackup(JSON.stringify(invalidState))).rejects.toThrow('state object');
   });
 
+  it('rejects missing or invalid state collections before normalization can discard records', async () => {
+    const valid = JSON.parse(await serializeCompleteBackup(state, [photo]));
+    for (const key of Object.keys(emptyState).filter((key) => key !== 'schemaVersion')) {
+      const missing = structuredClone(valid);
+      delete missing.state[key];
+      await expect(parseCompleteBackup(JSON.stringify(missing))).rejects.toThrow(key);
+      const invalid = structuredClone(valid);
+      invalid.state[key] = {};
+      await expect(parseCompleteBackup(JSON.stringify(invalid))).rejects.toThrow(key);
+    }
+    const outdated = structuredClone(valid);
+    outdated.state.schemaVersion = 1;
+    await expect(parseCompleteBackup(JSON.stringify(outdated))).rejects.toThrow('schema version');
+  });
+
   it('rejects duplicate photo IDs and byte-length mismatches', async () => {
     const valid = JSON.parse(await serializeCompleteBackup(state, [photo]));
     valid.photos.push(valid.photos[0]);
