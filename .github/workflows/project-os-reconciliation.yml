@@ -40,6 +40,24 @@ jobs:
             artifacts/project-os-reconciliation/github.json \
             artifacts/project-os-reconciliation/live.json \
             > artifacts/project-os-reconciliation/report.json
+      - name: Surface reconciliation drift in job summary
+        if: always()
+        run: |
+          if [ -f artifacts/project-os-reconciliation/report.json ]; then
+            node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const r=JSON.parse(fs.readFileSync('artifacts/project-os-reconciliation/report.json','utf8'));
+          const lines=['## Project OS reconciliation',`Checked: ${r.summary?.checked ?? 0} | Drifted: ${r.summary?.drifted ?? 0}`];
+          for(const item of (r.drift||[]).slice(0,30)){
+            const codes=(item.issues||[]).map(issue=>issue.code).join(', ');
+            lines.push(`- \`${String(item.workItemId).replaceAll('\\`','')}\`: ${codes}`);
+          }
+          if((r.drift||[]).length>30)lines.push(`...and ${r.drift.length-30} more drifted items.`);
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,lines.join('\\n')+'\\n');
+          NODE
+          else
+            echo '## Project OS reconciliation: report not generated (inspect earlier steps)' >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Upload reconciliation evidence
         if: always()
         uses: actions/upload-artifact@v4
