@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-const DTF_LEARNING_SEARCH_VERSION = '1.0.0';
+const DTF_LEARNING_SEARCH_VERSION = '1.0.1';
 const DTF_LEARNING_SEARCH_NAMESPACE = 'dtf-learning/v1';
 
 function dtf_learning_search_option_key(string $kind): string {
@@ -123,6 +123,71 @@ add_action('rest_api_init', static function (): void {
         ],
     ]);
 });
+
+/**
+ * Repair the third-party age gate's unsafe/off-brand outbound "No" action.
+ *
+ * The production age-gate plugin currently renders "No" as a link to Google.
+ * Keep visitors on the gated page instead: prevent navigation and surface an
+ * explicit, accessible eligibility message. The script is defensive and only
+ * touches a Google-bound "No" link inside a container that also contains the
+ * age-gate copy.
+ */
+add_action('wp_footer', static function (): void {
+    ?>
+    <script data-dtf-age-gate-safeguard="mu-v1">
+    (() => {
+      const deniedMessage = 'You must be at least 18 to enter this site.';
+      const repairAgeGate = () => {
+        const links = Array.from(document.querySelectorAll('a[href*="google.com"]'));
+        for (const link of links) {
+          if ((link.textContent || '').trim().toLowerCase() !== 'no') continue;
+          const gate = link.closest('section,dialog,[role="dialog"],div');
+          if (!gate) continue;
+          const gateText = (gate.textContent || '').toLowerCase();
+          if (!gateText.includes('old enough') && !gateText.includes('at least 18')) continue;
+
+          link.setAttribute('href', '#');
+          link.setAttribute('role', 'button');
+          link.setAttribute('aria-label', 'I am not old enough to enter');
+          link.dataset.dtfAgeGateNo = 'safe-v1';
+
+          if (link.dataset.dtfAgeGateBound === 'true') continue;
+          link.dataset.dtfAgeGateBound = 'true';
+          link.addEventListener('click', event => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            let status = gate.querySelector('[data-dtf-age-gate-denied]');
+            if (!status) {
+              status = document.createElement('p');
+              status.dataset.dtfAgeGateDenied = 'true';
+              status.setAttribute('role', 'status');
+              status.setAttribute('aria-live', 'polite');
+              status.style.margin = '12px 0 0';
+              status.style.fontWeight = '700';
+              status.textContent = deniedMessage;
+              gate.appendChild(status);
+            } else {
+              status.textContent = deniedMessage;
+            }
+          });
+        }
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', repairAgeGate, {once:true});
+      } else {
+        repairAgeGate();
+      }
+
+      const observer = new MutationObserver(repairAgeGate);
+      observer.observe(document.documentElement, {childList:true, subtree:true});
+      window.setTimeout(() => observer.disconnect(), 15000);
+    })();
+    </script>
+    <?php
+}, 5);
 
 function dtf_learning_search_surface(): string {
     $path = wp_parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
