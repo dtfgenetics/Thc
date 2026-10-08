@@ -1,6 +1,6 @@
-Weedopolis production source
 repository=dtfgenetics/Weedopolis-strain-Edition
-commit=794ced73e3dad0aaaa667ce3ae7b572041658296
-build=full-playable-browser-prototype
-reason=pin-approved-deck-card-fallback-and-board-piece-readability-pass
-updated=2026-09-20
+commit=0111f12bb500e58c9edfb9e4d395dac92bbd8729
+route=/games/weedopolis/
+build=npm run validate && npm run check:preview && npm run build:preview
+artifact=weedopolis-0111f12bb500e58c9edfb9e4d395dac92bbd8729
+updated=2026-10-06

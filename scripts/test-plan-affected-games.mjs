@@ -15,6 +15,6 @@ assert.ok(shared.affected.length>0);
 assert.ok(shared.affected.every(game=>game.reasons.includes('shared-platform-change')||game.reasons.includes('profile-contract-change')||game.reasons.includes('registry-change')));
 
 const profiles=run('configuration/game-qa/game-profiles.json');
-assert.equal(profiles.affectedCount,30);
+assert.equal(profiles.affectedCount,31);
 
 console.log('affected game planner contract OK');

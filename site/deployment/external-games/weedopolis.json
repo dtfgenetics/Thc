@@ -1,0 +1,28 @@
+{
+  "id": "weedopolis",
+  "title": "Weedopolis: Strain City Edition",
+  "repository": "dtfgenetics/Weedopolis-strain-Edition",
+  "route": "/games/weedopolis/",
+  "runtime": "static",
+  "status": "ready-to-package",
+  "artifact": "weedopolis-0111f12bb500e58c9edfb9e4d395dac92bbd8729",
+  "build": "npm run validate && npm run check:preview && npm run build:preview",
+  "machineData": {
+    "spaces": 40,
+    "currency": "Bud Bucks",
+    "houses": "Grow Tents",
+    "hotels": "Dispensaries",
+    "chanceDeck": "High Chance",
+    "communityDeck": "Community Stash",
+    "productionOutput": "dist/weedopolis"
+  },
+  "verifiedRevision": "0111f12bb500e58c9edfb9e4d395dac92bbd8729",
+  "promotionGate": {
+    "standaloneCI": "passed",
+    "deterministicUiValidation": "passed",
+    "routeValidation": "required",
+    "centralPackaging": "required",
+    "liveVerification": "required-before-production-ready"
+  },
+  "notes": "Canonical Weedopolis code, rules, assets, and deterministic production build remain in dtfgenetics/Weedopolis-strain-Edition. Revision 0111f12bb500e58c9edfb9e4d395dac92bbd8729 is pinned for central packaging. Its release profile runs npm run validate, npm run check:preview, and npm run build:preview, producing dist/weedopolis; canonical CI verifies the deployable output and uploads weedopolis-${github.sha}. DTFSeeds integration must package that pinned output and complete route/live verification before production-ready promotion."
+}

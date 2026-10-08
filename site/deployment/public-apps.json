@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-10-04",
+  "updated": "2026-10-06",
   "apps": [
     {
       "id": "high-land",
@@ -374,10 +374,20 @@
       "runtime": "static",
       "status": "ready-to-package",
       "build": "npm run validate && npm run check:preview && npm run build:preview",
-      "sourcePath": ".",
       "mirrorPath": "site/public-route-patch/games/weedopolis",
       "canonicalRepository": "dtfgenetics/Weedopolis-strain-Edition",
-      "integrationRepository": "dtfgenetics/Thc"
+      "integrationRepository": "dtfgenetics/Thc",
+      "machineData": {
+        "spaces": 40,
+        "currency": "Bud Bucks",
+        "houses": "Grow Tents",
+        "hotels": "Dispensaries",
+        "chanceDeck": "High Chance",
+        "communityDeck": "Community Stash",
+        "productionOutput": "dist/weedopolis"
+      },
+      "notes": "Canonical Weedopolis code, rules, assets, and deterministic production build remain in dtfgenetics/Weedopolis-strain-Edition. Revision 0111f12bb500e58c9edfb9e4d395dac92bbd8729 is pinned for central packaging. Its release profile runs npm run validate, npm run check:preview, and npm run build:preview, producing dist/weedopolis; canonical CI verifies the deployable output and uploads weedopolis-${github.sha}. DTFSeeds integration must package that pinned output and complete route/live verification before production-ready promotion.",
+      "verifiedRevision": "0111f12bb500e58c9edfb9e4d395dac92bbd8729"
     },
     {
       "id": "crossword",
@@ -989,6 +999,18 @@
         "localOnly": true,
         "credentialUseAuthorized": false
       }
+    },
+    {
+      "id": "pheno-hunter",
+      "title": "Pheno Hunter",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/pheno-hunter",
+      "canonicalDataPath": "games/pheno-hunter",
+      "route": "/games/pheno-hunter/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/pheno-hunter/scripts/validate-data.mjs && node games/pheno-hunter/test/engine.test.mjs && node --check site/public-route-patch/games/pheno-hunter/app.js && node --check site/public-route-patch/games/pheno-hunter/engine.mjs",
+      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
     }
   ]
 }

@@ -38,6 +38,7 @@ The current controlled catalog contains **23 public-route games**. A public rout
 
 - **Ganjumanji: The Lost Grower's Temple** — `packaged` — Publish the qualified package to the DTFSeeds public suite, then verify /games/ganjumanji/ against exact revision 257c5a60c8ec0e7f6a87170f232c37e047458b22.
 - **Kush Kings Chess** — `playable-local` — Configure the five Kush Kings production secrets, run the exact-SHA deploy, pass frontend/API/Socket.IO live verification, then complete two-browser/mobile multiplayer acceptance.
+- **Pheno Hunter** — `vertical-slice` — Pass browser, mobile, accessibility, and exact live-route verification before public promotion.
 - **Quack & Bake: Stoner Duck Race** — `playable-local` — Complete multiplayer/browser presentation QA, lock production ownership/public route, then package through the DTFSeeds release pipeline.
 - **Root Cause** — `vertical-slice` — Reconcile public-hub intent, run full route QA, and promote only after exact live verification.
 - **Seed Man: Seed Ascent** — `playable-local` — Complete game-feel QA and decide final canonical owner/cutover; migration-overlay release remains allowed.
@@ -55,7 +56,6 @@ The current controlled catalog contains **23 public-route games**. A public rout
 - **Pest Patrol** — `pest-patrol`
 - **Pest Siege** — `pest-siege`
 - **Pest War** — `pest-war`
-- **Pheno Hunter** — `pheno-hunter`
 - **Reputation Economy** — `reputation-economy`
 - **Seed Bank Builder** — `seed-bank-builder`
 - **Selection Pressure** — `selection-pressure`

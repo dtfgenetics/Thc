@@ -130,14 +130,13 @@ def stage_external_game(contract_path: Path) -> dict[str, str]:
             raise SystemExit(f"external game checkout drift for {target}: expected {commit}, got {actual}")
 
         subprocess.run(["npm", "install", "--ignore-scripts"], cwd=checkout, check=True)
-        subprocess.run(["npm", "test"], cwd=checkout, check=True)
-        package_json_path = checkout / "package.json"
-        package_json = json.loads(package_json_path.read_text()) if package_json_path.is_file() else {}
-        package_scripts = package_json.get("scripts") if isinstance(package_json.get("scripts"), dict) else {}
-        if "validate:ui" in package_scripts:
-            subprocess.run(["npm", "run", "validate:ui"], cwd=checkout, check=True)
-        subprocess.run(["npm", "run", "build"], cwd=checkout, check=True)
-        subprocess.run(["npm", "run", "validate:release"], cwd=checkout, check=True)
+        build_command = str(contract.get("build") or "").strip()
+        if not build_command:
+            raise SystemExit(f"external game contract has no build command: {contract_path.name}")
+        # External contracts are validated before packaging. Execute the exact
+        # declared deterministic release gate instead of assuming every
+        # standalone repository exposes npm test/build/validate:release.
+        subprocess.run(build_command, cwd=checkout, check=True, shell=True)
 
         dist = checkout / "dist"
         if not (dist / "index.html").is_file():

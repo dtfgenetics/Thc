@@ -262,11 +262,15 @@ function sourceInfo(game, app) {
   const routeRoot = routeRootFor(game);
   const isLocalRepo = app?.repository === dtfRepo;
   const sourceRoot = isLocalRepo && app?.sourcePath ? app.sourcePath : routeRoot;
-  const candidates = [
-    path.join(routeRoot, 'index.html'),
-    path.join(sourceRoot, 'index.html'),
-    path.join(sourceRoot, 'public', 'index.html')
-  ];
+  const candidates = isLocalRepo
+    ? [
+        path.join(sourceRoot, 'index.html'),
+        path.join(sourceRoot, 'public', 'index.html'),
+        path.join(routeRoot, 'index.html')
+      ]
+    : [
+        path.join(routeRoot, 'index.html')
+      ];
   return {
     routeRoot,
     sourceRoot,
@@ -325,7 +329,7 @@ function auditCandidateGame(game) {
   }
   if (game.status === 'multiplayer') {
     if (!/(create|join|room|match|session)/i.test(html)) problems.push('candidate multiplayer route lacks create/join/session UI markers');
-  } else if (!/(<script\b|<button\b|<canvas\b|<form\b|id=["']root["'])/i.test(html)) {
+  } else if (source.isLocalRepo && !/(<script\b|<button\b|<canvas\b|<form\b|id=["']root["'])/i.test(html)) {
     problems.push('candidate play-now route exposes no obvious interactive runtime marker');
   }
 
