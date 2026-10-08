@@ -12,6 +12,13 @@ const ids=(manifest.lessonFiles||[]).map(file=>{
   return `THC-ENC-${match[1]}`;
 });
 if(!ids.length) throw new Error('Publication manifest contains no lesson IDs.');
+const expectedIds=Array.from({length:420},(_,index)=>`THC-ENC-${String(index+1).padStart(3,'0')}`);
+const actualIds=new Set(ids);
+const missing=expectedIds.filter(id=>!actualIds.has(id));
+const unexpected=[...actualIds].filter(id=>!expectedIds.includes(id));
+if(ids.length!==420||actualIds.size!==420||missing.length||unexpected.length){
+  throw new Error(`Invalid 420-route manifest: entries=${ids.length}, unique=${actualIds.size}, missing=${missing.slice(0,15).join(',')||'none'}, unexpected=${unexpected.slice(0,15).join(',')||'none'}`);
+}
 const queue=[...ids], failures=[];
 let verified=0;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
