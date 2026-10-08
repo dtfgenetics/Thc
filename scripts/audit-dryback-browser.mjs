@@ -28,9 +28,18 @@ try {
     const output=await page.locator('#dryOut').innerText();
     const match=output.match(/(\d+(?:\.\d+)?)%\s+(?:weight-span|sensor-scale)\s+dryback/i);
     const actual=match?Number(match[1]):null;
-    const passed=actual!==null&&Math.abs(actual-test.expected)<=0.11;
-    results.push({viewport:vp.name,case:test.name,expected:test.expected,actual,passed,output:output.slice(0,300)});
+    const rateMatch=output.match(/(\d+(?:\.\d+)?) percentage points\/hour/);\n    const shotMatch=output.match(/(\d+(?:\.\d+)?)% shot size/);\n    const drainMatch=output.match(/(\d+(?:\.\d+)?)% measured drainage/);\n    const rate=rateMatch?Number(rateMatch[1]):null,shot=shotMatch?Number(shotMatch[1]):null,drain=drainMatch?Number(drainMatch[1]):null;\n    const passed=actual!==null&&Math.abs(actual-test.expected)<=0.11&&rate!==null&&Math.abs(rate-test.expected/8)<=0.06&&shot!==null&&Math.abs(shot-(1000/3785*100))<=0.11&&drain!==null&&Math.abs(drain-15)<=0.11;
+    results.push({viewport:vp.name,case:test.name,expected:test.expected,actual,rate,shot,drain,passed,output:output.slice(0,300)});
     if(!passed)failures.push(vp.name+'/'+test.name+': missing/mismatched calculation');
+   }
+   for(const negative of [{name:'zero-hours',field:'hours',value:'0'},{name:'inverted-reference',field:'wet',value:'1'},{name:'inverted-target',field:'targetDryLow',value:'30'}]){
+    for(const [id,value] of Object.entries({dry:'2',wet:'5',current:'4.1',hours:'8',targetDryLow:'10',targetDryHigh:'25'}))await page.locator('#'+id).fill(value);
+    await page.locator('#'+negative.field).fill(negative.value);
+    const disabled=await page.locator('#saveDry').isDisabled();
+    const invalid=(await page.locator('#dryOut').innerText()).includes('Enter a valid dryback event');
+    const passed=disabled&&invalid;
+    results.push({viewport:vp.name,case:negative.name,passed,saveDisabled:disabled,invalidMessage:invalid});
+    if(!passed)failures.push(vp.name+'/'+negative.name+': invalid measurement was accepted');
    }
    const overflow=await page.evaluate(()=>Math.max(0,document.documentElement.scrollWidth-window.innerWidth));
    if(overflow>3)failures.push(vp.name+': horizontal overflow '+overflow+'px');
