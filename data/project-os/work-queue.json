@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-08T02:29:00Z",
+  "updatedAt": "2026-10-08T11:00:00Z",
   "items": [
     {
       "workItemId": "project-os.queue-contract-v1",
@@ -559,7 +559,7 @@
         "collisionRisk": 1,
         "score": 72
       },
-      "state": "review",
+      "state": "blocked",
       "dependencies": [
         "project-os.acceptance-manifests-v1"
       ],
@@ -606,15 +606,15 @@
         "fingerprint": null,
         "verifiedAt": null
       },
-      "blocker": "Exact-head CI is running.",
-      "lastAction": "Replayed release fingerprint/watchdog implementation on current main without queue collision.",
-      "nextAction": "Merge only after Project OS/build/deploy/security gates are green.",
+      "blocker": "PR #2101 merged; queue acceptance and live evidence remain unreconciled.",
+      "lastAction": "Verified PR #2101 merged at head 823dffdb1c1b519f747fcb3c9e8269c4935e5aad.",
+      "nextAction": "Verify release fingerprint and acceptance evidence, then mark passed.",
       "evidence": [
         "PR #2101"
       ],
       "timestamps": {
         "createdAt": "2026-10-06T10:09:02Z",
-        "updatedAt": "2026-10-06T10:13:00Z",
+        "updatedAt": "2026-10-08T11:00:00Z",
         "completedAt": null
       }
     },
@@ -632,7 +632,7 @@
         "collisionRisk": 1,
         "score": 47
       },
-      "state": "review",
+      "state": "superseded",
       "dependencies": [],
       "acceptanceCriteria": [
         {
@@ -671,15 +671,15 @@
         "fingerprint": null,
         "verifiedAt": null
       },
-      "blocker": "Exact-head CI is queued.",
-      "lastAction": "Replayed project-contained Pheno Hunter core on latest main without stale shared registries.",
-      "nextAction": "Merge core only after exact-head gates pass; registry/release integration remains separate.",
+      "blocker": "PR #2102 closed unmerged; successor integration PR #2118 is open.",
+      "lastAction": "Verified PR #2102 closed unmerged.",
+      "nextAction": "Reconcile unique engine changes against PR #2118.",
       "evidence": [
         "PR #2102"
       ],
       "timestamps": {
         "createdAt": "2026-10-06T10:09:20Z",
-        "updatedAt": "2026-10-06T10:13:00Z",
+        "updatedAt": "2026-10-08T11:00:00Z",
         "completedAt": null
       }
     },
@@ -747,6 +747,124 @@
       "timestamps": {
         "createdAt": "2026-10-06T10:11:54Z",
         "updatedAt": "2026-10-06T10:13:00Z",
+        "completedAt": null
+      }
+    },
+    {
+      "workItemId": "platform.canonical-tools-sync-pr-auth",
+      "project": "platform",
+      "ownerRepo": "dtfgenetics/Thc",
+      "priority": {
+        "severity": 4,
+        "userImpact": 4,
+        "productionExposure": 5,
+        "unblockValue": 5,
+        "ageDays": 0,
+        "complexity": 2,
+        "collisionRisk": 2,
+        "score": 78
+      },
+      "state": "review",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "branch",
+          "description": "Isolated sync branch",
+          "status": "passed",
+          "evidence": "PR #2304"
+        },
+        {
+          "id": "cli",
+          "description": "Authenticated GitHub CLI creates PR and fails closed on errors",
+          "status": "pending",
+          "evidence": "Workflow run 37744075757"
+        }
+      ],
+      "branch": "work/platform/canonical-sync-branch/20261008a",
+      "pullRequest": 2304,
+      "baseSha": "e5bf6b4b6966c4f19dd7bb54fd69c3ba11cb5201",
+      "headSha": "77b742a3b8cfc1263cd0c321f429bc9ebc27c951",
+      "lease": null,
+      "tests": [
+        {
+          "name": "PR workflows",
+          "status": "passed",
+          "evidence": "Six successful workflows on head 77b742a"
+        }
+      ],
+      "deployment": {
+        "state": "not_applicable",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": "Sync run 37744075757 reports missing GH_TOKEN and silently fails PR creation.",
+      "lastAction": "Verified logs and PR #2304 checks.",
+      "nextAction": "Add GH_TOKEN to sync step and fail closed on PR creation errors.",
+      "evidence": [
+        "https://github.com/dtfgenetics/Thc/actions/runs/37744075757"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-08T11:00:00Z",
+        "updatedAt": "2026-10-08T11:00:00Z",
+        "completedAt": null
+      }
+    },
+    {
+      "workItemId": "tools.canonical-mirror-terpene-runtime",
+      "project": "tools",
+      "ownerRepo": "dtfgenetics/Tools",
+      "priority": {
+        "severity": 4,
+        "userImpact": 4,
+        "productionExposure": 5,
+        "unblockValue": 5,
+        "ageDays": 0,
+        "complexity": 2,
+        "collisionRisk": 2,
+        "score": 78
+      },
+      "state": "blocked",
+      "dependencies": [],
+      "acceptanceCriteria": [
+        {
+          "id": "parity",
+          "description": "Canonical mirror guard passes",
+          "status": "pending",
+          "evidence": "PR #2302 guard failed"
+        },
+        {
+          "id": "live",
+          "description": "Live runtime verified",
+          "status": "pending",
+          "evidence": null
+        }
+      ],
+      "branch": "work/platform/terpene-runtime-sync/20261008b",
+      "pullRequest": 2302,
+      "baseSha": "212bcc744548c50f327f1292220df15db156a63f",
+      "headSha": "229438914557497179e549a80ad7da109bb70521",
+      "lease": null,
+      "tests": [
+        {
+          "name": "Canonical tool mirror guard",
+          "status": "failed",
+          "evidence": "PR #2302 exact head"
+        }
+      ],
+      "deployment": {
+        "state": "not_deployed",
+        "fingerprint": null,
+        "verifiedAt": null
+      },
+      "blocker": "PR #2302 changes mirrored Tools files without canonical parity.",
+      "lastAction": "Verified mirror guard failure.",
+      "nextAction": "Run canonical Tools sync and reconcile PR #2302.",
+      "evidence": [
+        "https://github.com/dtfgenetics/Thc/pull/2302"
+      ],
+      "timestamps": {
+        "createdAt": "2026-10-08T11:00:00Z",
+        "updatedAt": "2026-10-08T11:00:00Z",
         "completedAt": null
       }
     }
