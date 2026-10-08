@@ -65,6 +65,21 @@ jobs:
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
           node -e "const p=require('./site/wordpress/visual-quality-policy.json'); if(Number(p.schemaVersion)<2||p.mode!=='quarantine') process.exit(1)"
 
+      - name: Verify production API connectivity before destructive edits
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4; do
+            if curl --ipv4 --connect-timeout 10 --max-time 25 --fail --silent --show-error --output /dev/null "$WP_SITE_URL/wp-json/"; then
+              echo "WordPress API reachable"
+              exit 0
+            fi
+            echo "::warning::WordPress API preflight attempt $attempt failed"
+            if [ "$attempt" -lt 4 ]; then sleep $((attempt * 5)); fi
+          done
+          echo "::error::WordPress API unreachable; quarantine was not started"
+          exit 1
+
       - name: Scrub banned visuals
         env:
           APPLY_VISUAL_SCRUB: 'true'
