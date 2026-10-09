@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {newLearningRecord,appendLearningEvent,lessonSummary} from './academy-learning-record-core.mjs';
+const init=newLearningRecord('student-01');
+const viewed={eventId:'evt-1',type:'lesson_viewed',courseId:'COURSE-LH-TECH1-001',lessonId:'L01',at:'2026-10-09T10:00:00Z'};
+const r1=appendLearningEvent(init,viewed);
+assert.equal(init.events.length,0,'Inputs must not be mutated');
+assert.equal(appendLearningEvent(r1,viewed),r1,'Duplicate event IDs must be idempotent');
+const r2=appendLearningEvent(r1,{...viewed,eventId:'evt-2',type:'lesson_self_completed'});
+assert.equal(lessonSummary(r2,viewed.courseId,viewed.lessonId).selfCompleted,true);
+const r3=appendLearningEvent(r2,{...viewed,eventId:'evt-3',type:'practice_attempted',score:3,total:4});
+assert.deepEqual(lessonSummary(r3,viewed.courseId,viewed.lessonId).latestPractice,{score:3,total:4,at:viewed.at});
+assert.equal(lessonSummary(r3,viewed.courseId,viewed.lessonId).credentialEligible,false);
+const r4=appendLearningEvent(r3,{...viewed,eventId:'evt-4',type:'lesson_reopened'});
+assert.equal(lessonSummary(r4,viewed.courseId,viewed.lessonId).selfCompleted,false);
+assert.throws(()=>appendLearningEvent(init,{...viewed,eventId:'bad id'}),/Invalid learning event/);
+assert.throws(()=>appendLearningEvent(init,{...viewed,type:'credential_issued'}),/Invalid learning event/);
+assert.throws(()=>appendLearningEvent(init,{...viewed,eventId:'e5',type:'practice_attempted',score:9,total:4}),/Invalid practice score/);
+console.log('Academy learning record core PASS');
