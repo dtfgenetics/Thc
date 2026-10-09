@@ -2,6 +2,7 @@ import { starterActionCards } from '../data/actionCards';
 import { finishIndex } from '../data/boardPath';
 import type { ActionCard, GameState, Player } from '../types/gameTypes';
 import { resolveActionCard } from './effectResolver';
+import { nextPlayerIndex, reduceReverseTurnCounter } from './turnSystem';
 
 export function drawActionCard(
   cardCursor: number,
@@ -30,6 +31,18 @@ export function applyActionCard(state: GameState, card: ActionCard, chainDepth =
       chainDepth + 1,
       random
     );
+  }
+
+  // End a capped draw chain exactly once, preserving victory and turn direction.
+  if (shouldDrawAnotherCard(card) && !resolved.winnerId && chainDepth >= 2) {
+    const directionState = reduceReverseTurnCounter(resolved);
+    return {
+      ...resolved,
+      ...directionState,
+      phase: 'ready',
+      currentPlayerIndex: nextPlayerIndex(resolved.players, state.currentPlayerIndex, directionState.turnDirection),
+      message: `${resolved.message} Draw chain limit reached; turn complete.`
+    };
   }
 
   return resolved;
