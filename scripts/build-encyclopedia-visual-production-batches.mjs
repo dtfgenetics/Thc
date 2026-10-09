@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { validateVisualProductionQueue } from './lib/encyclopedia-visual-batch-preflight.mjs';
 
 const root=process.cwd();
 const queuePath=path.join(root,'content','encyclopedia','visual-production-queue-v1.json');
@@ -9,6 +10,7 @@ const requestedBatchSize=Number(process.env.ENCYCLOPEDIA_VISUAL_BATCH_SIZE||24);
 if(!Number.isInteger(requestedBatchSize)||requestedBatchSize<1||requestedBatchSize>100) throw new Error('ENCYCLOPEDIA_VISUAL_BATCH_SIZE must be an integer from 1 to 100.');
 const batchSize=requestedBatchSize;
 const queue=JSON.parse(fs.readFileSync(queuePath,'utf8'));
+validateVisualProductionQueue(queue);
 const items=(queue.items||[])
   .flatMap(lesson=>(lesson.visualRoles||[])
     .filter(role=>role.status==='brief_ready_raster_artwork_needed')
