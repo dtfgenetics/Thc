@@ -45,6 +45,9 @@ for (const item of items) {
     if (ordinals.some(n=>!Number.isInteger(n)||n<1||n>10) || new Set(ordinals).size!==10) errors.push(`${item.lessonId}: educational visual ordinals must be unique integers 1–10.`);
     if (item.visualRoles.some(role=>!/^[-a-z0-9]+$/.test(String(role.role||'')))) errors.push(`${item.lessonId}: visual role identifiers must use safe lowercase slug characters.`);
     for (const role of item.visualRoles) {
+      const assigned=Boolean(role.canonicalAssetPath);
+      const expectedRoleStatus=assigned?'raster_artwork_produced_review_pending':'brief_ready_raster_artwork_needed';
+      if(role.status!==expectedRoleStatus) errors.push(`${item.lessonId}:${role.role}: visual role status does not match assigned artwork.`);
       if (!role.teachingIntent || !role.productionBrief) errors.push(`${item.lessonId}:${role.role}: role-specific teaching intent/brief missing.`);
       if (!role.altTextDraft || !role.captionDraft) errors.push(`${item.lessonId}:${role.role}: role-specific accessibility copy missing.`);
     }
