@@ -55,7 +55,13 @@ for (const item of items) {
   if (!Number.isInteger(item.visualGapCount) || item.visualGapCount !== 10 - Number(item.roleAddressedAssetCount || 0)) errors.push(`${item.lessonId}: target visual gap count is inconsistent.`);
   if (!Number.isInteger(item.minimumVisualGapCount) || item.minimumVisualGapCount !== Math.max(0, 8 - Number(item.roleAddressedAssetCount || 0))) errors.push(`${item.lessonId}: minimum visual gap count is inconsistent.`);
   for (const role of item.visualRoles || []) {
-    if (role.canonicalAssetPath && !String(role.canonicalAssetPath).includes(`_${String(role.ordinal).padStart(2,'0')}_${role.role}.png`)) errors.push(`${item.lessonId}: role asset must encode its ordinal and role in the filename.`);
+    if (role.canonicalAssetPath) {
+      const assetPath=String(role.canonicalAssetPath);
+      const expectedSuffix=`_${String(role.ordinal).padStart(2,'0')}_${role.role}.png`;
+      if (!path.basename(assetPath).endsWith(expectedSuffix)) errors.push(`${item.lessonId}: role asset must end with ordinal and role in its filename.`);
+      if (!item.canonicalAssetPaths?.includes(assetPath)) errors.push(`${item.lessonId}: assigned role asset is missing from the lesson candidate inventory: ${assetPath}`);
+      if (!fs.existsSync(path.join(root,assetPath))) errors.push(`${item.lessonId}: assigned role asset is missing on disk: ${assetPath}`);
+    }
   }
   if (item.approvedAssetId !== null) errors.push(`${item.lessonId}: queue builder must not approve an asset.`);
   if (item.assetCandidateCount > 0) {
