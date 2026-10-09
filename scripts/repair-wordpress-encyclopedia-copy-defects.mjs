@@ -153,6 +153,18 @@ async function scanWorker(){
 }
 await Promise.all(Array.from({length:scanConcurrency},()=>scanWorker()));
 
+// A failed public fetch must never be interpreted as a clean published lesson.
+// Stop before constructing a publication manifest when visitor parity is unknown.
+const unreachable=scanResults.filter(row=>row.publicView.status!==200);
+if(unreachable.length){
+  await writeFile('/tmp/encyclopedia-copy-repair-scan.json',JSON.stringify({
+    result:'blocked-public-visibility',
+    scannedPublishedLessons:lessonPages.length,
+    unreachable:unreachable.map(row=>({id:row.id,slug:row.page.slug,status:row.publicView.status,error:row.publicView.error||null}))
+  },null,2)+'\n','utf8');
+  throw new Error(`Encyclopedia repair stopped: ${unreachable.length} published lessons could not be verified with HTTP 200.`);
+}
+
 const candidates=[];
 const blocked=[];
 for(const row of scanResults){
