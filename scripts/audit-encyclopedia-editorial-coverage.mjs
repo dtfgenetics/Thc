@@ -44,7 +44,23 @@ export function auditLessons(lessons) {
       if (!route.startsWith('/') || route.startsWith('//') || /[?#]/.test(route)) {
         add('invalid_route', 'Expected root-relative pathname without query or fragment');
       } else {
-        const normalizedRoute = route.replace(/\\/+$/, '') || '/';
+        const normalizedRoute = route.replace(new RegExp('/+ || '/';
+        if (seenRoutes.has(normalizedRoute)) add('duplicate_route', 'Also in ' + seenRoutes.get(normalizedRoute));
+        else seenRoutes.set(normalizedRoute, location);
+      }
+    }
+  }
+  issues.sort((a, b) => a.code.localeCompare(b.code) || a.id.localeCompare(b.id));
+  return { generatedAt: new Date().toISOString(), scope: 'repository_canonical_lessons_only', counts, issues,
+    disclaimer: 'This report does not verify deployed routes, factual accuracy, source validity, image availability, or human editorial approval.' };
+}
+
+if (process.argv[1] && import.meta.url === new URL('file://' + process.argv[1]).href) {
+  const report = auditLessons(readCanonicalEncyclopediaLessons(process.cwd()));
+  console.log(JSON.stringify(report, null, 2));
+  if (process.argv.includes('--strict') && report.issues.length) process.exitCode = 1;
+}
+), '') || '/';
         if (seenRoutes.has(normalizedRoute)) add('duplicate_route', 'Also in ' + seenRoutes.get(normalizedRoute));
         else seenRoutes.set(normalizedRoute, location);
       }
