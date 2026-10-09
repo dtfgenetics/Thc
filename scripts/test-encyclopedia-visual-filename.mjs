@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { lessonIdFromVisualFilename } from './lib/encyclopedia-visual-filename.mjs';
+import { lessonIdFromVisualFilename, visualFilenameMatchesRole } from './lib/encyclopedia-visual-filename.mjs';
 
 const valid = new Map([
   ['THC-ENC-001_01_core-concept-overview.png', 'THC-ENC-001'],
@@ -14,3 +14,15 @@ for (const filename of [
 ]) assert.equal(lessonIdFromVisualFilename(filename), null, filename);
 assert.equal(lessonIdFromVisualFilename(null), null);
 console.log('Extended encyclopedia visual filename tests passed');
+
+const role = 'core-concept-overview';
+for (const ext of ['png', 'PNG', 'jpg', 'jpeg', 'webp', 'WEBP']) {
+  assert.equal(visualFilenameMatchesRole('THC-ENC-1000_01_' + role + '.' + ext, 'THC-ENC-1000', role, 1), true);
+}
+for (const bad of [
+  'THC-ENC-100_01_' + role + '.png',
+  'THC-ENC-1000_010_' + role + '.png',
+  'THC-ENC-1000_01_' + role + '-wrong.webp',
+  'THC-ENC-1000_01_' + role + '.svg',
+  'THC-ENC-1000_01_' + role + '.png.backup'
+]) assert.equal(visualFilenameMatchesRole(bad, 'THC-ENC-1000', role, 1), false, bad);
