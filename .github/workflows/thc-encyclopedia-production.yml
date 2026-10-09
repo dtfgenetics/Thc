@@ -81,10 +81,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Use Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Enforce scientific depth on changed canonical lessons
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: npm run verify:encyclopedia-changed-depth
       - name: Validate canonical encyclopedia source pin
         run: npm run verify:encyclopedia-source-pin
       - name: Validate forward-only production pointer
