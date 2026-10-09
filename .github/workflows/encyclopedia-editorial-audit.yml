@@ -8,6 +8,9 @@ on:
       - 'scripts/audit-encyclopedia-editorial-coverage.mjs'
       - 'scripts/test-audit-encyclopedia-editorial-coverage.mjs'
       - 'scripts/test-encyclopedia-visual-filename.mjs'
+      - 'scripts/lib/encyclopedia-visual-batch-preflight.mjs'
+      - 'scripts/build-encyclopedia-visual-production-batches.mjs'
+      - 'scripts/test-encyclopedia-visual-batch-preflight.mjs'
       - 'scripts/lib/encyclopedia-visual-filename.mjs'
       - 'scripts/build-encyclopedia-visual-production-queue.mjs'
       - '.github/workflows/encyclopedia-editorial-audit.yml'
@@ -29,6 +32,8 @@ jobs:
         run: node scripts/test-audit-encyclopedia-editorial-coverage.mjs
       - name: Test extended visual filename IDs
         run: node scripts/test-encyclopedia-visual-filename.mjs
+      - name: Test visual batch preflight
+        run: node scripts/test-encyclopedia-visual-batch-preflight.mjs
       - name: Audit canonical lesson inventory
         run: node scripts/audit-encyclopedia-editorial-coverage.mjs --strict > encyclopedia-editorial-audit.json
       - name: Upload diagnostic report
