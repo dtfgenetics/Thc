@@ -48,6 +48,7 @@ const output={
   items:publishable
 };
 
-if(!publishable.length) throw new Error('No approved existing canonical raster encyclopedia visuals are available for publication.');
+// An empty approved subset is a valid held state; do not promote pending candidates.
+// The publication workflow skips attachment when no approved assets exist.
 fs.writeFileSync(outPath,JSON.stringify(output,null,2)+'\n');
 console.log(`Publishable encyclopedia visual map: ${publishable.length} approved canonical raster(s); ${heldGenerated.length} generated candidate(s) held; ${heldMissing.length} missing artwork item(s) held.`);
