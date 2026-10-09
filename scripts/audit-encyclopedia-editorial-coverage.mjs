@@ -44,7 +44,7 @@ export function auditLessons(lessons) {
       if (!route.startsWith('/') || route.startsWith('//') || /[?#]/.test(route)) {
         add('invalid_route', 'Expected root-relative pathname without query or fragment');
       } else {
-        const normalizedRoute = route.replace(new RegExp('/+ || '/';
+        const normalizedRoute = route.replace(/\/+$/, '') || '/';
         if (seenRoutes.has(normalizedRoute)) add('duplicate_route', 'Also in ' + seenRoutes.get(normalizedRoute));
         else seenRoutes.set(normalizedRoute, location);
       }
