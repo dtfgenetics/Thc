@@ -93,7 +93,7 @@ jobs:
             '',
             'Candidate production is not scientific, rights, accessibility, or publication approval.'
           ];
-          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,lines.join('\\n')+'\\n');
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,lines.join('\n')+'\n');
           NODE
 
       - name: Upload production packet evidence
