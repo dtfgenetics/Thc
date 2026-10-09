@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons, readJson, relativePath } from './lib/encyclopedia-canonical-lessons.mjs';
 import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
-import { lessonIdFromVisualFilename } from './lib/encyclopedia-visual-filename.mjs';
+import { lessonIdFromVisualFilename, visualFilenameMatchesRole } from './lib/encyclopedia-visual-filename.mjs';
 
 const root = process.cwd();
 const outPath = path.join(root, 'content', 'encyclopedia', 'visual-production-queue-v1.json');
@@ -107,7 +107,7 @@ const items = lessons.map(lesson => {
   let visualPriorityScore = 0;
   const roleAssetPath = (role, index) => canonicalAssetPaths.find(assetPath => {
     const name = path.basename(assetPath).toLowerCase();
-    return name.includes(`_${String(index + 1).padStart(2, '0')}_${role}.png`);
+    return visualFilenameMatchesRole(name, lesson.id, role, index + 1);
   }) || null;
   const assignedVisualRoles = visualRoles.map((role, index) => {
     const assetPath = roleAssetPath(role, index);
