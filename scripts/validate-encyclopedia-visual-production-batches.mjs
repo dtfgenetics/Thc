@@ -12,6 +12,9 @@ const index=errors.length?{batches:[]}:JSON.parse(fs.readFileSync(indexPath,'utf
 const batches=Array.isArray(index.batches)?index.batches:[];
 const queue=JSON.parse(fs.readFileSync(queuePath,'utf8'));
 const expectedNeeded=(queue.items||[]).reduce((sum,lesson)=>sum+(lesson.visualRoles||[]).filter(role=>role.status==='brief_ready_raster_artwork_needed').length,0);
+const expectedTasks=new Map((queue.items||[]).flatMap(lesson=>(lesson.visualRoles||[])
+  .filter(role=>role.status==='brief_ready_raster_artwork_needed')
+  .map(role=>[`${lesson.lessonId}:${role.role}`,role])));
 if(index.artworkNeededCount!==expectedNeeded) errors.push(`Expected ${expectedNeeded} missing visual-role tasks from queue; found ${index.artworkNeededCount}`);
 const configuredBatchSize=Number(process.env.ENCYCLOPEDIA_VISUAL_BATCH_SIZE||24);
 if(!Number.isInteger(configuredBatchSize)||configuredBatchSize<1||configuredBatchSize>100) errors.push('ENCYCLOPEDIA_VISUAL_BATCH_SIZE must be an integer from 1 to 100.');
@@ -35,6 +38,9 @@ for(const batch of batches){
     count++;
     const taskId=`${item.lessonId}:${item.visualRole}`;
     if(seen.has(taskId)) errors.push(`${taskId}: appears in more than one batch`);
+    const sourceRole=expectedTasks.get(taskId);
+    if(!sourceRole) errors.push(`${taskId}: batch task has no matching missing-role brief in the canonical queue`);
+    else if(sourceRole.ordinal!==item.visualOrdinal) errors.push(`${taskId}: batch ordinal differs from canonical queue`);
     seen.add(taskId);
     if(!/^THC-ENC-\d{3}$/.test(item.lessonId)) errors.push(`${item.lessonId}: invalid lesson ID`);
     if(!item.visualRole || !Number.isInteger(item.visualOrdinal) || item.visualOrdinal<1 || item.visualOrdinal>10) errors.push(`${item.lessonId}: missing or invalid visual role/ordinal`);
@@ -51,6 +57,7 @@ for(const batch of batches){
   }
 }
 if(count!==index.artworkNeededCount) errors.push(`Batch item total ${count} does not equal index artwork-needed count ${index.artworkNeededCount}`);
+for(const taskId of expectedTasks.keys()) if(!seen.has(taskId)) errors.push(`${taskId}: missing from controlled visual batches`);
 if(batches.length>0){
   const firstFile=path.join(root,batches[0].file||'');
   if(fs.existsSync(firstFile)){
