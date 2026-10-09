@@ -127,6 +127,16 @@ const children=await allChildren(encyclopedia.id);
 const canonical=readCanonicalEncyclopediaLessons(process.cwd());
 const byId=new Map(canonical.map(lesson=>[lesson.id,lesson]));
 const lessonPages=children.filter(page=>/^thc-enc-\d{3}$/.test(page.slug||''));
+// The repair scanner must not silently accept an incomplete or duplicate core.
+const protectedIds=canonical.filter(lesson=>/^THC-ENC-(?:0[0-9]{2}|[1-3][0-9]{2}|4(?:0[0-9]|1[0-9]|20))$/.test(lesson.id)).map(lesson=>lesson.id);
+const publishedIds=lessonPages.map(page=>String(page.slug).toUpperCase());
+const counts=new Map();
+for(const id of publishedIds) counts.set(id,(counts.get(id)||0)+1);
+const missing=protectedIds.filter(id=>!counts.has(id));
+const duplicates=[...counts].filter(([,count])=>count>1).map(([id])=>id);
+if(protectedIds.length!==420||missing.length||duplicates.length){
+  throw new Error(`Encyclopedia repair requires all 420 unique core pages; canonical=${protectedIds.length}, missing=${missing.join(',')||'none'}, duplicates=${duplicates.join(',')||'none'}`);
+}
 const scanConcurrency=Math.max(1,Math.min(24,Number(process.env.ENC_COPY_REPAIR_CONCURRENCY||8)));
 const scanResults=new Array(lessonPages.length);
 let scanNext=0;
