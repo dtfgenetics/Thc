@@ -29,7 +29,7 @@ const seen=new Set();
 let count=0;
 for(const batch of batches){
   const relative=String(batch.file||'');
-  if(!/^content\/encyclopedia\/visual-production-batches\/batch-\d{3}\.json$/.test(relative)) {
+  if(!/^content\/encyclopedia\/visual-production-batches\/batch-\d{3,}\.json$/.test(relative)) {
     errors.push(`${batch.batchId}: batch file must be a controlled JSON path inside visual-production-batches`);
     continue;
   }
@@ -51,7 +51,7 @@ for(const batch of batches){
     if(!sourceRole) errors.push(`${taskId}: batch task has no matching missing-role brief in the canonical queue`);
     else if(sourceRole.ordinal!==item.visualOrdinal) errors.push(`${taskId}: batch ordinal differs from canonical queue`);
     seen.add(taskId);
-    if(!/^THC-ENC-\d{3}$/.test(item.lessonId)) errors.push(`${item.lessonId}: invalid lesson ID`);
+    if(!/^THC-ENC-\d{3,}$/.test(item.lessonId)) errors.push(`${item.lessonId}: invalid lesson ID`);
     if(!item.visualRole || !Number.isInteger(item.visualOrdinal) || item.visualOrdinal<1 || item.visualOrdinal>10) errors.push(`${item.lessonId}: missing or invalid visual role/ordinal`);
     if(!item.teachingIntent || !item.productionBrief) errors.push(`${item.lessonId}:${item.visualRole}: missing role-specific teaching intent or production brief`);
     if(!item.altTextDraft || !item.captionDraft) errors.push(`${item.lessonId}:${item.visualRole}: missing role-specific accessibility copy`);
