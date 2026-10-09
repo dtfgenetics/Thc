@@ -29,7 +29,6 @@ const seen=new Set();
 let count=0;
 for(const batch of batches){
   const relative=String(batch.file||'');
-  const expectedPrefix='content/encyclopedia/visual-production-batches/';
   if(!/^content\/encyclopedia\/visual-production-batches\/batch-\d{3}\.json$/.test(relative)) {
     errors.push(`${batch.batchId}: batch file must be a controlled JSON path inside visual-production-batches`);
     continue;
