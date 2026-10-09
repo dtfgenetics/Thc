@@ -6,6 +6,13 @@ Production target: **https://dtfseeds.com**
 
 Mandatory product-wide quality guidance: `docs/PRODUCTION_STANDARDS.md`. Production-facing work is not complete until the relevant standards and deterministic verification gates pass. Implementation conventions live in `docs/SHARED_UI_IMPLEMENTATION_GUIDE.md`.
 
+## THC educational community
+
+Join **Teaching Healthy Cultivation (THC)** to discuss plant biology, environmental measurements, cultivation tools, genetics, and evidence-based learning: [THC Discord](https://discord.gg/xJbUeHFPMt).
+
+The Discord is an adults-only **education and discussion** community, not a seed sales or trading channel. Follow applicable laws and community rules.
+
+
 ## Repository map
 
 - `games/` — canonical source for games owned by this monorepo. Game logic, data, tests, assets manifests, and game-specific documentation belong here.
