@@ -28,7 +28,16 @@ if(index.lessonCountWithGaps!==queue.summary?.lessonsWithVisualGaps) errors.push
 const seen=new Set();
 let count=0;
 for(const batch of batches){
-  const file=path.join(root,batch.file||'');
+  const relative=String(batch.file||'');
+  if(!/^content\/encyclopedia\/visual-production-batches\/batch-\d{3}\.json$/.test(relative)) {
+    errors.push(`${batch.batchId}: batch file must be a controlled JSON path inside visual-production-batches`);
+    continue;
+  }
+  const file=path.resolve(root,relative);
+  if(!file.startsWith(path.resolve(dir)+path.sep)) {
+    errors.push(`${batch.batchId}: batch file escapes production batch directory`);
+    continue;
+  }
   if(!fs.existsSync(file)){errors.push(`${batch.batchId}: batch file missing`);continue;}
   const data=JSON.parse(fs.readFileSync(file,'utf8'));
   if(data.batchId!==batch.batchId) errors.push(`${batch.batchId}: index/file ID mismatch`);
