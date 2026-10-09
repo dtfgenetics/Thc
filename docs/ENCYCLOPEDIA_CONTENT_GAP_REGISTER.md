@@ -1,6 +1,15 @@
 # THC Encyclopedia Content Gap Register
 
-Updated: 2026-10-05
+Updated: 2026-10-09
+
+## October 9 verified live acceptance evidence
+
+- Protected [WordPress copy-repair workflow run 37957607923](https://github.com/dtfgenetics/Thc/actions/runs/37957607923) completed successfully on commit `7079a793d8b5802a45f0749f45adce4647cad400`.
+- Archived `encyclopedia-420-live-verification.json`: **420 expected, 420 verified, 0 failed, passed=true**, finished `2026-10-09T16:18:51Z`.
+- Archived `live-encyclopedia-copy-audit.json`: **420 live pages, no missing routes, 420/420 source fingerprints and structured-data verifications, zero recorded copy defects**.
+- Archived `encyclopedia-copy-repair-scan.json`: **420 pages scanned, zero repair candidates or publication holds**. The repair scanner made no content changes during this run because no defects were found.
+- Evidence is time- and revision-scoped. It does **not** constitute independent scientific review, visual approval, or proof that this particular run published the current WordPress content.
+
 
 ## Live publication completion
 
