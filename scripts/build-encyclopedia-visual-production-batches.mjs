@@ -20,7 +20,7 @@ const items=(queue.items||[])
   .sort((a,b)=>a.visualOrdinal-b.visualOrdinal||b.visualPriorityScore-a.visualPriorityScore||a.number-b.number);
 
 fs.mkdirSync(outDir,{recursive:true});
-for(const name of fs.readdirSync(outDir)) if(/^batch-\d{3}\.(?:json|md)$/i.test(name)) fs.unlinkSync(path.join(outDir,name));
+for(const name of fs.readdirSync(outDir)) if(/^batch-\d{3,}\.(?:json|md)$/i.test(name)) fs.unlinkSync(path.join(outDir,name));
 
 const batches=[];
 for(let i=0;i<items.length;i+=batchSize){
