@@ -231,8 +231,9 @@ jobs:
 
           verify_page '/' 'Genetics first. Learn the plant behind the pack.'
           verify_page '/learn/' 'Learn the plant as one connected system.'
-          verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
-          verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+          verify_page '/community/' 'Join THC — Teaching Healthy Cultivation Discord'
+          verify_page '/contact/' 'Join THC — Teaching Healthy Cultivation Discord'
+          verify_page '/learn/' 'Join THC learning community'
           verify_page '/blog/' 'DTF Field Notes &amp; Updates'
           verify_page '/blog/' 'Follow what we are learning, building, and releasing.'
           verify_page '/journal/' 'DTF Journal'
