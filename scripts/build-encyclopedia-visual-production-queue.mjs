@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons, readJson, relativePath } from './lib/encyclopedia-canonical-lessons.mjs';
 import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
+import { lessonIdFromVisualFilename } from './lib/encyclopedia-visual-filename.mjs';
 
 const root = process.cwd();
 const outPath = path.join(root, 'content', 'encyclopedia', 'visual-production-queue-v1.json');
@@ -21,9 +22,8 @@ const canonicalVisualFiles = fs.existsSync(canonicalVisualRoot)
   : [];
 const discoveredAssetsById = new Map();
 for (const name of canonicalVisualFiles) {
-  const match = name.match(/^(THC-ENC-\d{3})(?:_|\b)/i);
-  if (!match) continue;
-  const id = match[1].toUpperCase();
+  const id = lessonIdFromVisualFilename(name);
+  if (!id) continue;
   const rows = discoveredAssetsById.get(id) || [];
   rows.push(path.join(canonicalVisualRoot, name));
   discoveredAssetsById.set(id, rows);
