@@ -66,7 +66,7 @@ const footerContent = `<!-- wp:group {"tagName":"footer","layout":{"type":"const
 <!-- wp:paragraph --><p>Dream the Future. Genetics, cultivation education, practical tools, original games, and community.</p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p><a href="/">Home</a> · <a href="/seeds/">Seeds</a> · <a href="/learn/">Learn</a> · <a href="/courses/">Courses</a> · <a href="/tools/">Tools</a> · <a href="/games/">Games</a> · <a href="/community/">Community</a> · <a href="/shop/">Shop</a></p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p><a href="/gallery/">Gallery</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a></p><!-- /wp:paragraph -->
-<!-- wp:paragraph --><p><a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join the DTF / Teaching Healthy Cultivation Discord</a></p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join THC — Teaching Healthy Cultivation Discord</a></p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p>© 2026 DTF Genetics. All rights reserved.</p><!-- /wp:paragraph -->
 </footer>
 <!-- /wp:group -->`;
