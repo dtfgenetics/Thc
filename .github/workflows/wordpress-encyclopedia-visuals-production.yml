@@ -68,6 +68,7 @@ jobs:
           node --check scripts/build-encyclopedia-full-publication-manifest.mjs
           node --check scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
           node --check scripts/verify-wordpress-encyclopedia-full-live.mjs
+          node scripts/test-encyclopedia-live-verifier-config.mjs
           node scripts/build-encyclopedia-full-publication-manifest.mjs
           node scripts/validate-encyclopedia-release-control.mjs "$ENCYCLOPEDIA_FULL_BATCH_FILE"
 
