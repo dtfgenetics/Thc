@@ -26,11 +26,8 @@ export async function startRoomWithTransport(
     const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!, requestingPlayerId);
     await appendEventsBestEffort(room.code, result.events, transport, requestingPlayerId);
 
-    return {
-      ...updatedRoom,
-      status: result.room.status,
-      gameState: result.room.gameState
-    };
+    // Return the server-confirmed snapshot instead of overwriting it with optimistic state.
+    return updatedRoom;
   } finally {
     inFlightStarts.delete(startKey);
   }
@@ -57,11 +54,8 @@ export async function rollRoomWithTransport(
     const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!, requestingPlayerId);
     await appendEventsBestEffort(room.code, result.events, transport, requestingPlayerId);
 
-    return {
-      ...updatedRoom,
-      status: result.room.status,
-      gameState: result.room.gameState
-    };
+    // Return the server-confirmed snapshot instead of overwriting it with optimistic state.
+    return updatedRoom;
   } finally {
     inFlightRolls.delete(rollKey);
   }
