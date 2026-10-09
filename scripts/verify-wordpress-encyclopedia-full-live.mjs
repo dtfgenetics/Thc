@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import path from 'node:path';
 
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const manifestPath=process.env.ENCYCLOPEDIA_FULL_BATCH_FILE||'site/wordpress/education/encyclopedia/full-420-production-batch.generated.json';
@@ -20,6 +21,8 @@ if(ids.length!==420||actualIds.size!==420||missing.length||unexpected.length){
   throw new Error(`Invalid 420-route manifest: entries=${ids.length}, unique=${actualIds.size}, missing=${missing.slice(0,15).join(',')||'none'}, unexpected=${unexpected.slice(0,15).join(',')||'none'}`);
 }
 const queue=[...ids], failures=[];
+const succeeded=[];
+const startedAt=new Date().toISOString();
 let verified=0;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function verify(id){
@@ -34,12 +37,18 @@ async function verify(id){
       if(finalPath!==`/learn/encyclopedia/${slug}/`) throw new Error(`unexpected redirect target: ${finalPath}`);
       if(!html.includes(`data-thc-encyclopedia-id="${id}"`)) throw new Error('missing canonical lesson marker');
       if(!html.includes('Key concepts · Terms to know')) throw new Error('missing key concepts / terms section');
-      verified+=1; return;
+      verified+=1; succeeded.push(id); return;
     }catch(error){last=String(error?.message||error); if(attempt<attempts) await sleep(1200*attempt);}
   }
   failures.push({id,error:last});
 }
 async function worker(){while(queue.length){const id=queue.shift();if(id)await verify(id);}}
 await Promise.all(Array.from({length:concurrency},()=>worker()));
+const evidencePath=process.env.ENCYCLOPEDIA_VERIFY_REPORT;
+if(evidencePath){
+  const report={schemaVersion:1,sourceRevision:process.env.GITHUB_SHA||null,site,startedAt,finishedAt:new Date().toISOString(),expected:ids.length,verified,failed:failures.length,passed:failures.length===0&&verified===420,successfulIds:succeeded.sort(),failures:failures.sort((a,b)=>a.id.localeCompare(b.id))};
+  fs.mkdirSync(path.dirname(evidencePath),{recursive:true});
+  fs.writeFileSync(evidencePath,JSON.stringify(report,null,2)+'\n');
+}
 if(failures.length){console.error(`Authorized encyclopedia live verification failed: ${failures.length}/${ids.length} route(s).`);for(const row of failures.slice(0,80))console.error(` - ${row.id}: ${row.error}`);process.exit(1);}
 console.log(`Authorized encyclopedia live verification PASS: ${verified}/${ids.length} canonical lesson routes.`);
