@@ -29,9 +29,13 @@ for(let part=1;part<=21;part++){
       if(body.includes(phrase)) failures.push(`${lesson.id}: banned generic copy: "${phrase}"`);
     }
     if(/\.{2,}(?=\s|["'])/.test(body)) failures.push(`${lesson.id}: repeated period punctuation found`);
+    const sourceNotes=text(lesson.sourceNotes);
+    if(/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i.test(sourceNotes)){
+      failures.push(`${lesson.id}: malformed source-note label`);
+    }
     for(const field of ['measureAndRecord','misconceptions','evidenceLimits']){
       const rows=Array.isArray(lesson[field])?lesson[field]:[];
-      if(rows.some(x=>String(x).trim().length<35)) failures.push(`${lesson.id}: ${field} contains a thin entry`);
+      if(rows.some(x=>text(x).trim().length<35)) failures.push(`${lesson.id}: ${field} contains a thin entry`);
     }
   }
 }
