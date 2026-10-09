@@ -332,6 +332,14 @@ function auditCandidateGame(game) {
     problems.push('candidate play-now route exposes no obvious interactive runtime marker');
   }
 
+  const playRoute = game.route + 'play/';
+  if (html.includes(`href="${playRoute}"`) || html.includes(`href='${playRoute}'`)) {
+    const playIndex = path.join(source.routeRoot, 'play', 'index.html');
+    if (!fs.existsSync(playIndex)) {
+      problems.push(`candidate landing page links to ${playRoute} but the corresponding play/index.html is absent from the route package`);
+    }
+  }
+
   const assetAudit = checkRouteAssets(html, game, source.routeRoot);
   problems.push(...assetAudit.problems);
 
