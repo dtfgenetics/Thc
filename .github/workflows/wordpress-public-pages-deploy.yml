@@ -102,6 +102,10 @@ jobs:
         run: |
           set -euo pipefail
           grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/community.html
+          grep -Fq 'Join THC — Teaching Healthy Cultivation Discord' site/wordpress/pages/community.html
+          grep -Fq 'Join THC — Teaching Healthy Cultivation Discord' site/wordpress/pages/contact.html
+          grep -Fq 'Join THC learning community' site/wordpress/pages/learn.html
+          grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/learn.html
           grep -Fq '/thc-grow-doc/' site/wordpress/pages/learn.html
           grep -Fq '/growlens/' site/wordpress/pages/learn.html
           grep -Fq 'id="dtf-learn-v5-atlas-alignment"' site/wordpress/pages/learn.html
