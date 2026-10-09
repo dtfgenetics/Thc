@@ -35,3 +35,6 @@ jobs:
 
       - name: Verify responsive layout contract
         run: node scripts/verify-responsive-layout.mjs
+
+      - name: Verify education navigation regression contract
+        run: node scripts/test-education-navigation-regression.mjs
