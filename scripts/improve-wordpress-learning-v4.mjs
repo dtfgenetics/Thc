@@ -86,6 +86,11 @@ const styles = `<style id="${styleId}">
 .v3 .learning-map-step .v3-text-link{grid-column:2;display:inline-flex;width:max-content;margin-top:7px;font-size:.84rem}
 .v3 .learning-map-cue{position:relative;z-index:1;display:flex;gap:7px;align-items:baseline;margin-top:18px;padding:0;color:#405448;font-size:.9rem;line-height:1.58;background:transparent;border:0;box-shadow:none}
 .v3 .learning-map-cue strong{color:var(--v3-ink)}
+.v3 .learning-map-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.v3 .learning-map-actions a{display:inline-flex;align-items:center;min-height:44px;padding:10px 16px;border:1px solid #316246;border-radius:10px;background:#173b27;color:#fff;text-decoration:none;font-size:.9rem;font-weight:750}
+.v3 .learning-map-actions a:last-child{background:transparent;color:#173b27}
+.v3 .learning-map-actions a:hover{box-shadow:0 0 0 2px rgba(23,59,39,.15)}
+.v3 .learning-map-actions a:focus-visible{outline:3px solid #26784a;outline-offset:3px}
 @media(max-width:900px){.v3 .learning-map-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.v3 .learning-map-step:nth-last-child(-n+3){border-bottom:1px solid rgba(16,43,26,.11)}.v3 .learning-map-step:nth-last-child(-n+2){border-bottom:0}.v3 .learning-map-step:not(:nth-child(3n+1)){padding-left:0;border-left:0}.v3 .learning-map-step:nth-child(even){padding-left:18px;border-left:1px solid rgba(16,43,26,.11)}}
 @media(max-width:620px){.v3 .learning-map-v4{padding-block:44px!important}.v3 .learning-map-grid{grid-template-columns:1fr;border-bottom:0}.v3 .learning-map-step,.v3 .learning-map-step:nth-child(even){padding:16px 0!important;border-left:0!important;border-bottom:1px solid rgba(16,43,26,.11)!important}.v3 .learning-map-step:last-child{border-bottom:0!important}.v3 .learning-map-step p{font-size:.9rem}.v3 .learning-map-cue{display:block;margin-top:16px;font-size:.88rem}.v3 .learning-map-cue strong{display:block;margin-bottom:3px}}
 </style>`;
@@ -102,6 +107,7 @@ const mapMarkup = `${startMarker}
     <article class="learning-map-step"><b>06</b><h3>Finish &amp; improve</h3><p>Harvest, post-harvest, genetics, evidence and iteration.</p><a class="v3-text-link" href="/learn/harvest-postharvest/">Harvest &amp; quality <span aria-hidden="true">→</span></a></article>
   </div>
   <div class="learning-map-cue"><strong>Use this as a loop, not a checklist.</strong><span>Enter where your question is, move backward to what could be driving it, then forward to the measurement or decision that tests it.</span></div>
+  <nav class="learning-map-actions" aria-label="Explore more ways to learn"><a href="/learn/search/">Search all education <span aria-hidden="true">→</span></a><a href="/learn/encyclopedia/">Browse the encyclopedia <span aria-hidden="true">→</span></a></nav>
 </div></section>
 ${endMarker}`;
 
