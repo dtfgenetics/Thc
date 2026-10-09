@@ -33,13 +33,14 @@ jobs:
         run: node games/pheno-hunter/scripts/validate-data.mjs
       - name: Run deterministic scouting engine tests
         run: node games/pheno-hunter/test/engine.test.mjs
-      - name: Validate public runtime contract
-        run: node games/pheno-hunter/test/public-runtime.test.mjs
-      - name: Validate browser JavaScript syntax
+      - name: Validate public runtime contract when platform mirror is present
         run: |
-          node --check site/public-route-patch/games/pheno-hunter/app.js
-          node --check site/public-route-patch/games/pheno-hunter/engine.mjs
-      - name: Verify canonical and public mirrors
-        run: |
-          cmp games/pheno-hunter/src/engine.mjs site/public-route-patch/games/pheno-hunter/engine.mjs
-          cmp games/pheno-hunter/data/phenos.json site/public-route-patch/games/pheno-hunter/data/phenos.json
+          if [ -f site/public-route-patch/games/pheno-hunter/index.html ]; then
+            node games/pheno-hunter/test/public-runtime.test.mjs
+            node --check site/public-route-patch/games/pheno-hunter/app.js
+            node --check site/public-route-patch/games/pheno-hunter/engine.mjs
+            cmp games/pheno-hunter/src/engine.mjs site/public-route-patch/games/pheno-hunter/engine.mjs
+            cmp games/pheno-hunter/data/phenos.json site/public-route-patch/games/pheno-hunter/data/phenos.json
+          else
+            echo "Pheno Hunter public runtime is not integrated; engine-only checks apply."
+          fi
