@@ -1,0 +1,35 @@
+name: Encyclopedia Editorial Coverage Audit
+
+on:
+  pull_request:
+    paths:
+      - 'content/encyclopedia/**'
+      - 'scripts/lib/encyclopedia-canonical-lessons.mjs'
+      - 'scripts/audit-encyclopedia-editorial-coverage.mjs'
+      - 'scripts/test-audit-encyclopedia-editorial-coverage.mjs'
+      - '.github/workflows/encyclopedia-editorial-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test audit behavior
+        run: node scripts/test-audit-encyclopedia-editorial-coverage.mjs
+      - name: Audit canonical lesson inventory
+        run: node scripts/audit-encyclopedia-editorial-coverage.mjs --strict > encyclopedia-editorial-audit.json
+      - name: Upload diagnostic report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: encyclopedia-editorial-audit
+          path: encyclopedia-editorial-audit.json
+          if-no-files-found: ignore
