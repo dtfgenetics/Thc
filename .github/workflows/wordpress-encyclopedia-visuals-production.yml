@@ -115,7 +115,7 @@ jobs:
           node - <<'NODE'
           const fs=require('fs');
           const map=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_VISUAL_MAP,'utf8'));
-          if(map.schemaVersion!==1 || map.batch!=='encyclopedia-authorized-approved-raster-visuals-v2' || !Array.isArray(map.items) || !map.items.length) throw new Error('Unexpected approved encyclopedia visual map.');
+          if(map.schemaVersion!==1 || map.batch!=='encyclopedia-authorized-approved-raster-visuals-v2' || !Array.isArray(map.items)) throw new Error('Unexpected approved encyclopedia visual map.');
           const manifest=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_FULL_BATCH_FILE,'utf8'));
           const authorized=new Set(manifest.lessonFiles.map(file=>{ const name=String(file).split('/').pop()||''; return String(name.endsWith('.json')?name.slice(0,-5):name).toUpperCase(); }));
           const ids=map.items.map(x=>x.id);
@@ -129,8 +129,10 @@ jobs:
           }
           console.log(`Validated ${map.items.length} approved canonical lesson-to-visual mappings; review-pending generated candidates remain held.`);
           NODE
+          echo "approved_count=$(node -p \"require('./' + process.env.ENCYCLOPEDIA_VISUAL_MAP).items.length\")" >> "$GITHUB_OUTPUT"
 
       - name: Attach existing WordPress media to encyclopedia lessons
+        if: ${{ steps.validate.outcome == 'success' && fromJSON(steps.validate.outputs.approved_count) > 0 }}
         id: publish
         shell: bash
         run: |
@@ -145,6 +147,7 @@ jobs:
           echo "uploads=$(node -p "require(process.argv[1]).newMediaUploads" "$report")" >> "$GITHUB_OUTPUT"
 
       - name: Verify all publication-authorized visitor-facing lesson visuals
+        if: ${{ steps.publish.outcome == 'success' }}
         id: verify
         shell: bash
         run: |
