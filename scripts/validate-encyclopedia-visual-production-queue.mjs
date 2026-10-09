@@ -41,6 +41,9 @@ for (const item of items) {
   if (!Array.isArray(item.visualRoles) || item.visualRoles.length !== 10) errors.push(`${item.lessonId}: must define 10 distinct educational visual roles.`);
   else {
     if (new Set(item.visualRoles.map(role=>role.role)).size !== 10) errors.push(`${item.lessonId}: educational visual roles must be unique.`);
+    const ordinals=item.visualRoles.map(role=>role.ordinal);
+    if (ordinals.some(n=>!Number.isInteger(n)||n<1||n>10) || new Set(ordinals).size!==10) errors.push(`${item.lessonId}: educational visual ordinals must be unique integers 1–10.`);
+    if (item.visualRoles.some(role=>!/^[-a-z0-9]+$/.test(String(role.role||'')))) errors.push(`${item.lessonId}: visual role identifiers must use safe lowercase slug characters.`);
     for (const role of item.visualRoles) {
       if (!role.teachingIntent || !role.productionBrief) errors.push(`${item.lessonId}:${role.role}: role-specific teaching intent/brief missing.`);
       if (!role.altTextDraft || !role.captionDraft) errors.push(`${item.lessonId}:${role.role}: role-specific accessibility copy missing.`);
