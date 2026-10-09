@@ -7,6 +7,7 @@ on:
       - site/wordpress/education/tech1-courses-public-v1.json
       - site/wordpress/education/tech2-courses-public-v1.json
       - scripts/publish-wordpress-certification-catalog-v6.mjs
+      - scripts/test-academy-catalog-contract.mjs
       - .github/workflows/wordpress-certification-catalog-v6.yml
   workflow_dispatch:
 
@@ -32,6 +33,9 @@ jobs:
 
       - name: Validate current certification catalog presentation
         run: node scripts/publish-wordpress-certification-catalog-v6.mjs --validate-only
+
+      - name: Verify course routes and credential issuance boundary
+        run: node scripts/test-academy-catalog-contract.mjs
 
       - name: Confirm production boundary
         run: |
