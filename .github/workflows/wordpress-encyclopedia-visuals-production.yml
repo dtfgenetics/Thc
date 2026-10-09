@@ -93,7 +93,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-wordpress-encyclopedia-full-live.mjs
+          ENCYCLOPEDIA_VERIFY_REPORT="$BACKUP_ROOT/encyclopedia-420-live-verification.json" node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-wordpress-encyclopedia-full-live.mjs
 
       - name: Build controlled visual inventory and approved publication subset
         shell: bash
