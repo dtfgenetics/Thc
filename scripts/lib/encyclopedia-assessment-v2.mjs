@@ -90,6 +90,8 @@ export function buildLessonRubricV1(lesson){
 }
 
 
+const endSentence=value=>String(value??'').trim().replace(/[.!?]+$/u,'')+'.';
+
 export function buildLessonAnswerRationalesV1(lesson){
   const assessment=effectiveLessonAssessment(lesson);
   const objective=String(lesson?.objective||'').trim();
@@ -103,7 +105,7 @@ export function buildLessonAnswerRationalesV1(lesson){
     `A strong answer should connect the response to the lesson objective: ${objective}`,
     science[0]||'Use the lesson mechanism rather than a memorized target.',
     science[1]||'Use a second lesson-specific science statement to support the explanation.',
-    records[0]?`The most useful verification evidence includes ${records[0]}.`:'Choose an observation or measurement that directly tests the proposed mechanism.',
+    records[0]?`The most useful verification evidence includes ${endSentence(records[0])}`:'Choose an observation or measurement that directly tests the proposed mechanism.',
     limits[0]?`Keep this limit explicit: ${limits[0]}`:'State the conditions under which the conclusion may not transfer.'
   ].filter(Boolean);
 
@@ -111,14 +113,14 @@ export function buildLessonAnswerRationalesV1(lesson){
     `The shortcut is unreliable because the lesson explicitly teaches a more conditional explanation.`,
     misconceptions[0]?`Representative misconception: ${String(misconceptions[0])}`:'Identify the unsupported shortcut in the claim.',
     science[0]||'Use the lesson science to explain why the shortcut can fail.',
-    records[1]?`A useful discriminator is ${records[1]}.`:(records[0]?`A useful discriminator is ${records[0]}.`:'Name evidence that separates competing explanations.'),
+    records[1]?`A useful discriminator is ${endSentence(records[1])}`:(records[0]?`A useful discriminator is ${endSentence(records[0])}`:'Name evidence that separates competing explanations.'),
     limits[0]?`Do not overextend the conclusion beyond this limit: ${limits[0]}`:'Preserve uncertainty when the evidence does not distinguish causes.'
   ].filter(Boolean);
 
   const applied=[
     relevance[0]?`In practice: ${relevance[0]}`:`Apply the lesson to a real cultivation decision without changing multiple variables at once.`,
-    records[0]?`Record before action: ${records[0]}.`:'Record the baseline condition before acting.',
-    records[1]?`Also record: ${records[1]}.`:'Record a second independent observation or measurement.',
+    records[0]?`Record before action: ${endSentence(records[0])}`:'Record the baseline condition before acting.',
+    records[1]?`Also record: ${endSentence(records[1])}`:'Record a second independent observation or measurement.',
     `After the action, repeat the same measurement or observation so the comparison is valid.`,
     limits[0]?`Revise the interpretation if the result conflicts with the lesson limit or the expected response: ${limits[0]}`:'Revise the interpretation when follow-up evidence contradicts the original hypothesis.'
   ].filter(Boolean);
