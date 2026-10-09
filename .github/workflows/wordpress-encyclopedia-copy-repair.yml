@@ -65,6 +65,17 @@ jobs:
           if [ "$audit_status" -ne 0 ]; then
             echo 'Live audit returned held defects; reconciliation verifier confirmed they are publication holds only.'
           fi
+      - name: Record visitor-facing 420-route acceptance after copy repair
+        shell: bash
+        env:
+          ENCYCLOPEDIA_FULL_BATCH_FILE: /tmp/encyclopedia-copy-repair-full-420-manifest.json
+          ENCYCLOPEDIA_VERIFY_REPORT: /tmp/dtf-encyclopedia-copy-repair/encyclopedia-420-live-verification.json
+          ENCYCLOPEDIA_VERIFY_CONCURRENCY: '8'
+        run: |
+          set -euo pipefail
+          node scripts/build-encyclopedia-full-publication-manifest.mjs
+          node scripts/verify-wordpress-encyclopedia-full-live.mjs
+
       - name: Upload repair evidence
         if: always()
         uses: actions/upload-artifact@v4
