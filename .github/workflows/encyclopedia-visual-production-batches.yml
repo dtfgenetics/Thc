@@ -70,6 +70,32 @@ jobs:
           console.log(`Review-only evidence: ${index.artworkNeededCount} artwork-needed lessons in ${index.batchCount} batches.`);
           NODE
 
+      - name: Summarize missing educational visual roles
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs=require('fs');
+          const queue=JSON.parse(fs.readFileSync('content/encyclopedia/visual-production-queue-v1.json','utf8'));
+          const index=JSON.parse(fs.readFileSync('content/encyclopedia/visual-production-batches/index.json','utf8'));
+          const s=queue.summary||{};
+          if(!Number.isInteger(index.visualTaskCount)||index.visualTaskCount<0) throw new Error('Missing visual-task count is invalid.');
+          if(index.visualTaskCount!==index.artworkNeededCount) throw new Error('Visual task count differs from artwork-needed count.');
+          if(!Number.isInteger(index.lessonCountWithGaps)||index.lessonCountWithGaps<0) throw new Error('Missing lesson-gap count is invalid.');
+          const lines=[
+            '## Encyclopedia visual-depth production evidence','',
+            '- Controlled lessons: '+String(s.lessonCount??'unknown'),
+            '- Minimum visuals per lesson: '+String(s.minimumVisualTarget??'unknown'),
+            '- Target visuals per lesson: '+String(s.fullVisualTarget??'unknown'),
+            '- Missing visual-role tasks: '+index.visualTaskCount,
+            '- Lessons with visual gaps: '+index.lessonCountWithGaps,
+            '- Review-controlled production batches: '+index.batchCount,
+            '',
+            'Candidate production is not scientific, rights, accessibility, or publication approval.'
+          ];
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,lines.join('\n')+'\n');
+          NODE
+
       - name: Upload production packet evidence
         uses: actions/upload-artifact@v4
         with:
