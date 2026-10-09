@@ -10,6 +10,7 @@ const outPath = path.join(root, 'data', 'encyclopedia-assessment-rationale-packa
 const arr = value => Array.isArray(value) ? value.filter(Boolean) : [];
 const text = value => typeof value === 'string' ? value : `${value?.field || 'Record'}: ${value?.requirement || ''}`;
 const term = value => typeof value === 'string' ? value : value?.term;
+const stripTerminalPunctuation = value => String(value ?? '').trim().replace(/[.!?]+$/u, '');
 
 function buildRationales(lesson, prompts) {
   const science = arr(lesson.coreScience);
@@ -42,7 +43,7 @@ function buildRationales(lesson, prompts) {
         `Frame the practical decision: ${relevance[0] || lesson.objective}`,
         `Record a baseline and the intervention with the same method: ${records.slice(0, 3).join(' | ') || 'Use consistent before-and-after records.'}`,
         'Compare like units, sampling positions, timing, and environmental context.',
-        `Revise the interpretation when the measured response conflicts with the proposed mechanism or falls outside this limit: ${limits[0] || 'the lesson evidence boundary'}.`
+        `Revise the interpretation when the measured response conflicts with the proposed mechanism or falls outside this limit: ${stripTerminalPunctuation(limits[0] || 'the lesson evidence boundary')}.`
       ]
     }
   ];
