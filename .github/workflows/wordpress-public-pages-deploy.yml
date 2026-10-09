@@ -116,7 +116,7 @@ jobs:
           grep -Fq 'DTF Journal' site/wordpress/pages/journal.html
           grep -Fq 'A changelog, not a duplicate library.' site/wordpress/pages/journal.html
 
-      - name: Report validation stage to issue 46
+      - name: Report validation stage to THC release issue 2337
         if: always()
         continue-on-error: true
         uses: actions/github-script@v7
@@ -142,7 +142,7 @@ jobs:
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: 46,
+                issue_number: 2337,
                 body
               });
             } catch (error) {
@@ -252,7 +252,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report production page deployment to issue 46
+      - name: Report production page deployment to THC release issue 2337
         if: always()
         continue-on-error: true
         uses: actions/github-script@v7
@@ -283,7 +283,7 @@ jobs:
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: 46,
+                issue_number: 2337,
                 body
               });
             } catch (error) {
