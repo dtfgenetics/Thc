@@ -9,12 +9,16 @@ export function newLearningRecord(learnerId) {
 export function appendLearningEvent(record, event) {
   if (!record || record.version !== RECORD_VERSION || !id(record.learnerId) || !Array.isArray(record.events)) throw new TypeError('Invalid learning record');
   if (!event || !eventKinds.has(event.type) || !id(event.courseId) || !id(event.lessonId) || !id(event.eventId)) throw new TypeError('Invalid learning event');
-  if (record.events.some(existing => existing.eventId === event.eventId)) return record;
   if (typeof event.at !== 'string' || !/^\d{4}-\d\d-\d\dT/.test(event.at) || !Number.isFinite(Date.parse(event.at))) throw new TypeError('Invalid event timestamp');
   const safe={eventId:event.eventId,type:event.type,courseId:event.courseId,lessonId:event.lessonId,at:event.at};
   if (event.type === 'practice_attempted') {
     if (!Number.isInteger(event.score) || event.score<0 || !Number.isInteger(event.total) || event.total<1 || event.score>event.total) throw new TypeError('Invalid practice score');
     safe.score=event.score;safe.total=event.total;
+  }
+  const previous=record.events.find(existing => existing.eventId === safe.eventId);
+  if (previous) {
+    if (Object.keys(safe).length !== Object.keys(previous).length || Object.entries(safe).some(([key,value])=>previous[key]!==value)) throw new TypeError('Conflicting learning event ID');
+    return record;
   }
   return {...record,events:[...record.events,safe]};
 }

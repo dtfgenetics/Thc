@@ -5,6 +5,8 @@ const viewed={eventId:'evt-1',type:'lesson_viewed',courseId:'COURSE-LH-TECH1-001
 const r1=appendLearningEvent(init,viewed);
 assert.equal(init.events.length,0,'Inputs must not be mutated');
 assert.equal(appendLearningEvent(r1,viewed),r1,'Duplicate event IDs must be idempotent');
+assert.throws(()=>appendLearningEvent(r1,{...viewed,lessonId:'L02'}),/Conflicting learning event ID/);
+assert.throws(()=>appendLearningEvent(r1,{...viewed,at:'invalid'}),/Invalid event timestamp/);
 const r2=appendLearningEvent(r1,{...viewed,eventId:'evt-2',type:'lesson_self_completed'});
 assert.equal(lessonSummary(r2,viewed.courseId,viewed.lessonId).selfCompleted,true);
 const r3=appendLearningEvent(r2,{...viewed,eventId:'evt-3',type:'practice_attempted',score:3,total:4});
