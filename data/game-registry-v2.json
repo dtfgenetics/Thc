@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updated": "2026-09-28",
+  "updated": "2026-10-09",
   "authority": {
     "productionControlRepository": "dtfgenetics/Thc",
     "developmentFreedomPolicy": "docs/GAME_DEVELOPMENT_FREEDOM.md",
@@ -4480,6 +4480,142 @@
       },
       "notes": [
         "Canonical standalone React/Vite build from dtfgenetics/Thc-guess-who/03_digital-game. Production visual art is approved: 25 suspect portraits, 5 canonical missing-item assets, 20 UI/HUD assets, and one case-room environment. The full npm run check gate includes deterministic data/art registry validation, UI and environment validation, production-asset auditing, smoke and balance checks, dependency audit, production build, and mystery-privacy verification. No Playwright is used."
+      ]
+    },
+    {
+      "id": "pheno-hunter",
+      "title": "Pheno Hunter",
+      "aliases": [
+        "pheno-hunter",
+        "pheno hunter"
+      ],
+      "formerNames": [],
+      "relatedGameIds": [
+        "pheno-draft"
+      ],
+      "legacyIds": [],
+      "publicRoute": "/games/pheno-hunter/",
+      "goal": {
+        "summary": "deterministic keeper-selection scouting puzzle",
+        "playerFantasy": "Compare fictional phenotypes using a limited observation budget",
+        "primaryVerbs": [
+          "scout",
+          "shortlist",
+          "select"
+        ],
+        "coreLoop": "Reveal hidden candidate traits with limited scouting tokens, shortlist contenders and select the best keeper for a brief.",
+        "winCondition": "Select the highest-fitting keeper based on scouting evidence and the chosen brief.",
+        "lossCondition": "Receive a lower result from a suboptimal keeper choice; no combat or elimination.",
+        "sessionLength": "short single-player session"
+      },
+      "genre": [
+        "strategy",
+        "deduction"
+      ],
+      "players": {
+        "mode": "solo",
+        "min": 1,
+        "max": 1
+      },
+      "audience": "DTFSeeds browser-game players; mobile and desktop",
+      "gameDesignDoc": "games/pheno-hunter/README.md",
+      "production": {
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": [
+          "games/pheno-hunter"
+        ],
+        "sourceOfTruth": "games/pheno-hunter/README.md",
+        "integrationRepository": "dtfgenetics/Thc",
+        "integrationPath": "site/public-route-patch/games/pheno-hunter",
+        "integrationMode": "local-static",
+        "runtimePath": "site/public-route-patch/games/pheno-hunter",
+        "deploymentStatus": "ready-to-package",
+        "build": "node games/pheno-hunter/scripts/validate-data.mjs && node games/pheno-hunter/test/engine.test.mjs && node games/pheno-hunter/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-hunter/app.js && node --check site/public-route-patch/games/pheno-hunter/engine.mjs && cmp games/pheno-hunter/src/engine.mjs site/public-route-patch/games/pheno-hunter/engine.mjs",
+        "defaultBranch": "main",
+        "locationVerifiedAt": "2026-10-09"
+      },
+      "productionHost": "https://dtfseeds.com",
+      "apiOrigins": [],
+      "architecture": {
+        "renderer": "responsive DOM scouting interface",
+        "frameworks": [
+          "vanilla browser modules"
+        ],
+        "simulationOwner": "canonical deterministic Pheno Hunter engine",
+        "uiLayer": "browser DOM/HUD with renderer-specific playfield where applicable",
+        "networkModel": "local deterministic",
+        "multiplayerAuthority": "not applicable",
+        "persistence": "local browser progress where available",
+        "saveVersion": null,
+        "inputModes": [
+          "keyboard",
+          "mouse/touch"
+        ],
+        "mobileContract": "responsive browser play with touch targets and safe-area containment",
+        "accessibilityContract": "keyboard operability, reduced-motion support where animation exists, readable focus/labels",
+        "audioSystem": "game-specific shared/browser audio layer",
+        "assetManifest": "games/pheno-hunter",
+        "sharedSystems": [
+          "DTF game registry",
+          "DTF shared browser experience where adopted"
+        ]
+      },
+      "systems": [
+        "six-character replayable hunt codes",
+        "fictional phenotype candidate bank",
+        "six selection briefs",
+        "visible and hidden traits",
+        "limited scouting tokens",
+        "shortlist and keeper selection",
+        "deterministic scoring"
+      ],
+      "assets": {
+        "registryId": "pheno-hunter",
+        "repoRoots": [
+          "games/pheno-hunter"
+        ],
+        "driveRefs": [],
+        "licensePolicy": "Only use assets/code with verified rights; preserve required third-party notices.",
+        "artDirectionDoc": null,
+        "audioRoot": null
+      },
+      "verification": {
+        "buildCommand": "node games/pheno-hunter/scripts/validate-data.mjs && node games/pheno-hunter/test/engine.test.mjs && node games/pheno-hunter/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-hunter/app.js && node --check site/public-route-patch/games/pheno-hunter/engine.mjs && cmp games/pheno-hunter/src/engine.mjs site/public-route-patch/games/pheno-hunter/engine.mjs",
+        "testCommands": [
+          "node games/pheno-hunter/scripts/validate-data.mjs && node games/pheno-hunter/test/engine.test.mjs && node games/pheno-hunter/test/public-runtime.test.mjs && node --check site/public-route-patch/games/pheno-hunter/app.js && node --check site/public-route-patch/games/pheno-hunter/engine.mjs && cmp games/pheno-hunter/src/engine.mjs site/public-route-patch/games/pheno-hunter/engine.mjs"
+        ],
+        "registryChecks": [
+          "npm run games:registry:check",
+          "npm run games:locations:check"
+        ],
+        "browserQa": "Use deterministic browser/runtime QA appropriate to the game.",
+        "liveCheck": "Verify exact visitor route https://dtfseeds.com/games/pheno-hunter/"
+      },
+      "release": {
+        "status": "public-unverified",
+        "lastVerifiedRevision": null,
+        "lastVerifiedAt": null,
+        "lastVerifiedUrl": null,
+        "blockers": [
+          "Exact current visitor-route verification metadata is not recorded in v2 yet."
+        ],
+        "nextMilestone": "Record exact live URL/revision/timestamp after verification."
+      },
+      "developmentLocations": [],
+      "deprecatedLocations": [],
+      "quality": {
+        "competitiveBenchmarks": [
+          "single-player deduction and scouting games"
+        ],
+        "targetExperience": "Clear trait comparisons, deliberate limited observation decisions and reproducible keeper outcomes on desktop and mobile.",
+        "knownGaps": [
+          "browser and mobile playtesting",
+          "accessibility review",
+          "live production acceptance"
+        ]
+      },
+      "notes": [
+        "Fictional phenotypes and trait scores are game abstractions, not cultivar performance claims. Candidate browser package is registered but not yet live-verified."
       ]
     }
   ],
