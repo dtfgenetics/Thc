@@ -10,6 +10,7 @@ export function auditLessons(lessons) {
   const issues = [];
   const seenIds = new Map();
   const seenNumbers = new Map();
+  const seenRoutes = new Map();
   const counts = {
     lessons: lessons.length, withObjective: 0, withCoreScience: 0,
     withEvidenceLimits: 0, withSources: 0, withTerminology: 0,
@@ -38,7 +39,16 @@ export function auditLessons(lessons) {
     if ((typeof lesson.crossLinks === 'string' && lesson.crossLinks.trim()) || (Array.isArray(lesson.crossLinks) && lesson.crossLinks.length)) counts.withCrossLinks++;
     if (Array.isArray(lesson.cultivationRelevance) && lesson.cultivationRelevance.length) counts.withPracticalContext++;
     if (lesson.publicationAuthorized === true) counts.publicationAuthorized++;
-    if (typeof lesson.route === 'string' && lesson.route.trim() && !lesson.route.startsWith('/')) add('route_not_absolute', 'Expected root-relative route');
+    if (typeof lesson.route === 'string' && lesson.route.trim()) {
+      const route = lesson.route.trim();
+      if (!route.startsWith('/') || route.startsWith('//') || /[?#]/.test(route)) {
+        add('invalid_route', 'Expected root-relative pathname without query or fragment');
+      } else {
+        const normalizedRoute = route.replace(/\\/+$/, '') || '/';
+        if (seenRoutes.has(normalizedRoute)) add('duplicate_route', 'Also in ' + seenRoutes.get(normalizedRoute));
+        else seenRoutes.set(normalizedRoute, location);
+      }
+    }
   }
   issues.sort((a, b) => a.code.localeCompare(b.code) || a.id.localeCompare(b.id));
   return { generatedAt: new Date().toISOString(), scope: 'repository_canonical_lessons_only', counts, issues,
