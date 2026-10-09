@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { validateVisualProductionQueue } from './lib/encyclopedia-visual-batch-preflight.mjs';
+import { isVisualBatchOutputFilename } from './lib/encyclopedia-visual-batch-identifiers.mjs';
 
 const root=process.cwd();
 const queuePath=path.join(root,'content','encyclopedia','visual-production-queue-v1.json');
@@ -20,7 +21,7 @@ const items=(queue.items||[])
   .sort((a,b)=>a.visualOrdinal-b.visualOrdinal||b.visualPriorityScore-a.visualPriorityScore||a.number-b.number);
 
 fs.mkdirSync(outDir,{recursive:true});
-for(const name of fs.readdirSync(outDir)) if(/^batch-\d{3}\.(?:json|md)$/i.test(name)) fs.unlinkSync(path.join(outDir,name));
+for(const name of fs.readdirSync(outDir)) if(isVisualBatchOutputFilename(name)) fs.unlinkSync(path.join(outDir,name));
 
 const batches=[];
 for(let i=0;i<items.length;i+=batchSize){
