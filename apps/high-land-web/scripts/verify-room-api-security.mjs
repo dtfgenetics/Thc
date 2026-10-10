@@ -292,6 +292,14 @@ try {
   });
   assert(duplicateFinish.status === 409, 'Stale finish must not overwrite completed game.');
 
+  const finishAgain = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'complete', state: { ...gameState(0), winnerId: 'host-1', phase: 'game_over' },
+    expectedRevision: 5
+  });
+  assert(finishAgain.status === 409, 'Completed room must not accept another finish.');
+  assert(finishAgain.payload?.error?.includes('restarted'), 'Completed room rejection should explain restart.');
+
   const forgedEvent = await post('append-event.php', {
     roomCode,
     playerId: 'host-1',
