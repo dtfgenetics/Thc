@@ -32,6 +32,12 @@ if ($hasState) {
     if (($winnerId !== '') !== ($requestedStatus === 'complete')) {
         api_send_json(['ok' => false, 'error' => 'Game status must agree with winner state.'], 400);
     }
+    if ($winnerId !== '') {
+        $playerIds = array_column(is_array($data['state']['players'] ?? null) ? $data['state']['players'] : [], 'id');
+        if (!in_array($winnerId, $playerIds, true)) {
+            api_send_json(['ok' => false, 'error' => 'Game winner must be a participating player.'], 400);
+        }
+    }
 }
 if ($playerId === '') {
     api_send_json(['ok' => false, 'error' => 'playerId is required.'], 400);
