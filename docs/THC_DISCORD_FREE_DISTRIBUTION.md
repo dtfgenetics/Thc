@@ -3,7 +3,7 @@
 ## Verified destination and identity
 - Public name: **THC | Teaching Healthy Cultivation**
 - Discord's displayed server name (user-verified invitation screenshot): **Teaching-Healthy-Cultivation-THC**
-- Invite: https://discord.gg/xJbUeHFPMt
+- Invite: https://discord.gg/ZzYTUWKKW
 - Related educational project: DTF Genetics / Teaching Healthy Cultivation
 - Never advertise this as the general DTF Genetics Discord or as a seed-sales/trading server.
 
@@ -37,7 +37,7 @@
 Create dedicated *Discord invite links* per directory **through Discord's own invite management** when admin access is available; these are preferred over UTM appended to discord.gg. Record unique invite uses and 7-day active retention. Until authorized invite management is available, use the verified canonical invite unchanged.
 
 ## On-site CTA standard
-> **Join THC — Teaching Healthy Cultivation** — Learn plant science, compare grow observations, and discuss educational resources with the community. Adults only. [Join THC Discord](https://discord.gg/xJbUeHFPMt).
+> **Join THC — Teaching Healthy Cultivation** — Learn plant science, compare grow observations, and discuss educational resources with the community. Adults only. [Join THC Discord](https://discord.gg/ZzYTUWKKW).
 
 Use the THC-first wording in /community/, /learn/, encyclopedia lessons and course pages. Do not imply credentials, expert diagnosis, or regulated-product trade.
 
