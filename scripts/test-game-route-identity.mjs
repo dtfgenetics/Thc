@@ -3,7 +3,7 @@ import test from 'node:test';
 import { isHighLandPlayableDocument } from './game-route-identity.mjs';
 
 test('accepts a High Land game entry point with a root element', () => {
-  assert.equal(isHighLandPlayableDocument('<html><head><title>High Land: The Sweet Escape | DTF Genetics</title></head><body><div id="root"></div><script src="/assets/main.js"></script></body></html>'), true);
+  assert.equal(isHighLandPlayableDocument('<html><head><title>High Land: The Sweet Escape | DTF Genetics</title></head><body><div id="root"></div><script type="module" src="/assets/main.js"></script></body></html>'), true);
 });
 
 test('rejects a game hub fallback even when it contains scripts and a High Land link', () => {
