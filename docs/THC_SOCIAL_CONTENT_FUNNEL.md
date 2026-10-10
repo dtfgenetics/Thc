@@ -75,3 +75,38 @@ Metricool brand `7320929` reports 50 pending Facebook-only posts, all with the c
 ## Instagram permission update — 2026-10-10
 
 Owner explicitly approved publishing THC educational posts to Metricool-connected Instagram `@dtfgenetics` in the conversation. Facebook Page `1051329748073255` remains owner-confirmed. Instagram is therefore an authorized destination **once there is a public, tested media URL and verified invitation funnel**, not a blocked identity decision. Instagram requires media for feed posts; local PNG files, sandbox links, or a Canva upload URL alone are not public image URLs. The current environment's container cannot resolve `www.canva.com`, so the raw image upload step has not succeeded. Do not claim Instagram scheduled before Metricool confirms it. Weekly automation has been updated to include both approved destinations and prioritizes image hosting and scientific QA.
+
+## Promotion channel expansion — October 2026
+
+The funnel must diversify beyond Facebook text scheduling. Approved destinations: THC Facebook Page and Instagram `@dtfgenetics`. **Instagram publishing is approved by the owner, but not yet scheduled until media is hosted and verified.** The canonical invite is `https://discord.gg/ZzYTUWKKW`. Measure joins, not merely counts of scheduled posts.
+
+| Channel | Next deliverable | CTA style | Evidence / validation | State |
+|---|---|---|---|---|
+| Instagram feed | 7 source-reviewed square plant-science infographics, 1 topic per post | Verified profile link to THC landing page / Discord | Read-back in Metricool, validated publicly reachable media | Blocked on hosted media |
+| Instagram Stories | Topic quiz and answer card with optional link sticker | Direct THC community link | Verify story supports link placement and content complies with platform rules | Planned |
+| Instagram Reels / Shorts | 20–40s scientific explainers showing a single concept and reference | Profile/description route to THC | View-through and profile visits | Planned |
+| Facebook Page | Existing 50 scheduled educational posts | Direct invite URL | Verify publication, reach and clickthrough after release | Scheduled |
+| Facebook groups | Answer member questions with references; share links only when the group's rules permit | Educational article first, opt-in THC community second | No bulk unsolicited promotions | Planned |
+| DISBOARD / Top.gg | Create an accurate THC education directory listing | Server invite | Confirm server-owner sign-in/bot authorization and published listing | Needs Discord owner access |
+| Other listings | Audit and repair old `discord.me/dtfgrow` listing; add relevant directories selectively | New canonical invite | Verify listing ownership, description, and working invite | Needs owner access |
+| DTF website | Contextual community CTA on relevant tools/academy/encyclopedia pages | Relevant lesson → THC invite | Live URLs, mobile review, click events | Audit/deploy needed |
+| GitHub educational repos | Maintain accurate community link in README, resources, and contribution docs | Direct THC invite | Link tests + repo review | Already established; revalidate |
+| Plant-science collaborators | Noncommercial educational co-hosted Q&A | Co-host event to community discussion | Permission, event attendance, retained members | Outreach candidates needed |
+| Newsletter / opt-in email | Weekly science note with one linked reference and discussion prompt | Consent-based opt-in → Discord | Open/click/unsubscribe tracking | No subscriber list established |
+| Search content | Publish source-backed standalone mini-lessons on VPD, PPFD/DLI, roots, diagnostics | Lesson CTA | Indexation and organic referrers | Pipeline candidate |
+
+### Asset gate
+
+For each post record `topic_slug`, `source_url`, `source_checked_date`, `graphic_url`, `graphic_qa_status`, `facebook_caption`, `instagram_caption`, `publication_slot`, `metricool_post_id`, `published_permalink`, and `conversion_source`. For any scientific graphic, verify exact text, numerical labels, units and qualifiers *before* publishing. Avoid treating AI-generated chart values as authoritative.
+
+### Conversion and attribution
+
+Use a THC-owned landing page on `dtfseeds.com` or separate trackable links for discovery sources. Where Discord supports multiple invitation links, create one valid invite per channel and record joins by invite. Keep a shared weekly scorecard: published posts; unique reach; link clicks; new joins attributed by source; introductions; seven-day active members. Never claim results until validated. Avoid paid cannabis-product advertising; use platform-compliant educational framing.
+
+### Order of execution
+
+1. Fix/verify Instagram bio path and host the first QA-approved image at a durable publicly reachable URL.
+2. Schedule one test infographic to confirmed Instagram, then read back its media, account, date, and status.
+3. Publish a reference-backed community resource and test the website-to-Discord path.
+4. Repair legacy directory listing and add authorized new directory listings.
+5. Set up attribution and review weekly conversion quality. Prioritize channels yielding participating members.
