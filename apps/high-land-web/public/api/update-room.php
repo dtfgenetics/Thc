@@ -24,6 +24,12 @@ if ($hasState) {
     if (!is_array($data['state'])) {
         api_send_json(['ok' => false, 'error' => 'Game state must be an object.'], 400);
     }
+    $gamePlayers = $data['state']['players'] ?? null;
+    $playerIndex = $data['state']['currentPlayerIndex'] ?? null;
+    if (!is_array($gamePlayers) || $gamePlayers === [] || !is_int($playerIndex)
+        || $playerIndex < 0 || $playerIndex >= count($gamePlayers)) {
+        api_send_json(['ok' => false, 'error' => 'Game state requires a valid active player index.'], 400);
+    }
     $requestedStatus = api_clean_string($data['status'], 20);
     if (!in_array($requestedStatus, ['playing', 'complete'], true)) {
         api_send_json(['ok' => false, 'error' => 'Invalid game state transition.'], 400);
