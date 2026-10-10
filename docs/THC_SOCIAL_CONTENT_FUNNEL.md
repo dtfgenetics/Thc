@@ -150,3 +150,7 @@ Metricool scheduled and read back four new adult educational AI-illustrated imag
 ## November visual publishing verification (2026-10-10)
 
 Scheduled four additional source-aware educational image posts using live Metricool mediaFiles uploads, independently read back as `PENDING`, `autoPublish=true`, one attached image, canonical Discord invite: Nov 10 trichome anatomy Instagram `392928174` and Facebook `392928206`; Nov 12 leaf veins/stomata Instagram `392928223` and Facebook `392928236`. Explicitly label generated scientific-style visuals as AI illustrations rather than authentic microscopy. The previously inferred 70 queued entries plus these four suggests 74 total, subject to subsequent queue reconciliation. Do not infer publication or joins from schedule state.
+
+## November 17/19 illustrated posting batch (2026-10-10)
+
+Two topics cross-scheduled using real conversation-media attachments and read-back validation. Observation journal: Instagram `392928919`, Facebook `392928947` (Nov 17). Genotype/phenotype: Instagram `392929044`, Facebook `392929071` (Nov 19). All four have `media.length=1`, correct invite `https://discord.gg/ZzYTUWKKW`, `autoPublish=true`, `PENDING` status. One initial genotype attachment attempt failed local input validation due to a bad reference; corrected and confirmed both final posts. Maintain attribution and source-reviewed assets; this is not evidence of live publication or joins.
