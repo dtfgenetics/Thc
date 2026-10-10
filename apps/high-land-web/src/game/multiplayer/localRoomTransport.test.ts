@@ -70,6 +70,25 @@ describe('local room transport', () => {
     expect(snapshot.room?.code).toBe(room.code);
   });
 
+  it('rejects stale state writes after joining and preserves the latest committed turn', async () => {
+    const storage = new MemoryStorage();
+    const transport = createLocalRoomTransport(storage);
+    const created = await transport.createRoom(makeTransportPlayer(0, true));
+    const joined = await transport.joinRoom(created.code, makeTransportPlayer(1));
+    expect(created.stateRevision).toBe(0);
+    expect(joined.stateRevision).toBe(1);
+
+    const state = createInitialGame(2);
+    await expect(transport.updateGameState(created.code, state, 'local-player-1', 0))
+      .rejects.toThrow('Stale room state revision');
+    const committed = await transport.updateGameState(created.code, state, 'local-player-1', 1);
+    expect(committed.stateRevision).toBe(2);
+
+    await expect(transport.updateGameState(created.code, state, 'local-player-1', 1))
+      .rejects.toThrow('Stale room state revision');
+    expect(createLocalRoomSnapshot(created.code, storage).room?.stateRevision).toBe(2);
+  });
+
   it('stores room events', async () => {
     const storage = new MemoryStorage();
     const transport = createLocalRoomTransport(storage);
