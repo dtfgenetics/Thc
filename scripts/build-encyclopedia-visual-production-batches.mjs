@@ -21,7 +21,8 @@ const items=(queue.items||[])
   .sort((a,b)=>a.visualOrdinal-b.visualOrdinal||b.visualPriorityScore-a.visualPriorityScore||a.number-b.number);
 
 fs.mkdirSync(outDir,{recursive:true});
-for(const name of fs.readdirSync(outDir)) if(isVisualBatchOutputFilename(name)) fs.unlinkSync(path.join(outDir,name));
+// Preserve existing packets until all replacements have been rendered successfully.
+const staleBatchFiles = fs.readdirSync(outDir).filter(isVisualBatchOutputFilename);
 
 const batches=[];
 for(let i=0;i<items.length;i+=batchSize){
@@ -128,6 +129,10 @@ const index={
   firstBatchLessonIds:batches[0]?.lessonIds||[],
   batches
 };
+for (const name of staleBatchFiles) {
+  if (!batches.some(batch => batch.file.endsWith('/' + name)) && name.endsWith('.json')) fs.unlinkSync(path.join(outDir, name));
+  if (name.endsWith('.md') && !batches.some(batch => batch.file.endsWith('/' + name.replace(/\.md$/i, '.json')))) fs.unlinkSync(path.join(outDir, name));
+}
 fs.writeFileSync(path.join(outDir,'index.json'),JSON.stringify(index,null,2)+'\n');
 console.log(`Built ${batches.length} controlled visual production batches for ${items.length} missing visual roles across ${index.lessonCountWithGaps} lessons at ${batchSize} visual tasks/batch.`);
 if(batches[0]) console.log(`First batch: ${batches[0].batchId} · ${batches[0].lessonIds.join(', ')}`);
