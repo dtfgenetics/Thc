@@ -7,6 +7,7 @@ import { DevPanel } from './ui/DevPanel';
 import { PlayerSetupForm, type PlayerSetupMode, type PlayerSetupSubmit } from './ui/PlayerSetupForm';
 import { RoomLobby } from './ui/RoomLobby';
 import { WinnerModal } from './ui/WinnerModal';
+import { GameLog } from './ui/GameLog';
 import {
   addLocalTestPlayerMode,
   createTransportRoomMode,
@@ -413,31 +414,60 @@ export default function App() {
         ) : null}
 
         <div className="message-card">
-          <strong>Status</strong>
+          <strong>
+            {choiceRequired ? '🎯 Choose a Target' :
+             waitingForChoice ? '⏳ Waiting' :
+             winner ? '🏆 Game Over' :
+             'Status'}
+          </strong>
           <p>{winner ? `${winner.name} wins!` : gameStarted ? gameState.message : statusMessage}</p>
+          {choiceRequired && (
+            <p className="message-hint">Select a player from the list to target with the card effect.</p>
+          )}
+          {waitingForChoice && (
+            <p className="message-hint">Another player is choosing their target…</p>
+          )}
         </div>
 
         {gameStarted ? (
           <div className="players-card">
-            {gameState.players.map((player) => (
-              <article
-                className={`player-chip ${player.id === currentPlayer?.id ? 'active' : ''}`}
-                key={player.id}
-                style={{ borderColor: player.color }}
-              >
-                <span className="token-dot" style={{ background: player.color }} />
-                <div>
-                  <strong>{player.name}</strong>
-                  <p>
-                    Space {player.positionIndex + 1} of {approvedBoardSpaceCount}
-                    {player.skipTurns > 0 ? ` • Skip x${player.skipTurns}` : ''}
-                    {player.protectedFromBackward > 0 ? ` • Protected x${player.protectedFromBackward}` : ''}
-                  </p>
-                </div>
-              </article>
-            ))}
+            {gameState.players.map((player) => {
+              const progress = Math.round((player.positionIndex / (approvedBoardSpaceCount - 1)) * 100);
+              const isActive = player.id === currentPlayer?.id;
+              const isLocalPlayer = player.id === localPlayerId;
+              return (
+                <article
+                  className={`player-chip ${isActive ? 'active' : ''} ${isLocalPlayer ? 'local' : ''}`}
+                  key={player.id}
+                  style={{ borderColor: player.color }}
+                  aria-current={isActive ? 'true' : undefined}
+                >
+                  <span className="token-dot" style={{ background: player.color }} aria-hidden="true" />
+                  <div className="chip-body">
+                    <div className="chip-header">
+                      <strong>{player.name}</strong>
+                      {isLocalPlayer && <span className="you-badge">You</span>}
+                      {isActive && <span className="turn-badge" style={{ background: player.color }}>Turn</span>}
+                    </div>
+                    <div className="chip-progress-track" aria-label={`Position: ${progress}%`}>
+                      <div
+                        className="chip-progress-fill"
+                        style={{ width: `${progress}%`, background: player.color }}
+                      />
+                    </div>
+                    <p className="chip-detail">
+                      {player.positionIndex + 1} / {approvedBoardSpaceCount}
+                      {player.skipTurns > 0 ? ` · Skip ×${player.skipTurns}` : ''}
+                      {player.protectedFromBackward > 0 ? ` · Protected` : ''}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         ) : null}
+
+        {gameStarted ? <GameLog state={gameState} maxEntries={5} /> : null}
 
         <GameRulesPanel />
         {gameStarted ? <DevPanel state={gameState} /> : null}
@@ -483,12 +513,25 @@ export default function App() {
 
             <DiceDisplay value={gameState.lastRoll} isRolling={diceAnimating} moveLabel={moveAnnouncement} />
 
+            {room && !canRollNow && !choiceRequired && gameState.phase !== 'game_over' && currentPlayer ? (
+              <p className="waiting-turn-label" aria-live="polite">
+                Waiting for <span style={{ color: currentPlayer.color }}>{currentPlayer.name}</span> to roll…
+              </p>
+            ) : null}
+
             <div className="button-row board-button-row">
-              <button className="primary roll-button" disabled={!canRollNow || diceAnimating || gameState.phase === 'game_over'} onClick={roll} type="button">
-                {gameState.phase === 'choosing_player' ? 'Choose a Player' : 'Roll Dice'}
+              <button
+                className="primary roll-button"
+                disabled={!canRollNow || diceAnimating || gameState.phase === 'game_over'}
+                onClick={roll}
+                type="button"
+              >
+                {diceAnimating ? 'Rolling…' :
+                 choiceRequired ? 'Choose a Player' :
+                 'Roll Dice 🎲'}
               </button>
               <button disabled={!canRestartNow} onClick={restart} type="button">Restart</button>
-              <button onClick={toggleMute} type="button">{muted ? 'Unmute' : 'Mute'}</button>
+              <button onClick={toggleMute} type="button">{muted ? '🔇' : '🔊'}</button>
             </div>
           </div>
         </section>
