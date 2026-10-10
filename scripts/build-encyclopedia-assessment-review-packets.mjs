@@ -12,7 +12,7 @@ for(const file of fs.readdirSync(outDir).filter(x=>/^batch-\d{3}\.json$/i.test(x
     if(Object.values(r).some(v=>v!==null&&v!=='' )||q.some(row=>Object.values(row.reviewInput||{}).some(v=>v!==null&&v!==''))) preserved.set(item.lessonId,{lesson:r,questions:q});
   }
 }
-for(const file of fs.readdirSync(outDir)) if(/^batch-\d{3}\.(?:json|md)$/i.test(file)) fs.unlinkSync(path.join(outDir,file));
+// Validate all source identities before replacing any existing reviewer packets.
 const rows=data.lessons||[], index=[];
 const seenLessonIds=new Set();
 for(const row of rows){
@@ -26,6 +26,7 @@ for(const row of rows){
   }
 }
 
+for(const file of fs.readdirSync(outDir)) if(/^batch-\d{3}\.(?:json|md)$/i.test(file)) fs.unlinkSync(path.join(outDir,file));
 for(let start=0;start<rows.length;start+=20){
   const slice=rows.slice(start,start+20), n=String(Math.floor(start/20)+1).padStart(3,'0');
   const items=slice.map(row=>({
