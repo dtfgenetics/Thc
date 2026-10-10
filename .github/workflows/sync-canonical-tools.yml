@@ -123,8 +123,9 @@ jobs:
           sync_branch="work/platform/canonical-tools-sync/automation"
           # A concurrent sync may have advanced the remote branch. Never overwrite
           # that update without proving the expected remote head is unchanged.
-          git fetch origin "+refs/heads/${sync_branch}:refs/remotes/origin/${sync_branch}" 2>/dev/null || true
-          expected_remote="$(git rev-parse --verify "refs/remotes/origin/${sync_branch}" 2>/dev/null || true)"
+          # Query the authoritative remote ref. A stale local tracking ref
+          # must not be treated as a safe lease value.
+          expected_remote="$(git ls-remote --heads origin "refs/heads/${sync_branch}" | awk '{print $1}')"
           if [ -n "${expected_remote}" ]; then
             git push --force-with-lease="refs/heads/${sync_branch}:${expected_remote}" origin "HEAD:refs/heads/${sync_branch}"
           else
