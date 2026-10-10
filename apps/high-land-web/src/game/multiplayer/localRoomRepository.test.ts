@@ -51,6 +51,7 @@ describe('local room repository', () => {
     expect(room.code).toBe('ABCD23');
     expect(room.players).toHaveLength(1);
     expect(room.players[0].host).toBe(true);
+    expect(room.stateRevision).toBe(0);
   });
 
   it('rejects duplicate explicit room codes instead of overwriting rooms', () => {
@@ -69,6 +70,7 @@ describe('local room repository', () => {
     expect(room.players).toHaveLength(2);
     expect(room.players[1].name).toBe('Guest Player');
     expect(room.players[1].host).toBe(false);
+    expect(room.stateRevision).toBe(1);
   });
 
   it('preserves the host flag when an existing host rejoins', () => {
@@ -79,6 +81,7 @@ describe('local room repository', () => {
 
     expect(room.players).toHaveLength(1);
     expect(room.players[0].name).toBe('Host Player Updated');
+    expect(room.stateRevision).toBe(0);
     expect(room.players[0].host).toBe(true);
   });
 });
