@@ -370,6 +370,19 @@ try {
   assert(isolatedAfterReject.payload?.room?.stateRevision === 0, 'Cross-room rejection must preserve target revision.');
   assert(isolatedAfterReject.payload?.room?.state === null, 'Cross-room rejection must preserve target state.');
 
+  const invalidIndexStart = await post('update-room.php', {
+    roomCode: isolatedRoomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'playing', state: gameState(99), expectedRevision: 0
+  });
+  assert(invalidIndexStart.status === 200, 'Malformed legacy active-index fixture could not be created.');
+  const unresolvedActivePlayer = await post('update-room.php', {
+    roomCode: isolatedRoomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'playing', state: gameState(0), expectedRevision: 1
+  });
+  assert(unresolvedActivePlayer.status === 409, 'Missing active player must fail closed.');
+  const afterUnresolvedActivePlayer = await request(`get-room.php?room=${encodeURIComponent(isolatedRoomCode)}`);
+  assert(afterUnresolvedActivePlayer.payload?.room?.stateRevision === 1, 'Unresolved player write must not advance revision.');
+
   const originalAfterIsolation = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
   assert(originalAfterIsolation.payload?.room?.stateRevision === 6, 'Creating a second room must not mutate the first.');
 
