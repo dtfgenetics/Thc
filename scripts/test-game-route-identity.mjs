@@ -25,3 +25,11 @@ test('rejects JSON-LD metadata posing as a runtime bundle', () => {
 test('accepts a compiled Vite module bundle', () => {
   assert.equal(isHighLandPlayableDocument('<title>High Land: The Sweet Escape</title><div class="app" id="root"></div><script type="module" crossorigin src="/games/high-land/assets/index-a123.js?v=1"></script>'), true);
 });
+
+test('rejects a titled page with a global JS bundle but no High Land app mount', () => {
+  assert.equal(isHighLandPlayableDocument('<title>High Land: The Sweet Escape</title><script src="/wp-content/global.js"></script>'), false);
+});
+
+test('rejects global non-module JavaScript even with a matching title and root', () => {
+  assert.equal(isHighLandPlayableDocument('<title>High Land: The Sweet Escape</title><div id="root"></div><script src="/wp-content/global.js"></script>'), false);
+});
