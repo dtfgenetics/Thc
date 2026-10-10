@@ -49,7 +49,7 @@ jobs:
           test -s site/public-route-patch/games/dtf-route.css
           test -s site/public-route-patch/games/dtf-shell.css
           test -s site/public-route-patch/games/index.html
-          grep -Fq '23 playable browser games' site/public-route-patch/games/index.html
+          grep -Fq '24 playable browser games' site/public-route-patch/games/index.html
           grep -Fq 'New public game surfaces must use /games/dtf-route.css.' site/public-route-patch/games/dtf-shell.css
 
           legacy_refs="$(grep -RFl 'dtf-shell.css' site/public-route-patch/games --include='*.html' | sort || true)"
