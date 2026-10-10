@@ -13,6 +13,20 @@ for(const file of fs.readdirSync(outDir).filter(x=>/^batch-\d{3}\.json$/i.test(x
   }
 }
 // Validate all source identities before replacing any existing reviewer packets.
+const approvedDecisionValid=(input,checks)=>input.decision!=='approved'||(
+  typeof input.reviewerId==='string' && input.reviewerId.trim().length>0 &&
+  typeof input.reviewedAt==='string' && !Number.isNaN(Date.parse(input.reviewedAt)) &&
+  typeof input.reviewNotes==='string' && input.reviewNotes.trim().length>0 &&
+  checks.every(key=>input[key]===true)
+);
+for(const [lessonId,saved] of preserved){
+  if(!approvedDecisionValid(saved.lesson||{},['taughtByLesson','reasoningAccuracy','misconceptionHandling','measurementAlignment','evidenceBoundaryAlignment']))
+    throw new Error(`${lessonId}: lesson approval requires reviewer identity, date, notes and all review checks`);
+  for(const question of saved.questions||[]){
+    if(!approvedDecisionValid(question.reviewInput||{},['reasoningAccuracy','alignmentWithPrompt','evidenceBoundaryAlignment']))
+      throw new Error(`${question.questionId}: question approval lacks independent reviewer attestation`);
+  }
+}
 const rows=data.lessons||[], index=[];
 const seenLessonIds=new Set();
 for(const row of rows){
