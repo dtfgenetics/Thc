@@ -89,6 +89,32 @@ describe('local room transport', () => {
     expect(createLocalRoomSnapshot(created.code, storage).room?.stateRevision).toBe(2);
   });
 
+  it('commits only one update from competing clients on the same revision', async () => {
+    const storage = new MemoryStorage();
+    const firstClient = createLocalRoomTransport(storage);
+    const secondClient = createLocalRoomTransport(storage);
+    const room = await firstClient.createRoom(makeTransportPlayer(0, true));
+    const joined = await secondClient.joinRoom(room.code, makeTransportPlayer(1));
+    const revision = joined.stateRevision ?? 0;
+
+    const firstState = createInitialGame(2);
+    firstState.message = 'First action';
+    const secondState = createInitialGame(2);
+    secondState.message = 'Second action';
+
+    const results = await Promise.allSettled([
+      firstClient.updateGameState(room.code, firstState, 'local-player-1', revision),
+      secondClient.updateGameState(room.code, secondState, 'local-player-1', revision)
+    ]);
+
+    expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);
+    expect(results.filter((result) => result.status === 'rejected')).toHaveLength(1);
+    expect(createLocalRoomSnapshot(room.code, storage).room).toMatchObject({
+      stateRevision: revision + 1,
+      gameState: { message: 'First action' }
+    });
+  });
+
   it('stores room events', async () => {
     const storage = new MemoryStorage();
     const transport = createLocalRoomTransport(storage);
