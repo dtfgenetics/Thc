@@ -391,6 +391,7 @@ function api_create_room(array $data): array
         'maxPlayers' => $maxPlayers,
         'players' => [$host],
         'state' => $data['state'] ?? null,
+        'stateRevision' => 0,
         'events' => [],
         'createdAt' => api_now(),
         'updatedAt' => api_now()
