@@ -18,4 +18,7 @@ assert.equal(misconceptionClaim('No colon means a complete claim.'), 'No colon m
 assert.ok(stringCase.prompts[1].includes(misconceptionClaim('Roots only need water and nutrients: Root metabolism also requires oxygen.')));
 assert.equal(misconceptionClaim('A fixed amber-trichome percentage defines maturity for every cultivar. This oversimplifies the system.'), 'A fixed amber-trichome percentage defines maturity for every cultivar.');
 assert.equal(misconceptionClaim('Single symptom = single cause! Interpretation requires confirmation.'), 'Single symptom = single cause!');
+const multiSentence=buildLessonAssessmentV2({...base,misconceptions:['A single visual symptom proves one diagnosis. Confirmation needs independent evidence.']});
+assert.match(multiSentence.prompts[1],/A learner claims, "A single visual symptom proves one diagnosis\."/);
+assert.doesNotMatch(multiSentence.prompts[1],/Confirmation needs independent evidence/);
 console.log('Encyclopedia assessment claim isolation tests passed.');
