@@ -16,7 +16,7 @@ for(const file of fs.readdirSync(outDir)) if(/^batch-\d{3}\.(?:json|md)$/i.test(
 const rows=data.lessons||[], index=[];
 const seenLessonIds=new Set();
 for(const row of rows){
-  if(!/^THC-ENC-\\d{3,}$/.test(String(row.lessonId||''))) throw new Error('Invalid lesson ID in rationale review source.');
+  if(!/^THC-ENC-\d{3,}$/.test(String(row.lessonId||''))) throw new Error('Invalid lesson ID in rationale review source.');
   if(seenLessonIds.has(row.lessonId)) throw new Error(`Duplicate rationale review lesson: ${row.lessonId}`);
   seenLessonIds.add(row.lessonId);
   const questionIds=(row.rationales||[]).map(r=>r.questionId);
