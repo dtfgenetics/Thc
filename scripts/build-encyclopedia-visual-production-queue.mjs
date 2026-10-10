@@ -4,6 +4,7 @@ import path from 'node:path';
 import { readCanonicalEncyclopediaLessons, readJson, relativePath } from './lib/encyclopedia-canonical-lessons.mjs';
 import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 import { lessonIdFromVisualFilename, visualFilenameMatchesRole } from './lib/encyclopedia-visual-filename.mjs';
+import { resolveMappedVisualAsset } from './lib/encyclopedia-visual-map-containment.mjs';
 
 const root = process.cwd();
 const outPath = path.join(root, 'content', 'encyclopedia', 'visual-production-queue-v1.json');
@@ -96,7 +97,7 @@ const items = lessons.map(lesson => {
   const labels = (arr(lesson.terms).length ? arr(lesson.terms) : arr(lesson.termsToKnow)).map(term).filter(Boolean).slice(0, 8);
   const visualType = entry.teachingVisual || lesson.requiredTeachingVisual || 'Concept diagram';
   const produced = producedVisualById.get(lesson.id) || null;
-  const mappedAssetPath = produced?.assetPath ? path.join(canonicalVisualRoot, produced.assetPath) : null;
+  const mappedAssetPath = resolveMappedVisualAsset(canonicalVisualRoot, produced?.assetPath);
   const discoveredAssetPaths = arr(discoveredAssetsById.get(lesson.id));
   const canonicalAssetPaths = [...new Set([
     ...(mappedAssetPath && fs.existsSync(mappedAssetPath) ? [mappedAssetPath] : []),
