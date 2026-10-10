@@ -40,6 +40,19 @@ for(let part=1;part<=21;part++){
   }
 }
 
+// Optional full report for triage; preserve existing stderr and exit-code behavior.
+const reportArg=process.argv.indexOf('--json-report');
+if(reportArg>=0){
+  const destination=process.argv[reportArg+1];
+  if(!destination || destination.startsWith('--')){
+    console.error('--json-report requires an output path');
+    process.exit(2);
+  }
+  const report={schemaVersion:1,passed:failures.length===0,findingCount:failures.length,findings:failures.map(message=>({lessonId:message.split(':',1)[0],message}))};
+  fs.mkdirSync(path.dirname(path.resolve(destination)),{recursive:true});
+  fs.writeFileSync(path.resolve(destination),JSON.stringify(report,null,2)+'\n');
+}
+
 if(failures.length){
   console.error(`Encyclopedia copy-quality validation failed with ${failures.length} finding(s):`);
   failures.slice(0,200).forEach(x=>console.error(' - '+x));
