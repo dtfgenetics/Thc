@@ -149,7 +149,7 @@ try {
 
   const prematureComplete = await post('update-room.php', {
     roomCode, playerId: 'host-1', credential: hostCredential,
-    status: 'complete', state: { ...gameState(0), winnerId: 'host-1' }, expectedRevision: 1
+    status: 'complete', state: { ...gameState(0), winnerId: 'host-1', phase: 'game_over' }, expectedRevision: 1
   });
   assert(prematureComplete.status === 409, 'Waiting room must not skip directly to complete.');
 
