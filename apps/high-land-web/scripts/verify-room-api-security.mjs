@@ -137,6 +137,28 @@ try {
   assert(!publicText.includes('authHash'), 'Public room read leaked authHash.');
   assert(!publicText.includes(hostCredential) && !publicText.includes(guestCredential), 'Public room read leaked a credential.');
 
+  const statusOnly = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential, status: 'playing'
+  });
+  assert(statusOnly.status === 400, 'Status-only mutation must be rejected.');
+
+  const stateOnly = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential, state: gameState(0), expectedRevision: 1
+  });
+  assert(stateOnly.status === 400, 'State-only mutation must be rejected.');
+
+  const prematureComplete = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'complete', state: { ...gameState(0), winnerId: 'host-1' }, expectedRevision: 1
+  });
+  assert(prematureComplete.status === 409, 'Waiting room must not skip directly to complete.');
+
+  const mismatchedWinner = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'complete', state: gameState(0), expectedRevision: 1
+  });
+  assert(mismatchedWinner.status === 400, 'Complete status requires a winning game state.');
+
   const forgedHost = await post('update-room.php', {
     roomCode,
     playerId: 'host-1',
