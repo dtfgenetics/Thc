@@ -15,11 +15,29 @@ $data = api_read_json_body();
 $roomCode = api_clean_room_code($data['roomCode'] ?? $data['room'] ?? '');
 $playerId = api_clean_string($data['playerId'] ?? '', 80);
 $credential = api_clean_string($data['credential'] ?? '', 256);
+$hasState = array_key_exists('state', $data);
+$hasStatus = array_key_exists('status', $data);
+if ($hasState !== $hasStatus) {
+    api_send_json(['ok' => false, 'error' => 'Game state and status must be updated together.'], 400);
+}
+if ($hasState) {
+    if (!is_array($data['state'])) {
+        api_send_json(['ok' => false, 'error' => 'Game state must be an object.'], 400);
+    }
+    $requestedStatus = api_clean_string($data['status'], 20);
+    if (!in_array($requestedStatus, ['playing', 'complete'], true)) {
+        api_send_json(['ok' => false, 'error' => 'Invalid game state transition.'], 400);
+    }
+    $winnerId = api_clean_string($data['state']['winnerId'] ?? '', 80);
+    if (($winnerId !== '') !== ($requestedStatus === 'complete')) {
+        api_send_json(['ok' => false, 'error' => 'Game status must agree with winner state.'], 400);
+    }
+}
 if ($playerId === '') {
     api_send_json(['ok' => false, 'error' => 'playerId is required.'], 400);
 }
 
-$room = api_mutate_room($roomCode, function (array $room) use ($data, $playerId, $credential): array {
+$room = api_mutate_room($roomCode, function (array $room) use ($data, $playerId, $credential, $hasState): array {
     api_require_player_credential($room, $playerId, $credential);
 
     if (array_key_exists('state', $data)) {
@@ -41,8 +59,12 @@ $room = api_mutate_room($roomCode, function (array $room) use ($data, $playerId,
     $storedGamePlayers = is_array($storedState['players'] ?? null) ? $storedState['players'] : [];
     $activePlayerId = api_clean_string($storedGamePlayers[$currentPlayerIndex]['id'] ?? '', 80);
 
-    if (($storedStatus === 'waiting' || $storedStatus === 'complete') && $incomingStatus === 'playing' && $playerId !== $hostPlayerId) {
+    if (($storedStatus === 'waiting' || $storedStatus === 'complete') && $hasState && $playerId !== $hostPlayerId) {
         api_send_json(['ok' => false, 'error' => 'Only the room host can start or restart the game.'], 403);
+    }
+
+    if ($storedStatus === 'waiting' && $incomingStatus === 'complete') {
+        api_send_json(['ok' => false, 'error' => 'A waiting room must be started before it can finish.'], 409);
     }
 
     if ($storedStatus === 'playing' && array_key_exists('state', $data) && $activePlayerId !== '' && $playerId !== $activePlayerId) {
