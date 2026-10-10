@@ -80,6 +80,7 @@ async function waitForServer() {
 }
 
 let roomCode = '';
+let isolatedRoomCode = '';
 try {
   await waitForServer();
 
@@ -320,6 +321,21 @@ try {
   assert(hostRestart.payload.room?.status === 'playing', 'Restart must restore playing room status.');
   assert(hostRestart.payload.room?.stateRevision === 6, 'Restart must advance room revision once.');
 
+  const isolatedCreate = await post('create-room.php', {
+    game: 'high-land', maxPlayers: 10, playerId: 'host-1',
+    playerName: 'Host', token: 'tokenA', color: '#ef4444',
+    credential: hostCredential, state: null
+  });
+  assert(isolatedCreate.status === 200 && isolatedCreate.payload?.ok, 'Second isolated room creation failed.');
+  isolatedRoomCode = isolatedCreate.payload.room?.code ?? '';
+  assert(isolatedRoomCode && isolatedRoomCode !== roomCode, 'Rooms must have distinct codes.');
+  const isolatedRead = await request(`get-room.php?room=${encodeURIComponent(isolatedRoomCode)}`);
+  assert(isolatedRead.payload?.room?.stateRevision === 0, 'New room must start at revision zero.');
+  assert(isolatedRead.payload?.room?.status === 'waiting', 'Second room must not inherit active room status.');
+  assert(isolatedRead.payload?.room?.state === null, 'Second room must not inherit another room game state.');
+  const originalAfterIsolation = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
+  assert(originalAfterIsolation.payload?.room?.stateRevision === 6, 'Creating a second room must not mutate the first.');
+
   const forgedEvent = await post('append-event.php', {
     roomCode,
     playerId: 'host-1',
@@ -346,6 +362,11 @@ try {
     const roomBase = path.join(apiRoot, '_rooms', roomCode);
     await rm(`${roomBase}.json`, { force: true });
     await rm(`${roomBase}.json.lock`, { force: true });
+  }
+  if (isolatedRoomCode) {
+    const isolatedBase = path.join(apiRoot, '_rooms', isolatedRoomCode);
+    await rm(`${isolatedBase}.json`, { force: true });
+    await rm(`${isolatedBase}.json.lock`, { force: true });
   }
   server.kill('SIGTERM');
 }
