@@ -73,7 +73,7 @@ describe('website room transport credentials', () => {
 
     await transport.createRoom(host);
     await transport.joinRoom('ABC123', guest);
-    await transport.updateGameState('ABC123', gameState, host.id);
+    await transport.updateGameState('ABC123', gameState, host.id, 7);
     await transport.appendEvent('ABC123', {
       id: 'event-1',
       name: 'game_started',
@@ -93,7 +93,7 @@ describe('website room transport credentials', () => {
     }
     expect(postRequests[0]).toMatchObject({ playerId: 'player-1', credential });
     expect(postRequests[1]).toMatchObject({ playerId: 'player-2', credential });
-    expect(postRequests[2]).toMatchObject({ playerId: 'player-1', credential });
+    expect(postRequests[2]).toMatchObject({ playerId: 'player-1', credential, expectedRevision: 7 });
     expect(postRequests[3]).toMatchObject({ playerId: 'player-1', credential });
   });
 
