@@ -142,7 +142,8 @@ try {
     playerId: 'host-1',
     credential: 'z'.repeat(64),
     status: 'playing',
-    state: gameState(0)
+    state: gameState(0),
+    expectedRevision: 1
   });
   assert(forgedHost.status === 403, `Forged host credential was accepted: ${forgedHost.status}`);
 
@@ -151,7 +152,8 @@ try {
     playerId: 'guest-1',
     credential: guestCredential,
     status: 'playing',
-    state: gameState(0)
+    state: gameState(0),
+    expectedRevision: 1
   });
   assert(guestStart.status === 403, `Guest was allowed to start the room: ${guestStart.status}`);
 
@@ -160,16 +162,38 @@ try {
     playerId: 'host-1',
     credential: hostCredential,
     status: 'playing',
-    state: gameState(0)
+    state: gameState(0),
+    expectedRevision: 1
   });
   assert(hostStart.status === 200 && hostStart.payload?.ok, `Valid host could not start: ${hostStart.status}`);
+
+  const staleHost = await post('update-room.php', {
+    roomCode,
+    playerId: 'host-1',
+    credential: hostCredential,
+    status: 'playing',
+    state: gameState(1),
+    expectedRevision: 1
+  });
+  assert(staleHost.status === 409, `Stale host state was accepted: ${staleHost.status}`);
+  assert(staleHost.payload?.error?.includes('Stale room'), 'Stale write must return revision-specific error.');
+
+  const missingRevision = await post('update-room.php', {
+    roomCode,
+    playerId: 'host-1',
+    credential: hostCredential,
+    status: 'playing',
+    state: gameState(1)
+  });
+  assert(missingRevision.status === 400, 'Game state change without expectedRevision must fail closed.');
 
   const guestOutOfTurn = await post('update-room.php', {
     roomCode,
     playerId: 'guest-1',
     credential: guestCredential,
     status: 'playing',
-    state: gameState(1)
+    state: gameState(1),
+    expectedRevision: 2
   });
   assert(guestOutOfTurn.status === 409, `Guest mutated host turn: ${guestOutOfTurn.status}`);
 
@@ -178,7 +202,8 @@ try {
     playerId: 'host-1',
     credential: hostCredential,
     status: 'playing',
-    state: gameState(1)
+    state: gameState(1),
+    expectedRevision: 2
   });
   assert(hostPassesTurn.status === 200 && hostPassesTurn.payload?.ok, `Host could not complete own turn: ${hostPassesTurn.status}`);
 
@@ -187,7 +212,8 @@ try {
     playerId: 'host-1',
     credential: hostCredential,
     status: 'playing',
-    state: gameState(0)
+    state: gameState(0),
+    expectedRevision: 3
   });
   assert(hostOutOfTurn.status === 409, `Host bypassed guest turn authority: ${hostOutOfTurn.status}`);
 
@@ -196,9 +222,13 @@ try {
     playerId: 'guest-1',
     credential: guestCredential,
     status: 'playing',
-    state: gameState(0)
+    state: gameState(0),
+    expectedRevision: 3
   });
   assert(guestTurn.status === 200 && guestTurn.payload?.ok, `Guest could not complete own turn: ${guestTurn.status}`);
+
+  const finalState = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
+  assert(finalState.payload?.room?.stateRevision === 4, 'Successful state writes must advance the revision exactly once.');
 
   const forgedEvent = await post('append-event.php', {
     roomCode,
