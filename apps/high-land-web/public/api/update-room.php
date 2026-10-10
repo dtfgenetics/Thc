@@ -91,6 +91,10 @@ $room = api_mutate_room($roomCode, function (array $room) use ($data, $playerId,
         api_send_json(['ok' => false, 'error' => 'Completed games must be restarted by the host before state updates.'], 409);
     }
 
+    if (($storedStatus === 'waiting' || $storedStatus === 'complete') && $hasState && $incomingStatus === 'playing' && count($room['players'] ?? []) < 2) {
+        api_send_json(['ok' => false, 'error' => 'At least two joined players are required to start the game.'], 409);
+    }
+
     if ($storedStatus === 'waiting' && $incomingStatus === 'complete') {
         api_send_json(['ok' => false, 'error' => 'A waiting room must be started before it can finish.'], 409);
     }
