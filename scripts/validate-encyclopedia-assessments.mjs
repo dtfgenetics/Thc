@@ -18,8 +18,7 @@ const misconceptionClaim=value=>{
   const text=typeof value==='object' && value!==null
     ? String(value.claim||value.misconception||'').trim()
     : String(value||'').split(/:\s+/u,1)[0].trim();
-  const first=text.match(/^.*?[.!?](?:\s|$)/u)?.[0]||text;
-  return first.trim();
+  return text;
 };
 
 if(lessons.length!==registryState.totalCount) errors.push(`Expected ${registryState.totalCount} registered encyclopedia lessons; found ${lessons.length}`);
