@@ -323,7 +323,7 @@ function auditCandidateGame(game) {
   if (/email@email\.com|\+123456789|Needed from owner|Reserved strain card/i.test(html)) {
     problems.push('candidate route contains stale placeholder content');
   }
-  const hasRuntimeMarker=/(<script\\b|<button\\b|<canvas\\b|<form\\b|id=["']root["'])/i.test(html);
+  const hasRuntimeMarker=/(<script\b|<button\b|<canvas\b|<form\b|id=["']root["'])/i.test(html);
   if (game.status === 'candidate') {
     // Candidate placeholders are allowed only when they explicitly disclose
     // non-playability; never treat them as successful playable releases.
