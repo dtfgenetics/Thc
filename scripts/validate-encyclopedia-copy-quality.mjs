@@ -50,7 +50,7 @@ if(reportArg>=0){
   }
   const report={schemaVersion:1,passed:failures.length===0,findingCount:failures.length,findings:failures.map(message=>({lessonId:message.split(':',1)[0],message}))};
   fs.mkdirSync(path.dirname(path.resolve(destination)),{recursive:true});
-  fs.writeFileSync(path.resolve(destination),JSON.stringify(report,null,2)+'\\n');
+  fs.writeFileSync(path.resolve(destination),JSON.stringify(report,null,2)+'\n');
 }
 
 if(failures.length){
