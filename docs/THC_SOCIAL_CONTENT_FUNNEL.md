@@ -110,3 +110,11 @@ Use a THC-owned landing page on `dtfseeds.com` or separate trackable links for d
 3. Publish a reference-backed community resource and test the website-to-Discord path.
 4. Repair legacy directory listing and add authorized new directory listings.
 5. Set up attribution and review weekly conversion quality. Prioritize channels yielding participating members.
+
+## Video conversion lane — first Shorts production batch (2026-10-10)
+
+Three caption-led 20-second vertical 9:16 H.264 MP4 assets were created in the conversation artifact `THC_YouTube_Shorts_Conversion_Kit.zip` (not deployed or uploaded to YouTube). Topics: `PPFD vs DLI`, `How Plants Move Water`, and `Observe Before Diagnosing`. Each uses the canonical adult-education THC Discord invitation in the closing frame. Companion ready-to-paste YouTube titles, video descriptions, educational source URLs and publishing/attribution QA instructions are in `YOUTUBE_UPLOAD_PACK.md` inside the package.
+
+Evidence sources: Iowa State University Extension (DLI formula `PPFD * light hours * 0.0036`); University of Minnesota horticulture text and University of Nebraska plant transpiration resources. Titles and links should be validated from the final published videos, not fabricated.
+
+Metricool brand `7320929` has Facebook and Instagram destinations, but **no connected YouTube destination**, so these files are **created, not uploaded, scheduled, or published**. Next: connect/approve the intended YouTube channel, confirm external link handling, upload the first short, inspect the actual public description and pinned comment, then cross-post the video permalink from approved Facebook and Instagram accounts. Track source-specific verified Discord invite uses/joins and retained members.
