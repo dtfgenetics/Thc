@@ -111,13 +111,14 @@ export function createWebsiteRoomTransport(options: WebsiteRoomTransportOptions 
       return room;
     },
 
-    updateGameState(roomCode, gameState, requestingPlayerId) {
+    updateGameState(roomCode, gameState, requestingPlayerId, expectedRevision) {
       return postWebsiteRoomApi(apiBaseUrl, 'update-room.php', {
         roomCode,
         playerId: requestingPlayerId,
         credential: requireCredential(roomCode, requestingPlayerId),
         status: gameState.winnerId ? 'complete' : 'playing',
-        state: gameState
+        state: gameState,
+        expectedRevision
       });
     },
 
