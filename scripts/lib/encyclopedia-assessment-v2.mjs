@@ -1,13 +1,9 @@
+import { misconceptionClaim } from './encyclopedia-misconception-claim.mjs';
 export function buildLessonAssessmentV2(lesson){
   const title=String(lesson?.title||'Untitled lesson');
   const objective=String(lesson?.objective||'apply the lesson objective').replace(/\.$/,'');
   const misconceptions=Array.isArray(lesson?.misconceptions)?lesson.misconceptions:[];
-  const firstMisconception=misconceptions[0];
-  // Canonical string rows contain "claim: correction"; do not reveal the
-  // correction inside the quoted learner claim. Structured rows are supported.
-  const misconception=typeof firstMisconception==='object' && firstMisconception!==null
-    ? String(firstMisconception.claim||firstMisconception.misconception||'A common shortcut is reliable without context.').trim()
-    : String(firstMisconception||'A common shortcut is reliable without context.').split(/:\s+/u,1)[0].trim();
+  const misconception=misconceptionClaim(misconceptions[0]) || 'A common shortcut is reliable without context.';
   const relevance=String((Array.isArray(lesson?.cultivationRelevance)?lesson.cultivationRelevance:[lesson?.cultivationRelevance]).filter(Boolean)[0]||`Apply the principles of ${title} to a cultivation decision.`);
   const rawRecords=Array.isArray(lesson?.measureAndRecord)?lesson.measureAndRecord:[];
   const recordSummary=rawRecords.map(item=>typeof item==='string'?item:`${item?.field||'Record'}: ${item?.requirement||''}`).filter(Boolean).join('; ');
