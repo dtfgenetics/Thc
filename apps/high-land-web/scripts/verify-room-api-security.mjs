@@ -290,6 +290,21 @@ try {
   const finalState = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
   assert(finalState.payload?.room?.stateRevision === 4, 'Successful state writes must advance the revision exactly once.');
 
+  const forgedRoomWinner = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'complete',
+    state: {
+      ...gameState(0),
+      players: [...gameState(0).players, { id: 'outsider', name: 'Outsider' }],
+      winnerId: 'outsider',
+      phase: 'game_over'
+    },
+    expectedRevision: 4
+  });
+  assert(forgedRoomWinner.status === 400, 'Winner cannot be added only to the submitted game roster.');
+  const afterForgedWinner = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
+  assert(afterForgedWinner.payload?.room?.stateRevision === 4, 'Forged winner must not change room revision.');
+
   const validFinish = await post('update-room.php', {
     roomCode,
     playerId: 'host-1',
