@@ -333,7 +333,21 @@ function auditCandidateGame(game) {
   } else if (game.status === 'multiplayer') {
     if (!/(create|join|room|match|session)/i.test(html)) problems.push('candidate multiplayer route lacks create/join/session UI markers');
   } else if (!hasRuntimeMarker) {
-    problems.push('play-now route exposes no obvious interactive runtime marker');
+    // High Land's public route is an intentional launch page. Require both
+    // its playable destination and a real interactive source application.
+    if (game.id === 'high-land') {
+      const playRoute = `${game.route}play/`;
+      const runtimeIndex = path.join(source.sourceRoot, 'index.html');
+      const runtimeHtml = fs.existsSync(runtimeIndex) ? fs.readFileSync(runtimeIndex, 'utf8') : '';
+      if (!html.includes(`href="${playRoute}"`) && !html.includes(`href='${playRoute}'`)) {
+        problems.push('High Land launch page lacks a link to its playable route');
+      }
+      if (!/(<script\\b|<button\\b|<canvas\\b|<form\\b|id=["']root["'])/i.test(runtimeHtml)) {
+        problems.push('High Land playable source lacks an interactive runtime marker');
+      }
+    } else {
+      problems.push('play-now route exposes no obvious interactive runtime marker');
+    }
   }
 
   const assetAudit = checkRouteAssets(html, game, source.routeRoot);
