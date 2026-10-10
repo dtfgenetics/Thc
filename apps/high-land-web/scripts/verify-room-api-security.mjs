@@ -177,6 +177,12 @@ try {
   });
   assert(invalidPlayingPhase.status === 400, 'Playing room cannot carry terminal game phase.');
 
+  const afterRejectedTransitions = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
+  assert(afterRejectedTransitions.status === 200, 'Room must remain readable after rejected transitions.');
+  assert(afterRejectedTransitions.payload?.room?.status === 'waiting', 'Rejected mutations must preserve waiting status.');
+  assert(afterRejectedTransitions.payload?.room?.stateRevision === 1, 'Rejected mutations must not advance room revision.');
+  assert(afterRejectedTransitions.payload?.room?.state === null, 'Rejected mutations must not change stored game state.');
+
   const forgedHost = await post('update-room.php', {
     roomCode,
     playerId: 'host-1',
