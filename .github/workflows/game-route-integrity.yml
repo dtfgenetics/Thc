@@ -42,6 +42,9 @@ jobs:
       - name: Validate canonical navigation and button registry
         run: node scripts/validate-public-navigation.mjs
 
+      - name: Run High Land route identity regression tests
+        run: node --test scripts/test-game-route-identity.mjs
+
       - name: Audit every public game route and same-origin visual asset
         run: node scripts/audit-game-route-integrity.mjs
 
