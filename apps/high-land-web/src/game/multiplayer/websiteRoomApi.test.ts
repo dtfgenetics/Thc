@@ -22,6 +22,7 @@ describe('website room api contract', () => {
     }), { status: 200, headers: { 'Content-Type': 'application/json' } })));
     const room = await postWebsiteRoomApi('/api/', 'create-room.php', {});
     expect(room.code).toBe('ABC123');
+    expect(room.stateRevision).toBe(0);
     vi.unstubAllGlobals();
   });
   it('uses the High Land api folder on the live route', () => {

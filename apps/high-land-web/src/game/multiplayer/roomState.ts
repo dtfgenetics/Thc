@@ -18,6 +18,8 @@ export type HighLandRoomState = {
   gameState: GameState | null;
   createdAt: string;
   updatedAt: string;
+  /** Monotonically increasing server-side state revision; legacy snapshots start at zero. */
+  stateRevision?: number;
 };
 
 export function canStartRoom(room: HighLandRoomState, requestingPlayerId: string): boolean {

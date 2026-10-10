@@ -46,6 +46,7 @@ $room = api_mutate_room($roomCode, function (array $room) use ($data, &$joinedPl
     $player['host'] = false;
     $players[] = $player;
     $room['players'] = $players;
+    $room['stateRevision'] = ((int)($room['stateRevision'] ?? 0)) + 1;
     $joinedPlayer = $player;
 
     return $room;

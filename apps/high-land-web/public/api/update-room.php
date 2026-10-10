@@ -22,6 +22,17 @@ if ($playerId === '') {
 $room = api_mutate_room($roomCode, function (array $room) use ($data, $playerId, $credential): array {
     api_require_player_credential($room, $playerId, $credential);
 
+    if (array_key_exists('state', $data)) {
+        $storedRevision = (int)($room['stateRevision'] ?? 0);
+        $expectedRevision = $data['expectedRevision'] ?? null;
+        if (!is_int($expectedRevision) || $expectedRevision < 0) {
+            api_send_json(['ok' => false, 'error' => 'A valid expectedRevision is required for game state changes.'], 400);
+        }
+        if ($expectedRevision !== $storedRevision) {
+            api_send_json(['ok' => false, 'error' => 'Stale room state revision. Refresh the room before trying again.'], 409);
+        }
+    }
+
     $incomingStatus = isset($data['status']) ? api_clean_string($data['status'], 20) : null;
     $storedStatus = api_clean_string($room['status'] ?? 'waiting', 20);
     $hostPlayerId = api_clean_string($room['players'][0]['id'] ?? '', 80);
@@ -40,6 +51,7 @@ $room = api_mutate_room($roomCode, function (array $room) use ($data, $playerId,
 
     if (array_key_exists('state', $data)) {
         $room['state'] = $data['state'];
+        $room['stateRevision'] = ((int)($room['stateRevision'] ?? 0)) + 1;
     }
 
     if ($incomingStatus !== null) {
