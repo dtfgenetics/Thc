@@ -129,10 +129,18 @@ const index={
   firstBatchLessonIds:batches[0]?.lessonIds||[],
   batches
 };
+// Commit the index before removing obsolete packets. If index writing fails,
+// existing numbered files are not deleted.
+const indexFile = path.join(outDir, 'index.json');
+const temporaryIndex = path.join(outDir, 'index.json.tmp');
+fs.writeFileSync(temporaryIndex, JSON.stringify(index, null, 2) + '\n');
+fs.renameSync(temporaryIndex, indexFile);
+const requiredFiles = new Set(batches.flatMap(batch => {
+  const filename = path.basename(batch.file);
+  return [filename, filename.replace(/\.json$/i, '.md')];
+}));
 for (const name of staleBatchFiles) {
-  if (!batches.some(batch => batch.file.endsWith('/' + name)) && name.endsWith('.json')) fs.unlinkSync(path.join(outDir, name));
-  if (name.endsWith('.md') && !batches.some(batch => batch.file.endsWith('/' + name.replace(/\.md$/i, '.json')))) fs.unlinkSync(path.join(outDir, name));
+  if (!requiredFiles.has(name)) fs.unlinkSync(path.join(outDir, name));
 }
-fs.writeFileSync(path.join(outDir,'index.json'),JSON.stringify(index,null,2)+'\n');
 console.log(`Built ${batches.length} controlled visual production batches for ${items.length} missing visual roles across ${index.lessonCountWithGaps} lessons at ${batchSize} visual tasks/batch.`);
 if(batches[0]) console.log(`First batch: ${batches[0].batchId} · ${batches[0].lessonIds.join(', ')}`);
