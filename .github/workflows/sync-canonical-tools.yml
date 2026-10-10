@@ -99,6 +99,8 @@ jobs:
 
       - name: Commit mirror update when changed
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           git config user.name "dtf-tools-sync"
@@ -121,7 +123,27 @@ jobs:
           pinned_tools_sha="$(sed -n 's/^commit=//p' site/public-route-patch/assets/release-source-revisions/tools.txt)"
           test "${pinned_tools_sha}" = "${expected_tools_sha}"
           sync_branch="work/platform/canonical-tools-sync/automation"
-          git push --force origin "HEAD:refs/heads/${sync_branch}"
+          # A concurrent sync may have advanced the remote branch. Never overwrite
+          # that update without proving the expected remote head is unchanged.
+          # Query the authoritative remote ref. A stale local tracking ref
+          # must not be treated as a safe lease value.
+          expected_remote="$(git ls-remote --heads origin "refs/heads/${sync_branch}" | awk '{print $1}')"
+          if [ -n "${expected_remote}" ]; then
+            git push --force-with-lease="refs/heads/${sync_branch}:${expected_remote}" origin "HEAD:refs/heads/${sync_branch}"
+          else
+            # The empty lease only permits creation when the remote branch
+            # does not exist; an intervening writer causes a safe failure.
+            git push --force-with-lease="refs/heads/${sync_branch}:" origin "HEAD:refs/heads/${sync_branch}"
+          fi
+
+          # A successful push must publish the exact validated commit. Detect
+          # remote branch changes before creating or updating the sync PR.
+          published_sha="$(git ls-remote --heads origin "refs/heads/${sync_branch}" | awk '{print $1}')"
+          local_sha="$(git rev-parse HEAD)"
+          if [ "${published_sha}" != "${local_sha}" ]; then
+            echo "::error::Canonical mirror branch changed after push: expected ${local_sha}, found ${published_sha:-missing}."
+            exit 1
+          fi
 
           pr_number="$(gh pr list --head "${sync_branch}" --base main --state open --json number --jq '.[0].number // empty' || true)"
           if [ -z "${pr_number}" ]; then
@@ -138,7 +160,7 @@ jobs:
             echo "Updated existing canonical Tools mirror PR #${pr_number} to ${expected_tools_sha}."
           fi
 
-          remote_tools_sha="$(git show "origin/${sync_branch}:site/public-route-patch/assets/release-source-revisions/tools.txt" | sed -n 's/^commit=//p')"
+          remote_tools_sha="$(git show "${published_sha}:site/public-route-patch/assets/release-source-revisions/tools.txt" | sed -n 's/^commit=//p')"
           if [ "${remote_tools_sha}" != "${expected_tools_sha}" ]; then
             echo "::error::Canonical Tools mirror branch did not converge after push: expected ${expected_tools_sha}, found ${remote_tools_sha:-missing}."
             exit 1
