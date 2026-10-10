@@ -47,7 +47,7 @@ fs.writeFileSync(path.join(stageDir,'index.json'),JSON.stringify({schemaVersion:
 const replacements=fs.readdirSync(stageDir);
 for(const file of replacements.filter(name=>name!=='index.json')) fs.renameSync(path.join(stageDir,file),path.join(outDir,file));
 fs.renameSync(path.join(stageDir,'index.json'),path.join(outDir,'index.json'));
-for(const file of fs.readdirSync(outDir).filter(name=>/^batch-\\d{3}\\.(?:json|md)$/i.test(name))) {
+for(const file of fs.readdirSync(outDir).filter(name=>/^batch-\d{3}\.(?:json|md)$/i.test(name))) {
   if(!index.some(batch=>path.basename(batch.json)===file)) fs.rmSync(path.join(outDir,file),{force:true});
 }
 fs.rmdirSync(stageDir);
