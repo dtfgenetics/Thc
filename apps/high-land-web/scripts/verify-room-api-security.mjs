@@ -80,6 +80,7 @@ async function waitForServer() {
 }
 
 let roomCode = '';
+let isolatedRoomCode = '';
 try {
   await waitForServer();
 
@@ -136,6 +137,52 @@ try {
   const publicText = JSON.stringify(publicRoom.payload);
   assert(!publicText.includes('authHash'), 'Public room read leaked authHash.');
   assert(!publicText.includes(hostCredential) && !publicText.includes(guestCredential), 'Public room read leaked a credential.');
+
+  const statusOnly = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential, status: 'playing'
+  });
+  assert(statusOnly.status === 400, 'Status-only mutation must be rejected.');
+
+  const stateOnly = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential, state: gameState(0), expectedRevision: 1
+  });
+  assert(stateOnly.status === 400, 'State-only mutation must be rejected.');
+
+  const prematureComplete = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'complete', state: { ...gameState(0), winnerId: 'host-1', phase: 'game_over' }, expectedRevision: 1
+  });
+  assert(prematureComplete.status === 409, 'Waiting room must not skip directly to complete.');
+
+  const mismatchedWinner = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'complete', state: gameState(0), expectedRevision: 1
+  });
+  assert(mismatchedWinner.status === 400, 'Complete status requires a winning game state.');
+
+  const fabricatedWinner = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'complete', state: { ...gameState(0), winnerId: 'not-a-player' }, expectedRevision: 1
+  });
+  assert(fabricatedWinner.status === 400, 'Nonparticipant winner must be rejected.');
+
+  const invalidWinnerPhase = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'complete', state: { ...gameState(0), winnerId: 'host-1' }, expectedRevision: 1
+  });
+  assert(invalidWinnerPhase.status === 400, 'Winner must have game_over phase.');
+
+  const invalidPlayingPhase = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'playing', state: { ...gameState(0), phase: 'game_over' }, expectedRevision: 1
+  });
+  assert(invalidPlayingPhase.status === 400, 'Playing room cannot carry terminal game phase.');
+
+  const afterRejectedTransitions = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
+  assert(afterRejectedTransitions.status === 200, 'Room must remain readable after rejected transitions.');
+  assert(afterRejectedTransitions.payload?.room?.status === 'waiting', 'Rejected mutations must preserve waiting status.');
+  assert(afterRejectedTransitions.payload?.room?.stateRevision === 1, 'Rejected mutations must not advance room revision.');
+  assert(afterRejectedTransitions.payload?.room?.state === null, 'Rejected mutations must not change stored game state.');
 
   const forgedHost = await post('update-room.php', {
     roomCode,
@@ -217,6 +264,19 @@ try {
   });
   assert(hostOutOfTurn.status === 409, `Host bypassed guest turn authority: ${hostOutOfTurn.status}`);
 
+  const hostFinishesGuestTurn = await post('update-room.php', {
+    roomCode,
+    playerId: 'host-1',
+    credential: hostCredential,
+    status: 'complete',
+    state: { ...gameState(1), winnerId: 'host-1', phase: 'game_over' },
+    expectedRevision: 3
+  });
+  assert(hostFinishesGuestTurn.status === 409, 'Host must not finish during guest turn.');
+  const afterRejectedFinish = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
+  assert(afterRejectedFinish.payload?.room?.status === 'playing', 'Rejected finish must preserve playing status.');
+  assert(afterRejectedFinish.payload?.room?.stateRevision === 3, 'Rejected finish must not advance room revision.');
+
   const guestTurn = await post('update-room.php', {
     roomCode,
     playerId: 'guest-1',
@@ -229,6 +289,98 @@ try {
 
   const finalState = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
   assert(finalState.payload?.room?.stateRevision === 4, 'Successful state writes must advance the revision exactly once.');
+
+  const forgedRoomWinner = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'complete',
+    state: {
+      ...gameState(0),
+      players: [...gameState(0).players, { id: 'outsider', name: 'Outsider' }],
+      winnerId: 'outsider',
+      phase: 'game_over'
+    },
+    expectedRevision: 4
+  });
+  assert(forgedRoomWinner.status === 400, 'Winner cannot be added only to the submitted game roster.');
+  const afterForgedWinner = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
+  assert(afterForgedWinner.payload?.room?.stateRevision === 4, 'Forged winner must not change room revision.');
+
+  const validFinish = await post('update-room.php', {
+    roomCode,
+    playerId: 'host-1',
+    credential: hostCredential,
+    status: 'complete',
+    state: { ...gameState(0), winnerId: 'host-1', phase: 'game_over' },
+    expectedRevision: 4
+  });
+  assert(validFinish.status === 200 && validFinish.payload?.ok, 'Legitimate active-player finish must succeed.');
+  assert(validFinish.payload.room?.status === 'complete', 'Finished game status was not persisted.');
+  assert(validFinish.payload.room?.stateRevision === 5, 'Finish must advance revision once.');
+
+  const duplicateFinish = await post('update-room.php', {
+    roomCode,
+    playerId: 'host-1',
+    credential: hostCredential,
+    status: 'complete',
+    state: { ...gameState(0), winnerId: 'host-1', phase: 'game_over' },
+    expectedRevision: 4
+  });
+  assert(duplicateFinish.status === 409, 'Stale finish must not overwrite completed game.');
+
+  const finishAgain = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'complete', state: { ...gameState(0), winnerId: 'host-1', phase: 'game_over' },
+    expectedRevision: 5
+  });
+  assert(finishAgain.status === 409, 'Completed room must not accept another finish.');
+  assert(finishAgain.payload?.error?.includes('restarted'), 'Completed room rejection should explain restart.');
+
+  const guestRestart = await post('update-room.php', {
+    roomCode, playerId: 'guest-1', credential: guestCredential,
+    status: 'playing', state: gameState(0), expectedRevision: 5
+  });
+  assert(guestRestart.status === 403, 'Guest must not restart a completed game.');
+
+  const hostRestart = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'playing', state: gameState(0), expectedRevision: 5
+  });
+  assert(hostRestart.status === 200 && hostRestart.payload?.ok, 'Host must be able to restart a completed game.');
+  assert(hostRestart.payload.room?.status === 'playing', 'Restart must restore playing room status.');
+  assert(hostRestart.payload.room?.stateRevision === 6, 'Restart must advance room revision once.');
+
+  const isolatedCreate = await post('create-room.php', {
+    game: 'high-land', maxPlayers: 10, playerId: 'host-1',
+    playerName: 'Host', token: 'tokenA', color: '#ef4444',
+    credential: hostCredential, state: null
+  });
+  assert(isolatedCreate.status === 200 && isolatedCreate.payload?.ok, 'Second isolated room creation failed.');
+  isolatedRoomCode = isolatedCreate.payload.room?.code ?? '';
+  assert(isolatedRoomCode && isolatedRoomCode !== roomCode, 'Rooms must have distinct codes.');
+  const isolatedRead = await request(`get-room.php?room=${encodeURIComponent(isolatedRoomCode)}`);
+  assert(isolatedRead.payload?.room?.stateRevision === 0, 'New room must start at revision zero.');
+  assert(isolatedRead.payload?.room?.status === 'waiting', 'Second room must not inherit active room status.');
+  assert(isolatedRead.payload?.room?.state === null, 'Second room must not inherit another room game state.');
+  const crossRoomWrite = await post('update-room.php', {
+    roomCode: isolatedRoomCode, playerId: 'guest-1', credential: guestCredential,
+    status: 'playing', state: gameState(0), expectedRevision: 0
+  });
+  assert(crossRoomWrite.status === 403, 'Credentials from the first room must not mutate another room.');
+  const isolatedAfterReject = await request(`get-room.php?room=${encodeURIComponent(isolatedRoomCode)}`);
+  assert(isolatedAfterReject.payload?.room?.stateRevision === 0, 'Cross-room rejection must preserve target revision.');
+  assert(isolatedAfterReject.payload?.room?.state === null, 'Cross-room rejection must preserve target state.');
+
+  const invalidIndexStart = await post('update-room.php', {
+    roomCode: isolatedRoomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'playing', state: gameState(99), expectedRevision: 0
+  });
+  assert(invalidIndexStart.status === 400, 'Invalid active-player index must be rejected before storage.');
+  const afterInvalidIndex = await request(`get-room.php?room=${encodeURIComponent(isolatedRoomCode)}`);
+  assert(afterInvalidIndex.payload?.room?.stateRevision === 0, 'Invalid active-player index must not advance revision.');
+  assert(afterInvalidIndex.payload?.room?.state === null, 'Invalid active-player index must not persist game state.');
+
+  const originalAfterIsolation = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
+  assert(originalAfterIsolation.payload?.room?.stateRevision === 6, 'Creating a second room must not mutate the first.');
 
   const forgedEvent = await post('append-event.php', {
     roomCode,
@@ -256,6 +408,11 @@ try {
     const roomBase = path.join(apiRoot, '_rooms', roomCode);
     await rm(`${roomBase}.json`, { force: true });
     await rm(`${roomBase}.json.lock`, { force: true });
+  }
+  if (isolatedRoomCode) {
+    const isolatedBase = path.join(apiRoot, '_rooms', isolatedRoomCode);
+    await rm(`${isolatedBase}.json`, { force: true });
+    await rm(`${isolatedBase}.json.lock`, { force: true });
   }
   server.kill('SIGTERM');
 }
