@@ -89,7 +89,7 @@ $room = api_mutate_room($roomCode, function (array $room) use ($data, $playerId,
         api_send_json(['ok' => false, 'error' => 'A waiting room must be started before it can finish.'], 409);
     }
 
-    if ($storedStatus === 'playing' && array_key_exists('state', $data) && $activePlayerId !== '' && $playerId !== $activePlayerId) {
+    if ($storedStatus === 'playing' && $hasState && ($activePlayerId === '' || $playerId !== $activePlayerId)) {
         api_send_json(['ok' => false, 'error' => 'It is not this player\'s turn.'], 409);
     }
 
