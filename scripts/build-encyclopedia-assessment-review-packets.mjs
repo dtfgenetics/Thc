@@ -26,7 +26,8 @@ for(const row of rows){
   }
 }
 
-for(const file of fs.readdirSync(outDir)) if(/^batch-\d{3}\.(?:json|md)$/i.test(file)) fs.unlinkSync(path.join(outDir,file));
+const stageDir=fs.mkdtempSync(path.join(outDir,'.review-packets-stage-'));
+
 for(let start=0;start<rows.length;start+=20){
   const slice=rows.slice(start,start+20), n=String(Math.floor(start/20)+1).padStart(3,'0');
   const items=slice.map(row=>({
@@ -39,8 +40,15 @@ for(let start=0;start<rows.length;start+=20){
     }))
   }));
   const packet={schemaVersion:'1.0.0',batchId:`ENC-ASSESS-REVIEW-${n}`,packetType:'assessment-rationale-independent-review-input',boundary:'Reviewer fields must be completed by a real independent reviewer. Blank fields are intentional and non-promoting.',decisionValues:['approved','changes_requested','rejected'],questionReviewRule:'Review all three question IDs separately; lesson-level approval must not substitute for question-level scientific and evidence review.',questionReviewCount:items.reduce((sum,item)=>sum+item.questionReviews.length,0),booleanReviewFields:['taughtByLesson','reasoningAccuracy','misconceptionHandling','measurementAlignment','evidenceBoundaryAlignment'],items};
-  fs.writeFileSync(path.join(outDir,`batch-${n}.json`),JSON.stringify(packet,null,2)+'\n');
+  fs.writeFileSync(path.join(stageDir,`batch-${n}.json`),JSON.stringify(packet,null,2)+'\n');
   index.push({batchId:packet.batchId,json:`review/encyclopedia-assessment-rationales/batch-${n}.json`,itemCount:items.length});
 }
-fs.writeFileSync(path.join(outDir,'index.json'),JSON.stringify({schemaVersion:'1.0.0',batchCount:index.length,lessonCount:rows.length,batches:index},null,2)+'\n');
+fs.writeFileSync(path.join(stageDir,'index.json'),JSON.stringify({schemaVersion:'1.0.0',batchCount:index.length,lessonCount:rows.length,batches:index},null,2)+'\n');
+const replacements=fs.readdirSync(stageDir);
+for(const file of replacements.filter(name=>name!=='index.json')) fs.renameSync(path.join(stageDir,file),path.join(outDir,file));
+fs.renameSync(path.join(stageDir,'index.json'),path.join(outDir,'index.json'));
+for(const file of fs.readdirSync(outDir).filter(name=>/^batch-\\d{3}\\.(?:json|md)$/i.test(name))) {
+  if(!index.some(batch=>path.basename(batch.json)===file)) fs.rmSync(path.join(outDir,file),{force:true});
+}
+fs.rmdirSync(stageDir);
 console.log(`Built ${index.length} assessment-rationale review packets covering ${rows.length} lessons; preserved reviewer input for ${preserved.size} lesson(s).`);
