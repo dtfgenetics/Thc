@@ -14,6 +14,18 @@ for(const file of fs.readdirSync(outDir).filter(x=>/^batch-\d{3}\.json$/i.test(x
 }
 for(const file of fs.readdirSync(outDir)) if(/^batch-\d{3}\.(?:json|md)$/i.test(file)) fs.unlinkSync(path.join(outDir,file));
 const rows=data.lessons||[], index=[];
+const seenLessonIds=new Set();
+for(const row of rows){
+  if(!/^THC-ENC-\\d{3,}$/.test(String(row.lessonId||''))) throw new Error('Invalid lesson ID in rationale review source.');
+  if(seenLessonIds.has(row.lessonId)) throw new Error(`Duplicate rationale review lesson: ${row.lessonId}`);
+  seenLessonIds.add(row.lessonId);
+  const questionIds=(row.rationales||[]).map(r=>r.questionId);
+  const expected=[1,2,3].map(n=>`${row.lessonId}-Q${n}`);
+  if(questionIds.length!==3||expected.some((id,n)=>questionIds[n]!==id)){
+    throw new Error(`${row.lessonId}: review packet requires exactly three ordered and unique Q1–Q3 rationales`);
+  }
+}
+
 for(let start=0;start<rows.length;start+=20){
   const slice=rows.slice(start,start+20), n=String(Math.floor(start/20)+1).padStart(3,'0');
   const items=slice.map(row=>({
