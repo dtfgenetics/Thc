@@ -45,3 +45,11 @@ Every direct-invite post must say `THC — Teaching Healthy Cultivation` and use
 - Put generated educational visuals on durable media hosting with validated public asset URLs, then attach to relevant social posts; currently the 18 scheduled Facebook posts are text-only.
 - Confirm the public Discord invite resolves to the intended server and is not expired.
 - Observe publishing outcomes and user-acquisition metrics; none currently verified.
+
+## Verified scheduling extension — 2026-10-10
+
+Metricool brand `7320929`: 25 Facebook-only scheduled posts from October 12 to November 29, 2026. All 25 were read back as `PENDING`, `autoPublish=true`, and using `https://discord.gg/ZzYTUWKKW`. This does not prove publication or joins. New verified IDs for November 16–29:
+
+`392902705, 392902722, 392902735, 392902747, 392902759, 392902768, 392902775`.
+
+**Production queue rules:** Read existing entries before scheduling; prevent same-date and near-duplicate topics; confirm the exact destination; include source references when quantitative or science charts are used; verify post statuses after release. Text-only Facebook scheduling is currently functional. Generated infographics are not yet uploaded to publicly reachable, verified media URLs. Instagram `@dtfgenetics` is connected but its intended THC publishing authorization remains unresolved, so do not cross-post automatically.
