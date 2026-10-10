@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { visualFilenameMatchesRole } from './lib/encyclopedia-visual-filename.mjs';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
@@ -60,8 +61,7 @@ for (const item of items) {
   for (const role of item.visualRoles || []) {
     if (role.canonicalAssetPath) {
       const assetPath=String(role.canonicalAssetPath);
-      const expectedSuffix=`_${String(role.ordinal).padStart(2,'0')}_${role.role}.png`;
-      if (!path.basename(assetPath).endsWith(expectedSuffix)) errors.push(`${item.lessonId}: role asset must end with ordinal and role in its filename.`);
+      if (!visualFilenameMatchesRole(path.basename(assetPath), item.lessonId, role.role, role.ordinal)) errors.push(`${item.lessonId}: role asset must end with ordinal and role in its filename.`);
       if (!item.canonicalAssetPaths?.includes(assetPath)) errors.push(`${item.lessonId}: assigned role asset is missing from the lesson candidate inventory: ${assetPath}`);
       if (!fs.existsSync(path.join(root,assetPath))) errors.push(`${item.lessonId}: assigned role asset is missing on disk: ${assetPath}`);
     }
