@@ -67,3 +67,7 @@ Metricool brand `7320929` now has **39** Facebook-only scheduled posts through *
 ## Verified January extension and recurring maintenance (2026-10-10)
 
 Metricool brand `7320929` has **46** pending, Facebook-only posts, all with `autoPublish=true` and canonical `https://discord.gg/ZzYTUWKKW` invite, through 2027-01-17. Seven new IDs: `392905792`, `392905802`, `392905811`, `392905815`, `392905824`, `392905831`, `392905835`. A **weekly Friday-morning automation** is enabled to inspect the queue, prepare/schedule small batches only when coverage warrants it, verify output, and report blockers; this should maintain a rolling 4–8-week horizon rather than blindly extending the queue. It has not yet executed. Media hosting, scientific citation/diagram validation, Instagram destination confirmation, and Discord join attribution remain unverified blockers.
+
+## Verified queue — 50 posts (2026-10-10)
+
+Metricool brand `7320929` reports 50 pending Facebook-only posts, all with the canonical Discord invite and autoPublish=true. Four new posts scheduled for Jan 18/20/22/24, 2027 (America/Chicago): `392908178`, `392908189`, `392908198`, `392908215`. Post statuses and platform attribution must be rechecked after publication. Instagram `@dtfgenetics` remains connected but no posts have been scheduled; graphics must be made available via validated stable media URLs before Instagram media scheduling. The recurring weekly THC content pipeline is enabled; use its rolling-queue logic and prioritize actual engagement/join metrics over continuing to extend the calendar.
