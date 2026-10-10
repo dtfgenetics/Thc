@@ -17,4 +17,6 @@ assert.equal(misconceptionClaim({claim:'Bubbles always solve hypoxia',correction
 assert.equal(misconceptionClaim('Do not assume all roots are identical.'), 'Do not assume all roots are identical.');
 assert.ok(stringCase.prompts[1].includes(misconceptionClaim('Roots only need water and nutrients: Root metabolism also requires oxygen.')));
 assert.ok(objectCase.prompts[1].includes(misconceptionClaim({claim:'Bubbles always solve hypoxia'})));
+assert.equal(misconceptionClaim('A fixed amber-trichome percentage defines maturity for every cultivar. This oversimplifies the system.'), 'A fixed amber-trichome percentage defines maturity for every cultivar.');
+assert.equal(misconceptionClaim('Single symptom = single cause! Interpretation requires confirmation.'), 'Single symptom = single cause!');
 console.log('Encyclopedia assessment claim isolation tests passed.');
