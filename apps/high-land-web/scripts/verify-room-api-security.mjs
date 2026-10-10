@@ -264,6 +264,19 @@ try {
   });
   assert(hostOutOfTurn.status === 409, `Host bypassed guest turn authority: ${hostOutOfTurn.status}`);
 
+  const hostFinishesGuestTurn = await post('update-room.php', {
+    roomCode,
+    playerId: 'host-1',
+    credential: hostCredential,
+    status: 'complete',
+    state: { ...gameState(1), winnerId: 'host-1', phase: 'game_over' },
+    expectedRevision: 3
+  });
+  assert(hostFinishesGuestTurn.status === 409, 'Host must not finish during guest turn.');
+  const afterRejectedFinish = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
+  assert(afterRejectedFinish.payload?.room?.status === 'playing', 'Rejected finish must preserve playing status.');
+  assert(afterRejectedFinish.payload?.room?.stateRevision === 3, 'Rejected finish must not advance room revision.');
+
   const guestTurn = await post('update-room.php', {
     roomCode,
     playerId: 'guest-1',
