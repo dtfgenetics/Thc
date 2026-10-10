@@ -14,7 +14,6 @@ const registryState=loadEncyclopediaRegistry(root);
 const promptOwners=new Map();
 const normalize=s=>String(s||'').toLowerCase().replace(/\s+/g,' ').trim();
 
-
 if(lessons.length!==registryState.totalCount) errors.push(`Expected ${registryState.totalCount} registered encyclopedia lessons; found ${lessons.length}`);
 
 for(const lesson of lessons){
