@@ -147,7 +147,7 @@ jobs:
               });
             } catch (error) {
               if (error?.status === 403) {
-                core.warning('Issue 46 reporting skipped because commenting is disabled or capped.');
+                core.warning('Issue 2337 reporting skipped because commenting is disabled or capped.');
               } else {
                 throw error;
               }
@@ -236,8 +236,11 @@ jobs:
           verify_page '/' 'Genetics first. Learn the plant behind the pack.'
           verify_page '/learn/' 'Learn the plant as one connected system.'
           verify_page '/community/' 'Join THC — Teaching Healthy Cultivation Discord'
+          verify_page '/community/' 'discord.gg/ZzYTUWKKW'
           verify_page '/contact/' 'Join THC — Teaching Healthy Cultivation Discord'
+          verify_page '/contact/' 'discord.gg/ZzYTUWKKW'
           verify_page '/learn/' 'Join THC learning community'
+          verify_page '/learn/' 'discord.gg/ZzYTUWKKW'
           verify_page '/blog/' 'DTF Field Notes &amp; Updates'
           verify_page '/blog/' 'Follow what we are learning, building, and releasing.'
           verify_page '/journal/' 'DTF Journal'
@@ -288,7 +291,7 @@ jobs:
               });
             } catch (error) {
               if (error?.status === 403) {
-                core.warning('Issue 46 reporting skipped because commenting is disabled or capped.');
+                core.warning('Issue 2337 reporting skipped because commenting is disabled or capped.');
               } else {
                 throw error;
               }
