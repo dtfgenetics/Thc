@@ -129,6 +129,15 @@ const index={
   firstBatchLessonIds:batches[0]?.lessonIds||[],
   batches
 };
+// Verify each newly written packet exists before the index becomes authoritative.
+// The batch validator also checks all content and review-state contracts.
+for (const batch of batches) {
+  const packetPath = path.resolve(root, batch.file);
+  const markdownPath = packetPath.replace(/\.json$/i, '.md');
+  if (!fs.existsSync(packetPath) || !fs.existsSync(markdownPath)) {
+    throw new Error('Missing regenerated visual packet: ' + batch.batchId);
+  }
+}
 // Commit the index before removing obsolete packets. If index writing fails,
 // existing numbered files are not deleted.
 const indexFile = path.join(outDir, 'index.json');
