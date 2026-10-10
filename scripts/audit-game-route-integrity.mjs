@@ -323,10 +323,17 @@ function auditCandidateGame(game) {
   if (/email@email\.com|\+123456789|Needed from owner|Reserved strain card/i.test(html)) {
     problems.push('candidate route contains stale placeholder content');
   }
-  if (game.status === 'multiplayer') {
+  const hasRuntimeMarker=/(<script\\b|<button\\b|<canvas\\b|<form\\b|id=["']root["'])/i.test(html);
+  if (game.status === 'candidate') {
+    // Candidate placeholders are allowed only when they explicitly disclose
+    // non-playability; never treat them as successful playable releases.
+    if (!hasRuntimeMarker && !/data-route-state=["']candidate["']/i.test(html)) {
+      problems.push('candidate route lacks both runtime and explicit non-playable status');
+    }
+  } else if (game.status === 'multiplayer') {
     if (!/(create|join|room|match|session)/i.test(html)) problems.push('candidate multiplayer route lacks create/join/session UI markers');
-  } else if (!/(<script\b|<button\b|<canvas\b|<form\b|id=["']root["'])/i.test(html)) {
-    problems.push('candidate play-now route exposes no obvious interactive runtime marker');
+  } else if (!hasRuntimeMarker) {
+    problems.push('play-now route exposes no obvious interactive runtime marker');
   }
 
   const assetAudit = checkRouteAssets(html, game, source.routeRoot);
