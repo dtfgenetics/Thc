@@ -300,6 +300,20 @@ try {
   assert(finishAgain.status === 409, 'Completed room must not accept another finish.');
   assert(finishAgain.payload?.error?.includes('restarted'), 'Completed room rejection should explain restart.');
 
+  const guestRestart = await post('update-room.php', {
+    roomCode, playerId: 'guest-1', credential: guestCredential,
+    status: 'playing', state: gameState(0), expectedRevision: 5
+  });
+  assert(guestRestart.status === 403, 'Guest must not restart a completed game.');
+
+  const hostRestart = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'playing', state: gameState(0), expectedRevision: 5
+  });
+  assert(hostRestart.status === 200 && hostRestart.payload?.ok, 'Host must be able to restart a completed game.');
+  assert(hostRestart.payload.room?.status === 'playing', 'Restart must restore playing room status.');
+  assert(hostRestart.payload.room?.stateRevision === 6, 'Restart must advance room revision once.');
+
   const forgedEvent = await post('append-event.php', {
     roomCode,
     playerId: 'host-1',
