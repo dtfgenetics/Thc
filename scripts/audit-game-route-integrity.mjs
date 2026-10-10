@@ -319,6 +319,11 @@ function auditCandidateGame(game) {
 
   const html = fs.readFileSync(source.indexPath, 'utf8');
   if (html.length < 180) problems.push(`candidate HTML payload too small (${html.length} bytes)`);
+  // Explicit release placeholders must never satisfy a playable-route audit.
+  if (game.status !== 'candidate' &&
+      /data-route-state=["']candidate["']|class=["'][^"']*route-placeholder|public route promotion is still pending/i.test(html)) {
+    problems.push('playable route is a release placeholder; package the canonical runtime before promotion');
+  }
   if (!/<title\b[^>]*>[^<]+<\/title>/i.test(html)) problems.push('candidate route missing document title');
   if (/email@email\.com|\+123456789|Needed from owner|Reserved strain card/i.test(html)) {
     problems.push('candidate route contains stale placeholder content');
