@@ -15,14 +15,18 @@ export function createLocalRoomTransport(storage?: Storage): RoomTransport {
       return joinLocalRoom(roomCode, toLocalRoomPlayerInput(player), storage);
     },
 
-    async updateGameState(roomCode, gameState) {
+    async updateGameState(roomCode, gameState, _requestingPlayerId, expectedRevision) {
       const room = getLocalRoom(roomCode, storage);
       if (!room) throw new Error(`Room ${roomCode} was not found.`);
+      if (expectedRevision !== undefined && expectedRevision !== (room.stateRevision ?? 0)) {
+        throw new Error('Stale room state revision. Refresh the room before trying again.');
+      }
 
       const updatedRoom: HighLandRoomState = {
         ...room,
         status: gameState.winnerId ? 'complete' : 'playing',
         gameState,
+        stateRevision: (room.stateRevision ?? 0) + 1,
         updatedAt: new Date().toISOString()
       };
       saveLocalRoom(updatedRoom, storage);
