@@ -70,6 +70,50 @@ jobs:
             echo "::warning::Canonical Tools mirror is stale: pinned ${pinned_sha:-missing}, canonical ${canonical_sha}. Synchronization will repair it."
           fi
 
+      - name: Prevent destructive Atlas lesson synchronization
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const canonical = '/tmp/tools/site/public-route-patch/atlas';
+          const mirror = 'site/public-route-patch/atlas';
+          const exceptions = [];
+          let inspected = 0;
+          function walk(dir, relative = '') {
+            if (!fs.existsSync(dir)) return;
+            for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
+              const next = path.join(relative, entry.name);
+              if (entry.isDirectory()) walk(dir, next);
+              else if (entry.isFile() && entry.name === 'index.html' && next !== 'index.html') {
+                const target = path.join(mirror, next);
+                if (!fs.existsSync(target)) continue;
+                inspected++;
+                const existing = fs.readFileSync(target, 'utf8');
+                const incoming = fs.readFileSync(path.join(canonical, next), 'utf8');
+                const meaningful = value => value.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi, '')
+                  .replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi, '')
+                  .replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim().length;
+                const oldSize = meaningful(existing);
+                const newSize = meaningful(incoming);
+                if (oldSize >= 600 && newSize < oldSize * 0.7 && incoming !== existing) {
+                  exceptions.push({route: next, oldSize, newSize});
+                }
+              }
+            }
+          }
+          walk(canonical);
+          if (exceptions.length) {
+            console.error('::error::Atlas content preservation gate: canonical Tools would substantially shrink existing published lesson bodies. Reconcile upstream before synchronization.');
+            for (const {route,oldSize,newSize} of exceptions)
+              console.error(`  ${route}: existing ${oldSize} vs canonical ${newSize} text characters`);
+            process.exitCode = 1;
+          } else {
+            console.log(`Atlas content preservation gate checked ${inspected} existing pages; no major text loss detected.`);
+          }
+          NODE
+
       - name: Synchronize canonical tool routes and shared assets
         shell: bash
         run: |
