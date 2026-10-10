@@ -333,6 +333,15 @@ try {
   assert(isolatedRead.payload?.room?.stateRevision === 0, 'New room must start at revision zero.');
   assert(isolatedRead.payload?.room?.status === 'waiting', 'Second room must not inherit active room status.');
   assert(isolatedRead.payload?.room?.state === null, 'Second room must not inherit another room game state.');
+  const crossRoomWrite = await post('update-room.php', {
+    roomCode: isolatedRoomCode, playerId: 'guest-1', credential: guestCredential,
+    status: 'playing', state: gameState(0), expectedRevision: 0
+  });
+  assert(crossRoomWrite.status === 403, 'Credentials from the first room must not mutate another room.');
+  const isolatedAfterReject = await request(`get-room.php?room=${encodeURIComponent(isolatedRoomCode)}`);
+  assert(isolatedAfterReject.payload?.room?.stateRevision === 0, 'Cross-room rejection must preserve target revision.');
+  assert(isolatedAfterReject.payload?.room?.state === null, 'Cross-room rejection must preserve target state.');
+
   const originalAfterIsolation = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
   assert(originalAfterIsolation.payload?.room?.stateRevision === 6, 'Creating a second room must not mutate the first.');
 
