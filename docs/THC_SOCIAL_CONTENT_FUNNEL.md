@@ -6,7 +6,7 @@ Convert relevant, adult educational audiences into active members of THC Discord
 
 Canonical invitation: https://discord.gg/ZzYTUWKKW
 
-Only publish to a **verified** THC account. Metricool brand `7320929` has a Facebook destination approved by the owner (`1051329748073255`). Instagram `dtfgenetics` is connected but not yet verified as the THC destination. X is not connected. Do not silently cross-post.
+Only publish to a **verified** THC account. Metricool brand `7320929` has a Facebook destination approved by the owner (`1051329748073255`). Instagram `dtfgenetics` was confirmed as approved by the user on 2026-10-10; see update below. X is not connected. Do not silently cross-post.
 
 ## Publishing state (2026-10-10)
 
@@ -71,3 +71,7 @@ Metricool brand `7320929` has **46** pending, Facebook-only posts, all with `aut
 ## Verified queue — 50 posts (2026-10-10)
 
 Metricool brand `7320929` reports 50 pending Facebook-only posts, all with the canonical Discord invite and autoPublish=true. Four new posts scheduled for Jan 18/20/22/24, 2027 (America/Chicago): `392908178`, `392908189`, `392908198`, `392908215`. Post statuses and platform attribution must be rechecked after publication. Instagram `@dtfgenetics` remains connected but no posts have been scheduled; graphics must be made available via validated stable media URLs before Instagram media scheduling. The recurring weekly THC content pipeline is enabled; use its rolling-queue logic and prioritize actual engagement/join metrics over continuing to extend the calendar.
+
+## Instagram permission update — 2026-10-10
+
+Owner explicitly approved publishing THC educational posts to Metricool-connected Instagram `@dtfgenetics` in the conversation. Facebook Page `1051329748073255` remains owner-confirmed. Instagram is therefore an authorized destination **once there is a public, tested media URL and verified invitation funnel**, not a blocked identity decision. Instagram requires media for feed posts; local PNG files, sandbox links, or a Canva upload URL alone are not public image URLs. The current environment's container cannot resolve `www.canva.com`, so the raw image upload step has not succeeded. Do not claim Instagram scheduled before Metricool confirms it. Weekly automation has been updated to include both approved destinations and prioritizes image hosting and scientific QA.
