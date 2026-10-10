@@ -59,3 +59,7 @@ Metricool brand `7320929`: 25 Facebook-only scheduled posts from October 12 to N
 Read back Metricool brand `7320929` after scheduling: **32 Facebook-only posts**, all `PENDING`, with `autoPublish=true` and the correct invite `https://discord.gg/ZzYTUWKKW`. The calendar currently extends through **2026-12-13** in `America/Chicago`. New post IDs for Nov 30–Dec 13: `392903398`, `392903412`, `392903426`, `392903442`, `392903474`, `392903491`, `392903508`. This is not a publication or join confirmation.
 
 Next production requirement: move the image content to a publicly readable durable media host and validate chart numbers, references, and text before attaching media; do not schedule Instagram until the account destination and intended brand are approved.
+
+## Scheduling verification — year-end batch (2026-10-10)
+
+Metricool brand `7320929` now has **39** Facebook-only scheduled posts through **December 30, 2026**; all 39 were independently read back as `PENDING`, `autoPublish=true`, with the canonical invite. Seven new IDs: `392904395`, `392904412`, `392904424`, `392904438`, `392904448`, `392904458`, `392904471`. New topics: evaporation vs transpiration, consistent photographic observation, root/leaf respiration, photoperiod, microclimates, experimental replication, and year-end learning roundup. These posts are text only. Future batches should prioritize assets, verified source references, Instagram account approval, post-publication status checks and actual Discord invite conversion data over endless queue expansion.
