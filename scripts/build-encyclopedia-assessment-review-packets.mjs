@@ -6,7 +6,11 @@ const data=JSON.parse(fs.readFileSync(src,'utf8')); fs.mkdirSync(outDir,{recursi
 const preserved=new Map();
 for(const file of fs.readdirSync(outDir).filter(x=>/^batch-\d{3}\.json$/i.test(x))){
   const packet=JSON.parse(fs.readFileSync(path.join(outDir,file),'utf8'));
-  for(const item of packet.items||[]){const r=item.reviewInput||{};if(Object.values(r).some(v=>v!==null&&v!=='')) preserved.set(item.lessonId,r);}
+  for(const item of packet.items||[]){
+    const r=item.reviewInput||{};
+    const q=Array.isArray(item.questionReviews)?item.questionReviews:[];
+    if(Object.values(r).some(v=>v!==null&&v!=='' )||q.some(row=>Object.values(row.reviewInput||{}).some(v=>v!==null&&v!==''))) preserved.set(item.lessonId,{lesson:r,questions:q});
+  }
 }
 for(const file of fs.readdirSync(outDir)) if(/^batch-\d{3}\.(?:json|md)$/i.test(file)) fs.unlinkSync(path.join(outDir,file));
 const rows=data.lessons||[], index=[];
@@ -15,9 +19,13 @@ for(let start=0;start<rows.length;start+=20){
   const items=slice.map(row=>({
     lessonId:row.lessonId,title:row.title,canonicalFile:row.canonicalFile,
     prompts:row.prompts,rationales:row.rationales,sourceAnchors:row.sourceAnchors,evidenceLimits:row.evidenceLimits,
-    reviewInput:preserved.get(row.lessonId)||{decision:null,reviewerId:null,reviewerName:null,reviewedAt:null,reviewNotes:null,taughtByLesson:null,reasoningAccuracy:null,misconceptionHandling:null,measurementAlignment:null,evidenceBoundaryAlignment:null}
+    reviewInput:preserved.get(row.lessonId)?.lesson||{decision:null,reviewerId:null,reviewerName:null,reviewedAt:null,reviewNotes:null,taughtByLesson:null,reasoningAccuracy:null,misconceptionHandling:null,measurementAlignment:null,evidenceBoundaryAlignment:null},
+    questionReviews:(row.rationales||[]).map(rationale=>({
+      questionId:rationale.questionId,
+      reviewInput:preserved.get(row.lessonId)?.questions?.find(x=>x.questionId===rationale.questionId)?.reviewInput||{decision:null,reviewerId:null,reviewedAt:null,reviewNotes:null,reasoningAccuracy:null,alignmentWithPrompt:null,evidenceBoundaryAlignment:null}
+    }))
   }));
-  const packet={schemaVersion:'1.0.0',batchId:`ENC-ASSESS-REVIEW-${n}`,packetType:'assessment-rationale-independent-review-input',boundary:'Reviewer fields must be completed by a real independent reviewer. Blank fields are intentional and non-promoting.',decisionValues:['approved','changes_requested','rejected'],booleanReviewFields:['taughtByLesson','reasoningAccuracy','misconceptionHandling','measurementAlignment','evidenceBoundaryAlignment'],items};
+  const packet={schemaVersion:'1.0.0',batchId:`ENC-ASSESS-REVIEW-${n}`,packetType:'assessment-rationale-independent-review-input',boundary:'Reviewer fields must be completed by a real independent reviewer. Blank fields are intentional and non-promoting.',decisionValues:['approved','changes_requested','rejected'],questionReviewRule:'Review all three question IDs separately; lesson-level approval must not substitute for question-level scientific and evidence review.',questionReviewCount:items.reduce((sum,item)=>sum+item.questionReviews.length,0),booleanReviewFields:['taughtByLesson','reasoningAccuracy','misconceptionHandling','measurementAlignment','evidenceBoundaryAlignment'],items};
   fs.writeFileSync(path.join(outDir,`batch-${n}.json`),JSON.stringify(packet,null,2)+'\n');
   index.push({batchId:packet.batchId,json:`review/encyclopedia-assessment-rationales/batch-${n}.json`,itemCount:items.length});
 }
