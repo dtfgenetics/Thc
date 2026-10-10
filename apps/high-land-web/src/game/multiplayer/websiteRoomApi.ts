@@ -11,6 +11,7 @@ export type WebsiteRoomPayload = {
   state?: GameState | null;
   createdAt?: string;
   updatedAt?: string;
+  stateRevision?: number;
 };
 
 type WebsiteRoomResponse = {
@@ -71,7 +72,8 @@ function normalizeWebsiteRoom(room: WebsiteRoomPayload): HighLandRoomState {
     players,
     gameState: room.state ?? null,
     createdAt,
-    updatedAt: room.updatedAt ?? createdAt
+    updatedAt: room.updatedAt ?? createdAt,
+    stateRevision: Number.isSafeInteger(room.stateRevision) && (room.stateRevision ?? 0) >= 0 ? room.stateRevision : 0
   };
 }
 
