@@ -25,6 +25,7 @@ export function createLocalRoom(hostPlayer: LocalRoomPlayerInput, storage?: Stor
     hostPlayerId: roomHost.id,
     players: [roomHost],
     gameState: null,
+    stateRevision: 0,
     createdAt: now,
     updatedAt: now
   };
@@ -48,7 +49,10 @@ export function joinLocalRoom(roomCode: string, player: LocalRoomPlayerInput, st
     host: existingPlayer?.host ?? false
   };
 
-  const updatedRoom = upsertRoomPlayer(room, joinedPlayer);
+  const updatedRoom = {
+    ...upsertRoomPlayer(room, joinedPlayer),
+    stateRevision: (room.stateRevision ?? 0) + (existingPlayer ? 0 : 1)
+  };
   saveLocalRoom(updatedRoom, storage);
   return updatedRoom;
 }
