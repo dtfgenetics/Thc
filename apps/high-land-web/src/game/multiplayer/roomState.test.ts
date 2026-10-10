@@ -50,6 +50,18 @@ describe('room state', () => {
     expect(canPlayerRoll({ ...room, status: 'waiting' }, 'local-player-1')).toBe(false);
   });
 
+  it.each(['moving', 'resolving_card', 'choosing_player', 'game_over'] as const)(
+    'does not authorize room rolls while phase is %s', (phase) => {
+      const waiting = makeRoom(2);
+      const room: HighLandRoomState = {
+        ...waiting,
+        status: 'playing',
+        gameState: { ...createGameFromRoom(waiting), phase }
+      };
+      expect(canPlayerRoll(room, 'local-player-1')).toBe(false);
+    }
+  );
+
   it('upserts an existing player without changing room size', () => {
     const room = makeRoom(2);
     const updated = upsertRoomPlayer(room, { ...room.players[1], name: 'Updated Guest' });
