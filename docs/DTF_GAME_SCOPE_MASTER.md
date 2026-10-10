@@ -8,7 +8,7 @@
 
 ## Public playable catalog
 
-The current controlled catalog contains **23 public-route games**. A public route is not the same as exact live verification; use each entry’s release state and verification evidence.
+The current controlled catalog contains **24 public-route games**. A public route is not the same as exact live verification; use each entry’s release state and verification evidence.
 
 1. **Bud or Bluff** — `bud-or-bluff` — /games/bud-or-bluff/ — `public-unverified`
 2. **Burn Buds** — `protect-the-plants` — /games/protect-the-plants/ — `public-unverified`
@@ -23,16 +23,17 @@ The current controlled catalog contains **23 public-route games**. A public rout
 11. **Lost in the Terps** — `lost-in-the-terps` — /games/lost-in-the-terps/ — `public-unverified`
 12. **Mystery Strain** — `mystery-strain` — /games/mystery-strain/ — `public-unverified`
 13. **Pheno Draft** — `pheno-draft` — /games/pheno-draft/ — `public-unverified`
-14. **PhenoQuest: The Living Seed Vault** — `phenoquest` — /games/phenoquest/ — `public-unverified`
-15. **Seed Man: Grow. Fight. Restore.** — `seed-man-platformer` — /games/seed-man-platformer/ — `public-unverified`
-16. **Spin the Strain** — `spin-the-strain` — /games/spin-the-strain/ — `public-unverified`
-17. **Strain Match** — `strain-match` — /games/strain-match/ — `public-unverified`
-18. **Strain Showdown** — `strain-showdown` — /games/strain-showdown/ — `public-unverified`
-19. **Terpocalypse: Grow Room From Hell** — `terpocalypse` — /games/terpocalypse/ — `public-unverified`
-20. **THC Daily Crossword** — `crossword` — /games/crossword/ — `public-unverified`
-21. **Trichome Trials** — `trichome-trials` — /games/trichome-trials/ — `public-unverified`
-22. **Weedopolis: Strain City Edition** — `weedopolis` — /games/weedopolis/ — `public-unverified`
-23. **Who Took It?** — `who-took-it` — /games/who-took-it/ — `public-unverified`
+14. **Pheno Hunter** — `pheno-hunter` — /games/pheno-hunter/ — `public-unverified`
+15. **PhenoQuest: The Living Seed Vault** — `phenoquest` — /games/phenoquest/ — `public-unverified`
+16. **Seed Man: Grow. Fight. Restore.** — `seed-man-platformer` — /games/seed-man-platformer/ — `public-unverified`
+17. **Spin the Strain** — `spin-the-strain` — /games/spin-the-strain/ — `public-unverified`
+18. **Strain Match** — `strain-match` — /games/strain-match/ — `public-unverified`
+19. **Strain Showdown** — `strain-showdown` — /games/strain-showdown/ — `public-unverified`
+20. **Terpocalypse: Grow Room From Hell** — `terpocalypse` — /games/terpocalypse/ — `public-unverified`
+21. **THC Daily Crossword** — `crossword` — /games/crossword/ — `public-unverified`
+22. **Trichome Trials** — `trichome-trials` — /games/trichome-trials/ — `public-unverified`
+23. **Weedopolis: Strain City Edition** — `weedopolis` — /games/weedopolis/ — `public-unverified`
+24. **Who Took It?** — `who-took-it` — /games/who-took-it/ — `public-unverified`
 
 ## Built prototype not yet promoted
 
