@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { setDefaultResultOrder } from 'node:dns';
+import { isHighLandPlayableDocument } from './game-route-identity.mjs';
 
 setDefaultResultOrder('ipv4first');
 
@@ -405,31 +406,30 @@ async function auditLiveGame(game) {
     const readiness = await auditRuntimeJson(game, finalUrl.href);
     if (readiness.problems.length) problems.push(`broken runtime data: ${readiness.problems.join(', ')}`);
 
-    if (game.status === 'multiplayer') {
+    if (game.id === 'high-land') {
+      // Always audit the playable destination; landing-page scripts do not prove game delivery.
+      const playUrl = new URL('/games/high-land/play/', BASE);
+      if (!html.includes('/games/high-land/play/')) {
+        problems.push('High Land landing page lacks its same-origin playable route');
+      }
+      try {
+        const playable = await fetchWithTimeout(playUrl.href, { attempts: 2, timeoutMs: 10_000 });
+        const playableHtml = await playable.text();
+        const resolved = new URL(playable.url);
+        if (!playable.ok ||
+            resolved.origin !== playUrl.origin ||
+            resolved.pathname !== playUrl.pathname ||
+            !/text\/html/i.test(playable.headers.get('content-type') || '') ||
+            !isHighLandPlayableDocument(playableHtml)) {
+          problems.push('High Land playable route returned an unavailable, redirected, or non-game document');
+        }
+      } catch (error) {
+        problems.push(`High Land playable route failed: ${errorDetail(error)}`);
+      }
+    } else if (game.status === 'multiplayer') {
       if (!/(create|join|room|match|session)/i.test(html)) problems.push('multiplayer route lacks create/join/session UI markers');
     } else if (!/(<script\b|<button\b|<canvas\b|<form\b)/i.test(html)) {
-      if (game.id === 'high-land') {
-        const playUrl = new URL('play/', finalUrl);
-        if (playUrl.origin !== new URL(BASE).origin ||
-            !html.includes('/games/high-land/play/')) {
-          problems.push('High Land landing page lacks its same-origin playable route');
-        } else {
-          try {
-            const playable = await fetchWithTimeout(playUrl.href, { attempts: 2, timeoutMs: 10_000 });
-            const playableHtml = await playable.text();
-            if (!playable.ok ||
-                new URL(playable.url).origin !== new URL(BASE).origin ||
-                !/text\/html/i.test(playable.headers.get('content-type') || '') ||
-                !/(<script\b|<button\b|<canvas\b|<form\b|id=["']root["'])/i.test(playableHtml)) {
-              problems.push('High Land playable route is unavailable or lacks interactive runtime');
-            }
-          } catch (error) {
-            problems.push(`High Land playable route failed: ${errorDetail(error)}`);
-          }
-        }
-      } else {
-        problems.push('play-now route exposes no obvious interactive runtime marker');
-      }
+      problems.push('play-now route exposes no obvious interactive runtime marker');
     }
 
     results.push({ id: game.id, route: game.route, status: response.status, assetsChecked: assets.length, runtimeDataChecked: readiness.checked, problems });
