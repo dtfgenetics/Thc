@@ -92,9 +92,9 @@ jobs:
                 inspected++;
                 const existing = fs.readFileSync(target, 'utf8');
                 const incoming = fs.readFileSync(path.join(canonical, next), 'utf8');
-                const meaningful = value => value.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi, '')
-                  .replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi, '')
-                  .replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim().length;
+                const meaningful = value => value.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+                  .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+                  .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length;
                 const oldSize = meaningful(existing);
                 const newSize = meaningful(incoming);
                 if (oldSize >= 600 && newSize < oldSize * 0.7 && incoming !== existing) {
