@@ -53,3 +53,9 @@ Metricool brand `7320929`: 25 Facebook-only scheduled posts from October 12 to N
 `392902705, 392902722, 392902735, 392902747, 392902759, 392902768, 392902775`.
 
 **Production queue rules:** Read existing entries before scheduling; prevent same-date and near-duplicate topics; confirm the exact destination; include source references when quantitative or science charts are used; verify post statuses after release. Text-only Facebook scheduling is currently functional. Generated infographics are not yet uploaded to publicly reachable, verified media URLs. Instagram `@dtfgenetics` is connected but its intended THC publishing authorization remains unresolved, so do not cross-post automatically.
+
+## Scheduling verification — December extension (2026-10-10)
+
+Read back Metricool brand `7320929` after scheduling: **32 Facebook-only posts**, all `PENDING`, with `autoPublish=true` and the correct invite `https://discord.gg/ZzYTUWKKW`. The calendar currently extends through **2026-12-13** in `America/Chicago`. New post IDs for Nov 30–Dec 13: `392903398`, `392903412`, `392903426`, `392903442`, `392903474`, `392903491`, `392903508`. This is not a publication or join confirmation.
+
+Next production requirement: move the image content to a publicly readable durable media host and validate chart numbers, references, and text before attaching media; do not schedule Instagram until the account destination and intended brand are approved.
