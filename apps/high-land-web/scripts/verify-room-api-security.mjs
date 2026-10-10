@@ -159,6 +159,12 @@ try {
   });
   assert(mismatchedWinner.status === 400, 'Complete status requires a winning game state.');
 
+  const fabricatedWinner = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'complete', state: { ...gameState(0), winnerId: 'not-a-player' }, expectedRevision: 1
+  });
+  assert(fabricatedWinner.status === 400, 'Nonparticipant winner must be rejected.');
+
   const forgedHost = await post('update-room.php', {
     roomCode,
     playerId: 'host-1',
