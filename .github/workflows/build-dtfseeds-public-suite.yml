@@ -111,7 +111,7 @@ jobs:
           set -euo pipefail
           npm run verify:portfolio
           node scripts/validate-public-navigation.mjs
-          grep -Fq '23 playable browser games' site/public-route-patch/games/index.html
+          grep -Fq '24 playable browser games' site/public-route-patch/games/index.html
           test -s site/public-route-patch/games/dtf-route.css
           grep -Fq '.route-placeholder-card' site/public-route-patch/games/dtf-route.css
           grep -Fq '.game-detail-page' site/public-route-patch/games/dtf-route.css
