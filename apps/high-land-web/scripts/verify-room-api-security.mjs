@@ -165,6 +165,18 @@ try {
   });
   assert(fabricatedWinner.status === 400, 'Nonparticipant winner must be rejected.');
 
+  const invalidWinnerPhase = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'complete', state: { ...gameState(0), winnerId: 'host-1' }, expectedRevision: 1
+  });
+  assert(invalidWinnerPhase.status === 400, 'Winner must have game_over phase.');
+
+  const invalidPlayingPhase = await post('update-room.php', {
+    roomCode, playerId: 'host-1', credential: hostCredential,
+    status: 'playing', state: { ...gameState(0), phase: 'game_over' }, expectedRevision: 1
+  });
+  assert(invalidPlayingPhase.status === 400, 'Playing room cannot carry terminal game phase.');
+
   const forgedHost = await post('update-room.php', {
     roomCode,
     playerId: 'host-1',
