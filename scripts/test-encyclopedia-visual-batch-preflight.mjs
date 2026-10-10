@@ -15,4 +15,10 @@ assert.throws(() => validateVisualProductionQueue(mismatch), /task count mismatc
 const malformed = source(); malformed.items[0].visualRoles[0].ordinal = 0;
 assert.throws(() => validateVisualProductionQueue(malformed), /Invalid teaching visual role/);
 assert.throws(() => validateVisualProductionQueue({}), /Invalid visual production queue/);
+const duplicateLesson = source(); duplicateLesson.items.push(structuredClone(duplicateLesson.items[0])); duplicateLesson.summary.visualTasksNeeded = 2;
+assert.throws(() => validateVisualProductionQueue(duplicateLesson), /Duplicate visual queue lesson/);
+const duplicateOrdinal = source(); duplicateOrdinal.items[0].visualRoles[1].ordinal = 1;
+assert.throws(() => validateVisualProductionQueue(duplicateOrdinal), /Duplicate teaching visual ordinal/);
+const invalidStatus = source(); invalidStatus.items[0].visualRoles[0].status = 'approved';
+assert.throws(() => validateVisualProductionQueue(invalidStatus), /Unknown teaching visual status/);
 console.log('Visual production batch preflight tests passed');
