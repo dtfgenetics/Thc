@@ -347,7 +347,7 @@ function auditCandidateGame(game) {
       if (!html.includes(`href="${playRoute}"`) && !html.includes(`href='${playRoute}'`)) {
         problems.push('High Land launch page lacks a link to its playable route');
       }
-      if (!/(<script\\b|<button\\b|<canvas\\b|<form\\b|id=["']root["'])/i.test(runtimeHtml)) {
+      if (!/(<script\b|<button\b|<canvas\b|<form\b|id=["']root["'])/i.test(runtimeHtml)) {
         problems.push('High Land playable source lacks an interactive runtime marker');
       }
     } else {
