@@ -33,6 +33,14 @@ function randomForCard(id: string): number {
 }
 
 describe('room game actions', () => {
+  it.each(['moving', 'resolving_card', 'choosing_player', 'game_over'] as const)(
+    'rejects room rolls in phase %s without emitting events', (phase) => {
+      const started = startRoomGameplay(makeRoom());
+      const blocked = { ...started.room, gameState: { ...started.room.gameState!, phase } };
+      expect(() => rollRoomGameplay(blocked, () => 0)).toThrow('Room is not currently playing.');
+    }
+  );
+
   it('starts room gameplay and creates an event', () => {
     const result = startRoomGameplay(makeRoom());
 
