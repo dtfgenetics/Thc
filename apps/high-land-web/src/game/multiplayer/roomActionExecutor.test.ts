@@ -56,6 +56,24 @@ describe('room action executor', () => {
     expect(getLocalRoomEvents(room.code, storage).map((event) => event.name)).toEqual(['game_started', 'dice_rolled']);
   });
 
+  it('rejects stale room actions without emitting duplicate game events', async () => {
+    const storage = new MemoryStorage();
+    const transport = createLocalRoomTransport(storage);
+    const created = await transport.createRoom(makeTransportPlayer(0, true));
+    const joined = await transport.joinRoom(created.code, makeTransportPlayer(1));
+    const started = await startRoomWithTransport(joined, transport, 'local-player-1');
+
+    await expect(startRoomWithTransport(joined, transport, 'local-player-1'))
+      .rejects.toThrow('Stale room state revision');
+    const rolled = await rollRoomWithTransport(started, transport, 'local-player-1', () => 0);
+    await expect(rollRoomWithTransport(started, transport, 'local-player-1', () => 0))
+      .rejects.toThrow('Stale room state revision');
+
+    expect(rolled.stateRevision).toBe((started.stateRevision ?? 0) + 1);
+    expect(getLocalRoomEvents(created.code, storage).map((event) => event.name))
+      .toEqual(['game_started', 'dice_rolled']);
+  });
+
   it('rejects starts from non-host players', async () => {
     const storage = new MemoryStorage();
     const transport = createLocalRoomTransport(storage);
