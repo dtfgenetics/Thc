@@ -7,7 +7,7 @@ export function buildLessonAssessmentV2(lesson){
   // correction inside the quoted learner claim. Structured rows are supported.
   const misconception=typeof firstMisconception==='object' && firstMisconception!==null
     ? String(firstMisconception.claim||firstMisconception.misconception||'A common shortcut is reliable without context.').trim()
-    : String(firstMisconception||'A common shortcut is reliable without context.').split(/:\\s+/u,1)[0].trim();
+    : String(firstMisconception||'A common shortcut is reliable without context.').split(/:\s+/u,1)[0].trim();
   const relevance=String((Array.isArray(lesson?.cultivationRelevance)?lesson.cultivationRelevance:[lesson?.cultivationRelevance]).filter(Boolean)[0]||`Apply the principles of ${title} to a cultivation decision.`);
   const rawRecords=Array.isArray(lesson?.measureAndRecord)?lesson.measureAndRecord:[];
   const recordSummary=rawRecords.map(item=>typeof item==='string'?item:`${item?.field||'Record'}: ${item?.requirement||''}`).filter(Boolean).join('; ');
