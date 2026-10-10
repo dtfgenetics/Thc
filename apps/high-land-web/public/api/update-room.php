@@ -64,6 +64,14 @@ $room = api_mutate_room($roomCode, function (array $room) use ($data, $playerId,
     $incomingStatus = isset($data['status']) ? api_clean_string($data['status'], 20) : null;
     $storedStatus = api_clean_string($room['status'] ?? 'waiting', 20);
     $hostPlayerId = api_clean_string($room['players'][0]['id'] ?? '', 80);
+    if ($hasState && $incomingStatus === 'complete') {
+        $winnerId = api_clean_string($data['state']['winnerId'] ?? '', 80);
+        $roomPlayerIds = array_column($room['players'] ?? [], 'id');
+        if (!in_array($winnerId, $roomPlayerIds, true)) {
+            api_send_json(['ok' => false, 'error' => 'Game winner must belong to this room.'], 400);
+        }
+    }
+
     $storedState = is_array($room['state'] ?? null) ? $room['state'] : null;
     $currentPlayerIndex = is_array($storedState) ? (int)($storedState['currentPlayerIndex'] ?? 0) : 0;
     $storedGamePlayers = is_array($storedState['players'] ?? null) ? $storedState['players'] : [];
