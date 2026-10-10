@@ -374,14 +374,10 @@ try {
     roomCode: isolatedRoomCode, playerId: 'host-1', credential: hostCredential,
     status: 'playing', state: gameState(99), expectedRevision: 0
   });
-  assert(invalidIndexStart.status === 200, 'Malformed legacy active-index fixture could not be created.');
-  const unresolvedActivePlayer = await post('update-room.php', {
-    roomCode: isolatedRoomCode, playerId: 'host-1', credential: hostCredential,
-    status: 'playing', state: gameState(0), expectedRevision: 1
-  });
-  assert(unresolvedActivePlayer.status === 409, 'Missing active player must fail closed.');
-  const afterUnresolvedActivePlayer = await request(`get-room.php?room=${encodeURIComponent(isolatedRoomCode)}`);
-  assert(afterUnresolvedActivePlayer.payload?.room?.stateRevision === 1, 'Unresolved player write must not advance revision.');
+  assert(invalidIndexStart.status === 400, 'Invalid active-player index must be rejected before storage.');
+  const afterInvalidIndex = await request(`get-room.php?room=${encodeURIComponent(isolatedRoomCode)}`);
+  assert(afterInvalidIndex.payload?.room?.stateRevision === 0, 'Invalid active-player index must not advance revision.');
+  assert(afterInvalidIndex.payload?.room?.state === null, 'Invalid active-player index must not persist game state.');
 
   const originalAfterIsolation = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
   assert(originalAfterIsolation.payload?.room?.stateRevision === 6, 'Creating a second room must not mutate the first.');
