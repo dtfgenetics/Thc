@@ -8,7 +8,7 @@ Mandatory product-wide quality guidance: `docs/PRODUCTION_STANDARDS.md`. Product
 
 ## THC educational community
 
-Join **Teaching Healthy Cultivation (THC)** to discuss plant biology, environmental measurements, cultivation tools, genetics, and evidence-based learning: [THC Discord](https://discord.gg/xJbUeHFPMt).
+Join **Teaching Healthy Cultivation (THC)** to discuss plant biology, environmental measurements, cultivation tools, genetics, and evidence-based learning: [THC Discord](https://discord.gg/ZzYTUWKKW).
 
 The Discord is an adults-only **education and discussion** community, not a seed sales or trading channel. Follow applicable laws and community rules.
 
