@@ -28,6 +28,10 @@ if ($hasState) {
     if (!in_array($requestedStatus, ['playing', 'complete'], true)) {
         api_send_json(['ok' => false, 'error' => 'Invalid game state transition.'], 400);
     }
+    $phase = api_clean_string($data['state']['phase'] ?? '', 32);
+    if (($requestedStatus === 'complete') !== ($phase === 'game_over')) {
+        api_send_json(['ok' => false, 'error' => 'Game phase must agree with room completion status.'], 400);
+    }
     $winnerId = api_clean_string($data['state']['winnerId'] ?? '', 80);
     if (($winnerId !== '') !== ($requestedStatus === 'complete')) {
         api_send_json(['ok' => false, 'error' => 'Game status must agree with winner state.'], 400);
