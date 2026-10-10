@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { effectiveLessonAssessment } from './lib/encyclopedia-assessment-v2.mjs';
+import { misconceptionClaim } from './lib/encyclopedia-misconception-claim.mjs';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
 import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
 
@@ -12,15 +13,7 @@ const lessons=readCanonicalEncyclopediaLessons(root);
 const registryState=loadEncyclopediaRegistry(root);
 const promptOwners=new Map();
 const normalize=s=>String(s||'').toLowerCase().replace(/\s+/g,' ').trim();
-const misconceptionClaim=value=>{
-  // Match the learner-facing claim isolation in buildLessonAssessmentV2.
-  // A canonical string is "claim: correction"; the correction is not the claim.
-  const text=typeof value==='object' && value!==null
-    ? String(value.claim||value.misconception||'').trim()
-    : String(value||'').split(/:\s+/u,1)[0].trim();
-  const first=text.match(/^.*?[.!?](?:\s|$)/u)?.[0]||text;
-  return first.trim();
-};
+
 
 if(lessons.length!==registryState.totalCount) errors.push(`Expected ${registryState.totalCount} registered encyclopedia lessons; found ${lessons.length}`);
 
