@@ -66,7 +66,7 @@ const footerContent = `<!-- wp:group {"tagName":"footer","layout":{"type":"const
 <!-- wp:paragraph --><p>Dream the Future. Genetics, cultivation education, practical tools, original games, and community.</p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p><a href="/">Home</a> · <a href="/seeds/">Seeds</a> · <a href="/learn/">Learn</a> · <a href="/courses/">Courses</a> · <a href="/tools/">Tools</a> · <a href="/games/">Games</a> · <a href="/community/">Community</a> · <a href="/shop/">Shop</a></p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p><a href="/gallery/">Gallery</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a></p><!-- /wp:paragraph -->
-<!-- wp:paragraph --><p><a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join THC — Teaching Healthy Cultivation Discord</a></p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><a href="https://discord.gg/ZzYTUWKKW" target="_blank" rel="noopener noreferrer">Join THC — Teaching Healthy Cultivation Discord</a></p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p>© 2026 DTF Genetics. All rights reserved.</p><!-- /wp:paragraph -->
 </footer>
 <!-- /wp:group -->`;
@@ -128,7 +128,7 @@ const verifiedFooter = verifyParts.find((part) => part?.id === 'hostinger-ai-the
 const verifiedFooterText = rawText(verifiedFooter?.content);
 const footerDefectsRemain = ['email@email.com', '+123456789', '2025 DTF GENETICS'].filter((marker) => verifiedFooterText.includes(marker));
 if (footerDefectsRemain.length) throw new Error(`Footer verification failed; stale markers remain: ${footerDefectsRemain.join(', ')}`);
-if (!verifiedFooterText.includes('discord.gg/xJbUeHFPMt')) throw new Error('Footer verification failed; official Discord CTA is missing');
+if (!verifiedFooterText.includes('discord.gg/ZzYTUWKKW')) throw new Error('Footer verification failed; official Discord CTA is missing');
 
 const verifyNavigation = await request('/wp-json/wp/v2/navigation?context=edit&per_page=100&status=publish');
 const verifiedTargets = verifyNavigation.filter((nav) => staleNavigations.some((before) => before.id === nav.id));
@@ -160,7 +160,7 @@ const summary = {
   navigationRecordsMatched: staleNavigations.length,
   navigationRecordsUpdated: navigationResults.length,
   canonicalNavigation: canonicalNavigation.map(([label,url]) => ({label,url})),
-  officialDiscord: 'https://discord.gg/xJbUeHFPMt',
+  officialDiscord: 'https://discord.gg/ZzYTUWKKW',
   backupDir,
   verification: {
     footerFakeMarkersRemoved: true,
