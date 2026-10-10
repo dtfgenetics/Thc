@@ -258,6 +258,28 @@ try {
   const finalState = await request(`get-room.php?room=${encodeURIComponent(roomCode)}`);
   assert(finalState.payload?.room?.stateRevision === 4, 'Successful state writes must advance the revision exactly once.');
 
+  const validFinish = await post('update-room.php', {
+    roomCode,
+    playerId: 'host-1',
+    credential: hostCredential,
+    status: 'complete',
+    state: { ...gameState(0), winnerId: 'host-1', phase: 'game_over' },
+    expectedRevision: 4
+  });
+  assert(validFinish.status === 200 && validFinish.payload?.ok, 'Legitimate active-player finish must succeed.');
+  assert(validFinish.payload.room?.status === 'complete', 'Finished game status was not persisted.');
+  assert(validFinish.payload.room?.stateRevision === 5, 'Finish must advance revision once.');
+
+  const duplicateFinish = await post('update-room.php', {
+    roomCode,
+    playerId: 'host-1',
+    credential: hostCredential,
+    status: 'complete',
+    state: { ...gameState(0), winnerId: 'host-1', phase: 'game_over' },
+    expectedRevision: 4
+  });
+  assert(duplicateFinish.status === 409, 'Stale finish must not overwrite completed game.');
+
   const forgedEvent = await post('append-event.php', {
     roomCode,
     playerId: 'host-1',
