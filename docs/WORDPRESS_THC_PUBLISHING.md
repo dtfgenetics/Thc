@@ -12,7 +12,7 @@ This repository can publish Teaching Healthy Cultivation articles to the existin
 - Categories and tags are resolved by exact name and created if missing.
 - Existing post JSON is saved before an update.
 - Deployment results and rollback metadata are retained as a private GitHub Actions artifact.
-- THC article packages require the canonical Discord CTA `https://discord.gg/xJbUeHFPMt` unless explicitly opted out.
+- THC article packages require the canonical Discord CTA `https://discord.gg/ZzYTUWKKW` unless explicitly opted out.
 
 ## Required WordPress credentials
 
