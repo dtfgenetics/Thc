@@ -36,6 +36,16 @@ function randomForCard(id: string): number {
 }
 
 describe('game engine', () => {
+  it.each(['resolving_card', 'choosing_player', 'moving', 'game_over'] as const)(
+    'does not roll while phase is %s', (phase) => {
+      const state = { ...createInitialGame(2), phase };
+      let calls = 0;
+      const next = rollCurrentTurn(state, () => { calls++; return 0; });
+      expect(next).toBe(state);
+      expect(calls).toBe(0);
+    }
+  );
+
   it('rolls from 1 to 6', () => {
     expect(rollDie(() => 0)).toBe(1);
     expect(rollDie(() => 0.99)).toBe(6);

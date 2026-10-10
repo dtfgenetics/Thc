@@ -24,7 +24,7 @@ export function createInitialGame(playerCount: number): GameState {
 }
 
 export function rollCurrentTurn(state: GameState, random: () => number = Math.random): GameState {
-  if (state.phase === 'game_over' || state.phase === 'choosing_player') return state;
+  if (state.phase !== 'ready') return state;
   const currentPlayer = getCurrentPlayer(state.players, state.currentPlayerIndex);
 
   if (shouldSkipTurn(currentPlayer)) {

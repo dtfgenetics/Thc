@@ -30,7 +30,7 @@ export function startRoomGameplay(room: HighLandRoomState): RoomActionResult {
 }
 
 export function rollRoomGameplay(room: HighLandRoomState, random: () => number = Math.random): RoomActionResult {
-  if (room.status !== 'playing' || !room.gameState) {
+  if (room.status !== 'playing' || !room.gameState || room.gameState.phase !== 'ready') {
     throw new Error('Room is not currently playing.');
   }
 

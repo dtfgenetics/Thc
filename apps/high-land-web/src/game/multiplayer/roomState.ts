@@ -25,7 +25,7 @@ export function canStartRoom(room: HighLandRoomState, requestingPlayerId: string
 }
 
 export function canPlayerRoll(room: HighLandRoomState, requestingPlayerId: string): boolean {
-  if (room.status !== 'playing' || !room.gameState) return false;
+  if (room.status !== 'playing' || !room.gameState || room.gameState.phase !== 'ready') return false;
   const currentPlayer = room.gameState.players[room.gameState.currentPlayerIndex];
   return currentPlayer?.id === requestingPlayerId;
 }
