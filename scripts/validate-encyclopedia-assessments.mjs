@@ -13,8 +13,12 @@ const registryState=loadEncyclopediaRegistry(root);
 const promptOwners=new Map();
 const normalize=s=>String(s||'').toLowerCase().replace(/\s+/g,' ').trim();
 const misconceptionClaim=value=>{
-  const text=String(value||'').trim();
-  const first=text.match(/^.*?[.!?](?:\s|$)/)?.[0]||text;
+  // Match the learner-facing claim isolation in buildLessonAssessmentV2.
+  // A canonical string is "claim: correction"; the correction is not the claim.
+  const text=typeof value==='object' && value!==null
+    ? String(value.claim||value.misconception||'').trim()
+    : String(value||'').split(/:\s+/u,1)[0].trim();
+  const first=text.match(/^.*?[.!?](?:\s|$)/u)?.[0]||text;
   return first.trim();
 };
 
