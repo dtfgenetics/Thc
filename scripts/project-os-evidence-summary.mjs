@@ -14,6 +14,7 @@ export function summarizeQualityReport(report) {
       if(normalized !== 'pass') missing.push({category,status:normalized,reason:item?.reason || 'missing evidence'});
     }
     if(app?.ownerMatch === false) missing.push({category:'source',status:'fail',reason:'registry owner conflict'});
+    if(app?.ownerMatch === null || app?.ownerMatch === undefined) missing.push({category:'source',status:'unknown',reason:'no matching registered project owner'});
     if(missing.length) blockers.push({appId:app.appId,route:app.route || null,repository:app.repository || null,missing});
   }
   return {
