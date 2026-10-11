@@ -5,8 +5,12 @@ VIDEO={".mp4",".mov",".webm",".mkv"}
 IMAGE={".jpg",".jpeg",".png",".webp",".tif",".tiff"}
 AUDIO={".wav",".flac",".aiff",".mp3",".m4a"}
 def inspect_file(path, root):
-    root=Path(root).resolve(); path=Path(path).resolve()
-    if not path.is_relative_to(root) or not path.is_file() or path.is_symlink() or path.stat().st_size==0:
+    root=Path(root).resolve()
+    original=Path(path).absolute()
+    if any(part.is_symlink() for part in (original, *original.parents)):
+        raise ValueError("symlink media not allowed")
+    path=original.resolve()
+    if not path.is_relative_to(root) or not path.is_file() or path.stat().st_size==0:
         raise ValueError("missing, empty or unsafe file")
     ext=path.suffix.lower()
     kind="video" if ext in VIDEO else "image" if ext in IMAGE else "audio" if ext in AUDIO else None
@@ -20,7 +24,7 @@ def inspect_file(path, root):
     except (OSError,ValueError,subprocess.SubprocessError) as exc:
         raise ValueError("not valid probed media") from exc
     streams=metadata.get("streams",[])
-    if not any(stream.get("codec_type")==kind for stream in streams):
+    if not any(stream.get("codec_type")==("video" if kind=="image" else kind) for stream in streams):
         raise ValueError("media streams inconsistent with file type")
     return {"path":str(path.relative_to(root)),"type":kind,"bytes":path.stat().st_size,
             "sha256":digest.hexdigest(),"streams":[{key:s.get(key) for key in ("codec_type","codec_name","width","height","sample_rate") if s.get(key) is not None} for s in streams],
@@ -30,7 +34,13 @@ def inspect_file(path, root):
 def inventory(root):
     root=Path(root).resolve()
     files=sorted(p for p in root.rglob("*") if p.is_file() and p.suffix.lower() in VIDEO|IMAGE|AUDIO and not p.is_symlink())
-    return {"schema_version":1,"warning":"Technical checks do not verify rights, biological accuracy or genuine human narration.",
-            "assets":[inspect_file(path,root) for path in files]}
+    assets=[]; rejected=[]
+    for path in files:
+        try:
+            assets.append(inspect_file(path,root))
+        except ValueError as exc:
+            rejected.append({"path":str(path.relative_to(root)),"reason":str(exc)})
+    return {"schema_version":2,"warning":"Technical checks do not verify rights, biological accuracy or genuine human narration.",
+            "assets":assets,"rejected":rejected}
 if __name__=="__main__":
     print(json.dumps(inventory(sys.argv[1] if len(sys.argv)>1 else "."),indent=2))
