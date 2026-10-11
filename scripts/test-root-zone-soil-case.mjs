@@ -46,4 +46,17 @@ for (const label of ['Elevated salts', 'Elevated soil pH', 'Low root aeration'])
   assert(mechanismSvg.includes(label), 'Missing mechanism: ' + label);
 }
 assert(protocol.includes('root-zone-mechanisms.svg'));
+const intake = JSON.parse(load('../docs/education/diagnostics/root-zone-observation-template.json'));
+assert.equal(intake.schemaVersion, 1);
+assert.equal(intake.caseId, d.id);
+assert.equal(intake.fields.length, 13);
+assert.equal(new Set(intake.fields.map(f => f.id)).size, intake.fields.length);
+for (const id of ['soilPH', 'soilEC', 'feedEC']) {
+  const field = intake.fields.find(f => f.id === id);
+  assert(field && field.kind === 'number' && field.methodRequired, 'Measurement must require method: ' + id);
+}
+assert.equal(intake.fields.find(f => f.id === 'soilEC').unit, 'mS/cm');
+assert(intake.measurementMetadata.includes('sampleLocation'));
+assert(intake.imageSlots.length >= 4);
+assert(intake.interpretationRules.some(s => s.includes('unknown')));
 console.log('Root-zone diagnostic case and Case Lab compatibility checks passed');
