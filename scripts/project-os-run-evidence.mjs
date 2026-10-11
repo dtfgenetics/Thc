@@ -32,6 +32,8 @@ export async function inspectRunEvidence({repository,sha,runId,attempt,token,fet
      artifacts.artifacts.some(a=>!Number.isSafeInteger(a?.id)||a.id<1||
      typeof a.name!=='string'||!a.name||typeof a.expired!=='boolean'))
     throw Error('Invalid job or artifact metadata');
+  if(jobs.jobs.length===0 || jobs.jobs.some(j=>j.status!=='completed'||j.conclusion!=='success'))
+    throw Error('One or more workflow jobs are missing or unsuccessful');
   return {
     schemaVersion:1,repository,sha,runId,attempt,
     jobs:jobs.jobs.map(j=>({id:j.id,name:j.name,status:j.status,conclusion:j.conclusion,runId,runAttempt:attempt,headSha:sha})),
