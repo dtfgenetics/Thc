@@ -1,0 +1,45 @@
+name: Project OS Quality Evidence
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/project-os-quality-evidence*'
+      - 'data/project-os-quality-evidence.json'
+      - 'data/project-registry.json'
+      - 'site/deployment/public-apps.json'
+      - '.github/workflows/project-os-quality-evidence.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/project-os-quality-evidence*'
+      - 'data/project-os-quality-evidence.json'
+      - 'data/project-registry.json'
+      - 'site/deployment/public-apps.json'
+      - '.github/workflows/project-os-quality-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test evidence contracts
+        run: node --test scripts/project-os-quality-evidence.test.mjs
+      - name: Generate portfolio evidence audit
+        run: node scripts/project-os-quality-evidence.mjs
+      - name: Upload evidence report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-os-quality-evidence-${{ github.run_id }}
+          path: .artifacts/project-os/quality-evidence.json
+          if-no-files-found: error
