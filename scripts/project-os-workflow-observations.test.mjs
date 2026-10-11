@@ -21,7 +21,7 @@ test('collects only recognized successful workflow runs',async()=>{
  const fetchImpl=async (url,options)=>{
    assert(url.includes('head_sha='+sha));assert.match(options.headers.Authorization,/Bearer secret/);
    const bad=good();bad.conclusion='failure';
-   return {ok:true,json:async()=>({workflow_runs:[good(),bad]})};
+   return {ok:true,json:async()=>({total_count:2,workflow_runs:[good(),bad]})};
  };
  const report=await collectWorkflowObservations({repository:repo,sha,token:'secret',fetchImpl,now});
  assert.equal(report.observations.length,1);
@@ -30,4 +30,11 @@ test('collects only recognized successful workflow runs',async()=>{
 test('API failures and absent credentials fail closed',async()=>{
  await assert.rejects(()=>collectWorkflowObservations({repository:repo,sha,token:''}),/token/);
  await assert.rejects(()=>collectWorkflowObservations({repository:repo,sha,token:'secret',fetchImpl:async()=>({ok:false,status:403})}),/403/);
+});
+
+test('rejects partial and malformed GitHub workflow pagination',async()=>{
+ for(const total_count of [undefined,3,-1]){
+  await assert.rejects(()=>collectWorkflowObservations({repository:repo,sha,token:'secret',now,
+   fetchImpl:async()=>({ok:true,json:async()=>({total_count,workflow_runs:[good()]})})}),/pagination/);
+ }
 });
