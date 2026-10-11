@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "id": "DX-CASE-SOIL-EC-01",
+  "route": "/learn/diagnostic-cases/",
+  "title": "Flowering soil container: chlorosis and marginal necrosis",
+  "status": "supplemental-unpublished",
+  "context": {
+    "medium": "soil",
+    "containerLiters": 11,
+    "floweringWeeks": "5–7",
+    "pH": "reported high; numerical value and method not supplied",
+    "EC": "unknown",
+    "fertilization": "heavy application every other day"
+  },
+  "observed": [
+    "Widespread fan-leaf yellowing in the supplied photo",
+    "Brown leaf margins and necrotic tips",
+    "Visible flowering structures; photo alone does not establish progression"
+  ],
+  "hypotheses": [
+    {
+      "rank": 1,
+      "name": "Excess soluble salts / root-zone osmotic stress",
+      "supports": [
+        "Frequent heavy fertilizer input in limited media volume",
+        "Tip and margin necrosis compatible with salinity injury"
+      ],
+      "confirm": [
+        "Representative repeatable soil-extract EC elevated relative to crop-system reference and prior baseline",
+        "Documented high feed input with salt accumulation over time"
+      ],
+      "challenge": [
+        "Representative same-method EC not elevated and no accumulation trend"
+      ],
+      "confidence": "leading unconfirmed"
+    },
+    {
+      "rank": 2,
+      "name": "High-pH-associated nutrient availability limitation",
+      "supports": [
+        "Reported high pH",
+        "Mixed chlorosis symptoms"
+      ],
+      "confirm": [
+        "Calibrated numeric soil pH measured with documented sampling method",
+        "Corroborating soil or tissue nutrient analysis"
+      ],
+      "challenge": [
+        "Appropriate repeatable pH and no corresponding availability imbalance"
+      ],
+      "confidence": "plausible unconfirmed"
+    },
+    {
+      "rank": 3,
+      "name": "Excess moisture / low root-zone aeration",
+      "supports": [
+        "Every-other-day irrigation could limit dryback in some soils"
+      ],
+      "confirm": [
+        "Persistently saturated media, poor drainage, or impaired roots"
+      ],
+      "challenge": [
+        "Normal moisture cycling and well-aerated healthy roots"
+      ],
+      "confidence": "possible"
+    },
+    {
+      "rank": 4,
+      "name": "Specific elemental shortage (e.g., K or Mg)",
+      "supports": [
+        "Some leaf symptoms resemble deficiency patterns"
+      ],
+      "confirm": [
+        "Tissue/nutrient-input evidence plus age-dependent symptom progression"
+      ],
+      "challenge": [
+        "Elemental supply adequate; another measured stress explains the pattern"
+      ],
+      "confidence": "not established"
+    }
+  ],
+  "evidenceToCollect": [
+    "Calibrated soil pH, sampling method, date and location",
+    "EC (mS/cm), sample extraction method, repeat trend and calibration",
+    "Fertilizer composition and actual input EC with volumes",
+    "Container moisture, drainage and root assessment",
+    "Date-stamped comparable leaf photographs and first-affected leaf age"
+  ],
+  "decisionRules": [
+    "Do not call nutrient lockout confirmed from one photo, runoff sample or pH value",
+    "Do not compare EC values from different sampling methods as a direct trend",
+    "Avoid changing multiple variables simultaneously before establishing a baseline",
+    "Old necrotic tissue does not recover; new damage and progression are follow-up indicators",
+    "Improvement after correction supports but does not uniquely prove a proposed mechanism"
+  ],
+  "workingConclusion": "Fertilizer-associated salinity and pH-related stress are leading competing or coexisting explanations. Root-zone measurements are required to resolve them.",
+  "sources": [
+    {
+      "id": "DX-S4",
+      "doi": "10.3390/plants12030422",
+      "scope": "Deficiency symptomology in controlled cannabis hydroponics; does not validate a soil-specific diagnosis from imagery"
+    },
+    {
+      "id": "DX-S5",
+      "doi": "10.3389/fpls.2025.1433985",
+      "scope": "Cannabis nutrient-concentration research; does not establish this container's EC"
+    }
+  ],
+  "visual": "docs/education/diagnostics/root-zone-evidence-path.svg"
+}

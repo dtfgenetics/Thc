@@ -1,0 +1,30 @@
+name: Diagnostic Soil Case Quality
+on:
+  pull_request:
+    paths:
+      - 'docs/education/diagnostics/**'
+      - 'scripts/test-root-zone-soil-case.mjs'
+      - 'site/wordpress/education/diagnostic-case-lab-v1.json'
+      - 'site/wordpress/education/diagnostic-case-lab-v2-extension.json'
+      - '.github/workflows/diagnostic-soil-case-quality.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/education/diagnostics/**'
+      - 'scripts/test-root-zone-soil-case.mjs'
+      - 'site/wordpress/education/diagnostic-case-lab-v1.json'
+      - 'site/wordpress/education/diagnostic-case-lab-v2-extension.json'
+      - '.github/workflows/diagnostic-soil-case-quality.yml'
+permissions:
+  contents: read
+jobs:
+  case-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate supplemental case and existing Case Lab contracts
+        run: node scripts/test-root-zone-soil-case.mjs
