@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "THC-ENC-013",
+  "status": "candidate_not_published",
+  "figures": [
+    {
+      "id": "THC-ENC-013-FIG01",
+      "placement": "coreScience after paragraph 1",
+      "type": "photorealistic annotated botanical macro",
+      "subject": "Cannabis shoot apex, emerging leaves and axillary bud at a clearly visible node",
+      "caption": "Illustrative shoot-tip and axillary-bud anatomy; not a microscopy specimen.",
+      "alt": "Botanical rendering showing terminal shoot tip, leaf primordia and the axillary bud at a stem node."
+    },
+    {
+      "id": "THC-ENC-013-FIG02",
+      "placement": "coreScience after paragraph 6",
+      "type": "scientific conceptual signal diagram",
+      "subject": "Auxin, cytokinin, strigolactone and sugar signaling in bud outgrowth",
+      "requirements": [
+        "separate demonstrated broad plant mechanisms from cannabis-specific evidence",
+        "no simulated concentration measurements",
+        "editable labels"
+      ],
+      "caption": "Conceptual multi-signal model of bud outgrowth; not a cultivar-specific predictive model."
+    },
+    {
+      "id": "THC-ENC-013-FIG03",
+      "placement": "measureAndRecord after bud-level observation",
+      "type": "blank quantitative chart template",
+      "subject": "Axillary bud extension in millimeters over observation days",
+      "requirements": [
+        "blank template until measured observations available",
+        "specimen ID and node mandatory",
+        "no invented series"
+      ]
+    }
+  ],
+  "evidence": [
+    "https://doi.org/10.1093/jxb/erad137",
+    "https://academic.oup.com/pcp/article/64/9/967/7234590"
+  ],
+  "publicationEnabled": false,
+  "assetFilesUploaded": false
+}
