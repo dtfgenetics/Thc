@@ -5,9 +5,11 @@ const root=process.cwd();
 const batchPath=path.join(root,'site/wordpress/education/simple-user-guide-batch1.json');
 const visualPath=path.join(root,'site/wordpress/education/simple-user-guide-visuals-v1.json');
 const evidencePath=path.join(root,'site/wordpress/education/simple-user-guide-evidence-v1.json');
+const queuePath=path.join(root,'site/wordpress/education/simple-user-guide-visual-production-queue-v1.json');
 const batch=JSON.parse(fs.readFileSync(batchPath,'utf8'));
 const visuals=JSON.parse(fs.readFileSync(visualPath,'utf8'));
 const evidence=JSON.parse(fs.readFileSync(evidencePath,'utf8'));
+const queue=JSON.parse(fs.readFileSync(queuePath,'utf8'));
 const errors=[];
 const fail=(m)=>errors.push(m);
 const expected=['setup','seeds','seedling','veg','flower','harvest','dry','cure','pests','tips'];
@@ -50,6 +52,14 @@ for(const [i,slug] of expected.entries()){
   const ep=evidence.pages?.[slug];
   if(!ep) fail(`${slug}: evidence boundary record is required`);
 }
+if(queue.schemaVersion!==1||queue.id!=='simple-user-guide-visual-production-queue-v1') fail('Unexpected production queue identity.');
+if(queue.designSystem?.masterPixels?.width!==2550||queue.designSystem?.masterPixels?.height!==3300||queue.designSystem?.targetDpi!==300) fail('Production queue must preserve the 8.5x11 at 300 DPI master contract.');
+if(!Array.isArray(queue.items)||queue.items.length!==10) fail('Production queue must define exactly ten page items.');
+for(const [i,item] of (queue.items||[]).entries()){
+  if(item.pageNumber!==i+1||item.pageSlug!==expected[i]) fail(`Production queue page mismatch at position ${i+1}`);
+  if(!queue.statusValues.includes(item.status)) fail(`${item.pageSlug}: unsupported production status ${item.status}`);
+  if(!item.targetFilename||!item.teachingPurpose||!item.artDirection||!item.requiredAction) fail(`${item.pageSlug}: incomplete production brief`);
+}
 const sourceIds=new Set((evidence.sources||[]).map(x=>x.id));
 for(const [slug,entry] of Object.entries(evidence.pages||{})){
   for(const id of entry.sourceRefs||[]) if(!sourceIds.has(id)) fail(`${slug}: unknown evidence source ${id}`);
@@ -60,4 +70,4 @@ if(errors.length){
  process.exit(1);
 }
 const counts=visuals.visuals.reduce((a,x)=>(a[x.status]=(a[x.status]||0)+1,a),{});
-console.log(JSON.stringify({valid:true,pages:10,visualStatusCounts:counts,evidenceSources:evidence.sources.length},null,2));
+console.log(JSON.stringify({valid:true,pages:10,visualStatusCounts:counts,evidenceSources:evidence.sources.length,productionQueueItems:queue.items.length},null,2));
