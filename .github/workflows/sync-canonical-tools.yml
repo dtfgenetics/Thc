@@ -99,11 +99,11 @@ jobs:
                 }
                 const existing = fs.readFileSync(target, 'utf8');
                 const incoming = fs.readFileSync(source, 'utf8');
-                const meaningful = value => value.replace(/<!--[\\s\\S]*?-->/g, '')
-                  .replace(/<template\\b[^>]*>[\\s\\S]*?<\\/template>/gi, '')
-                  .replace(/<[^>]+\\bhidden(?:\\s|=|>)[^>]*>[\\s\\S]*?<\\/[^>]+>/gi, '')
-                  .replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi, '')
-                  .replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi, '')
+                const meaningful = value => value.replace(/<!--[\s\\S]*?-->/g, '')
+                  .replace(/<template\b[^>]*>[\s\\S]*?<\\/template>/gi, '')
+                  .replace(/<[^>]+\bhidden(?:\s|=|>)[^>]*>[\s\\S]*?<\\/[^>]+>/gi, '')
+                  .replace(/<script\b[^>]*>[\s\\S]*?<\\/script>/gi, '')
+                  .replace(/<style\b[^>]*>[\s\\S]*?<\\/style>/gi, '')
                   .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length;
                 const oldSize = meaningful(existing);
                 const newSize = meaningful(incoming);
