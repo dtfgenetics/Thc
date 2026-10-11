@@ -37,3 +37,9 @@ test('Atlas content measurement retains visible text', () => {
   assert.ok(meaningful('<main><p>Evidence-based cultivation</p></main>') > 20);
   assert.equal(meaningful('<script>inert text</script><style>inert text</style>'), 0);
 });
+
+test('Atlas content measurement does not consume unrelated visible closing tags', () => {
+  const baseline = '<main><p>Visible lesson content.</p></main>';
+  const withHidden = '<main><div hidden>secret</div><p>Visible lesson content.</p></main>';
+  assert.equal(meaningful(withHidden), meaningful(baseline));
+});
