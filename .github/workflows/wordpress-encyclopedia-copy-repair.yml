@@ -55,6 +55,7 @@ jobs:
           node --check scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
           node --check scripts/audit-live-encyclopedia-copy.mjs
           node --check scripts/verify-wordpress-encyclopedia-copy-repair.mjs
+          node scripts/test-encyclopedia-copy-held-route.mjs
       - name: Repair eligible stale live copy
         run: node scripts/repair-wordpress-encyclopedia-copy-defects.mjs
       - name: Verify live encyclopedia copy
