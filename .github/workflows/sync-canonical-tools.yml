@@ -93,8 +93,12 @@ jobs:
                 const target = path.join(mirror, next);
                 if (!fs.existsSync(target)) continue;
                 inspected++;
+                const source = path.join(canonical, next);
+                if (!fs.statSync(source, {throwIfNoEntry: false})?.isFile()) {
+                  throw new Error('Canonical Atlas lesson is not a regular file: ' + next);
+                }
                 const existing = fs.readFileSync(target, 'utf8');
-                const incoming = fs.readFileSync(path.join(canonical, next), 'utf8');
+                const incoming = fs.readFileSync(source, 'utf8');
                 const meaningful = value => value.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
                   .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
                   .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length;
