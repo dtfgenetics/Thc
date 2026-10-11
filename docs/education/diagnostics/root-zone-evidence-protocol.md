@@ -6,6 +6,8 @@
 
 An 11 L soil container, weeks 5–7 of flowering, visibly yellow leaves with brown margins, reported elevated pH, frequent heavy feeding, and **unknown root-zone EC** can support several simultaneous explanations. Tip necrosis and chlorosis alone cannot distinguish high soluble salts from impaired aeration, actual elemental shortage, or multiple stressors.
 
+The machine-readable [observation intake template](./root-zone-observation-template.json) specifies field types, measurement methods, explicit unknowns, and four photographic evidence categories. It is a schema for future UI integration and currently does not store records or score diagnoses.
+
 ## Evidence priority
 
 | Priority | Observation / measurement | Required metadata | What it separates |
