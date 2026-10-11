@@ -11,15 +11,33 @@ if(!fs.existsSync(promotionPath)) throw new Error('Missing visual promotion mani
 const promotion=JSON.parse(fs.readFileSync(promotionPath,'utf8'));
 const rows=[];
 const errors=[];
+const seenTasks=new Set();
+const seenPaths=new Set();
+const requiredChecks=['scienceAccuracy','labelingAccuracy','misconceptionSafety','accessibilityQuality','provenanceRights','responsiveLegibility'];
 
 for(const item of promotion.items||[]){
   if(!item.promotionEligible) continue;
   const rel=String(item.targetRepositoryPath||'');
-  const abs=path.join(root,rel);
-  if(!rel.startsWith('site/wordpress/assets/infographics/')||!rel.toLowerCase().endsWith('.png')){
+  const expectedName=`${item.lessonId}_${String(item.visualOrdinal).padStart(2,'0')}_${item.visualRole}.png`;
+  const expectedPath=`site/wordpress/assets/infographics/${expectedName}`;
+  const taskId=`${item.lessonId}:${item.visualRole}:${item.visualOrdinal}`;
+  const review=item.independentVisualReview||{};
+  const reviewComplete=review.evidenceComplete===true && review.decision==='approved' && Boolean(String(review.reviewerId||'').trim()) && Boolean(String(review.reviewedAt||'').trim()) && Boolean(String(review.reviewNotes||'').trim()) && requiredChecks.every(key=>review.reviewChecks?.[key]===true);
+  if(!item.machinePreflightPassed || !item.controlledTargetValid || !item.candidateAssetPresent || !reviewComplete){
+    errors.push(`${taskId}: promotion eligibility lacks preflight, controlled asset, or complete independent reviewer evidence`);
+    continue;
+  }
+  if(seenTasks.has(taskId)||seenPaths.has(rel)){
+    errors.push(`${taskId}: duplicate approved visual task or repository path`);
+    continue;
+  }
+  seenTasks.add(taskId);
+  seenPaths.add(rel);
+  if(!/^THC-ENC-\d{3,}$/.test(item.lessonId||'') || !Number.isInteger(item.visualOrdinal) || item.visualOrdinal<1 || item.visualOrdinal>10 || !/^[a-z0-9][a-z0-9_-]*$/i.test(item.visualRole||'') || rel!==expectedPath){
     errors.push(`${item.lessonId}: invalid target path`);
     continue;
   }
+  const abs=path.join(root,rel);
   if(!fs.existsSync(abs)){
     errors.push(`${item.lessonId}: eligible target raster missing`);
     continue;
@@ -32,7 +50,10 @@ for(const item of promotion.items||[]){
   const sha256=crypto.createHash('sha256').update(buf).digest('hex');
   rows.push({
     lessonId:item.lessonId,
-    approvedAssetId:`ENC-ASSET-${item.lessonId}-${sha256.slice(0,12)}`,
+    approvedAssetId:`ENC-ASSET-${item.lessonId}-${item.visualOrdinal}-${item.visualRole}-${sha256.slice(0,12)}`,
+    visualTaskId:taskId,
+    visualRole:item.visualRole,
+    visualOrdinal:item.visualOrdinal,
     repositoryPath:rel,
     sha256,
     bytes:buf.length,

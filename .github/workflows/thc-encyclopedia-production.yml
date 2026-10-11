@@ -128,6 +128,8 @@ jobs:
         run: node scripts/test-encyclopedia-visual-promotion-target-safety.mjs
       - name: Build visual promotion manifest
         run: npm run build:encyclopedia-visual-promotion
+      - name: Regression-test approved visual asset integrity
+        run: node scripts/test-encyclopedia-approved-asset-integrity.mjs
       - name: Build exact approved visual asset ledger
         run: npm run encyclopedia:visual-approved-assets
       - name: Rebuild unified production readiness with approved visual evidence
