@@ -194,6 +194,17 @@ jobs:
             [[ "$ok" -eq 1 ]] || { echo "$id visitor visual verification failed" >&2; exit 1; }
           done < "$RUNNER_TEMP/visuals.tsv"
 
+      - name: Verify exact published image bytes against canonical source and live lesson figure
+        if: ${{ steps.publish.outcome == 'success' && steps.verify.outcome == 'success' }}
+        shell: bash
+        env:
+          ENCYCLOPEDIA_VISUAL_PUBLICATION_REPORT: ${{ steps.publish.outputs.report }}
+          ENCYCLOPEDIA_VISUAL_LIVE_AUDIT_REPORT: /tmp/dtf-encyclopedia-visuals/encyclopedia-wordpress-visual-live-parity.json
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/audit-wordpress-encyclopedia-visual-parity.mjs
+          test -s "$ENCYCLOPEDIA_VISUAL_LIVE_AUDIT_REPORT"
+
       - name: Upload rollback and publication evidence
         if: always()
         uses: actions/upload-artifact@v4
