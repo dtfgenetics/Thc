@@ -1,14 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import path from 'node:path';
 
 const workflow = fs.readFileSync(new URL('../.github/workflows/sync-canonical-tools.yml', import.meta.url), 'utf8');
 const start = workflow.indexOf("const meaningful = value => ");
 assert.ok(start !== -1, 'Atlas preservation text measurement must exist');
-const end = workflow.indexOf(";\n", start);
+const end = workflow.indexOf('const oldSize = meaningful(existing);', start);
 assert.ok(end > start, 'Atlas measurement expression must terminate');
-const expression = workflow.slice(start, end + 1);
+const expression = workflow.slice(start, end);
 const meaningful = new Function(expression + '\nreturn meaningful;')();
 
 test('Atlas content measurement excludes inert HTML', () => {
