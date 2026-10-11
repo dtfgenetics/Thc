@@ -13,6 +13,8 @@ test('returns real job and artifact metadata without inventing app attestation',
  assert.equal(result.jobs[0].appIds,undefined);
  assert.equal(result.artifacts[0].jobId,undefined);
  assert.equal(result.jobs[0].runAttempt,2);
+ assert.equal(result.artifacts[0].runAttempt,null);
+ assert.equal(result.artifacts[0].attemptAttribution,'unverified');
 });
 test('rejects stale identity and unsuccessful runs',async()=>{
  for(const patch of [{head_sha:'c'.repeat(40)},{run_attempt:1},{conclusion:'failure'},{status:'queued'}]){
@@ -24,4 +26,11 @@ test('rejects incomplete pagination',async()=>{
 });
 test('rejects API failure',async()=>{
  await assert.rejects(()=>inspectRunEvidence({...args,fetchImpl:async()=>({ok:false,status:403})}),/403/);
+});
+
+test('run-level artifact cannot inherit requested retry attempt',async()=>{
+ const result=await inspectRunEvidence({...args,fetchImpl:mock()});
+ assert.equal(result.attempt,2);
+ assert.equal(result.artifacts[0].runAttempt,null);
+ assert.equal(result.artifacts[0].jobId,undefined);
 });
