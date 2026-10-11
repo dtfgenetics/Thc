@@ -14,6 +14,8 @@ if(!reportPath || !fs.existsSync(reportPath)){
 const publication=JSON.parse(fs.readFileSync(reportPath,'utf8'));
 const records=publication.updated;
 if(!Array.isArray(records) || records.length===0) throw new Error('No published visual rows: live parity cannot be claimed.');
+if(publication.lessonVisualsAttached!==records.length) throw new Error('Publisher count does not match publication report rows.');
+if(publication.rollback?.attempted) throw new Error('Publication report records a rollback attempt; public parity cannot be certified.');
 const results=[],errors=[],seen=new Set();
 const allowLocal=process.env.ENCYCLOPEDIA_VISUAL_ALLOW_LOCALHOST==='1';
 const isLocal=url=>allowLocal && url.protocol==='http:' && ['127.0.0.1','localhost'].includes(url.hostname);
@@ -49,6 +51,7 @@ const hasSignature=(bytes,type)=>type==='image/png'
 const safeFile=name=>typeof name==='string' && /^[A-Za-z0-9][A-Za-z0-9._-]*\.(?:png|jpe?g|webp)$/i.test(name) && !name.includes('..');
 const verifyRow=async(row)=>{
   const id=String(row.id||'');
+  if(row.storedContentVerified!==true) throw new Error(`${id}: publisher stored-content verification is missing`);
   if(!/^THC-ENC-\d{3,}$/.test(id)) throw new Error('Invalid lesson ID');
   if(seen.has(id)) throw new Error(`${id}: duplicate lesson in publication report`);
   seen.add(id);
@@ -79,9 +82,10 @@ const verifyRow=async(row)=>{
   if(end<0) throw new Error(`${id}: lesson figure is not closed`);
   const figure=html.slice(start,end);
   const src=imageUrl.toString();
-  const htmlSrc=src.replaceAll('&','&amp;');
-  if(!figure.includes(src) && !figure.includes(htmlSrc)) throw new Error(`${id}: verified image URL missing from lesson figure`);
-  if(!/<img\b[^>]*\bsrc=["']/i.test(figure)) throw new Error(`${id}: image tag missing from lesson figure`);
+  const imgTags=figure.match(/<img\\b[^>]*>/gi)||[];
+  if(imgTags.length!==1) throw new Error(`${id}: expected one image within the marked lesson figure`);
+  const match=imgTags[0].match(/\\bsrc=["']([^"']+)["']/i);
+  if(!match || match[1].replaceAll('&amp;','&')!==src) throw new Error(`${id}: the displayed lesson image src does not match verified publication URL`);
   return {id,mediaSourceUrl:src,lessonUrl:pageUrl.toString(),sha256:actual,bytes:image.body.length,matched:true};
 };
 let next=0;
