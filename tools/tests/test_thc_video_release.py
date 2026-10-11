@@ -39,6 +39,42 @@ class CaptionPreflight(unittest.TestCase):
             (root/"production_manifest.json").write_text("{broken")
             self.assertTrue(any("manifest" in problem.lower() for problem in verify(root)))
 
+    def test_empty_license_evidence_blocks(self):
+        import csv
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            (root/"production_manifest.json").write_text("{}")
+            (root/"assets").mkdir()
+            (root/"footage.bin").write_bytes(b"original footage placeholder")
+            (root/"evidence.txt").write_bytes(b"")
+            fields=["asset_id","source_url","creator","license","license_evidence_file","local_path","sha256","authenticity","verified"]
+            with (root/"assets/ASSET_LICENSE_REGISTER.csv").open("w",newline="") as handle:
+                writer=csv.DictWriter(handle,fieldnames=fields)
+                writer.writeheader()
+                writer.writerow({"asset_id":"S01","source_url":"https://example.org/asset","creator":"Test fixture",
+                    "license":"Test-only permission","license_evidence_file":"evidence.txt",
+                    "local_path":"footage.bin","sha256":"0"*64,
+                    "authenticity":"genuine-camera-footage","verified":"true"})
+            self.assertTrue(any("license evidence file is empty" in x for x in verify(root)))
+
+    def test_reject_non_web_source_url(self):
+        import csv
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            (root/"production_manifest.json").write_text("{}")
+            (root/"assets").mkdir()
+            (root/"footage.bin").write_bytes(b"sample")
+            (root/"evidence.txt").write_bytes(b"permission")
+            fields=["asset_id","source_url","creator","license","license_evidence_file","local_path","sha256","authenticity","verified"]
+            with (root/"assets/ASSET_LICENSE_REGISTER.csv").open("w",newline="") as handle:
+                writer=csv.DictWriter(handle,fieldnames=fields)
+                writer.writeheader()
+                writer.writerow({"asset_id":"S01","source_url":"private-untraceable-file","creator":"Test fixture",
+                    "license":"Test-only permission","license_evidence_file":"evidence.txt",
+                    "local_path":"footage.bin","sha256":"0"*64,
+                    "authenticity":"genuine-camera-footage","verified":"true"})
+            self.assertTrue(any("source_url must be" in x for x in verify(root)))
+
     def test_missing_register_blocks(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)
