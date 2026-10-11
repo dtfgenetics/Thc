@@ -20,6 +20,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   validate:
@@ -34,6 +35,13 @@ jobs:
           node-version: '22'
       - name: Test evidence contracts
         run: node --test scripts/project-os-quality-evidence.test.mjs
+      - name: Test workflow observation collector
+        run: node --test scripts/project-os-workflow-observations.test.mjs
+      - name: Collect exact-revision GitHub Actions observations
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PROJECT_OS_TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/project-os-workflow-observations.mjs
       - name: Generate portfolio evidence audit
         run: node scripts/project-os-quality-evidence.mjs
       - name: Upload evidence report
@@ -41,5 +49,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: project-os-quality-evidence-${{ github.run_id }}
-          path: .artifacts/project-os/quality-evidence.json
+          path: |
+            .artifacts/project-os/quality-evidence.json
+            .artifacts/project-os/workflow-observations.json
           if-no-files-found: error
