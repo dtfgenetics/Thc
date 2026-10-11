@@ -44,8 +44,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PROJECT_OS_TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/project-os-workflow-observations.mjs
+      - name: Test portfolio blocker summary
+        run: node --test scripts/project-os-evidence-summary.test.mjs
       - name: Generate portfolio evidence audit
         run: node scripts/project-os-quality-evidence.mjs
+      - name: Generate actionable blocker summary
+        run: node scripts/project-os-evidence-summary-cli.mjs
       - name: Upload evidence report
         if: always()
         uses: actions/upload-artifact@v4
@@ -54,4 +58,5 @@ jobs:
           path: |
             .artifacts/project-os/quality-evidence.json
             .artifacts/project-os/workflow-observations.json
+            .artifacts/project-os/evidence-summary.json
           if-no-files-found: error
