@@ -29,4 +29,13 @@ assert.match(svg, /role="img"/);
 assert.match(svg, /<title\b/);
 assert.match(svg, /<desc\b/);
 assert(!/guaranteed cure|confirmed lockout|100% certain/i.test(JSON.stringify(d)));
+const protocol = load('../docs/education/diagnostics/root-zone-evidence-protocol.md');
+for (const section of ['Evidence priority', 'Sample comparability rules', 'Differential checkpoints', 'Photo evidence plan', 'Interpretation template']) {
+  assert(protocol.includes(section), `Protocol missing: ${section}`);
+}
+for (const term of ['mS/cm', 'sample location', 'runoff', 'tissue', 'old necrotic leaves', 'synthetic reference']) {
+  assert(protocol.toLowerCase().includes(term.toLowerCase()), `Protocol missing concept: ${term}`);
+}
+assert(protocol.includes('10.3390/plants12030422'));
+assert(protocol.includes('10.3389/fpls.2025.1433985'));
 console.log('Root-zone diagnostic case and Case Lab compatibility checks passed');
