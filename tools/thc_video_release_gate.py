@@ -21,17 +21,27 @@ def verify(root):
         if manifest.get(name) is not expected: issues.append(f"{name}: expected {expected}")
     reg = root / "assets/ASSET_LICENSE_REGISTER.csv"
     if not reg.is_file(): return issues + ["Asset register missing"]
-    with reg.open(newline="", encoding="utf-8") as handle:
+    try:
+        handle = reg.open(newline="", encoding="utf-8")
+    except (OSError, UnicodeError) as err:
+        return issues + [f"Asset register unreadable: {err}"]
+    with handle:
         reader = csv.DictReader(handle)
         expected_columns = {"asset_id","source_url","creator","license","license_evidence_file","local_path","sha256","authenticity","verified"}
         if not expected_columns.issubset(set(reader.fieldnames or [])) or any(not c for c in (reader.fieldnames or [])):
             return issues + ["Asset register CSV schema invalid"]
-        rows = list(reader)
+        try:
+            rows = list(reader)
+        except (csv.Error, UnicodeError) as err:
+            return issues + [f"Asset register unreadable: {err}"]
         if any(None in row for row in rows):
             return issues + ["Asset register CSV contains surplus columns"]
     byid = {}
     for row in rows:
         aid = row.get("asset_id")
+        if not aid or not isinstance(aid, str):
+            issues.append("Asset register contains a blank asset ID")
+            continue
         if aid in byid: issues.append(f"{aid}: duplicate asset ID")
         byid[aid] = row
     for aid in sorted(REQUIRED):
@@ -46,12 +56,12 @@ def verify(root):
         for field in ("source_url","creator","license","sha256"):
             if not row.get(field): issues.append(f"{aid}: {field} missing")
         source = row.get("source_url", "")
-        parsed = urlparse(source)
-        if parsed.scheme not in ("https", "http") or not parsed.netloc:
+        parsed = urlparse(source if isinstance(source, str) else "")
+        if parsed.scheme not in ("https", "http") or not parsed.hostname:
             issues.append(f"{aid}: source_url must be a fully qualified web URL")
         for field in ("local_path","license_evidence_file"):
             value = row.get(field)
-            path = (root / value).resolve() if value else None
+            path = (root / value).resolve() if isinstance(value, str) and value else None
             if path is None or not path.is_relative_to(root) or not path.is_file():
                 issues.append(f"{aid}: invalid {field} or missing file")
             elif field == "license_evidence_file" and path.stat().st_size == 0:
@@ -67,7 +77,7 @@ def verify(root):
     captions_path = None
     for key in ("video_file","captions_file"):
         value = manifest.get(key)
-        path = (root / value).resolve() if value else None
+        path = (root / value).resolve() if isinstance(value, str) and value else None
         if path is None or not path.is_relative_to(root) or not path.is_file():
             issues.append(f"{key}: not available in workspace")
         elif key == "captions_file":
@@ -85,7 +95,7 @@ def verify(root):
                 if len(audio)!=1 or audio[0].get("codec_name")!="aac":
                     issues.append("Expected one AAC narration track")
                 duration = data.get("format", {}).get("duration") or (vid[0].get("duration") if vid else None)
-                if duration is None or float(duration) < 15:
+                if duration is None or not (15 <= float(duration) < 86400):
                     issues.append("Missing or invalid video duration (<15s)")
                 else:
                     video_duration_ms = round(float(duration) * 1000)
