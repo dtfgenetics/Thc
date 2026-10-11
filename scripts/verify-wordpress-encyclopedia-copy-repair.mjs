@@ -24,7 +24,11 @@ for(const route of failures){
 const unexpected=[];
 for(const route of audit.failedRoutes||[]){
   const hold=blocked.get(route.id);
-  if(!hold || hold.reason!=='publication-hold') unexpected.push(route);
+  // A publication hold may explain stale approved copy, never a missing page,
+  // failed fetch, or invalid route. Fail closed unless both scans saw HTTP 200.
+  if(!hold || hold.reason!=='publication-hold' || Number(route.status)!==200 || Number(hold.publicStatus)!==200){
+    unexpected.push(route);
+  }
 }
 const repairedButStillFailing=(scan.candidates||[]).filter(x=>(audit.failedRoutes||[]).some(r=>r.id===x.id));
 if(repairedButStillFailing.length) unexpected.push(...repairedButStillFailing.map(x=>({id:x.id,reason:'repairable-route-still-failing'})));
