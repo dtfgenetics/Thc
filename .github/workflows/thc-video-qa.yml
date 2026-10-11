@@ -1,0 +1,30 @@
+name: THC video release QA
+on:
+  pull_request:
+    paths:
+      - 'tools/thc_video_release_gate.py'
+      - 'tools/thc_video_caption_qa.py'
+      - 'tools/tests/test_thc_video_release.py'
+      - '.github/workflows/thc-video-qa.yml'
+  push:
+    paths:
+      - 'tools/thc_video_release_gate.py'
+      - 'tools/thc_video_caption_qa.py'
+      - 'tools/tests/test_thc_video_release.py'
+      - '.github/workflows/thc-video-qa.yml'
+jobs:
+  release-qa:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install media probe
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Check Python syntax
+        run: python -m compileall -q tools/thc_video_release_gate.py tools/thc_video_caption_qa.py tools/tests/test_thc_video_release.py
+      - name: Run release quality regressions
+        run: python -m unittest discover -s tools/tests -p 'test_thc_video_release.py' -v
