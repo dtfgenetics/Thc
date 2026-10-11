@@ -124,6 +124,8 @@ jobs:
         run: npm run verify:encyclopedia-independent-review
       - name: Build visual machine preflight
         run: npm run build:encyclopedia-visual-preflight
+      - name: Regression-test visual promotion target safety
+        run: node scripts/test-encyclopedia-visual-promotion-target-safety.mjs
       - name: Build visual promotion manifest
         run: npm run build:encyclopedia-visual-promotion
       - name: Build exact approved visual asset ledger
