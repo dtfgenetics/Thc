@@ -9,6 +9,28 @@ const harvestBriefPath=path.join(ROOT,"site/wordpress/education/visual-art-brief
 function fail(message){console.error(`ERROR: ${message}`);process.exit(1)}
 function readJson(file){try{return JSON.parse(fs.readFileSync(file,"utf8"))}catch(error){fail(`Unable to read valid JSON from ${path.relative(ROOT,file)}: ${error.message}`)}}
 
+function validateMasterPng(file,id,designSystem){
+ const header=Buffer.alloc(24);
+ const fd=fs.openSync(file,'r');
+ try{
+  if(fs.readSync(fd,header,0,24,0)!==24) fail(`${id} master PNG is truncated`);
+ }finally{fs.closeSync(fd)}
+ if(!header.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))||header.readUInt32BE(8)!==13||header.toString('ascii',12,16)!=='IHDR') fail(`${id} master asset is not a valid PNG IHDR header`);
+ const width=header.readUInt32BE(16),height=header.readUInt32BE(20);
+ if(width===0||height===0) fail(`${id} master PNG has invalid zero dimensions`);
+ const ihdrTail=Buffer.alloc(5);
+ const colorFd=fs.openSync(file,'r');
+ try{
+  if(fs.readSync(colorFd,ihdrTail,0,5,24)!==5) fail(`${id} master PNG has a truncated IHDR payload`);
+ }finally{fs.closeSync(colorFd)}
+ const bitDepth=ihdrTail[0],colorType=ihdrTail[1];
+ if(ihdrTail[2]!==0||ihdrTail[3]!==0||![0,1].includes(ihdrTail[4])) fail(`${id} master PNG has invalid IHDR compression, filter, or interlace method`);
+ const validDepths={0:[1,2,4,8,16],2:[8,16],3:[1,2,4,8],4:[8,16],6:[8,16]};
+ if(!validDepths[colorType]?.includes(bitDepth)) fail(`${id} master PNG has invalid bit depth/color type combination`);
+ const minWidth=Number(designSystem?.masterMinimumWidthPx),minHeight=Number(designSystem?.masterMinimumHeightPx);
+ if(!Number.isSafeInteger(minWidth)||minWidth<1||!Number.isSafeInteger(minHeight)||minHeight<1) fail('Visual design system must define positive master minimum pixel dimensions');
+ if(width<minWidth||height<minHeight) fail(`${id} master PNG ${width}x${height} is below the required ${minWidth}x${minHeight}`);
+}
 const queue=readJson(queuePath); const coverage=readJson(coveragePath);
 if(queue.schemaVersion!==1) fail("visual production queue schemaVersion must be 1");
 if(!Array.isArray(queue.batches)||queue.batches.length===0) fail("visual production queue must contain batches");
@@ -35,7 +57,7 @@ for(const batch of queue.batches){
   if(!queue.statusValues.includes(item.status)) fail(`${item.id} has unsupported status ${item.status}`);
   const review=item.review||{}; for(const key of ["scientificQA","visualQA","labelSpellingQA","pagePlacementQA"]) if(typeof review[key]!=="boolean") fail(`${item.id} review.${key} must be boolean`);
   if(item.status==="approved"||item.status==="published"){
-   const assetPath=path.join(ROOT,queue.canonicalAssetDirectory,item.masterFilename); if(!fs.existsSync(assetPath)) fail(`${item.id} is ${item.status} but master asset is missing: ${item.masterFilename}`);
+   const assetPath=path.join(ROOT,queue.canonicalAssetDirectory,item.masterFilename); if(!fs.existsSync(assetPath)) fail(`${item.id} is ${item.status} but master asset is missing: ${item.masterFilename}`); validateMasterPng(assetPath,item.id,queue.designSystem);
    if(!item.sourceRefs.length) fail(`${item.id} is ${item.status} but has no sourceRefs`); if(!Object.values(review).every(Boolean)) fail(`${item.id} is ${item.status} but review gates are incomplete`);
   }
  }
