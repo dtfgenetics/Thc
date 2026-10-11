@@ -165,8 +165,8 @@ jobs:
           git commit -m "Sync canonical cultivation tools from dtfgenetics/Tools"
           git fetch origin main
           if [ "$(git rev-parse origin/main)" != "$(git rev-parse HEAD^)" ]; then
-            echo "::notice::THC main advanced during canonical sync; rebasing and revalidating."
-            git rebase origin/main
+            echo "::error::THC main advanced after Atlas preservation validation; aborting unsafe sync. Rerun against latest main."
+            exit 1
           fi
           TOOLS_REPO_DIR=/tmp/tools npm run verify:cultivation-reference-tools
           expected_tools_sha="$(git -C /tmp/tools rev-parse HEAD)"
