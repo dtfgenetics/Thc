@@ -44,7 +44,7 @@ if(!errors.length){
     errors.push('missing controlled WordPress encyclopedia publisher workflow');
   }else{
     const publisher=fs.readFileSync(publishWorkflowPath,'utf8');
-    const pushPaths=publisher.split(/\\n\\s*push:\\s*\\n/)[1]?.split(/\\n\\s*workflow_dispatch:/)[0]||'';
+    const pushPaths=publisher.split(/\n\s*push:\s*\n/)[1]?.split(/\n\s*workflow_dispatch:/)[0]||'';
     if(!pushPaths.includes(`- ${targetPath}`)){
       errors.push('WordPress encyclopedia publisher must trigger on immutable source pin changes');
     }
