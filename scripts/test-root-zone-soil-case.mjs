@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const d=JSON.parse(readFileSync(new URL('../docs/education/diagnostics/root-zone-soil-case.json',import.meta.url),'utf8'));
+assert.equal(d.schemaVersion,1);
+assert.equal(d.route,'/learn/diagnostic-cases/');
+assert.equal(d.context.containerLiters,11);
+assert.equal(d.context.EC,'unknown');
+assert.equal(d.hypotheses.length,4);
+assert.deepEqual(d.hypotheses.map(x=>x.rank),[1,2,3,4]);
+assert(d.hypotheses.every(x=>x.supports.length && x.confirm.length && x.challenge.length && x.confidence));
+assert(d.decisionRules.some(x=>x.includes('Do not call nutrient lockout confirmed')));
+assert(d.sources.every(x=>/^10\\.\\d{4,9}\\//.test(x.doi)));
+console.log('Root-zone case contract passed');
