@@ -9,6 +9,7 @@ export function assessAppWorkflowCoverage(app, observation, {jobs=[],artifacts=[
   if(qualifying.length===0) reasons.push('no-successful-app-scoped-job');
   const evidence=artifacts.filter(a=>a?.appId===app?.id && a?.headSha===observation?.sha &&
     a?.runId===observation?.runId && a?.runAttempt===observation?.attempt &&
+    qualifying.some(job=>job.id===a?.jobId) &&
     a?.expired===false && typeof a?.digest==='string' && /^sha256:[a-f0-9]{64}$/i.test(a.digest));
   if(evidence.length===0) reasons.push('no-matching-immutable-artifact');
   return {appId:app?.id??null,category:'build',verified:reasons.length===0,
