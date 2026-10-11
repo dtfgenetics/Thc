@@ -35,6 +35,10 @@ An 11 L soil container, weeks 5–7 of flowering, visibly yellow leaves with bro
 
 **Elemental deficiency:** gains weight from an age-distribution pattern plus feed, substrate or tissue evidence. Loses weight when supplied nutrient is adequate and another directly measured stress explains injury.
 
+## Comparative mechanism illustration
+
+The accessible diagram [`root-zone-mechanisms.svg`](./root-zone-mechanisms.svg) illustrates three *distinct* candidate mechanisms: soluble-salt osmotic stress, pH-associated availability shifts, and reduced aeration. The picture is synthetic instructional artwork, not a patient-specific observation. It must never substitute for calibrated measurements or representative photographs.
+
 ## Photo evidence plan
 
 - **Overview image:** Whole canopy, neutral white balance, consistent perspective. Mark oldest and newest symptomatic leaves separately.
