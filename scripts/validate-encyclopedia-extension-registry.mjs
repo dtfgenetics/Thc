@@ -20,6 +20,18 @@ if(state.coreCount!==CORE_ENCYCLOPEDIA_LESSON_COUNT){
   errors.push(`Protected core must remain ${CORE_ENCYCLOPEDIA_LESSON_COUNT} lessons; found ${state.coreCount}.`);
 }
 
+// A 420-row core alone is insufficient: duplicate-free swaps or renumbering could
+// silently change permanent public IDs while retaining the expected count.
+for(let index=0; index<state.coreEntries.length; index+=1){
+  const entry=state.coreEntries[index];
+  const expectedNumber=index+1;
+  const expectedId=`THC-ENC-${String(expectedNumber).padStart(3,'0')}`;
+  const expectedPart=Math.ceil(expectedNumber/20);
+  if(Number(entry.number)!==expectedNumber) errors.push(`Protected core row ${index+1}: expected number ${expectedNumber}, found ${entry.number}.`);
+  if(entry.id!==expectedId) errors.push(`Protected core row ${index+1}: expected id ${expectedId}, found ${entry.id}.`);
+  if(Number(entry.part)!==expectedPart) errors.push(`${entry.id}: protected core part must be ${expectedPart}; found ${entry.part}.`);
+}
+
 const extension=[...state.extensionEntries].sort((a,b)=>Number(a.number)-Number(b.number));
 for(let index=0; index<extension.length; index+=1){
   const entry=extension[index];
