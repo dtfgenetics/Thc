@@ -50,3 +50,7 @@ Application build evidence now additionally requires the artifact's `jobId` to i
 ### Retry-attempt artifact provenance
 
 GitHub's run-level artifact listing does not prove which retry attempt or specific job produced each artifact. The inspector therefore records `runAttempt: null` and `attemptAttribution: unverified` for artifacts. Do not promote run-level artifact metadata to build readiness until a trusted producer explicitly binds artifact digest, run attempt, job ID, app ID, and exact SHA.
+
+### Full workflow job-set validation
+
+The run inspector now rejects a nominally successful workflow unless the complete reported job set is nonempty and **every job** has completed successfully. Skipped, cancelled, failed and missing jobs are not accepted as passing evidence. A successful workflow conclusion alone is insufficient. This remains a conservative run-level check, not application-specific certification.
