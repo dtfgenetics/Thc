@@ -40,8 +40,8 @@ assert(protocol.includes('10.3390/plants12030422'));
 assert(protocol.includes('10.3389/fpls.2025.1433985'));
 const mechanismSvg = load('../docs/education/diagnostics/root-zone-mechanisms.svg');
 assert.match(mechanismSvg, /role="img"/);
-assert.match(mechanismSvg, /<title\\b/);
-assert.match(mechanismSvg, /<desc\\b/);
+assert(mechanismSvg.includes('<title '));
+assert(mechanismSvg.includes('<desc '));
 for (const label of ['Elevated salts', 'Elevated soil pH', 'Low root aeration']) {
   assert(mechanismSvg.includes(label), 'Missing mechanism: ' + label);
 }
