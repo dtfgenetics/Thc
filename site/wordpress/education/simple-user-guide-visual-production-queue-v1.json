@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "id": "simple-user-guide-visual-production-queue-v1",
+  "sourceLock": "assets/education/simple-info-graphics/source/Grower Terminology Guide.txt",
+  "visualManifest": "site/wordpress/education/simple-user-guide-visuals-v1.json",
+  "purpose": "Finish the matching 10-page THC Simple User Guide visual set without changing the locked beginner copy.",
+  "designSystem": {
+    "format": "vertical US Letter",
+    "inches": {
+      "width": 8.5,
+      "height": 11
+    },
+    "masterPixels": {
+      "width": 2550,
+      "height": 3300
+    },
+    "targetDpi": 300,
+    "background": "white or cream",
+    "accents": "calm natural green",
+    "typography": "large readable beginner-facing text",
+    "composition": "one clear central educational illustration plus short information blocks",
+    "prohibited": [
+      "tiny text",
+      "decorative clutter",
+      "yellow cast",
+      "stoner-poster styling",
+      "unlocked extra claims",
+      "random legacy art substitution"
+    ]
+  },
+  "statusValues": [
+    "review-needed",
+    "high-res-rebuild-needed",
+    "artwork-needed",
+    "blocked-on-evidence-review",
+    "approved"
+  ],
+  "items": [
+    {
+      "pageNumber": 1,
+      "pageSlug": "setup",
+      "status": "review-needed",
+      "targetFilename": "01-setup.png",
+      "sourceAsset": "assets/education/simple-info-graphics/active/simple-user-guide/01-setup.png",
+      "teachingPurpose": "Show that the grow space must be ready before starting seeds.",
+      "artDirection": "Simple grow setup with light or sun, draining pot, grow mix, water, airflow, and drying/curing-space reminder.",
+      "requiredAction": "Independent scientific, visual, accessibility, and page-placement review; file already meets print-master dimensions."
+    },
+    {
+      "pageNumber": 2,
+      "pageSlug": "seeds",
+      "status": "high-res-rebuild-needed",
+      "targetFilename": "02-seeds.png",
+      "sourceAsset": "assets/education/simple-info-graphics/active/simple-user-guide/02-seeds.png",
+      "teachingPurpose": "Teach how the grow begins.",
+      "artDirection": "Simple seed opening with a small white root; emphasize moisture, warmth, gentle handling, and patience.",
+      "requiredAction": "Rebuild at 2550x3300 using the locked copy and recovered composition as reference."
+    },
+    {
+      "pageNumber": 3,
+      "pageSlug": "seedling",
+      "status": "high-res-rebuild-needed",
+      "targetFilename": "03-seedling.png",
+      "sourceAsset": "assets/education/simple-info-graphics/active/simple-user-guide/03-seedling-reference.jpg",
+      "teachingPurpose": "Teach gentle baby-plant care.",
+      "artDirection": "Small healthy seedling in a pot with gentle, uncluttered visual cues.",
+      "requiredAction": "Rebuild from the low-resolution composition reference at 2550x3300; do not upscale the 311x533 reference and call it a master."
+    },
+    {
+      "pageNumber": 4,
+      "pageSlug": "veg",
+      "status": "high-res-rebuild-needed",
+      "targetFilename": "04-veg.png",
+      "sourceAsset": "assets/education/simple-info-graphics/active/simple-user-guide/04-veg.png",
+      "teachingPurpose": "Teach that veg is the plant-building stage.",
+      "artDirection": "Healthy young plant getting bigger with simple emphasis on roots, stems, leaves, and branches.",
+      "requiredAction": "Rebuild at 2550x3300 using the locked copy and recovered composition as reference."
+    },
+    {
+      "pageNumber": 5,
+      "pageSlug": "flower",
+      "status": "artwork-needed",
+      "targetFilename": "05-flower.png",
+      "sourceAsset": null,
+      "teachingPurpose": "Teach that flower is the bud-forming stage and patience matters.",
+      "artDirection": "Cannabis plant beginning to form buds; keep airflow and moisture-risk cues subtle and beginner-friendly.",
+      "requiredAction": "Create new master at 2550x3300 from the locked Flower prompt. Do not use the detailed legacy Flower candidate as the final beginner page."
+    },
+    {
+      "pageNumber": 6,
+      "pageSlug": "harvest",
+      "status": "blocked-on-evidence-review",
+      "targetFilename": "06-harvest.png",
+      "sourceAsset": "assets/education/simple-info-graphics/active/simple-user-guide/06-harvest.png",
+      "teachingPurpose": "Teach not to harvest too early.",
+      "artDirection": "Clean scissors near a mature branch with full buds; avoid adding numeric maturity claims.",
+      "requiredAction": "Strengthen claim-level evidence for maturity cues, then rebuild at 2550x3300 and run independent review."
+    },
+    {
+      "pageNumber": 7,
+      "pageSlug": "dry",
+      "status": "artwork-needed",
+      "targetFilename": "07-dry.png",
+      "sourceAsset": null,
+      "teachingPurpose": "Teach drying as a critical step, not an afterthought.",
+      "artDirection": "Harvested branches hanging in a clean, dark drying space with gentle indirect airflow.",
+      "requiredAction": "Create new 2550x3300 master from the locked non-numeric Dry prompt."
+    },
+    {
+      "pageNumber": 8,
+      "pageSlug": "cure",
+      "status": "artwork-needed",
+      "targetFilename": "08-cure.png",
+      "sourceAsset": null,
+      "teachingPurpose": "Teach cure as the final finishing and storage step.",
+      "artDirection": "Clean containers holding dried flower in cool, dark storage with a mold-check cue.",
+      "requiredAction": "Create new 2550x3300 master from the locked Cure prompt; do not add universal time or humidity targets."
+    },
+    {
+      "pageNumber": 9,
+      "pageSlug": "pests",
+      "status": "artwork-needed",
+      "targetFilename": "09-pests.png",
+      "sourceAsset": null,
+      "teachingPurpose": "Teach early pest spotting without turning the page into pest science.",
+      "artDirection": "Calm inspection of the underside of leaves with a magnifier and small generic warning icons.",
+      "requiredAction": "Create new 2550x3300 master from the locked Pests prompt; keep treatment instructions out of the page."
+    },
+    {
+      "pageNumber": 10,
+      "pageSlug": "tips",
+      "status": "artwork-needed",
+      "targetFilename": "10-tips.png",
+      "sourceAsset": null,
+      "teachingPurpose": "Give the new grower simple survival rules.",
+      "artDirection": "Clean closing checklist with simple icons and strong spacing consistency with pages 1-9.",
+      "requiredAction": "Create new 2550x3300 master from the locked Tips prompt."
+    }
+  ]
+}
