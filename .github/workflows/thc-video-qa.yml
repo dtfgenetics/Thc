@@ -5,12 +5,16 @@ on:
       - 'tools/thc_video_release_gate.py'
       - 'tools/thc_video_caption_qa.py'
       - 'tools/tests/test_thc_video_release.py'
+      - 'tools/thc_video_media_inventory.py'
+      - 'tools/tests/test_thc_video_media_inventory.py'
       - '.github/workflows/thc-video-qa.yml'
   push:
     paths:
       - 'tools/thc_video_release_gate.py'
       - 'tools/thc_video_caption_qa.py'
       - 'tools/tests/test_thc_video_release.py'
+      - 'tools/thc_video_media_inventory.py'
+      - 'tools/tests/test_thc_video_media_inventory.py'
       - '.github/workflows/thc-video-qa.yml'
 jobs:
   release-qa:
@@ -25,6 +29,8 @@ jobs:
       - name: Install media probe
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - name: Check Python syntax
-        run: python -m compileall -q tools/thc_video_release_gate.py tools/thc_video_caption_qa.py tools/tests/test_thc_video_release.py
+        run: python -m compileall -q tools/thc_video_release_gate.py tools/thc_video_caption_qa.py tools/tests/test_thc_video_release.py tools/thc_video_media_inventory.py tools/tests/test_thc_video_media_inventory.py
       - name: Run release quality regressions
         run: python -m unittest discover -s tools/tests -p 'test_thc_video_release.py' -v
+      - name: Run media intake regressions
+        run: python -m unittest discover -s tools/tests -p 'test_thc_video_media_inventory.py' -v
