@@ -1,7 +1,7 @@
 import type { MoveResult } from '../types/gameTypes';
 
 export function clampPosition(index: number, finishIndex: number): number {
-  if (!Number.isSafeInteger(index) || !Number.isSafeInteger(finishIndex) || finishIndex < 0) {
+  if (!Number.isSafeInteger(index) || index < 0 || !Number.isSafeInteger(finishIndex) || finishIndex < 0) {
     throw new RangeError('Board positions and finish index must be non-negative safe integers.');
   }
   return Math.max(0, Math.min(index, finishIndex));
