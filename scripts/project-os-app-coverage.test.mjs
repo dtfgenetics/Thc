@@ -5,7 +5,7 @@ const sha='a'.repeat(40),digest='sha256:'+'b'.repeat(64);
 const app={id:'high-land',repository:'dtfgenetics/Thc'};
 const observation={category:'build',repository:'dtfgenetics/Thc',sha,runId:12,attempt:1};
 const job={id:8,status:'completed',conclusion:'success',appIds:['high-land'],headSha:sha,runId:12,runAttempt:1};
-const artifact={id:7,appId:'high-land',headSha:sha,runId:12,runAttempt:1,digest,expired:false};
+const artifact={id:7,jobId:8,appId:'high-land',headSha:sha,runId:12,runAttempt:1,digest,expired:false};
 test('requires matching app-scoped successful job and immutable artifact',()=>{
   assert.equal(assessAppWorkflowCoverage(app,observation,{jobs:[job],artifacts:[artifact]}).verified,true);
 });
@@ -31,4 +31,13 @@ test('rejects mismatched revision, run attempt and untrusted artifact digest',()
 });
 test('repository mismatch cannot be bypassed by valid jobs',()=>{
   assert.equal(assessAppWorkflowCoverage({...app,repository:'dtfgenetics/Tools'},observation,{jobs:[job],artifacts:[artifact]}).verified,false);
+});
+
+test('artifact from an unrelated or failed job cannot certify build',()=>{
+ const unrelated={...artifact,jobId:999};
+ const result=assessAppWorkflowCoverage(app,observation,{jobs:[job],artifacts:[unrelated]});
+ assert.equal(result.verified,false);
+ assert(result.reasons.includes('no-matching-immutable-artifact'));
+ const failed={...job,id:999,conclusion:'failure'};
+ assert.equal(assessAppWorkflowCoverage(app,observation,{jobs:[job,failed],artifacts:[unrelated]}).verified,false);
 });
