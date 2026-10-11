@@ -28,6 +28,8 @@ export async function collectWorkflowObservations({repository,sha,token,fetchImp
   if(!response.ok)throw Error(`GitHub Actions API failed: ${response.status}`);
   const body=await response.json();
   if(!Array.isArray(body.workflow_runs))throw Error('Invalid workflow response');
+  if(!Number.isSafeInteger(body.total_count) || body.total_count < body.workflow_runs.length || body.total_count > body.workflow_runs.length)
+    throw Error('Incomplete or invalid workflow pagination; refusing partial evidence');
   const observations=body.workflow_runs.map(run=>classifyRun(run,{sha,repository,now})).filter(Boolean);
   return {schemaVersion:1,repository,sha,generatedAt:new Date(now).toISOString(),
     interpretation:'observations only; do not promote into app-level passing evidence without job, artifact, route, and release validation',
