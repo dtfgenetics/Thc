@@ -81,8 +81,11 @@ jobs:
           const mirror = 'site/public-route-patch/atlas';
           const exceptions = [];
           let inspected = 0;
+          if (!fs.statSync(canonical, {throwIfNoEntry: false})?.isDirectory()) {
+            throw new Error('Canonical Tools Atlas directory is missing; refusing an unverified mirror update');
+          }
           function walk(dir, relative = '') {
-            if (!fs.existsSync(dir)) return;
+            if (!fs.existsSync(dir)) throw new Error('Atlas directory disappeared during verification: ' + dir);
             for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
               const next = path.join(relative, entry.name);
               if (entry.isDirectory()) walk(dir, next);
@@ -104,6 +107,7 @@ jobs:
             }
           }
           walk(canonical);
+          if (inspected === 0) throw new Error('No overlapping Atlas lesson pages were checked; refusing an unverified mirror update');
           if (exceptions.length) {
             console.error('::error::Atlas content preservation gate: canonical Tools would substantially shrink existing published lesson bodies. Reconcile upstream before synchronization.');
             for (const {route,oldSize,newSize} of exceptions)
