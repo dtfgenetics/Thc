@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.0",
+  "purpose": "Controlled lesson-specific placement proposals for the three existing October 11 germination drafts; do not render publicly until approved asset files are uploaded and hashes recorded.",
+  "sourceManifest": "THC_420_Visual_Asset_Manifest.csv",
+  "sourceChapter": "THC_420_Expanded_Seed_Germination_Chapter_v0.2.docx",
+  "part": 2,
+  "publicationAuthorized": false,
+  "assetStatus": "candidate_review_required",
+  "visualStyle": "schematic draft; photorealistic replacement requested",
+  "assetCandidates": [
+    {
+      "id": "THC-FIG-001",
+      "filename": "seed_achene_anatomy.png",
+      "kind": "botanical schematic",
+      "scale": "not to scale",
+      "status": "conceptual_science_review_pending"
+    },
+    {
+      "id": "THC-FIG-002",
+      "filename": "germination_process_infographic.png",
+      "kind": "process infographic",
+      "status": "conceptual_science_review_pending"
+    },
+    {
+      "id": "THC-FIG-003",
+      "filename": "germination_tracking_chart.png",
+      "kind": "workflow chart",
+      "dataKind": "illustrative_not_empirical",
+      "status": "conceptual_science_review_pending"
+    }
+  ],
+  "placements": [
+    {
+      "assetId": "THC-FIG-001",
+      "lessonId": "THC-ENC-007",
+      "placement": "after the botanical distinction between achene, seed coat and embryo",
+      "filename": "seed_achene_anatomy.png",
+      "caption": "Cannabis achene and embryo structures; conceptual diagram, not to scale",
+      "enabled": false
+    },
+    {
+      "assetId": "THC-FIG-001",
+      "lessonId": "THC-ENC-008",
+      "placement": "after embryo/cotyledon/radicle terminology",
+      "filename": "seed_achene_anatomy.png",
+      "caption": "Embryo, cotyledons and radicle: conceptual anatomical orientation",
+      "enabled": false
+    },
+    {
+      "assetId": "THC-FIG-002",
+      "lessonId": "THC-ENC-026",
+      "placement": "after the definition of imbibition and before subsequent germination phases",
+      "filename": "germination_process_infographic.png",
+      "caption": "Sequence from water uptake to radicle emergence; conceptual",
+      "enabled": false
+    },
+    {
+      "assetId": "THC-FIG-002",
+      "lessonId": "THC-ENC-030",
+      "placement": "after defining radicle emergence as an observation",
+      "filename": "germination_process_infographic.png",
+      "caption": "Germination observations; conceptual sequence, not a timing prediction",
+      "enabled": false
+    },
+    {
+      "assetId": "THC-FIG-003",
+      "lessonId": "THC-ENC-023",
+      "placement": "following the distinction between final germination and vigor",
+      "filename": "germination_tracking_chart.png",
+      "caption": "Observation and tracking framework, not experimental data",
+      "enabled": false
+    },
+    {
+      "assetId": "THC-FIG-003",
+      "lessonId": "THC-ENC-030",
+      "placement": "beside germination scoring and recordkeeping",
+      "filename": "germination_tracking_chart.png",
+      "caption": "Observation categories for recording germination outcomes",
+      "enabled": false
+    }
+  ],
+  "gates": [
+    "replace drafts with accurate high-resolution photoreal botanical renderings where anatomy is depicted",
+    "verify anatomy and labels against evidence",
+    "record image provenance and usage rights",
+    "record published file URL and SHA-256",
+    "verify captions and alt text",
+    "verify desktop/mobile rendering",
+    "enable placements only following existing independent visual/publication review"
+  ]
+}
