@@ -6,6 +6,14 @@ export function collectObservation(form,spec){
   }
   return values;
 }
+function isRealLocalMinute(value){
+  const match=/^(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})$/.exec(value);
+  if(!match)return false;
+  const [,year,month,day,hour,minute]=match.map(Number);
+  if(year<1||month<1||month>12||day<1||hour>23||minute>59)return false;
+  const lastDay=new Date(Date.UTC(year,month,0)).getUTCDate();
+  return day<=lastDay;
+}
 export function validateObservation(values,spec){
   const errors=[],record={};
   for(const field of spec.fields){
@@ -17,14 +25,14 @@ export function validateObservation(values,spec){
     }
     if(field.kind==='number'){
       const num=Number(raw);
-      if(typeof raw==='boolean'||!Number.isFinite(num)||(field.minimum!==undefined&&num<field.minimum)||(field.maximum!==undefined&&num>field.maximum)){
+      if(typeof raw==='boolean'||typeof raw==='object'||!Number.isFinite(num)||(field.minimum!==undefined&&num<field.minimum)||(field.maximum!==undefined&&num>field.maximum)){
         errors.push(field.label+' must be a valid value'+(field.unit?' in '+field.unit:'')+'.');
       } else record[field.id]=num;
     } else if(field.kind==='enum'){
       if(!field.choices.includes(raw))errors.push(field.label+' has an invalid selection.');
       else record[field.id]=raw;
     } else if(field.kind==='datetime'){
-      if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(raw)||Number.isNaN(Date.parse(raw)))errors.push('Observation date/time is invalid.');
+      if(typeof raw!=='string'||!isRealLocalMinute(raw))errors.push('Observation date/time is invalid.');
       else record[field.id]=raw;
     } else record[field.id]=String(raw);
   }
