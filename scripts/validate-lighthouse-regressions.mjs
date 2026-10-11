@@ -19,6 +19,12 @@ function normalizeRoute(value){
 }
 
 const current={};
+const samples={};
+const median=values=>{
+  const sorted=[...values].sort((a,b)=>a-b);
+  const mid=Math.floor(sorted.length/2);
+  return sorted.length%2?sorted[mid]:(sorted[mid-1]+sorted[mid])/2;
+};
 if(fs.existsSync(reportDir)){
   for(const name of fs.readdirSync(reportDir)){
     if(!name.endsWith('.report.json'))continue;
@@ -26,10 +32,16 @@ if(fs.existsSync(reportDir)){
     const route=normalizeRoute(report.finalUrl||report.requestedUrl||'/');
     const scores={};
     for(const category of categories)scores[category]=scoreOf(report.categories?.[category]?.score);
-    current[route]=scores;
+    (samples[route]??=[]).push(scores);
   }
 }
 
+for(const [route,runs] of Object.entries(samples)){
+  current[route]=Object.fromEntries(categories.map(category=>{
+    const values=runs.map(run=>run[category]);
+    return [category,values.every(Number.isFinite)?median(values):NaN];
+  }));
+}
 const findings=[];
 const rows=[];
 for(const [route,prior] of Object.entries(baseline.routes||{})){
@@ -61,6 +73,7 @@ const report={
   baseline:baseline.source,
   policy:baseline.policy,
   measuredRoutes:Object.keys(current).length,
+  measurementRuns:Object.values(samples).reduce((sum,runs)=>sum+runs.length,0),
   comparedRoutes:rows.length,
   enforce,
   requireCoverage,
