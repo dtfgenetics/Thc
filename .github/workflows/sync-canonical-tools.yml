@@ -104,7 +104,7 @@ jobs:
                 const incoming = fs.readFileSync(source, 'utf8');
                 const meaningful = value => value.replace(/<!--[\s\S]*?-->/g, '')
                   .replace(/<template\b[^>]*>[\s\S]*?<\/template>/gi, '')
-                  .replace(/<[^>]+\bhidden(?:\s|=|>)[^>]*>[\s\S]*?<\/[^>]+>/gi, '')
+                  .replace(/<[a-z][^>]*\shidden(?:\s[^>]*)?>[\s\S]*?<\/[a-z][^>]*>/gi, '')
                   .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
                   .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
                   .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length;
