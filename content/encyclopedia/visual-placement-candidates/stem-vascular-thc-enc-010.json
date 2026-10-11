@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "THC-ENC-010",
+  "title": "Stem Anatomy and Vascular Transport",
+  "artDirection": "approved photorealistic botanical editorial style; clean scientific lettering applied after rendering, natural chromatic balance, no yellow filter",
+  "status": "production_candidate",
+  "figures": [
+    {
+      "id": "THC-ENC-010-FIG01",
+      "placement": {
+        "field": "coreScience",
+        "afterParagraph": 1
+      },
+      "type": "photorealistic anatomical cutaway",
+      "subject": "Cannabis stem transverse section with epidermis, cortex, phloem, cambium, xylem and pith",
+      "requirements": [
+        "plausible vascular tissue arrangement",
+        "clearly distinguish observed micrograph from reconstruction",
+        "avoid unsupported proportions",
+        "separate editable labels"
+      ],
+      "caption": "Conceptual transverse stem anatomy with major tissues. Illustration, not to scale.",
+      "alt": "Scientific transverse view of a cannabis stem showing outer protective tissues, phloem, cambium, xylem and central pith."
+    },
+    {
+      "id": "THC-ENC-010-FIG02",
+      "placement": {
+        "field": "coreScience",
+        "afterParagraph": 5
+      },
+      "type": "paired anatomical infographic",
+      "subject": "Xylem water movement versus phloem source–sink distribution",
+      "requirements": [
+        "arrows explicitly illustrative",
+        "do not equate xylem with an active pump",
+        "no invented quantities"
+      ],
+      "caption": "Illustration of contrasting vascular transport mechanisms; arrows are conceptual.",
+      "alt": "Paired diagram identifying upward xylem water movement and source-to-sink phloem transport in a plant stem."
+    },
+    {
+      "id": "THC-ENC-010-FIG03",
+      "placement": {
+        "field": "measureAndRecord",
+        "afterField": "Cross-section image provenance"
+      },
+      "type": "measurement worksheet and chart template",
+      "subject": "Stem thickness and lesion monitoring by node and date",
+      "requirements": [
+        "units for diameter in mm",
+        "sample count and timepoint",
+        "no fabricated measurements"
+      ],
+      "caption": "Blank stem monitoring record for repeated observations.",
+      "alt": "Table template for logging stem position, diameter, injuries and follow-up dates."
+    }
+  ],
+  "publication": {
+    "imageFilesUploaded": false,
+    "assetHashesVerified": false,
+    "scienceChecked": false,
+    "rightsReviewed": false,
+    "websiteRendered": false,
+    "enabled": false
+  }
+}
