@@ -1,5 +1,6 @@
 """Fail-closed THC video preflight. Never publish on metadata alone."""
 import csv, hashlib, json, subprocess, sys
+from urllib.parse import urlparse
 from thc_video_caption_qa import validate_srt
 from pathlib import Path
 
@@ -44,11 +45,19 @@ def verify(root):
             issues.append(f"{aid}: authentic camera footage required")
         for field in ("source_url","creator","license","sha256"):
             if not row.get(field): issues.append(f"{aid}: {field} missing")
+        source = row.get("source_url", "")
+        parsed = urlparse(source)
+        if parsed.scheme not in ("https", "http") or not parsed.netloc:
+            issues.append(f"{aid}: source_url must be a fully qualified web URL")
         for field in ("local_path","license_evidence_file"):
             value = row.get(field)
             path = (root / value).resolve() if value else None
             if path is None or not path.is_relative_to(root) or not path.is_file():
                 issues.append(f"{aid}: invalid {field} or missing file")
+            elif field == "license_evidence_file" and path.stat().st_size == 0:
+                issues.append(f"{aid}: license evidence file is empty")
+            elif field == "local_path" and path.stat().st_size == 0:
+                issues.append(f"{aid}: media asset file is empty")
             elif field == "local_path" and row.get("sha256"):
                 if not (len(row["sha256"]) == 64 and all(c in "0123456789abcdef" for c in row["sha256"].lower())):
                     issues.append(f"{aid}: invalid SHA-256 format")
@@ -80,7 +89,7 @@ def verify(root):
                     issues.append("Missing or invalid video duration (<15s)")
                 else:
                     video_duration_ms = round(float(duration) * 1000)
-            except (OSError, ValueError, subprocess.SubprocessError) as err:
+            except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as err:
                 issues.append(f"Video probe failed: {err}")
     if captions_path is not None:
         if video_duration_ms is None:
