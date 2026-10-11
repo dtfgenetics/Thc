@@ -52,3 +52,11 @@ test('rejects malformed job and artifact identities',async()=>{
   {total_count:1,artifacts:[{id:50,name:'build-output',expired:'false'}]}
  ]) await assert.rejects(()=>inspectRunEvidence({...args,fetchImpl:mock({artifacts})}),/metadata/);
 });
+
+test('a successful workflow cannot hide failed, skipped or missing jobs',async()=>{
+ for(const conclusion of ['failure','cancelled','skipped']){
+  const jobs={total_count:1,jobs:[{id:40,name:'build',status:'completed',conclusion}]};
+  await assert.rejects(()=>inspectRunEvidence({...args,fetchImpl:mock({jobs})}),/unsuccessful/);
+ }
+ await assert.rejects(()=>inspectRunEvidence({...args,fetchImpl:mock({jobs:{total_count:0,jobs:[]}})}),/missing/);
+});
