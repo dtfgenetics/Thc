@@ -1,6 +1,10 @@
 name: Sync canonical cultivation tools
 
 on:
+  pull_request:
+    paths:
+      - '.github/workflows/sync-canonical-tools.yml'
+      - 'scripts/atlas-sync-preservation.test.mjs'
   workflow_dispatch:
   repository_dispatch:
     types: [sync-canonical-tools]
@@ -23,7 +27,16 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  atlas-preservation-pr:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --test scripts/atlas-sync-preservation.test.mjs
   sync:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout THC integration repository
