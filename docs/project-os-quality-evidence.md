@@ -44,3 +44,5 @@ The workflow runs `node --test scripts/project-os-workflow-observations.test.mjs
 `scripts/project-os-app-coverage.mjs` provides an additional fail-closed predicate: a passing build observation cannot be attributed to an application without both an app-scoped successful job and an immutable artifact matching the exact revision, run ID and attempt. Other apps' success cannot be inherited. The accompanying tests cover missing, failed, skipped, cross-app, stale-attempt and invalid-digest cases.
 
 The job and artifact inputs are a **contract for a future trusted attestation producer**, not yet sourced and cryptographically verified from GitHub. The checks are not wired to a production release gate. Never treat untrusted `appIds` fields or synthetic fixtures as deployment approval.
+
+Application build evidence now additionally requires the artifact's `jobId` to identify the same successful, application-scoped job. Sharing only a workflow run or SHA cannot certify an unrelated job's artifact. The inputs remain an untrusted contract until verified by an authenticated attestation producer.
