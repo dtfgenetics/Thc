@@ -9,6 +9,7 @@ const requireCoverage=process.env.WEB_QA_REQUIRE_BASELINE_COVERAGE==='1';
 const origin=(process.env.WEB_QA_BASE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const baseline=JSON.parse(fs.readFileSync(baselinePath,'utf8'));
 const categories=['performance','accessibility','best-practices','seo'];
+const scoreOf=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=1?value:NaN;
 
 function normalizeRoute(value){
   const url=new URL(value,origin);
@@ -24,7 +25,7 @@ if(fs.existsSync(reportDir)){
     const report=JSON.parse(fs.readFileSync(path.join(reportDir,name),'utf8'));
     const route=normalizeRoute(report.finalUrl||report.requestedUrl||'/');
     const scores={};
-    for(const category of categories)scores[category]=Number(report.categories?.[category]?.score);
+    for(const category of categories)scores[category]=scoreOf(report.categories?.[category]?.score);
     current[route]=scores;
   }
 }
@@ -41,9 +42,9 @@ for(const [route,prior] of Object.entries(baseline.routes||{})){
   for(const category of categories){
     const floor=Number(baseline.policy?.absoluteFloors?.[category]??0);
     const allowed=Number(baseline.policy?.maxRegression?.[category]??0);
-    const previous=Number(prior?.[category]);
-    const score=Number(now?.[category]);
-    const delta=Number((score-previous).toFixed(4));
+    const previous=scoreOf(prior?.[category]);
+    const score=scoreOf(now?.[category]);
+    const delta=Number.isFinite(score)&&Number.isFinite(previous)?Number((score-previous).toFixed(4)):null;
     row.deltas[category]=delta;
     if(!Number.isFinite(score)) findings.push({route,category,type:'invalid-score'});
     else if(score<floor) findings.push({route,category,type:'below-floor',score,floor});
