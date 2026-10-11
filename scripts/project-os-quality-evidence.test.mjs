@@ -58,3 +58,10 @@ test('gives every deployed application its own evidence result',()=>{
   assert.equal(report.readyApps,1);
   assert.equal(report.results[1].categories.production.status,'unknown');
 });
+
+test('unregistered project owner cannot pass even with six passing evidence claims',()=>{
+  const report=evaluate(evidence(),[]);
+  assert.equal(report.readyApps,0);
+  assert.equal(report.results[0].projectRegistered,false);
+  assert.equal(report.results[0].ownerMatch,null);
+});
