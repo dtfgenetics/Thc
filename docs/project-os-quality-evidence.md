@@ -46,3 +46,7 @@ The workflow runs `node --test scripts/project-os-workflow-observations.test.mjs
 The job and artifact inputs are a **contract for a future trusted attestation producer**, not yet sourced and cryptographically verified from GitHub. The checks are not wired to a production release gate. Never treat untrusted `appIds` fields or synthetic fixtures as deployment approval.
 
 Application build evidence now additionally requires the artifact's `jobId` to identify the same successful, application-scoped job. Sharing only a workflow run or SHA cannot certify an unrelated job's artifact. The inputs remain an untrusted contract until verified by an authenticated attestation producer.
+
+### Retry-attempt artifact provenance
+
+GitHub's run-level artifact listing does not prove which retry attempt or specific job produced each artifact. The inspector therefore records `runAttempt: null` and `attemptAttribution: unverified` for artifacts. Do not promote run-level artifact metadata to build readiness until a trusted producer explicitly binds artifact digest, run attempt, job ID, app ID, and exact SHA.
