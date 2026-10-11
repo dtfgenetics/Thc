@@ -132,6 +132,10 @@ jobs:
         run: node scripts/test-encyclopedia-approved-asset-integrity.mjs
       - name: Build exact approved visual asset ledger
         run: npm run encyclopedia:visual-approved-assets
+      - name: Verify approved visual repository bytes and regression cases
+        run: |
+          node scripts/test-encyclopedia-approved-visual-hashes.mjs
+          node scripts/verify-encyclopedia-approved-visual-hashes.mjs
       - name: Rebuild unified production readiness with approved visual evidence
         run: npm run build:encyclopedia-production-readiness
       - name: Validate final unified production readiness
@@ -213,6 +217,7 @@ jobs:
             data/encyclopedia-visual-machine-preflight.json
             data/encyclopedia-visual-promotion-manifest.json
             data/encyclopedia-visual-approved-assets.json
+            data/encyclopedia-approved-visual-repository-integrity.json
             data/encyclopedia-independent-review-manifest.json
             data/encyclopedia-assessment-review-ledger.json
             data/encyclopedia-claim-review-ledger.json
