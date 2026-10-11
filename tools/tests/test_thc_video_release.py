@@ -29,6 +29,16 @@ class CaptionPreflight(unittest.TestCase):
     def test_empty(self):
         self.assertEqual(["empty captions"],self._check(""))
 
+    def test_missing_manifest_fails_closed(self):
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertTrue(any("manifest" in problem.lower() for problem in verify(temp)))
+
+    def test_malformed_manifest_fails_closed(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            (root/"production_manifest.json").write_text("{broken")
+            self.assertTrue(any("manifest" in problem.lower() for problem in verify(root)))
+
     def test_missing_register_blocks(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)
