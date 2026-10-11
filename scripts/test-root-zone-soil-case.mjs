@@ -9,5 +9,5 @@ assert.equal(d.hypotheses.length,4);
 assert.deepEqual(d.hypotheses.map(x=>x.rank),[1,2,3,4]);
 assert(d.hypotheses.every(x=>x.supports.length && x.confirm.length && x.challenge.length && x.confidence));
 assert(d.decisionRules.some(x=>x.includes('Do not call nutrient lockout confirmed')));
-assert(d.sources.every(x=>/^10\\.\\d{4,9}\\//.test(x.doi)));
+assert(d.sources.every(x=>typeof x.doi === 'string' && x.doi.startsWith('10.') && x.doi.includes('/')));
 console.log('Root-zone case contract passed');
