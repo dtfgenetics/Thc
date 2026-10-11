@@ -7,7 +7,7 @@ export function collectObservation(form,spec){
   return values;
 }
 function isRealLocalMinute(value){
-  const match=/^(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})$/.exec(value);
+  const match=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(value);
   if(!match)return false;
   const [,year,month,day,hour,minute]=match.map(Number);
   if(year<1||month<1||month>12||day<1||hour>23||minute>59)return false;
