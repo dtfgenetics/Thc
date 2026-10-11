@@ -36,6 +36,11 @@ function accepts(bytes) { current=bytes; assert.doesNotThrow(()=>validate('fixtu
 function rejects(bytes, message) { current=bytes; assert.throws(()=>validate('fixture.png','TEST',design),message); }
 accepts(png());
 accepts(png({depth:16,type:2,interlace:1}));
+const badSignature=png();
+badSignature[0]=0;
+rejects(badSignature,/valid PNG IHDR header/);
+const badChunk=png({chunkLength:14});
+rejects(badChunk,/valid PNG IHDR header/);
 rejects(png({width:0}),/zero dimensions/);
 rejects(png({height:0}),/zero dimensions/);
 rejects(png({width:512}),/below the required/);
@@ -46,4 +51,4 @@ rejects(png({compression:1}),/compression, filter, or interlace/);
 rejects(png({filter:1}),/compression, filter, or interlace/);
 rejects(png({interlace:2}),/compression, filter, or interlace/);
 rejects(png().subarray(0,25),/truncated IHDR payload/);
-console.log('12 PNG master header regression cases passed.');
+console.log('14 PNG master header regression cases passed.');
