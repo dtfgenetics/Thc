@@ -34,3 +34,21 @@ test('run-level artifact cannot inherit requested retry attempt',async()=>{
  assert.equal(result.artifacts[0].runAttempt,null);
  assert.equal(result.artifacts[0].jobId,undefined);
 });
+
+test('rejects inconsistent or missing pagination totals',async()=>{
+ for(const jobs of [
+  {total_count:0,jobs:[{id:40,name:'build',status:'completed',conclusion:'success'}]},
+  {jobs:[]},
+  {total_count:'1',jobs:[]}
+ ]) await assert.rejects(()=>inspectRunEvidence({...args,fetchImpl:mock({jobs})}),/pagination/);
+});
+test('rejects malformed job and artifact identities',async()=>{
+ for(const jobs of [
+  {total_count:1,jobs:[{id:null,name:'build',status:'completed',conclusion:'success'}]},
+  {total_count:1,jobs:[{id:40,name:'',status:'completed',conclusion:'success'}]}
+ ]) await assert.rejects(()=>inspectRunEvidence({...args,fetchImpl:mock({jobs})}),/metadata/);
+ for(const artifacts of [
+  {total_count:1,artifacts:[{id:0,name:'build-output',expired:false}]},
+  {total_count:1,artifacts:[{id:50,name:'build-output',expired:'false'}]}
+ ]) await assert.rejects(()=>inspectRunEvidence({...args,fetchImpl:mock({artifacts})}),/metadata/);
+});
