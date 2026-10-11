@@ -27,3 +27,13 @@ test('Atlas sync workflow rejects missing lessons and unsafe entries', () => {
   assert.match(workflow, /No existing Atlas mirror lessons found/);
   assert.match(workflow, /THC main advanced after Atlas preservation validation/);
 });
+
+test('Atlas content measurement excludes hidden lesson filler', () => {
+  const visible = '<article><p>Real educational content.</p></article>';
+  const hidden = '<div hidden>' + 'not visible '.repeat(1000) + '</div>';
+  assert.equal(meaningful(visible + hidden), meaningful(visible));
+});
+test('Atlas content measurement retains visible text', () => {
+  assert.ok(meaningful('<main><p>Evidence-based cultivation</p></main>') > 20);
+  assert.equal(meaningful('<script>inert text</script><style>inert text</style>'), 0);
+});
