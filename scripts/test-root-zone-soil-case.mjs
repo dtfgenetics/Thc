@@ -29,4 +29,34 @@ assert.match(svg, /role="img"/);
 assert.match(svg, /<title\b/);
 assert.match(svg, /<desc\b/);
 assert(!/guaranteed cure|confirmed lockout|100% certain/i.test(JSON.stringify(d)));
+const protocol = load('../docs/education/diagnostics/root-zone-evidence-protocol.md');
+for (const section of ['Evidence priority', 'Sample comparability rules', 'Differential checkpoints', 'Photo evidence plan', 'Interpretation template']) {
+  assert(protocol.includes(section), `Protocol missing: ${section}`);
+}
+for (const term of ['mS/cm', 'sample location', 'runoff', 'tissue', 'old necrotic leaves', 'synthetic reference']) {
+  assert(protocol.toLowerCase().includes(term.toLowerCase()), `Protocol missing concept: ${term}`);
+}
+assert(protocol.includes('10.3390/plants12030422'));
+assert(protocol.includes('10.3389/fpls.2025.1433985'));
+const mechanismSvg = load('../docs/education/diagnostics/root-zone-mechanisms.svg');
+assert.match(mechanismSvg, /role="img"/);
+assert(mechanismSvg.includes('<title '));
+assert(mechanismSvg.includes('<desc '));
+for (const label of ['Elevated salts', 'Elevated soil pH', 'Low root aeration']) {
+  assert(mechanismSvg.includes(label), 'Missing mechanism: ' + label);
+}
+assert(protocol.includes('root-zone-mechanisms.svg'));
+const intake = JSON.parse(load('../docs/education/diagnostics/root-zone-observation-template.json'));
+assert.equal(intake.schemaVersion, 1);
+assert.equal(intake.caseId, d.id);
+assert.equal(intake.fields.length, 13);
+assert.equal(new Set(intake.fields.map(f => f.id)).size, intake.fields.length);
+for (const id of ['soilPH', 'soilEC', 'feedEC']) {
+  const field = intake.fields.find(f => f.id === id);
+  assert(field && field.kind === 'number' && field.methodRequired, 'Measurement must require method: ' + id);
+}
+assert.equal(intake.fields.find(f => f.id === 'soilEC').unit, 'mS/cm');
+assert(intake.measurementMetadata.includes('sampleLocation'));
+assert(intake.imageSlots.length >= 4);
+assert(intake.interpretationRules.some(s => s.includes('unknown')));
 console.log('Root-zone diagnostic case and Case Lab compatibility checks passed');
