@@ -25,7 +25,11 @@
     "The shoot apical meristem generates new stem and leaf primordia. Axillary meristems are positioned at nodes and can remain small, grow into branches, or transition toward reproductive development. Plant architecture emerges from which meristems grow, how fast they grow, and how long their internodes become.",
     "Apical dominance is often summarized as “auxin from the top suppresses lower branches,” but the real system involves auxin transport, cytokinins, strigolactones, sugar availability, light, vascular connections, and sink competition. Removing the main apex changes those relationships and commonly releases one or more axillary buds. Bending can reduce the apex’s positional dominance and improve light exposure without removing tissue.",
     "The response is not instant or identical across plants. Stage, genotype, root health, temperature, light, water status, and cut location affect recovery. A cut can also create a wound and remove photosynthetic or future reproductive tissue.",
-    "Bud outgrowth is also constrained by resource supply and vascular integration. An axillary bud must transition from a relatively quiescent state into sustained cell division, establish transport relationships, and compete for sugars, minerals, and water. Light exposure can alter local sugar status and signaling, while root-derived cytokinins and shoot-derived auxin/strigolactone interactions influence whether buds remain suppressed or grow. This is why the same topping or bending treatment can produce different branch patterns on plants with different vigor or canopy conditions."
+    "Bud outgrowth is also constrained by resource supply and vascular integration. An axillary bud must transition from a relatively quiescent state into sustained cell division, establish transport relationships, and compete for sugars, minerals, and water. Light exposure can alter local sugar status and signaling, while root-derived cytokinins and shoot-derived auxin/strigolactone interactions influence whether buds remain suppressed or grow. This is why the same topping or bending treatment can produce different branch patterns on plants with different vigor or canopy conditions.",
+    "Branch development involves at least two distinguishable phases: the establishment of an axillary meristem and the later release and sustained growth of its bud. The presence of a visible bud does not mean it has entered sustained outgrowth. An anatomical illustration should show the shoot apex, leaf primordia, subtending leaf, node, and axillary bud separately, without presenting the bud as a miniature fully developed branch.",
+    "The classical auxin-centered explanation of apical dominance is incomplete. Auxin produced by an active shoot apex influences polar auxin transport and interacts with other signaling networks. Cytokinins can promote bud outgrowth while strigolactones commonly suppress branching, and sugar supply and signaling can act early during bud release. Their relative contributions depend on species, genotype, developmental conditions and the experimental perturbation; the arrows in a teaching model are not measurements of hormone concentration.",
+    "Removing an apex can change both signaling and competition for photosynthate, whereas bending primarily repositions organs and changes mechanical/light context without necessarily removing an apex. These interventions are not equivalent treatments. A controlled comparison needs untreated plants, matched developmental stage, exact node records, and repeated growth observations. New branch count, branch extension, canopy distribution and eventual yield are different outcome variables and should not be conflated.",
+    "A useful teaching graph plots observations rather than invented hormone curves: for each identified axillary bud, record the date and measured shoot extension, then display bud length against days since treatment for matched plants or controls. If no original measurements exist, the figure must be a blank measurement template and cannot imply experimentally determined effects of topping or bending."
   ],
   "cultivationRelevance": [
     "Project procedure THC-GROW-110 requires assessing plant vigor, water status, bud viability, target node, and support before training. This is a risk-control procedure, not a universal biological law. Record the exact node and technique so recovery can be compared.",
@@ -57,6 +61,10 @@
     {
       "field": "Performance interpretation",
       "requirement": "Keep architecture outcomes separate from yield or potency claims unless those endpoints are measured with an appropriate comparison. More tips alone should not be scored as a biological benefit."
+    },
+    {
+      "field": "Bud-level longitudinal observation",
+      "requirement": "Assign an immutable bud ID tied to plant, stem axis and node; record bud status, length in millimeters, time since intervention, and whether the same bud continued growing. Keep bud release, sustained outgrowth, branch count and canopy outcomes as separate response variables."
     }
   ],
   "misconceptions": [
@@ -71,7 +79,9 @@
   "sourceNotes": [
     "Beveridge C.A., Rameau C., and Wijerathna-Yapa A. (2023). Lessons from a century of apical dominance research. Journal of Experimental Botany 74(14):3903–3922.",
     "Savatin D.V., Gramegna G., Modesti V., and Cervone F. (2014). Wounding in the plant tissue: the defense of a dangerous passage. Frontiers in Plant Science 5:470.",
-    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; training, plant-status assessment, architecture records, and response-validation framework."
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; training, plant-status assessment, architecture records, and response-validation framework.",
+    "Beveridge C.A., Rameau C., and Wijerathna-Yapa A. (2023). Lessons from a century of apical dominance research. Journal of Experimental Botany 74(14):3903–3922. https://doi.org/10.1093/jxb/erad137. Review of multispecies apical-dominance mechanisms; not a cannabis-specific intervention trial.",
+    "Strigolactones and Shoot Branching: What Is the Real Hormone and How Does It Work? Plant and Cell Physiology 64(9):967 (2023). https://academic.oup.com/pcp/article/64/9/967/7234590. Review of signaling context; evidence should not be interpreted as a cultivar-specific prediction."
   ],
   "slug": "meristems-buds-and-apical-dominance",
   "route": "/learn/encyclopedia/thc-enc-013/",
