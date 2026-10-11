@@ -6,8 +6,13 @@ from pathlib import Path
 REQUIRED = {f"S{i:02d}" for i in range(1, 7)} | {"VO01"}
 def verify(root):
     root = Path(root).resolve()
-    manifest = json.loads((root / "production_manifest.json").read_text())
     issues = []
+    try:
+        manifest = json.loads((root / "production_manifest.json").read_text(encoding="utf-8"))
+        if not isinstance(manifest, dict):
+            return ["production_manifest.json must contain an object"]
+    except (OSError, UnicodeError, json.JSONDecodeError) as err:
+        return [f"Missing or invalid production manifest: {err}"]
     for name, expected in {"synthetic_narration": False, "human_narration_confirmed": True,
       "science_review_approved": True, "editorial_review_approved": True,
       "subtitle_sync_confirmed": True, "profile_discord_link_verified": True,
@@ -16,7 +21,13 @@ def verify(root):
     reg = root / "assets/ASSET_LICENSE_REGISTER.csv"
     if not reg.is_file(): return issues + ["Asset register missing"]
     with reg.open(newline="", encoding="utf-8") as handle:
-        rows = list(csv.DictReader(handle))
+        reader = csv.DictReader(handle)
+        expected_columns = {"asset_id","source_url","creator","license","license_evidence_file","local_path","sha256","authenticity","verified"}
+        if not expected_columns.issubset(set(reader.fieldnames or [])) or any(not c for c in (reader.fieldnames or [])):
+            return issues + ["Asset register CSV schema invalid"]
+        rows = list(reader)
+        if any(None in row for row in rows):
+            return issues + ["Asset register CSV contains surplus columns"]
     byid = {}
     for row in rows:
         aid = row.get("asset_id")
@@ -39,7 +50,9 @@ def verify(root):
             if path is None or not path.is_relative_to(root) or not path.is_file():
                 issues.append(f"{aid}: invalid {field} or missing file")
             elif field == "local_path" and row.get("sha256"):
-                if hashlib.sha256(path.read_bytes()).hexdigest() != row["sha256"].lower():
+                if not (len(row["sha256"]) == 64 and all(c in "0123456789abcdef" for c in row["sha256"].lower())):
+                    issues.append(f"{aid}: invalid SHA-256 format")
+                elif hashlib.sha256(path.read_bytes()).hexdigest() != row["sha256"].lower():
                     issues.append(f"{aid}: sha256 mismatch")
     video_duration_ms = None
     captions_path = None
@@ -63,8 +76,8 @@ def verify(root):
                 if len(audio)!=1 or audio[0].get("codec_name")!="aac":
                     issues.append("Expected one AAC narration track")
                 duration = data.get("format", {}).get("duration") or (vid[0].get("duration") if vid else None)
-                if duration is None or float(duration) <= 0:
-                    issues.append("Missing or invalid video duration")
+                if duration is None or float(duration) < 15:
+                    issues.append("Missing or invalid video duration (<15s)")
                 else:
                     video_duration_ms = round(float(duration) * 1000)
             except (OSError, ValueError, subprocess.SubprocessError) as err:
