@@ -28,9 +28,9 @@ export async function inspectRunEvidence({repository,sha,runId,attempt,token,fet
   return {
     schemaVersion:1,repository,sha,runId,attempt,
     jobs:jobs.jobs.map(j=>({id:j.id,name:j.name,status:j.status,conclusion:j.conclusion,runId,runAttempt:attempt,headSha:sha})),
-    artifacts:artifacts.artifacts.map(a=>({id:a.id,name:a.name,expired:a.expired,digest:a.digest??null,runId,runAttempt:attempt,headSha:sha})),
+    artifacts:artifacts.artifacts.map(a=>({id:a.id,name:a.name,expired:a.expired,digest:a.digest??null,runId,\n      // The run-level artifacts endpoint does not attest which retry attempt produced an artifact.\n      runAttempt:null,headSha:sha,attemptAttribution:'unverified'})),
     applicationAttribution:'unverified',
-    note:'Job names and artifact names do not attest application coverage or producer job identity. No appIds/jobId introduced.'
+    note:'Run-level artifacts are not attributed to a retry attempt or producer job. No appIds/jobId introduced; they cannot satisfy the application release gate.'
   };
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===path.resolve(new URL(import.meta.url).pathname)){
