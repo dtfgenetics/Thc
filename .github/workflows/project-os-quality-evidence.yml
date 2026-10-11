@@ -3,7 +3,8 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'scripts/project-os-quality-evidence*'
+      - 'scripts/project-os-*.mjs'
+      - 'scripts/project-os-*.test.mjs'
       - 'data/project-os-quality-evidence.json'
       - 'data/project-registry.json'
       - 'site/deployment/public-apps.json'
@@ -11,7 +12,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'scripts/project-os-quality-evidence*'
+      - 'scripts/project-os-*.mjs'
+      - 'scripts/project-os-*.test.mjs'
       - 'data/project-os-quality-evidence.json'
       - 'data/project-registry.json'
       - 'site/deployment/public-apps.json'
