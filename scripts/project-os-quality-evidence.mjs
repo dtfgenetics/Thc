@@ -56,7 +56,7 @@ export function evaluateEvidence(projects, apps, evidence, {now = new Date().toI
     results.push({
       appId: app.id, route: app.route ?? null, repository: app.repository ?? null,
       projectRegistered: Boolean(owner), ownerMatch,
-      ready: CATEGORIES.every(category => categories[category].status === 'pass') && ownerMatch !== false,
+      ready: CATEGORIES.every(category => categories[category].status === 'pass') && ownerMatch === true,
       categories
     });
   }
