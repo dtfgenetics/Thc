@@ -110,6 +110,25 @@ jobs:
               }
             }
           }
+          // Check the mirror independently: canonical traversal alone misses removed lessons.
+          if (!fs.statSync(mirror, {throwIfNoEntry: false})?.isDirectory()) {
+            throw new Error('Existing Atlas mirror directory is missing');
+          }
+          function assertSafeTree(root, relative = '') {
+            for (const entry of fs.readdirSync(path.join(root, relative), {withFileTypes: true})) {
+              const next = path.join(relative, entry.name);
+              if (entry.isSymbolicLink() || (!entry.isDirectory() && !entry.isFile())) {
+                throw new Error('Unsafe Atlas filesystem entry: ' + next);
+              }
+              if (entry.isDirectory()) assertSafeTree(root, next);
+              else if (entry.name === 'index.html' && next !== 'index.html' &&
+                !fs.statSync(path.join(canonical, next), {throwIfNoEntry: false})?.isFile()) {
+                throw new Error('Canonical Atlas would remove an existing lesson: ' + next);
+              }
+            }
+          }
+          assertSafeTree(canonical);
+          assertSafeTree(mirror);
           walk(canonical);
           if (inspected === 0) throw new Error('No overlapping Atlas lesson pages were checked; refusing an unverified mirror update');
           if (exceptions.length) {
