@@ -129,6 +129,18 @@ jobs:
           }
           assertSafeTree(canonical);
           assertSafeTree(mirror);
+          // Require at least one existing lesson to have been preserved.
+          // Empty or structurally unrelated trees must not pass the gate.
+          let mirrorLessons = 0;
+          function countLessons(dir, relative = '') {
+            for (const entry of fs.readdirSync(path.join(dir, relative), {withFileTypes: true})) {
+              const next = path.join(relative, entry.name);
+              if (entry.isDirectory()) countLessons(dir, next);
+              else if (entry.name === 'index.html' && next !== 'index.html') mirrorLessons++;
+            }
+          }
+          countLessons(mirror);
+          if (mirrorLessons === 0) throw new Error('No existing Atlas mirror lessons found');
           walk(canonical);
           if (inspected === 0) throw new Error('No overlapping Atlas lesson pages were checked; refusing an unverified mirror update');
           if (exceptions.length) {
