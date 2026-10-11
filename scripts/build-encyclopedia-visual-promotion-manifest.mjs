@@ -15,6 +15,12 @@ const review=JSON.parse(fs.readFileSync(reviewPath,'utf8'));
 const reviewById=new Map((review.lessons||[]).map(x=>[x.lessonId,x]));
 const rows=[];
 const errors=[];
+const seenTasks=new Set();
+const controlledTarget=(candidate)=>{
+  const name=`${candidate.lessonId}_${String(candidate.visualOrdinal).padStart(2,'0')}_${candidate.visualRole}.png`;
+  const expected=`site/wordpress/assets/infographics/${name}`;
+  return /^THC-ENC-\d{3,}$/.test(candidate.lessonId||'') && Number.isInteger(candidate.visualOrdinal) && candidate.visualOrdinal>=1 && candidate.visualOrdinal<=10 && /^[a-z0-9][a-z0-9_-]*$/i.test(candidate.visualRole||'') && candidate.targetRepositoryPath===expected;
+};
 const visualQueuePath=path.join(root,'content','encyclopedia','visual-production-queue-v1.json');
 const visualQueue=fs.existsSync(visualQueuePath)?JSON.parse(fs.readFileSync(visualQueuePath,'utf8')):{items:[]};
 const visualById=new Map((visualQueue.items||[]).map(x=>[x.lessonId,x]));
@@ -23,6 +29,8 @@ for(const candidate of preflight.candidates||[]){
   const external=reviewById.get(candidate.lessonId);
   const visualReviewRoot=external?.reviewTasks?.teachingVisual||{};
   const candidateTaskId=candidate.visualTaskId||`${candidate.lessonId}:${candidate.visualRole||'legacy'}:${candidate.visualOrdinal||0}`;
+  if(seenTasks.has(candidateTaskId)) errors.push(`${candidateTaskId}: duplicate preflight visual task`);
+  seenTasks.add(candidateTaskId);
   const visualTask=visualReviewRoot.visualReviews?.[candidateTaskId]||{};
   const decision=visualTask.decision;
   const reviewerId=visualTask.reviewerId;
@@ -34,7 +42,9 @@ for(const candidate of preflight.candidates||[]){
   const queueRow=visualById.get(candidate.lessonId)||{};
   const assetPaths=Array.isArray(queueRow.canonicalAssetPaths)?queueRow.canonicalAssetPaths:[];
   const expectedTarget=String(candidate.targetRepositoryPath||'');
-  const assetPresent=assetPaths.includes(expectedTarget) && fs.existsSync(path.join(root,expectedTarget));
+  const safeTarget=controlledTarget(candidate);
+  if(!safeTarget) errors.push(`${candidateTaskId}: target must match controlled lesson ID, role, and ordinal filename`);
+  const assetPresent=safeTarget && assetPaths.includes(expectedTarget) && fs.existsSync(path.join(root,expectedTarget));
   const eligible=Boolean(candidate.machinePreflightPassed) && reviewerEvidenceComplete && assetPresent;
   if(decision==='approved'&&!reviewerEvidenceComplete) errors.push(`${candidateTaskId}: approval is incomplete without reviewer identity, date, notes, and all six controlled review checks`);
   rows.push({
@@ -45,6 +55,7 @@ for(const candidate of preflight.candidates||[]){
     targetRepositoryPath:candidate.targetRepositoryPath,
     machinePreflightPassed:Boolean(candidate.machinePreflightPassed),
     candidateAssetPresent:assetPresent,
+    controlledTargetValid:safeTarget,
     candidateAssetPaths:assetPaths,
     independentVisualReview:{
       decision:decision??null,
