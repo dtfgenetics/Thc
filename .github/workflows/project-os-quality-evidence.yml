@@ -39,6 +39,8 @@ jobs:
         run: node --test scripts/project-os-workflow-observations.test.mjs
       - name: Test per-application attribution gates
         run: node --test scripts/project-os-app-coverage.test.mjs
+      - name: Test authenticated run evidence inspector
+        run: node --test scripts/project-os-run-evidence.test.mjs
       - name: Collect exact-revision GitHub Actions observations
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
