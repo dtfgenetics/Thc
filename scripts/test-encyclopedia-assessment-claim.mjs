@@ -22,3 +22,13 @@ const multiSentence=buildLessonAssessmentV2({...base,misconceptions:['A single v
 assert.match(multiSentence.prompts[1],/A learner claims, "A single visual symptom proves one diagnosis\."/);
 assert.doesNotMatch(multiSentence.prompts[1],/Confirmation needs independent evidence/);
 console.log('Encyclopedia assessment claim isolation tests passed.');
+
+const verboseCase=buildLessonAssessmentV2({...base,measureAndRecord:[
+ {field:'Irrigation',requirement:'A'.repeat(900)},
+ {field:'Root-zone conditions',requirement:'B'.repeat(900)},
+ {field:'Media',requirement:'C'.repeat(900)},
+ {field:'Plant response',requirement:'D'.repeat(900)}
+]});
+assert.match(verboseCase.prompts[2],/Irrigation, Root-zone conditions, Media/);
+assert.doesNotMatch(verboseCase.prompts[2],/Plant response|A{30}|B{30}|C{30}/);
+assert.ok(verboseCase.prompts[2].length<700,'Applied prompt must remain readable');
