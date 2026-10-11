@@ -7,10 +7,11 @@ const source = fs.readFileSync(new URL('./validate-education-visual-production-q
 const start = source.indexOf('function validateMasterPng(');
 const end = source.indexOf('\nconst queue=readJson(', start);
 assert.ok(start >= 0 && end > start, 'PNG validation function must be present');
+let opens=0, closes=0;
 const validate = vm.runInNewContext(source.slice(start, end) + '\nvalidateMasterPng', {
   fs: {
-    openSync: () => 1,
-    closeSync: () => {},
+    openSync: () => { opens++; return 1; },
+    closeSync: () => { closes++; },
     readSync: (_fd, buffer, offset, length, position) => {
       const available = Math.max(0, Math.min(length, current.length - position));
       current.copy(buffer, offset, position, position + available);
@@ -32,8 +33,8 @@ function png({width=2048,height=2048,depth=8,type=6,compression=0,filter=0,inter
   return bytes;
 }
 const design={masterMinimumWidthPx:1024,masterMinimumHeightPx:1024};
-function accepts(bytes) { current=bytes; assert.doesNotThrow(()=>validate('fixture.png','TEST',design)); }
-function rejects(bytes, message) { current=bytes; assert.throws(()=>validate('fixture.png','TEST',design),message); }
+function accepts(bytes) { current=bytes; const before=opens; assert.doesNotThrow(()=>validate('fixture.png','TEST',design)); assert.equal(opens,before+1); assert.equal(closes,opens); }
+function rejects(bytes, message) { current=bytes; const before=opens; assert.throws(()=>validate('fixture.png','TEST',design),message); assert.equal(opens,before+1); assert.equal(closes,opens); }
 accepts(png());
 accepts(png({depth:16,type:2,interlace:1}));
 const badSignature=png();
@@ -50,5 +51,5 @@ rejects(png({type:5}),/bit depth\/color type/);
 rejects(png({compression:1}),/compression, filter, or interlace/);
 rejects(png({filter:1}),/compression, filter, or interlace/);
 rejects(png({interlace:2}),/compression, filter, or interlace/);
-rejects(png().subarray(0,25),/truncated IHDR payload/);
-console.log('14 PNG master header regression cases passed.');
+rejects(png().subarray(0,25),/truncated IHDR header/);
+console.log('14 PNG master header regression cases and descriptor lifecycle checks passed.');
