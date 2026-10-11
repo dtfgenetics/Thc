@@ -20,3 +20,10 @@ test('owner mismatch becomes actionable source blocker',()=>{
  assert(summarizeQualityReport(report).blockers[0].missing.some(x=>x.reason==='registry owner conflict'));
 });
 test('rejects structurally missing report results',()=>assert.throws(()=>summarizeQualityReport({}),TypeError));
+
+test('missing registered owner is an actionable blocker even with six passes',()=>{
+ const report={results:[{appId:'unowned',ownerMatch:null,ready:false,categories:Object.fromEntries(CATEGORIES.map(c=>[c,cat('pass',null)]))}]};
+ const summary=summarizeQualityReport(report);
+ assert.equal(summary.blockedApps,1);
+ assert(summary.blockers[0].missing.some(item=>item.reason==='no matching registered project owner'));
+});
