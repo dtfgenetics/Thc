@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "id": "simple-user-guide-visuals-v1",
+  "sourceGuide": "site/wordpress/education/simple-user-guide-batch1.json",
+  "sourceLock": "assets/education/simple-info-graphics/source/Grower Terminology Guide.txt",
+  "canonicalAssetDirectory": "assets/education/simple-info-graphics/active/simple-user-guide",
+  "statusValues": [
+    "approved",
+    "review-candidate",
+    "reference-only",
+    "artwork-needed",
+    "rejected"
+  ],
+  "publishRule": "Only status=approved with every review gate true and a publicUrl may render on the public guide.",
+  "approvalMinimums": {
+    "widthPx": 1800,
+    "heightPx": 2400
+  },
+  "visuals": [
+    {
+      "pageNumber": 1,
+      "pageSlug": "setup",
+      "status": "review-candidate",
+      "assetPath": "assets/education/simple-info-graphics/active/simple-user-guide/01-setup.png",
+      "driveFileId": "1MO74Vo5VR3HSRLNjc1BkLEDz-_sCtQTk",
+      "format": "png",
+      "widthPx": 2550,
+      "heightPx": 3300,
+      "dpi": 300,
+      "sourceCopyVerified": true,
+      "altText": "Beginner grow setup showing light or sun, a draining container, grow mix, water, airflow, and a reminder to plan drying and curing space.",
+      "caption": "Setup comes before starting seeds; gather the basic grow and post-harvest spaces first.",
+      "publicUrl": null,
+      "review": {
+        "scientificQA": false,
+        "visualQA": false,
+        "accessibilityQA": false,
+        "pagePlacementQA": false
+      },
+      "notes": "Print-size candidate recovered from Drive. Exact locked page copy was visually matched; independent release review remains open."
+    },
+    {
+      "pageNumber": 2,
+      "pageSlug": "seeds",
+      "status": "review-candidate",
+      "assetPath": "assets/education/simple-info-graphics/active/simple-user-guide/02-seeds.png",
+      "driveFileId": "1g5DzhSwEBZ092EnNK2r6OUbjX2xvQDHJ",
+      "format": "png",
+      "widthPx": 1103,
+      "heightPx": 1426,
+      "dpi": null,
+      "sourceCopyVerified": true,
+      "altText": "Beginner seed page showing a cannabis seed opening and the first white root, with simple moisture, warmth, handling, and patience reminders.",
+      "caption": "Seeds need moisture, warmth, gentle handling, and time; move on after the first white root appears.",
+      "publicUrl": null,
+      "review": {
+        "scientificQA": false,
+        "visualQA": false,
+        "accessibilityQA": false,
+        "pagePlacementQA": false
+      },
+      "notes": "Exact locked copy recovered, but the raster is below the approval minimum and needs a higher-resolution rebuild before release."
+    },
+    {
+      "pageNumber": 3,
+      "pageSlug": "seedling",
+      "status": "reference-only",
+      "assetPath": "assets/education/simple-info-graphics/active/simple-user-guide/03-seedling-reference.jpg",
+      "driveFileId": "1EXJUPmHmLIof-P5RgZM9XnXLwiDlB-Dt",
+      "format": "jpg",
+      "widthPx": 311,
+      "heightPx": 533,
+      "dpi": 72,
+      "sourceCopyVerified": true,
+      "altText": "Low-resolution reference for the Seedling page showing a small young plant and gentle-care reminders.",
+      "caption": "Reference-only Seedling composition; it is not a publication master.",
+      "publicUrl": null,
+      "review": {
+        "scientificQA": false,
+        "visualQA": false,
+        "accessibilityQA": false,
+        "pagePlacementQA": false
+      },
+      "notes": "Low-resolution derivative retained only to guide the replacement composition."
+    },
+    {
+      "pageNumber": 4,
+      "pageSlug": "veg",
+      "status": "review-candidate",
+      "assetPath": "assets/education/simple-info-graphics/active/simple-user-guide/04-veg.png",
+      "driveFileId": "1UMr3z45Cg7nx20jJ_ksmb7h4zaHqw3kt",
+      "format": "png",
+      "widthPx": 1103,
+      "heightPx": 1426,
+      "dpi": null,
+      "sourceCopyVerified": true,
+      "altText": "Vegetative growth page showing a healthy young cannabis plant with emphasis on roots, stems, leaves, and branches.",
+      "caption": "Veg is the plant-building stage: roots, stems, leaves, and branches expand as the plant gets bigger.",
+      "publicUrl": null,
+      "review": {
+        "scientificQA": false,
+        "visualQA": false,
+        "accessibilityQA": false,
+        "pagePlacementQA": false
+      },
+      "notes": "Exact locked copy recovered, but the raster is below the approval minimum and needs a higher-resolution rebuild before release."
+    },
+    {
+      "pageNumber": 5,
+      "pageSlug": "flower",
+      "status": "artwork-needed",
+      "assetPath": null,
+      "driveFileId": null,
+      "format": null,
+      "widthPx": null,
+      "heightPx": null,
+      "dpi": null,
+      "sourceCopyVerified": false,
+      "altText": "Planned beginner Flower visual showing early bud formation, airflow, careful watering, and patience without adding extra claims.",
+      "caption": "Flower visual not yet rebuilt from the locked script.",
+      "publicUrl": null,
+      "review": {
+        "scientificQA": false,
+        "visualQA": false,
+        "accessibilityQA": false,
+        "pagePlacementQA": false
+      },
+      "notes": "Create from the locked Flower prompt; do not reuse the detailed legacy Flower candidate as the final beginner page."
+    },
+    {
+      "pageNumber": 6,
+      "pageSlug": "harvest",
+      "status": "review-candidate",
+      "assetPath": "assets/education/simple-info-graphics/active/simple-user-guide/06-harvest.png",
+      "driveFileId": "1ofdF69-AOwH0kcCOpknd05_H42b7B1aG",
+      "format": "png",
+      "widthPx": 1103,
+      "heightPx": 1426,
+      "dpi": null,
+      "sourceCopyVerified": true,
+      "altText": "Harvest page showing clean scissors beside a mature flowering branch and simple readiness cues.",
+      "caption": "Harvest only after readiness cues are assessed; use clean tools and avoid cutting early from impatience.",
+      "publicUrl": null,
+      "review": {
+        "scientificQA": false,
+        "visualQA": false,
+        "accessibilityQA": false,
+        "pagePlacementQA": false
+      },
+      "notes": "Exact locked copy recovered, but the raster is below the approval minimum. Harvest-readiness cues also require a stronger evidence review before approval."
+    },
+    {
+      "pageNumber": 7,
+      "pageSlug": "dry",
+      "status": "artwork-needed",
+      "assetPath": null,
+      "driveFileId": null,
+      "format": null,
+      "widthPx": null,
+      "heightPx": null,
+      "dpi": null,
+      "sourceCopyVerified": false,
+      "altText": "Planned Dry visual showing harvested branches in a dark, clean space with gentle airflow and no direct fan blast.",
+      "caption": "Dry visual not yet rebuilt from the locked script.",
+      "publicUrl": null,
+      "review": {
+        "scientificQA": false,
+        "visualQA": false,
+        "accessibilityQA": false,
+        "pagePlacementQA": false
+      },
+      "notes": "Create from the locked Dry prompt and retain the source's intentionally non-numeric beginner wording."
+    },
+    {
+      "pageNumber": 8,
+      "pageSlug": "cure",
+      "status": "artwork-needed",
+      "assetPath": null,
+      "driveFileId": null,
+      "format": null,
+      "widthPx": null,
+      "heightPx": null,
+      "dpi": null,
+      "sourceCopyVerified": false,
+      "altText": "Planned Cure visual showing clean containers in cool, dark storage with a mold-check reminder.",
+      "caption": "Cure visual not yet rebuilt from the locked script.",
+      "publicUrl": null,
+      "review": {
+        "scientificQA": false,
+        "visualQA": false,
+        "accessibilityQA": false,
+        "pagePlacementQA": false
+      },
+      "notes": "Create from the locked Cure prompt; avoid unsupported universal time or humidity targets."
+    },
+    {
+      "pageNumber": 9,
+      "pageSlug": "pests",
+      "status": "artwork-needed",
+      "assetPath": null,
+      "driveFileId": null,
+      "format": null,
+      "widthPx": null,
+      "heightPx": null,
+      "dpi": null,
+      "sourceCopyVerified": false,
+      "altText": "Planned Pests visual showing a calm inspection of upper and lower leaf surfaces for small insects, eggs, webbing, spots, or chewing damage.",
+      "caption": "Pests visual not yet rebuilt from the locked script.",
+      "publicUrl": null,
+      "review": {
+        "scientificQA": false,
+        "visualQA": false,
+        "accessibilityQA": false,
+        "pagePlacementQA": false
+      },
+      "notes": "Create from the locked Pests prompt; keep treatment advice out of the beginner graphic."
+    },
+    {
+      "pageNumber": 10,
+      "pageSlug": "tips",
+      "status": "artwork-needed",
+      "assetPath": null,
+      "driveFileId": null,
+      "format": null,
+      "widthPx": null,
+      "heightPx": null,
+      "dpi": null,
+      "sourceCopyVerified": false,
+      "altText": "Planned final Tips checklist using simple icons for watering checks, light feeding, airflow, cleanliness, records, and patience.",
+      "caption": "Tips visual not yet rebuilt from the locked script.",
+      "publicUrl": null,
+      "review": {
+        "scientificQA": false,
+        "visualQA": false,
+        "accessibilityQA": false,
+        "pagePlacementQA": false
+      },
+      "notes": "Create from the locked Tips prompt as the closing page of the matching 10-page set."
+    }
+  ]
+}
