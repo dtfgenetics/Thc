@@ -6,6 +6,9 @@ on:
     branches: [main]
     paths:
       - 'scripts/repair-wordpress-encyclopedia-copy-defects.mjs'
+      - 'scripts/lib/encyclopedia-assessment-v2.mjs'
+      - 'scripts/lib/encyclopedia-misconception-claim.mjs'
+      - 'scripts/test-encyclopedia-assessment-claim.mjs'
       - 'content/encyclopedia/volume-*/lessons/**'
       - 'content/encyclopedia/review/**'
       - 'data/encyclopedia-release-review-queue.json'
