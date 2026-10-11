@@ -9,6 +9,7 @@ on:
     branches:
       - main
     paths:
+      - site/wordpress/education/encyclopedia-deployment-target.json
       - scripts/attach-wordpress-encyclopedia-visuals.mjs
       - 'scripts/publish-wordpress-encyclopedia-*.mjs'
       - scripts/build-encyclopedia-full-publication-manifest.mjs
