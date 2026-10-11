@@ -14,6 +14,7 @@ on:
       - 'lighthouserc.cjs'
       - 'configuration/web-quality-regression-baseline.json'
       - 'scripts/validate-lighthouse-regressions.mjs'
+      - 'scripts/test-lighthouse-regressions.mjs'
       - '.github/workflows/web-quality.yml'
       - '.agents/skills/dtf-web-quality-gate/**'
   workflow_run:
@@ -136,6 +137,9 @@ jobs:
 
       - name: Discover public routes
         run: node scripts/discover-public-routes.mjs
+
+      - name: Validate Lighthouse regression checker
+        run: node scripts/test-lighthouse-regressions.mjs
 
       - name: Run Lighthouse CI
         shell: bash
