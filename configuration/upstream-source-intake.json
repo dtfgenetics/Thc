@@ -1,34 +1,34 @@
 {
   "schemaVersion": 1,
-  "policy": "Research-only upstream source intake. No automatic production vendoring.",
+  "policy": "Reference-only competitive engineering research. Implement original DTF code; do not fetch, vendor, or copy external source.",
   "sources": [
     {
       "id": "boardgameio",
       "repository": "boardgameio/boardgame.io",
       "license": "MIT",
       "use": "Turn-based game-state architecture and test fixtures",
-      "mode": "evaluation"
+      "mode": "reference-only"
     },
     {
       "id": "colyseus",
       "repository": "colyseus/colyseus",
       "license": "MIT",
       "use": "Server-authoritative multiplayer architecture",
-      "mode": "evaluation"
+      "mode": "reference-only"
     },
     {
       "id": "pagefind",
       "repository": "Pagefind/pagefind",
       "license": "MIT",
       "use": "Static encyclopedia search and indexing",
-      "mode": "evaluation"
+      "mode": "reference-only"
     },
     {
       "id": "docusaurus",
       "repository": "facebook/docusaurus",
       "license": "MIT",
       "use": "Education navigation and content organization",
-      "mode": "evaluation"
+      "mode": "reference-only"
     },
     {
       "id": "moodle",
