@@ -68,6 +68,26 @@ try{
   const validator=spawnSync(process.execPath,[path.join(here,'validate-encyclopedia-extension-registry.mjs')],{cwd:root,encoding:'utf8'});
   if(validator.status!==0) throw new Error(`Extension validator rejected valid 421+ fixture:\n${validator.stdout}\n${validator.stderr}`);
 
+  // Negative fixtures: valid row count is not sufficient to protect permanent IDs.
+  const coreRegistryPath=path.join(enc,'current-controlled-registry.json');
+  const originalCore=fs.readFileSync(coreRegistryPath,'utf8');
+  const invalidFixtures=[
+    {label:'renumbered core entry',change:entries=>{entries[0].number=999;}},
+    {label:'recycled core ID',change:entries=>{entries[0].id='THC-ENC-999';}},
+    {label:'moved core part',change:entries=>{entries[0].part=22;}}
+  ];
+  for(const fixture of invalidFixtures){
+    const mutated=JSON.parse(originalCore);
+    fixture.change(mutated.entries);
+    fs.writeFileSync(coreRegistryPath,JSON.stringify(mutated,null,2));
+    const rejected=spawnSync(process.execPath,[path.join(here,'validate-encyclopedia-extension-registry.mjs')],{cwd:root,encoding:'utf8'});
+    if(rejected.status===0) throw new Error(`Extension validator accepted ${fixture.label}.`);
+    if(!rejected.stderr.includes('Protected core')&&!rejected.stderr.includes('protected core')){
+      throw new Error(`Unexpected failure for ${fixture.label}: ${rejected.stderr}`);
+    }
+  }
+  fs.writeFileSync(coreRegistryPath,originalCore);
+
   console.log('THC Encyclopedia 420+ extension smoke test PASS: protected 420 core + THC-ENC-421/422 registry and Volume 22 discovery validated.');
 }finally{
   fs.rmSync(root,{recursive:true,force:true});
