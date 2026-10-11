@@ -82,9 +82,9 @@ const verifyRow=async(row)=>{
   if(end<0) throw new Error(`${id}: lesson figure is not closed`);
   const figure=html.slice(start,end);
   const src=imageUrl.toString();
-  const imgTags=figure.match(/<img\\b[^>]*>/gi)||[];
+  const imgTags=figure.match(/<img\b[^>]*>/gi)||[];
   if(imgTags.length!==1) throw new Error(`${id}: expected one image within the marked lesson figure`);
-  const match=imgTags[0].match(/\\bsrc=["']([^"']+)["']/i);
+  const match=imgTags[0].match(/\bsrc=["']([^"']+)["']/i);
   if(!match || match[1].replaceAll('&amp;','&')!==src) throw new Error(`${id}: the displayed lesson image src does not match verified publication URL`);
   return {id,mediaSourceUrl:src,lessonUrl:pageUrl.toString(),sha256:actual,bytes:image.body.length,matched:true};
 };
