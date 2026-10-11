@@ -6,7 +6,7 @@ export function buildLessonAssessmentV2(lesson){
   const misconception=misconceptionClaim(misconceptions[0]) || 'A common shortcut is reliable without context.';
   const relevance=String((Array.isArray(lesson?.cultivationRelevance)?lesson.cultivationRelevance:[lesson?.cultivationRelevance]).filter(Boolean)[0]||`Apply the principles of ${title} to a cultivation decision.`);
   const rawRecords=Array.isArray(lesson?.measureAndRecord)?lesson.measureAndRecord:[];
-  const recordSummary=rawRecords.map(item=>typeof item==='string'?item:`${item?.field||'Record'}: ${item?.requirement||''}`).filter(Boolean).join('; ');
+  const recordSummary=rawRecords.map(item=>typeof item==='string'?item:String(item?.field||item?.requirement||'Record')).map(value=>value.trim()).filter(Boolean).slice(0,3).join(', ');
   const format=String(lesson?.primaryFormat||'Science lesson').toLowerCase();
 
   let first;
