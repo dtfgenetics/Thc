@@ -25,7 +25,11 @@
     "Cannabis leaves are commonly palmately compound with serrated leaflets. Leaflet number, width, length, serration, petiole length, pigment, and surface traits vary with genetics, developmental stage, shoot position, nutrition, environment, and stress. Juvenile and reproductive shoots can produce simpler leaves than vigorous mature vegetative shoots.",
     "Young cannabis commonly shows opposite leaf pairs at early nodes. Later growth often shifts toward alternate leaf arrangement, especially with maturity and reproductive development. This transition is useful as a developmental observation but is not a perfect clock.",
     "Leaves are major photosynthetic and transpiring organs. Their position and angle affect light interception and boundary-layer conditions. As a controlled diagnostic procedure, symptoms should be recorded by leaf age, canopy location, tissue pattern, distribution, and progression before a cause is assigned. These observations narrow hypotheses; they do not prove a nutrient, pest, pathogen, heat, light, or root-zone diagnosis by themselves.",
-    "Leaf form is also developmentally plastic. A single plant can produce leaves with different leaflet numbers, proportions, petiole lengths, and orientations as it moves from juvenile growth into mature vegetative and reproductive development. Because leaf expansion integrates genotype, light exposure, temperature, water status, mineral supply, hormones, and shoot position, morphology should be treated as a measured phenotype. Repeated position-matched observations are more informative than comparing one leaf from the top of one plant with an older shaded leaf from another."
+    "Leaf form is also developmentally plastic. A single plant can produce leaves with different leaflet numbers, proportions, petiole lengths, and orientations as it moves from juvenile growth into mature vegetative and reproductive development. Because leaf expansion integrates genotype, light exposure, temperature, water status, mineral supply, hormones, and shoot position, morphology should be treated as a measured phenotype. Repeated position-matched observations are more informative than comparing one leaf from the top of one plant with an older shaded leaf from another.",
+    "An individual Cannabis sativa leaf is often palmately compound: several leaflets join at a common point, while the petiole attaches the entire leaf to the stem. A leaflet is not a separate leaf at a node. To count leaflets reproducibly, distinguish separate laminar blades from serrations or lobes, identify the central leaflet, and document malformed or partially divided blades rather than forcing ambiguous observations into a standard count.",
+    "A detailed longitudinal study of Cannabis sativa cultivar White Widow documented changing leaf complexity across ontogeny: the sixth true leaves in that experiment had nine leaflets, and later leaves became progressively simpler. The authors also reported an opposite-to-alternate phyllotaxy transition associated with leaf-area and developmental changes. Those node-specific values describe the studied genotype and conditions; they should not be published as a universal sequence or a sex, chemotype, or maturity test for all cannabis.",
+    "Phyllotaxy must be scored on a defined stem axis. Opposite leaves share approximately the same attachment level on opposing sides; alternate leaves attach at successive levels. A leaf's petiole orientation, loss through pruning, and short internodes can disguise attachment position, so photographs should show the node and adjacent internodes rather than relying on an isolated detached leaf.",
+    "A measurement-quality plate should separate leaf architecture (petiole, leaflet, leaflet margin and attachment) from a diagnostic symptom atlas. Neither serration count nor an apparent leaf-color change identifies a nutrient or pathogen problem alone. Camera color balance, leaf age, shade, cultivar, and exposure history affect comparisons, while genuine tissue chemistry and pathology require supporting evidence."
   ],
   "cultivationRelevance": [
     "Do not diagnose from color alone. Record whether symptoms begin on old, middle, or new leaves; whether they are interveinal, marginal, spotted, distorted, or uniform; and whether they face a light, fan, spray, or wet surface.",
@@ -57,6 +61,10 @@
     {
       "field": "Context and follow-up",
       "requirement": "Record recent irrigation, pH/EC, nutrition, light exposure, airflow, temperature, sprays, transplant stress, and neighboring-plant distribution. Re-image the same class of leaf to document progression or recovery."
+    },
+    {
+      "field": "Phenotyping metadata",
+      "requirement": "For each imaged leaf record genotype/accession, plant identifier, sampling node and axis, developmental stage, environment/treatment, collection date, camera/scale metadata, and the operational definition used for leaflet count and phyllotaxy. Keep source images linked to measurement rows in a MIAPPE-aligned dataset."
     }
   ],
   "misconceptions": [
@@ -71,7 +79,9 @@
   "sourceNotes": [
     "Hesami M., Pepe M., and Jones A.M.P. (2023). Morphological Characterization of Cannabis sativa L. Throughout Its Complete Life Cycle. Plants 12(20):3646.",
     "Papoutsoglou E.A. et al. (2020). Enabling reusability of plant phenomic datasets with MIAPPE 1.1. New Phytologist 227(1):260–273.",
-    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; leaf morphology, diagnostic observation, photography, and evidence-control framework."
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; leaf morphology, diagnostic observation, photography, and evidence-control framework.",
+    "Hesami M., Pepe M., and Jones A.M.P. (2023). Morphological Characterization of Cannabis sativa L. Throughout Its Complete Life Cycle. Plants 12(20):3646. https://doi.org/10.3390/plants12203646 — genotype-specific developmental leaf and phyllotaxy observations; CC BY 4.0.",
+    "MIAPPE Consortium. Minimum Information About a Plant Phenotyping Experiment, data model v1.2. https://github.com/MIAPPE/MIAPPE — minimum metadata design for phenotyping records; not a cannabis leaf-response experiment."
   ],
   "slug": "leaf-morphology-leaflets-and-phyllotaxy",
   "route": "/learn/encyclopedia/thc-enc-012/",
