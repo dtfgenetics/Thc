@@ -39,6 +39,17 @@ if(!errors.length){
   const app=(apps.apps||apps).find?.(row=>row.repository==='dtfgenetics/thc-grow-hub' || row.id==='thc-grow-hub');
   if(!app) errors.push('public app registry is missing thc-grow-hub integration record');
 
+  const publishWorkflowPath='.github/workflows/wordpress-encyclopedia-visuals-production.yml';
+  if(!fs.existsSync(publishWorkflowPath)){
+    errors.push('missing controlled WordPress encyclopedia publisher workflow');
+  }else{
+    const publisher=fs.readFileSync(publishWorkflowPath,'utf8');
+    const pushPaths=publisher.split(/\n\s*push:\s*\n/)[1]?.split(/\n\s*workflow_dispatch:/)[0]||'';
+    if(!pushPaths.includes(`- ${targetPath}`)){
+      errors.push('WordPress encyclopedia publisher must trigger on immutable source pin changes');
+    }
+  }
+
   if(fs.existsSync('scripts/resolve-encyclopedia-deployment-target.mjs')){
     const src=fs.readFileSync('scripts/resolve-encyclopedia-deployment-target.mjs','utf8');
     if(!src.includes('THC_ENCYCLOPEDIA_SOURCE_SHA')) errors.push('resolver must export THC_ENCYCLOPEDIA_SOURCE_SHA');

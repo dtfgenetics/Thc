@@ -24,11 +24,15 @@
   "coreScience": [
     "Plants acquire essential elements as ions or small molecules in the root-zone solution. Before an ion becomes plant biomass, it must reach a living root surface, cross membranes through selective transport proteins, move through tissues, and be loaded into long-distance transport pathways. Concentration in a fertilizer tank is only the beginning of that sequence.",
     "Plasma-membrane proton pumps use ATP to export hydrogen ions, establishing electrical and pH gradients. Channels, carriers, symporters, and antiporters use those gradients to regulate uptake and compartmentation. Different transporter systems operate across concentration ranges and respond to plant demand, ion identity, temperature, pH, and competing ions.",
-    "Uptake is therefore not a passive sponge effect. Oxygen shortage can limit ATP production; salinity lowers external water potential; root damage removes membrane area; pH changes ion form and availability; and antagonistic ions can alter transport. Plants can also exclude, retrieve, store, or export ions."
+    "Uptake is therefore not a passive sponge effect. Oxygen shortage can limit ATP production; salinity lowers external water potential; root damage removes membrane area; pH changes ion form and availability; and antagonistic ions can alter transport. Plants can also exclude, retrieve, store, or export ions.",
+    "Electrical conductivity is an aggregate response of dissolved charged species, weighted by concentration, charge and ionic mobility. Equal EC readings from two solutions do not establish equal nitrate, ammonium, potassium, calcium, magnesium or sodium concentrations. Solution analysis and formulation records identify ion composition; EC by itself cannot diagnose a missing element or quantify net plant uptake.",
+    "Electrochemical gradients combine the chemical concentration difference and voltage across a membrane. An ion channel can permit movement down its electrochemical gradient, whereas ATP-driven proton pumps build gradients used by coupled carriers. Transporter selectivity, regulation and subcellular storage determine how a root handles particular ions. Changes in oxygen supply can reduce the energy available to maintain these gradients without changing the total fertilizer present."
   ],
   "cultivationRelevance": [
     "Correct nutrient problems by combining root health, solution EC and pH, substrate extract, water chemistry, environmental demand, and tissue data when available. A stronger feed can worsen a transport problem.",
-    "Runoff EC is an operational indicator, not a direct measure of what entered roots. Keep the extraction method consistent before comparing values."
+    "Runoff EC is an operational indicator, not a direct measure of what entered roots. Keep the extraction method consistent before comparing values.",
+    "Worked interpretation: a crop has higher-than-usual drainage EC, marginal leaf injury and a wet root zone. Do not assume potassium deficiency or simply increase feed. Compare water-source chemistry, fertilizer formulation, sampling technique, substrate water status, root health and progression of symptoms before selecting a corrective change.",
+    "After a change in fertilizer formulation, assess trends across comparable irrigation events rather than treating a single drain sample as proof of uptake. Record whether the water volume, source, substrate extraction method and environmental demand remained comparable."
   ],
   "measureAndRecord": [
     {
@@ -50,15 +54,21 @@
     {
       "field": "Confirmation",
       "requirement": "Tissue test, media test, corrective action, and follow-up response."
+    },
+    {
+      "field": "Differential nutrient-transport investigation",
+      "requirement": "Log source-water alkalinity and ionic analysis if available, applied formulation and EC/pH, standardized substrate extract or leachate EC/pH, root-zone moisture/temperature/oxygen status, symptom progression and any laboratory tissue results."
     }
   ],
   "misconceptions": [
     "If an ion is in solution the plant absorbed it: Availability, membrane transport, and plant demand still control uptake.",
     "Higher EC means better nutrition: It means more dissolved charge and can also signal osmotic stress.",
-    "One nutrient ratio controls every interaction: Transport and response depend on concentration, form, pH, tissue demand, and environment."
+    "One nutrient ratio controls every interaction: Transport and response depend on concentration, form, pH, tissue demand, and environment.",
+    "Identical EC readings guarantee identical nutrient supply: different ionic compositions and mobilities can produce the same conductivity."
   ],
   "evidenceLimits": [
-    "Transporter-level mechanisms are well established in model and crop plants, but cannabis-specific uptake kinetics and cultivar comparisons remain incomplete."
+    "Transporter-level mechanisms are well established in model and crop plants, but cannabis-specific uptake kinetics and cultivar comparisons remain incomplete.",
+    "The relative roles of ion transporters, rhizosphere pH, cation competition and root developmental stages cannot be resolved from runoff EC or visual leaf symptoms alone. Detailed molecular regulation and uptake kinetics are largely extrapolated from non-cannabis models."
   ],
   "crossLinks": "THC-ENC-043–044 and mineral-nutrition lessons THC-ENC-121–140.",
   "sourceNotes": [
