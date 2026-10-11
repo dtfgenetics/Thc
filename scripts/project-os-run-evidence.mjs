@@ -23,8 +23,15 @@ export async function inspectRunEvidence({repository,sha,runId,attempt,token,fet
   const artifacts=await get(prefix+'/artifacts?per_page=100');
   if(!Array.isArray(jobs.jobs)||!Array.isArray(artifacts.artifacts))throw Error('Invalid jobs or artifacts response');
   // Fail closed instead of reporting potentially incomplete pagination.
-  if(jobs.total_count>jobs.jobs.length||artifacts.total_count>artifacts.artifacts.length)
+  if(!Number.isSafeInteger(jobs.total_count)||jobs.total_count<0||
+     !Number.isSafeInteger(artifacts.total_count)||artifacts.total_count<0||
+     jobs.total_count!==jobs.jobs.length||artifacts.total_count!==artifacts.artifacts.length)
     throw Error('Run job or artifact pagination incomplete');
+  if(jobs.jobs.some(j=>!Number.isSafeInteger(j?.id)||j.id<1||typeof j.name!=='string'||!j.name||
+     typeof j.status!=='string'||typeof j.conclusion!=='string')||
+     artifacts.artifacts.some(a=>!Number.isSafeInteger(a?.id)||a.id<1||
+     typeof a.name!=='string'||!a.name||typeof a.expired!=='boolean'))
+    throw Error('Invalid job or artifact metadata');
   return {
     schemaVersion:1,repository,sha,runId,attempt,
     jobs:jobs.jobs.map(j=>({id:j.id,name:j.name,status:j.status,conclusion:j.conclusion,runId,runAttempt:attempt,headSha:sha})),
