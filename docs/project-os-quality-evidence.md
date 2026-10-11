@@ -32,3 +32,9 @@ A future `data/project-os-quality-evidence.json` file may contain:
 All **six** required categories must carry valid, consistent proof: `source` (owner and branch), `build` (tests and build), `responsive` (desktop/mobile browser acceptance), `content` (assets and instructional review), `security` (scans and authorization checks), `production` (deployed revision and rollback verification). A category passes only with an HTTPS proof link, immutable 40-hex source commit and UTC timestamp not older than 30 days. Linking to a workflow is **not itself proof it passed**; evidence ingestion must separately verify workflow status and artifact identity before registering evidence. This v1 evaluator checks submitted proof metadata, **not** remote GitHub workflow conclusions.
 
 CI audits registry integrity and generates evidence reports without treating incomplete projects as CI failures. Use `--enforce` only for designated complete-product release gates after verified evidence ingestion is operational. Never use the report's `ready` result alone to authorize production deployment.
+
+## Read-only GitHub Actions observation collector
+
+The workflow runs `node --test scripts/project-os-workflow-observations.test.mjs` and `node scripts/project-os-workflow-observations.mjs` with read-only `actions: read` permission. It queries GitHub's Actions API for the exact PR head SHA (or main SHA), ignores failed, skipped, pending, unrelated and stale runs, and publishes `.artifacts/project-os/workflow-observations.json`. No token is placed in the artifact.
+
+**Not an approval gate:** A successful workflow observation does not prove that all jobs passed, that a particular application or route was tested, or that its deployment matches the SHA. Accordingly observations are not promoted to passing evidence in the six-category audit. The next phase must verify run attempts, required jobs, artifacts and application-scoped coverage before promotion.
