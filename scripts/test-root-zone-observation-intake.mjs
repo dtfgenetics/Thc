@@ -11,7 +11,7 @@ assert.equal(good.record.soilEC,null);
 const missing=validateObservation({...valid,method:''},spec);
 assert.equal(missing.ok,false);
 assert(missing.errors.some(e=>e.includes('method')));
-for (const changes of [{soilPH:'15'},{soilEC:'not a number'},{containerLiters:'-1'},{recordedAt:'invalid'}, {medium:'invalid'}, {recordedAt:''}]){
+for (const changes of [{soilPH:'15'},{soilEC:'not a number'},{containerLiters:'-1'},{recordedAt:'invalid'}, {medium:'invalid'}, {recordedAt:''},{recordedAt:'2026-02-30T14:15'},{recordedAt:'2026-10-11T24:15'},{soilEC:'Infinity'},{soilPH:{}},{soilEC:[]}]){
  const result=validateObservation({...valid,...changes},spec);
  assert.equal(result.ok,false,JSON.stringify(changes));
 }
