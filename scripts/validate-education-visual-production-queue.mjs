@@ -18,12 +18,13 @@ function validateMasterPng(file,id,designSystem){
  if(!header.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))||header.readUInt32BE(8)!==13||header.toString('ascii',12,16)!=='IHDR') fail(`${id} master asset is not a valid PNG IHDR header`);
  const width=header.readUInt32BE(16),height=header.readUInt32BE(20);
  if(width===0||height===0) fail(`${id} master PNG has invalid zero dimensions`);
- const colorTypeHeader=Buffer.alloc(2);
+ const ihdrTail=Buffer.alloc(5);
  const colorFd=fs.openSync(file,'r');
  try{
-  if(fs.readSync(colorFd,colorTypeHeader,0,2,24)!==2) fail(`${id} master PNG has a truncated IHDR payload`);
+  if(fs.readSync(colorFd,ihdrTail,0,5,24)!==5) fail(`${id} master PNG has a truncated IHDR payload`);
  }finally{fs.closeSync(colorFd)}
- const bitDepth=colorTypeHeader[0],colorType=colorTypeHeader[1];
+ const bitDepth=ihdrTail[0],colorType=ihdrTail[1];
+ if(ihdrTail[2]!==0||ihdrTail[3]!==0||![0,1].includes(ihdrTail[4])) fail(`${id} master PNG has invalid IHDR compression, filter, or interlace method`);
  const validDepths={0:[1,2,4,8,16],2:[8,16],3:[1,2,4,8],4:[8,16],6:[8,16]};
  if(!validDepths[colorType]?.includes(bitDepth)) fail(`${id} master PNG has invalid bit depth/color type combination`);
  const minWidth=Number(designSystem?.masterMinimumWidthPx),minHeight=Number(designSystem?.masterMinimumHeightPx);
