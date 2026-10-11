@@ -132,6 +132,8 @@ jobs:
         run: node scripts/test-encyclopedia-approved-asset-integrity.mjs
       - name: Build exact approved visual asset ledger
         run: npm run encyclopedia:visual-approved-assets
+      - name: Regression-test actual WordPress media and lesson visual parity
+        run: node scripts/test-wordpress-encyclopedia-visual-parity.mjs
       - name: Regression-test public image parity safety
         run: node scripts/test-encyclopedia-live-visual-hashes.mjs
       - name: Verify approved visual repository bytes and regression cases
