@@ -6,7 +6,8 @@
   "subtitle": "A starter path from setup to cure.",
   "intro": "What stage you are in → what the plant needs → what to do → what to avoid → what comes next.",
   "audience": "First-time lawful home growers.",
-  "visualStatus": "Five recovered page visuals are registered: Setup, Seeds, Veg, and Harvest are review candidates; Seedling is a low-resolution composition reference. Flower, Dry, Cure, Pests, and Tips still require matching artwork. No visual is called approved until the release gates pass.",
+  "lawfulUseNotice": "Use this guide only where home cultivation is lawful. Follow local law, product labels, safety instructions, and building/electrical rules.",
+  "visualStatus": "Batch 1 learner copy has been fact-corrected and locked for layout. Final visuals still need text QA before approval.",
   "pages": [
     {
       "number": 1,
@@ -22,6 +23,7 @@
             "Simple grow mix",
             "Water",
             "Airflow",
+            "Clean, safe space",
             "Drying and curing space"
           ]
         }
@@ -50,7 +52,7 @@
           "label": "Needs",
           "items": [
             "Moisture",
-            "Warmth",
+            "Warmth — warm, not hot",
             "Gentle handling",
             "Time"
           ]
@@ -145,14 +147,15 @@
         {
           "label": "Needs",
           "items": [
-            "Steady light schedule",
-            "Good airflow",
+            "For photoperiod plants: 12 hr light / 12 hr uninterrupted dark",
+            "Steady airflow",
             "Careful watering",
-            "Patience"
+            "Lower humidity as buds get dense",
+            "Bloom-stage feeding: less nitrogen than veg, with adequate phosphorus and potassium"
           ]
         }
       ],
-      "avoid": "Wet, stale air around buds.",
+      "avoid": "Wet, stale air around buds; light leaks for photoperiod plants; overfeeding.",
       "moveOnLabel": "Watch for",
       "moveOn": "Buds getting bigger and smell getting stronger.",
       "simpleRule": "Patience protects quality.",
@@ -160,7 +163,7 @@
       "focus": [
         "Buds form",
         "Airflow matters",
-        "Keep a steady light schedule",
+        "Use photoperiod-only 12/12 language",
         "Watch moisture and mold risk"
       ],
       "learnMore": {
@@ -188,7 +191,7 @@
           "text": "Use clean tools."
         }
       ],
-      "avoid": "Cutting early because you are excited.",
+      "avoid": "Harvesting wet plants or cutting before the drying space is ready.",
       "simpleRule": "Harvest when the plant is ready.",
       "goal": "Teach not to harvest too early.",
       "focus": [
@@ -212,14 +215,14 @@
           "items": [
             "Darkness",
             "Gentle airflow",
-            "Moderate temperature",
+            "Cool to moderate temperature",
             "Time"
           ]
         }
       ],
       "avoid": "Heat, bright light, and direct fan blast.",
       "moveOnLabel": "Move on when",
-      "moveOn": "Buds feel dry outside and small stems bend or snap.",
+      "moveOn": "Buds feel dry outside; small stems bend with a light snap. Do not make buds bone-dry.",
       "simpleRule": "Fast drying can ruin good flower.",
       "goal": "Teach drying as a critical step, not an afterthought.",
       "focus": [
@@ -243,14 +246,14 @@
           "label": "Needs",
           "items": [
             "Clean jars or containers",
-            "Cool storage",
-            "Darkness",
-            "Mold checks"
+            "Cool, dark storage",
+            "Mold checks",
+            "Time"
           ]
         },
         {
           "label": "Do",
-          "text": "Open containers early if moisture builds up."
+          "text": "Open containers early if moisture builds up. If jar humidity stays high, dry longer."
         }
       ],
       "avoid": "Jarring wet buds.",
@@ -270,8 +273,8 @@
     {
       "number": 9,
       "slug": "pests",
-      "title": "Pests",
-      "lead": "Pests are problems that can damage plants.",
+      "title": "Pests & Disease",
+      "lead": "Pests and diseases can damage plants.",
       "sections": [
         {
           "label": "Check for",
@@ -280,17 +283,19 @@
             "Eggs",
             "Webbing",
             "Leaf spots",
-            "Chewed leaves"
+            "White powder",
+            "Chewed leaves",
+            "Sticky residue"
           ]
         },
         {
           "label": "Do",
-          "text": "Look under leaves often."
+          "text": "Look under leaves often and keep the space clean."
         }
       ],
-      "avoid": "Spraying random products on buds.",
-      "simpleRule": "Catch pests early.",
-      "goal": "Teach early pest spotting without turning the page into pest science.",
+      "avoid": "Random sprays, harsh chemicals, or spraying buds.",
+      "simpleRule": "Catch problems early and fix safely.",
+      "goal": "Teach early problem spotting without turning the page into pest science.",
       "focus": [
         "Check under leaves",
         "Look for bugs, spots, webs, eggs, and damage",
@@ -323,7 +328,7 @@
         }
       ],
       "simpleRule": "Healthy basics beat complicated tricks.",
-      "goal": "Give a new grower simple survival rules.",
+      "goal": "Give a new grower practical survival rules.",
       "focus": [
         "Start small",
         "Check before watering",
@@ -345,5 +350,12 @@
   },
   "sourceLock": "assets/education/simple-info-graphics/source/Grower Terminology Guide.txt",
   "visualManifest": "site/wordpress/education/simple-user-guide-visuals-v1.json",
-  "evidenceManifest": "site/wordpress/education/simple-user-guide-evidence-v1.json"
+  "evidenceManifest": "site/wordpress/education/simple-user-guide-evidence-v1.json",
+  "revisionNotes": [
+    "Corrected flower stage to say 12/12 applies to photoperiod plants, not autoflowers.",
+    "Changed pest page to Pests & Disease so mildew and disease signs are not mislabeled as pests.",
+    "Replaced casual neem/random-spray guidance with label-safe, crop-safe wording.",
+    "Changed dry endpoint from hard stem snap to a safer beginner description: dry outside with a light snap, not bone-dry.",
+    "Added lawful-use and safety notice outside the learner card copy."
+  ]
 }
