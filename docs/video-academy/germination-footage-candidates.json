@@ -13,8 +13,12 @@
       "duration_seconds": 266.76,
       "video_dimensions": "1280x720",
       "potential_scene": "S04/S05 radicle and shoot development, pending real frame inspection",
-      "state": "unverified_candidate",
-      "notes": "Verify exact species and depicted stages; attribution required; do not assume radicle close-up appears"
+      "state": "license_page_confirmed_video_not_acquired",
+      "notes": "Verify exact species and depicted stages; attribution required; do not assume radicle close-up appears",
+      "source_page_reviewed": true,
+      "license_page_verified": true,
+      "creative_commons_attribution": "laurent antonini",
+      "review_notes": "Commons original file listed as 266.76s, 1280x720, VP9/Opus. Described as Martinique chacha seed filmed over one month. Existing sound/music licensing is NOT independently cleared; strip all source audio and add original licensed production sound, after acquiring video. Species-specific visuals are NOT cannabis. Frame sequence and original downloaded bytes not yet inspected."
     },
     {
       "asset_id": "CAND-002",
@@ -25,8 +29,12 @@
       "duration_seconds": 112,
       "video_dimensions": "1920x1080",
       "potential_scene": "S05/S06 emergence and growing seedlings",
-      "state": "unverified_candidate",
-      "notes": "Species may differ from cannabis; disclose examples as general plant biology"
+      "state": "license_page_confirmed_video_not_acquired",
+      "notes": "Species may differ from cannabis; disclose examples as general plant biology",
+      "source_page_reviewed": true,
+      "license_page_verified": true,
+      "creative_commons_attribution": "Always Shooting",
+      "review_notes": "Commons description explicitly identifies lentil seeds photographed over 5 days; original 112s 1920x1080 VP9/Opus. Not cannabis. Underlying music rights separately unverified; do not reuse source audio. Frame inspection and original downloaded bytes pending."
     },
     {
       "asset_id": "CAND-003",
@@ -54,5 +62,7 @@
     "asset_register": "Do not mark any candidate verified=true without original file, provenance, source license evidence and verified SHA-256.",
     "publishing": "Do not move the 12 old synthetic voice clips out of drafts.",
     "voice": "genuine human recorded voice only"
-  }
+  },
+  "last_checked": "2026-10-10",
+  "verification_limits": "Commons source pages independently reviewed, original files NOT downloaded or visually sampled; audio rights not cleared; source metadata is not scientific-stage verification."
 }
