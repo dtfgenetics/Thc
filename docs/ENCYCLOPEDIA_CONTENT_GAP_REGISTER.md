@@ -128,5 +128,5 @@ The goal is to make the strict command pass without weakening the standard.
 - Resolver: `scripts/resolve-encyclopedia-deployment-target.mjs`.
 - Validator: `scripts/validate-encyclopedia-source-pin.mjs`.
 - Environment handoff: `THC_ENCYCLOPEDIA_SOURCE_SHA`.
-- Current pinned canonical source: `dtfgenetics/thc-grow-hub@47ab6b7e50b222b9efea85299e399c2d92dee222`.
+- Current pinned canonical source: `dtfgenetics/thc-grow-hub@31e3b8615e1a4d7fdf6db6e68f19effc3b39c24c`.
 - This is a source-target contract only. It does not by itself prove byte-for-byte parity, scientific approval, or publication authorization.
