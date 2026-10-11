@@ -75,6 +75,33 @@ class CaptionPreflight(unittest.TestCase):
                     "authenticity":"genuine-camera-footage","verified":"true"})
             self.assertTrue(any("source_url must be" in x for x in verify(root)))
 
+    def test_corrupt_csv_fails_closed(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            (root/"production_manifest.json").write_text("{}")
+            (root/"assets").mkdir()
+            (root/"assets/ASSET_LICENSE_REGISTER.csv").write_bytes(b"\xff\xfe\xfa")
+            issues=verify(root)
+            self.assertTrue(any("Asset register" in message for message in issues))
+
+    def test_invalid_manifest_structure_fails_closed(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            (root/"production_manifest.json").write_text("[]")
+            self.assertTrue(any("must contain an object" in message for message in verify(root)))
+
+    def test_blank_asset_id_fails_closed(self):
+        import csv
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            (root/"production_manifest.json").write_text("{}")
+            (root/"assets").mkdir()
+            with (root/"assets/ASSET_LICENSE_REGISTER.csv").open("w", newline="") as handle:
+                writer=csv.DictWriter(handle,fieldnames=["asset_id","source_url","creator","license","license_evidence_file","local_path","sha256","authenticity","verified"])
+                writer.writeheader()
+                writer.writerow({"asset_id":""})
+            self.assertTrue(any("blank asset ID" in x for x in verify(root)))
+
     def test_missing_register_blocks(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)
