@@ -7,7 +7,7 @@ test('aggregates six category statuses per application without claiming missing 
  const ok=Object.fromEntries(CATEGORIES.map(c=>[c,cat('pass',null)]));
  const report={evaluatedAt:'2026-10-11T16:00:00Z',errors:[],results:[
    {appId:'a',route:'/a/',ready:true,ownerMatch:true,categories:ok},
-   {appId:'b',route:'/b/',ready:false,ownerMatch:null,categories:{source:cat('pass',null),build:cat('fail','test failed')}}
+   {appId:'b',route:'/b/',ready:false,ownerMatch:true,categories:{source:cat('pass',null),build:cat('fail','test failed')}}
  ]};
  const out=summarizeQualityReport(report);
  assert.equal(out.totalApps,2);assert.equal(out.readyApps,1);assert.equal(out.blockedApps,1);
