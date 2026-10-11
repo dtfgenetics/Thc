@@ -22,20 +22,16 @@ def verify(root):
     reg = root / "assets/ASSET_LICENSE_REGISTER.csv"
     if not reg.is_file(): return issues + ["Asset register missing"]
     try:
-        handle = reg.open(newline="", encoding="utf-8")
-    except (OSError, UnicodeError) as err:
-        return issues + [f"Asset register unreadable: {err}"]
-    with handle:
-        reader = csv.DictReader(handle)
-        expected_columns = {"asset_id","source_url","creator","license","license_evidence_file","local_path","sha256","authenticity","verified"}
-        if not expected_columns.issubset(set(reader.fieldnames or [])) or any(not c for c in (reader.fieldnames or [])):
-            return issues + ["Asset register CSV schema invalid"]
-        try:
+        with reg.open(newline="", encoding="utf-8") as handle:
+            reader = csv.DictReader(handle)
+            expected_columns = {"asset_id","source_url","creator","license","license_evidence_file","local_path","sha256","authenticity","verified"}
+            if not expected_columns.issubset(set(reader.fieldnames or [])) or any(not c for c in (reader.fieldnames or [])):
+                return issues + ["Asset register CSV schema invalid"]
             rows = list(reader)
-        except (csv.Error, UnicodeError) as err:
-            return issues + [f"Asset register unreadable: {err}"]
-        if any(None in row for row in rows):
-            return issues + ["Asset register CSV contains surplus columns"]
+            if any(None in row for row in rows):
+                return issues + ["Asset register CSV contains surplus columns"]
+    except (OSError, UnicodeError, csv.Error) as err:
+        return issues + [f"Asset register unreadable: {err}"]
     byid = {}
     for row in rows:
         aid = row.get("asset_id")
