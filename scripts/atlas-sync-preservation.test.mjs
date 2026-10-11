@@ -43,3 +43,9 @@ test('Atlas content measurement does not consume unrelated visible closing tags'
   const withHidden = '<main><div hidden>secret</div><p>Visible lesson content.</p></main>';
   assert.equal(meaningful(withHidden), meaningful(baseline));
 });
+
+test('Atlas content measurement ignores hidden markup without discarding visible siblings', () => {
+  const visible = '<main><p>Keep this visible lesson paragraph.</p></main>';
+  const withHidden = '<main><section hidden><p>Invisible content</p></section><p>Keep this visible lesson paragraph.</p></main>';
+  assert.equal(meaningful(withHidden), meaningful(visible));
+});
