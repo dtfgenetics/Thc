@@ -8,6 +8,19 @@ if(!fs.existsSync(auditPath)) throw new Error('Missing live encyclopedia copy au
 const scan=JSON.parse(fs.readFileSync(scanPath,'utf8'));
 const audit=JSON.parse(fs.readFileSync(auditPath,'utf8'));
 const blocked=new Map((scan.blocked||[]).map(x=>[x.id,x]));
+const failures=Array.isArray(audit.failedRoutes)?audit.failedRoutes:[];
+const reportedFailures=Number(audit.failures);
+if(!Number.isSafeInteger(reportedFailures)||reportedFailures<0||reportedFailures!==failures.length){
+  throw new Error('Live copy audit failure count does not match its failed route records.');
+}
+if(scan.result==='blocked-public-visibility'||!Number.isSafeInteger(Number(scan.scannedPublishedLessons))||Number(scan.scannedPublishedLessons)<420){
+  throw new Error('Copy-repair scan is incomplete or public visibility was blocked.');
+}
+const ids=new Set();
+for(const route of failures){
+  if(!route?.id||ids.has(route.id)) throw new Error('Live copy audit includes a missing or duplicate failed route ID.');
+  ids.add(route.id);
+}
 const unexpected=[];
 for(const route of audit.failedRoutes||[]){
   const hold=blocked.get(route.id);
