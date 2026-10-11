@@ -1,6 +1,6 @@
 import {normalizeMeasurementSource,readingFreshness} from './thc-measurement-core-v1.mjs';
 
-const finite=(value,label)=>{const n=Number(value);if(!Number.isFinite(n))throw new RangeError(`${label} must be a finite number`);return n};
+const finite=(value,label)=>{if(value===null||value===undefined||String(value).trim()==='')throw new RangeError(`${label} must be a finite number`);const n=Number(value);if(!Number.isFinite(n))throw new RangeError(`${label} must be a finite number`);return n};
 
 function signedAgeDays(dateValue,now=new Date()){
   const raw=String(dateValue??'').trim();
