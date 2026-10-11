@@ -33,6 +33,14 @@ try {
     assert.equal(check.result.status,1,'invalid Lighthouse category must fail enforced audit');
     assert(check.report.findings.some(f=>f.category==='accessibility'&&f.type==='invalid-score'));
   }
+  // Repeated Lighthouse runs must use the median, not filename ordering.
+  fs.writeFileSync(path.join(reports,'a.report.json'),JSON.stringify({finalUrl:'https://dtfseeds.com/',categories:{performance:{score:0.1},accessibility:{score:0.9},'best-practices':{score:0.9},seo:{score:0.9}}}));
+  fs.writeFileSync(path.join(reports,'z.report.json'),JSON.stringify({finalUrl:'https://dtfseeds.com/',categories:{performance:{score:0.9},accessibility:{score:0.9},'best-practices':{score:0.9},seo:{score:0.9}}}));
+  check=run({performance:0.9,accessibility:0.9,'best-practices':0.9,seo:0.9});
+  assert.equal(check.report.rows[0].current.performance,0.9,'median must ignore single low outlier');
+  assert.equal(check.report.measurementRuns,3,'all Lighthouse measurements must be counted');
+  fs.rmSync(path.join(reports,'a.report.json'));
+  fs.rmSync(path.join(reports,'z.report.json'));
   fs.rmSync(path.join(reports,'home.report.json'));
   const missing=spawnSync(process.execPath,[script],{env,encoding:'utf8'});
   assert.equal(missing.status,1,'missing baseline route must fail when coverage required');
