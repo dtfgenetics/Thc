@@ -58,6 +58,17 @@ describe('game engine', () => {
     expect(calculateMove(finishIndex - 1, 10, finishIndex).toIndex).toBe(finishIndex);
   });
 
+  it('rejects corrupted movement values before they can enter game state', () => {
+    for (const value of [NaN, Infinity, -Infinity, 1.5, Number.MAX_SAFE_INTEGER + 1]) {
+      expect(() => calculateMove(0, value, finishIndex)).toThrow(RangeError);
+      expect(() => calculateMove(value, 1, finishIndex)).toThrow(RangeError);
+    }
+    expect(() => calculateMove(-1, 1, finishIndex)).toThrow(RangeError);
+    expect(() => calculateMove(0, 1, NaN)).toThrow(RangeError);
+    expect(() => calculateMove(0, 1, -1)).toThrow(RangeError);
+    expect(() => calculateMove(Number.MAX_SAFE_INTEGER, 1, finishIndex)).toThrow(RangeError);
+  });
+
   it('returns each traversed index', () => {
     expect(calculateMove(2, 3, finishIndex).traversedIndexes).toEqual([3, 4, 5]);
     expect(calculateMove(5, -2, finishIndex).traversedIndexes).toEqual([4, 3]);
