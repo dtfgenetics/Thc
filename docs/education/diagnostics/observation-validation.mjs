@@ -24,7 +24,7 @@ export function validateObservation(values,spec){
       if(!field.choices.includes(raw))errors.push(field.label+' has an invalid selection.');
       else record[field.id]=raw;
     } else if(field.kind==='datetime'){
-      if(!/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}$/.test(raw)||Number.isNaN(Date.parse(raw)))errors.push('Observation date/time is invalid.');
+      if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(raw)||Number.isNaN(Date.parse(raw)))errors.push('Observation date/time is invalid.');
       else record[field.id]=raw;
     } else record[field.id]=String(raw);
   }
