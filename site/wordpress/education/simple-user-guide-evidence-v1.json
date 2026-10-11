@@ -1,9 +1,21 @@
 {
   "schemaVersion": 1,
   "id": "simple-user-guide-evidence-v1",
-  "purpose": "Evidence notes that support or bound the locked beginner scripts without adding dense research text to the learner-facing pages.",
+  "purpose": "Evidence notes that support or bound the locked beginner scripts without adding dense research text to learner-facing pages.",
   "boundary": "These references support broad concepts. They do not automatically validate every visual cue, numeric target, cultivar response, or home-grow practice.",
   "sources": [
+    {
+      "id": "SRC-HEMP-GERMINATION-2022",
+      "title": "Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.)",
+      "kind": "peer-reviewed-experiment",
+      "year": 2022,
+      "doi": "10.3390/horticulturae8040304",
+      "url": "https://www.mdpi.com/2673-7655/2/4/29",
+      "supports": [
+        "seeds"
+      ],
+      "limits": "Industrial hemp seed germination source; supports warm-not-hot beginner language, not cultivar-specific home germination guarantees."
+    },
     {
       "id": "SRC-CONTROLLED-ENV-2023",
       "title": "Controlled environments for cannabis cultivation to support omics research studies and production",
@@ -32,7 +44,7 @@
       "supports": [
         "flower"
       ],
-      "limits": "Cultivar responses varied; supports keeping a steady and cultivar-aware flowering light schedule rather than a universal one-size-fits-all number."
+      "limits": "Cultivar responses varied; supports photoperiod-specific flowering language rather than a universal one-size-fits-all number."
     },
     {
       "id": "SRC-CORNELL-SCOUTING-2024",
@@ -74,6 +86,29 @@
         "cure"
       ],
       "limits": "Industrial-hemp cultivars and controlled study methods; supports the importance of moisture removal, curing conditions, and microbial risk, not a universal home-grow recipe."
+    },
+    {
+      "id": "SRC-OSU-HEMP-POSTHARVEST-2022",
+      "title": "Post-harvest processing of hemp flowers",
+      "kind": "extension-guide",
+      "year": 2022,
+      "url": "https://extension.oregonstate.edu/catalog/post-harvest-processing-hemp-flowers",
+      "supports": [
+        "dry",
+        "cure"
+      ],
+      "limits": "Hemp flower postharvest guidance; supports dark, cool, ventilated drying and storage language, not a universal home-grow recipe."
+    },
+    {
+      "id": "SRC-EPA-PESTICIDE-LABELS",
+      "title": "Introduction to Pesticide Labels",
+      "kind": "regulatory-guidance",
+      "year": 2026,
+      "url": "https://www.epa.gov/pesticide-labels/introduction-pesticide-labels",
+      "supports": [
+        "pests"
+      ],
+      "limits": "General U.S. pesticide label guidance; supports label-following and avoids off-label/random product recommendations."
     }
   ],
   "pages": {
@@ -84,9 +119,10 @@
       "evidenceStatus": "supporting"
     },
     "seeds": {
-      "sourceRefs": [],
-      "evidenceStatus": "source-gap",
-      "note": "Locked beginner copy is preserved; add a cannabis-specific propagation source before scientific approval."
+      "sourceRefs": [
+        "SRC-HEMP-GERMINATION-2022"
+      ],
+      "evidenceStatus": "supporting-with-cultivar-limit"
     },
     "seedling": {
       "sourceRefs": [
@@ -117,22 +153,25 @@
     "dry": {
       "sourceRefs": [
         "SRC-POSTHARVEST-REVIEW-2022",
-        "SRC-CORNELL-POSTHARVEST-2025"
+        "SRC-CORNELL-POSTHARVEST-2025",
+        "SRC-OSU-HEMP-POSTHARVEST-2022"
       ],
       "evidenceStatus": "supporting-with-process-limit"
     },
     "cure": {
       "sourceRefs": [
         "SRC-POSTHARVEST-REVIEW-2022",
-        "SRC-CORNELL-POSTHARVEST-2025"
+        "SRC-CORNELL-POSTHARVEST-2025",
+        "SRC-OSU-HEMP-POSTHARVEST-2022"
       ],
       "evidenceStatus": "supporting-with-process-limit"
     },
     "pests": {
       "sourceRefs": [
-        "SRC-CORNELL-SCOUTING-2024"
+        "SRC-CORNELL-SCOUTING-2024",
+        "SRC-EPA-PESTICIDE-LABELS"
       ],
-      "evidenceStatus": "supporting"
+      "evidenceStatus": "supporting-with-label-limit"
     },
     "tips": {
       "sourceRefs": [
