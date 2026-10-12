@@ -45,7 +45,7 @@ export function evaluateEvidence(projects, apps, evidence, {now = new Date().toI
         else if (nowMs - time > 30 * 86400000) reason = 'evidence older than 30 days';
         else if (!nonempty(doc.repository) || doc.repository !== app.repository) reason = 'repository mismatch';
         else if (!nonempty(doc.commitSha) || doc.commitSha !== proof.commitSha) reason = 'commit mismatch';
-        else reason = null;
+        else reason = 'unattested evidence claim; independent verification required';
       } else if (proof?.status === 'fail') reason = 'reported failure';
       else if (proof && proof.status !== 'unknown') reason = 'invalid evidence status';
       categories[category] = {status: reason === null ? 'pass' : proof?.status === 'fail' ? 'fail' : 'unknown', reason};
