@@ -38,3 +38,11 @@ test('duplicate lesson identities reject inconsistent audit inputs',()=>{
 test('invalid encyclopedia identity fails early',()=>{
  assert.throws(()=>buildProductionQueue({lessons:[{...complete,id:'NOT-A-LESSON'}]}),/canonical/);
 });
+
+test('independent peer review is tracked as a later handoff, not a content-production gap',()=>{
+ const q=buildProductionQueue({lessons:[{...complete,independentApproval:false,
+   publicationReviewConflict:true,publicationReviewPending:true}]});
+ assert.equal(q.items[0].status,'audit_criteria_met');
+ assert.equal(q.items[0].peerReviewPending,true);
+ assert.equal(q.items[0].gaps.includes('publication_review_pending'),false);
+});
