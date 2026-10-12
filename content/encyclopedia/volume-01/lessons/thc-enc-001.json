@@ -88,7 +88,7 @@
     "National Institutes of Health. Enhancing Reproducibility through Rigor and Transparency. Scientific-rigor and transparent-reporting guidance; reviewed July 30, 2026.",
     "Papoutsoglou E.A. et al. (2020). Enabling reusability of plant phenomic datasets with MIAPPE 1.1. New Phytologist 227(1):260–273.",
     "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; evidence hierarchy, source-aware drafting, measurable-data, and uncertainty-control framework.",
-    "Lazic S.E. (2010). The problem of pseudoreplication in neuroscientific studies: is it affecting your analysis? BMC Neuroscience 11:5. General experimental-design example; not cannabis-specific."
+    "Lazic, S. E. (2010). The problem of pseudoreplication in neuroscientific studies: is it affecting your analysis? BMC Neuroscience, 11, Article 5. DOI: 10.1186/1471-2202-11-5. General experimental-design methodology; not cannabis-specific."
   ],
   "slug": "how-to-read-cannabis-plant-science-critically",
   "route": "/learn/encyclopedia/thc-enc-001/",
@@ -100,5 +100,52 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-03_canonical_identity_content_and_release_boundary_checked"
-  }
+  },
+  "knowledgeCheck": [
+    "An investigator gives two lighting treatments in two separate chambers, grows eight plants per chamber, then reports eight independent treatment replicates per treatment. Identify the experimental unit, explain why the replication claim is invalid, and propose a stronger design.",
+    "A bar chart reports group A = 90 and group B = 100, but its vertical axis begins at 80. What information must accompany the chart before deciding whether the difference is biologically meaningful? Distinguish graph presentation from statistical inference.",
+    "A grower changes nutrient concentration, irrigation frequency and temperature in the same week and reports improved growth. Explain which causal claim is supportable, which is not, and what measurement and comparison design would improve the evidence."
+  ],
+  "assessmentDesign": {
+    "version": 1,
+    "answerRationaleStatus": "draft_for_editorial_review",
+    "scoringIntent": "Require design-aware interpretation and explain how to separate observations from causal claims.",
+    "answerRationales": [
+      "The chamber is the experimental unit because the lighting treatment was assigned to whole chambers. Eight plants sharing one treated chamber are not eight independent chamber replicates. Replicate treatment assignments across multiple independent chambers or independent runs with planned blocking/randomization and document chamber effects.",
+      "Both plots show exactly a ten-unit difference. A truncated y-axis changes visual emphasis, not the data. Review the stated unit, baseline, sample counts, experimental units, within-group spread, interval definition, measurement reliability and the practical relevance of the effect before drawing a conclusion.",
+      "An association between a package of simultaneous changes and later growth is observed; the result does not identify which change caused it. Establish baseline measures, comparable controls or repeatable matched cycles, stable covariates and a specified outcome and sampling schedule, changing one factor at a time where appropriate."
+    ]
+  },
+  "visuals": [
+    {
+      "assetId": "THC-ENC-001-VIS-SRC-01",
+      "type": "scientific_diagram_source",
+      "purpose": "Explain independent experimental units and pseudoreplication",
+      "caption": "A treatment assigned to an entire chamber has one independent chamber replicate per chamber, even when multiple plants or leaves are measured.",
+      "altText": "Two chambers, one per treatment, each containing three plants, illustrate why plant measurements within a chamber are not independent chamber replicates.",
+      "repositoryPath": "content/encyclopedia/volume-01/visual-sources/experimental-units-and-pseudoreplication.svg",
+      "rightsStatus": "original_project_artwork",
+      "qaStatus": "draft_source_not_raster_approved"
+    },
+    {
+      "assetId": "THC-ENC-001-VIS-SRC-02",
+      "type": "process_diagram_source",
+      "purpose": "Teach structured evidence appraisal",
+      "caption": "A five-stage evidence evaluation process from claim definition to a qualified conclusion.",
+      "altText": "Five stacked stages: define claim, check source, match biological context, evaluate controls and uncertainty, and state supported conclusion.",
+      "repositoryPath": "content/encyclopedia/volume-01/visual-sources/claim-evidence-decision-path.svg",
+      "rightsStatus": "original_project_artwork",
+      "qaStatus": "draft_source_not_raster_approved"
+    },
+    {
+      "assetId": "THC-ENC-001-VIS-SRC-03",
+      "type": "graph_source",
+      "purpose": "Teach graph axis scaling and data literacy",
+      "caption": "Hypothetical groups of 90 and 100 units shown with axes beginning at 0 and 80. These are illustrative values, not measured cannabis data.",
+      "altText": "Two graphs plot the same hypothetical 90 and 100 values; a truncated axis exaggerates the apparent difference.",
+      "repositoryPath": "content/encyclopedia/volume-01/visual-sources/graph-axis-truncation-example.svg",
+      "rightsStatus": "original_project_artwork",
+      "qaStatus": "draft_source_not_raster_approved"
+    }
+  ]
 }
