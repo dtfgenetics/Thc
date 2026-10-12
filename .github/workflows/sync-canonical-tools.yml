@@ -80,11 +80,11 @@ jobs:
           const root = 'site/public-route-patch';
           const incoming = '/tmp/tools/site/public-route-patch';
           const plainText = (html) => html
-            .replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi, ' ')
-            .replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi, ' ')
+            .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
+            .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
             .replace(/<[^>]+>/g, ' ')
             .replace(/&(?:nbsp|amp|lt|gt|quot);/g, ' ')
-            .replace(/\\s+/g, ' ').trim();
+            .replace(/\s+/g, ' ').trim();
           const failures = [];
           for (const section of ['leaf-module', 'root-system', 'downloads']) {
             const currentDir = path.join(root, 'atlas', section);
@@ -97,8 +97,8 @@ jobs:
                   const relative = path.relative(root, file);
                   const next = path.join(incoming, relative);
                   if (!fs.existsSync(next)) continue;
-                  const oldWords = plainText(fs.readFileSync(file, 'utf8')).split(/\\s+/).filter(Boolean).length;
-                  const newWords = plainText(fs.readFileSync(next, 'utf8')).split(/\\s+/).filter(Boolean).length;
+                  const oldWords = plainText(fs.readFileSync(file, 'utf8')).split(/\s+/).filter(Boolean).length;
+                  const newWords = plainText(fs.readFileSync(next, 'utf8')).split(/\s+/).filter(Boolean).length;
                   if (oldWords >= 100 && newWords < Math.floor(oldWords * 0.7)) {
                     failures.push(relative + ': ' + oldWords + ' -> ' + newWords + ' words');
                   }
