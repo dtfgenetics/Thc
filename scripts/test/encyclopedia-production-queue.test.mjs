@@ -9,8 +9,10 @@ test('flags review conflicts and prioritizes missing source without declaring a 
  const missing={...complete,id:'THC-ENC-002',number:2,exists:false,publicationReviewConflict:true,approvedVisual:false,complete:false};
  const q=buildProductionQueue({lessons:[complete,missing]});
  assert.equal(q.items[0].lessonId,'THC-ENC-002');
- assert.ok(q.items[0].gaps.includes('publication_review_conflict'));
+ assert.equal(q.items[0].publicationReviewConflict,true);
+ assert.equal(q.items[0].gaps.includes('publication_review_conflict'),false);
  assert.ok(q.items[0].gaps.includes('missing_source'));
+ assert.equal(q.summary.publicationReviewConflicts,1);
  assert.equal(q.summary.auditCriteriaMet,1);
 });
 test('identical priority sorts by canonical lesson number',()=>{
@@ -45,4 +47,13 @@ test('independent peer review is tracked as a later handoff, not a content-produ
  assert.equal(q.items[0].status,'audit_criteria_met');
  assert.equal(q.items[0].peerReviewPending,true);
  assert.equal(q.items[0].gaps.includes('publication_review_pending'),false);
+});
+
+test('review-only hold remains visible without inflating production score',()=>{
+ const q=buildProductionQueue({lessons:[{...complete,independentApproval:false,publicationReviewConflict:true,publicationReviewPending:true}]});
+ assert.equal(q.items[0].priorityScore,0);
+ assert.deepEqual(q.items[0].gaps,[]);
+ assert.equal(q.summary.publicationReviewConflicts,1);
+ assert.equal(q.summary.publicationReviewPending,1);
+ assert.equal(q.summary.auditCriteriaMet,1);
 });
