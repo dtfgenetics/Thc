@@ -40,7 +40,9 @@ export function buildProductionQueue(audit) {
     const score = gaps.reduce((total, gap) => total + gap.weight, 0);
     return {lessonId:row.id, number:row.number, title:row.title, part:row.part,
       sourceFile:row.sourceFile ?? null, authorized:row.publicationAuthorized === true,
-      completionRecorded:row.complete === true, peerReviewPending:row.independentApproval !== true, priorityScore:score,
+      completionRecorded:row.complete === true, peerReviewPending:row.independentApproval !== true,
+      publicationReviewConflict:row.publicationReviewConflict === true,
+      publicationReviewPending:row.publicationReviewPending === true, priorityScore:score,
       status:gaps.length ? 'needs_work' : 'audit_criteria_met',
       gaps:gaps.map(({code}) => code)};
   }).sort((a,b) => b.priorityScore-a.priorityScore ||
@@ -50,6 +52,8 @@ export function buildProductionQueue(audit) {
   return {schemaVersion:1, source:'data/encyclopedia-learning-quality-audit.json',
     warning:'Production queue prioritizes content and assets. Independent peer review is a subsequent team handoff, not a prerequisite to completing drafts. Rubric coverage does not prove scientific claims or deployment.',
     summary:{total:rows.length,needsWork:rows.filter(r=>r.gaps.length).length,
-      auditCriteriaMet:rows.filter(r=>!r.gaps.length).length,gapTotals},
+      auditCriteriaMet:rows.filter(r=>!r.gaps.length).length,
+      publicationReviewConflicts:rows.filter(r=>r.publicationReviewConflict).length,
+      publicationReviewPending:rows.filter(r=>r.publicationReviewPending).length,gapTotals},
     items:rows};
 }
