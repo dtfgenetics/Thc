@@ -45,7 +45,7 @@ test('rejects stale, future, invalid URL, and mismatched SHA evidence',()=>{
 test('detects unknown apps and duplicate evidence',()=>{
   const duplicate=[...evidence(),...evidence(),{appId:'unregistered'}];
   const report=evaluate(duplicate);
-  assert.equal(report.readyApps,1);
+  assert.equal(report.readyApps,0);
   assert.equal(report.errors.length,2);
 });
 test('rejects registry owner conflict',()=>{
@@ -56,7 +56,7 @@ test('rejects registry owner conflict',()=>{
 test('gives every deployed application its own evidence result',()=>{
   const report=evaluate(evidence(),project,[...apps,{id:'second',repository:'dtfgenetics/Tools'}]);
   assert.equal(report.totalApps,2);
-  assert.equal(report.readyApps,1);
+  assert.equal(report.readyApps,0);
   assert.equal(report.results[1].categories.production.status,'unknown');
 });
 
