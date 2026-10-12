@@ -15,6 +15,14 @@ export function buildProductionQueue(audit) {
   if (!audit || !Array.isArray(audit.lessons) || !audit.lessons.length) {
     throw new Error('A non-empty encyclopedia learning-quality audit is required.');
   }
+  const seenIds = new Set();
+  for (const row of audit.lessons) {
+    if (!row || typeof row.id !== 'string' || !/^THC-ENC-\\d{3,}$/.test(row.id)) {
+      throw new Error('Every lesson must have a canonical THC-ENC-### ID.');
+    }
+    if (seenIds.has(row.id)) throw new Error('Duplicate encyclopedia lesson ID: ' + row.id);
+    seenIds.add(row.id);
+  }
   const rows = audit.lessons.map(row => {
     const gaps = fields.filter(([field, , , whenTrue]) => whenTrue ? row[field] === true : row[field] !== true)
       .map(([, code, weight]) => ({code, weight}));
@@ -24,6 +32,13 @@ export function buildProductionQueue(audit) {
     if ((row.pairedMisconceptions ?? 0) < 2) gaps.push({code:'missing_explained_misconceptions',weight:30});
     if ((row.crossLinks ?? 0) < 2) gaps.push({code:'missing_crosslinks',weight:25});
     if ((row.sources ?? 0) < 2) gaps.push({code:'insufficient_source_references',weight:65});
+    // A missing visual brief is actionable but does not undo an already approved visual.
+    if (row.approvedVisual === true) {
+      const briefIndex = gaps.findIndex(gap => gap.code === 'missing_visual_brief');
+      if (briefIndex >= 0) gaps.splice(briefIndex, 1);
+    }
+    // Passing structural metadata checks is not proof that content is independently
+    // reviewed or that production routes and assets are functional.
     const score = gaps.reduce((total, gap) => total + gap.weight, 0);
     return {lessonId:row.id, number:row.number, title:row.title, part:row.part,
       sourceFile:row.sourceFile ?? null, authorized:row.publicationAuthorized === true,
