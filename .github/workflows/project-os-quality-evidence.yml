@@ -35,6 +35,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Parse-check all Project OS JavaScript files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -d '' files < <(find scripts -maxdepth 1 -type f -name 'project-os-*.mjs' -print0)
+          if ((${#files[@]} == 0)); then echo 'No Project OS sources found' >&2; exit 1; fi
+          for file in "${files[@]}"; do node --check "$file"; done
       - name: Test evidence contracts
         run: node --test scripts/project-os-quality-evidence.test.mjs
       - name: Test workflow observation collector
