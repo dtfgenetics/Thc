@@ -26,3 +26,15 @@ test('incomplete scientific coverage becomes explicit actionable gap',()=>{
 test('rejects empty audit rather than silently producing zero work',()=>{
  assert.throws(()=>buildProductionQueue({lessons:[]}),/non-empty/);
 });
+
+test('approved teaching visual does not require an additional production brief',()=>{
+ const q=buildProductionQueue({lessons:[{...complete,visualBriefReady:false}]});
+ assert.equal(q.summary.auditCriteriaMet,1);
+ assert.equal(q.items[0].gaps.includes('missing_visual_brief'),false);
+});
+test('duplicate lesson identities reject inconsistent audit inputs',()=>{
+ assert.throws(()=>buildProductionQueue({lessons:[complete,{...complete}]}),/Duplicate/);
+});
+test('invalid encyclopedia identity fails early',()=>{
+ assert.throws(()=>buildProductionQueue({lessons:[{...complete,id:'NOT-A-LESSON'}]}),/canonical/);
+});
