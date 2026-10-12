@@ -25,7 +25,11 @@
     "Male cannabis plants usually form branched inflorescences bearing many small staminate flowers. In the examined botanical descriptions, a typical flower has a five-part greenish perianth surrounding five stamens. These counts describe the common form, not an invariant rule; observed variants should be recorded rather than forced into the diagram. At anthesis, the segments open, filaments extend, and anthers release pollen.",
     "Pollen development begins before visible release. A closed flower cluster can therefore represent a future contamination risk even if no airborne pollen is observed. Timing varies among genotypes and with environment. Male plants can also differ in branching, floral density, release duration, and pollen viability.",
     "Botanical identification should focus on structures rather than overall plant shape. Male plants are often described as taller or more open, but architecture overlaps and is affected by spacing, light, stage, and genetics. Confirmation comes from reproductive anatomy.",
-    "Pollen release is the endpoint of a developmental sequence that includes microspore formation, pollen maturation, anther dehiscence, and exposure to ambient humidity and temperature. Viability can decline during handling and storage because pollen is sensitive to moisture and thermal conditions. The visible opening of anthers therefore marks a practical contamination stage, but pollen quality still has to be measured if it is being used as breeding material."
+    "Pollen release is the endpoint of a developmental sequence that includes microspore formation, pollen maturation, anther dehiscence, and exposure to ambient humidity and temperature. Viability can decline during handling and storage because pollen is sensitive to moisture and thermal conditions. The visible opening of anthers therefore marks a practical contamination stage, but pollen quality still has to be measured if it is being used as breeding material.",
+    "Punja and Holmes (2020) documented pedicellate staminate cannabis flowers whose opening exposes five green-white tepals and five filament-supported stamens in the specimens examined. Mature anthers release pollen through a longitudinal dehiscence region called the stomium. Scientific photographs should distinguish individual flowers, perianth organs, filament, anther and pollen grains instead of labeling a whole unopened flower an anther.",
+    "Pollen appearance is not equivalent to reproductive function. Wizenberg and colleagues (2022) measured both staining-based non-abortion and in-vitro pollen germination in Cannabis sativa and found that those endpoints did not correlate significantly in their samples. A visually abundant pollen release therefore does not provide a numerical estimate of germination capability, and a microscopy-style figure cannot stand in for an actual pollen-function assay.",
+    "A 2020 controlled pollen-storage experiment measured cannabis pollen germination after collection at different reproductive stages and during subsequent storage. It found marked differences in longevity depending on collection stage, under that study's methods. This evidence strengthens the requirement to record stage, temperature, duration and test method, not to assert that every genotype has the same viability curve.",
+    "The distinction between an unopened bud, a flower entering anthesis, a dehiscing anther and a spent flower should be explicit in image sequencing and scoring. A photograph of a branched male inflorescence can show which floral stages coexist on the plant, while a close anatomical view can resolve tepals and stamens. Neither is a substitute for a specimen-specific count, time series or independently tested pollen viability."
   ],
   "cultivationRelevance": [
     "For pollen-exclusion production, inspect nodes and developing inflorescences before anthesis and document removal or isolation decisions.",
@@ -57,6 +61,10 @@
     {
       "field": "Containment",
       "requirement": "Record isolation location, airflow controls, personnel/clothing/tool controls, cleanup, plant removal or retention, and any known accidental release. Containment records are part of parentage confidence."
+    },
+    {
+      "field": "Anatomy image evidence",
+      "requirement": "For any image claimed to be a real specimen, record plant identity, development stage, flower number, optical magnification or scale-bar derivation, sampling time and source permission. Clearly distinguish microscope photographs, macro photographs and generated anatomical reconstructions."
     }
   ],
   "misconceptions": [
@@ -71,7 +79,10 @@
   "sourceNotes": [
     "Lavie O. et al. (2026). Transcriptomic insights into unisexual flower development in Cannabis sativa. BMC Plant Biology.",
     "Liao X. et al. (2025). Characterization and transcriptomic analysis provide novel insights into sexual differentiation of dioecious Cannabis sativa. BMC Plant Biology 25:1108.",
-    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; reproductive anatomy, pollen handling, parent traceability, containment, and measurement framework."
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; reproductive anatomy, pollen handling, parent traceability, containment, and measurement framework.",
+    "Punja Z.K. and Holmes J.E. (2020). Hermaphroditism in Marijuana Inflorescences—Impact on Floral Morphology, Seed Formation, Progeny Sex Ratios, and Genetic Variation. Frontiers in Plant Science 11:718. https://doi.org/10.3389/fpls.2020.00718. Figures document five tepals and five stamens in examined flowers.",
+    "Wizenberg S.B. et al. (2022). Methods for characterizing pollen fitness in Cannabis sativa L. PLOS ONE. https://pmc.ncbi.nlm.nih.gov/articles/PMC9262209/. Compares pollen staining-based non-abortion with in vitro germination.",
+    "Gaudet D. et al. (2020). Development and Optimization of a Germination Assay and Long-Term Storage for Cannabis sativa Pollen. Plants 9(5):665. https://doi.org/10.3390/plants9050665. Study-specific pollen-development and storage evidence."
   ],
   "slug": "male-flower-and-inflorescence-anatomy",
   "route": "/learn/encyclopedia/thc-enc-016/",

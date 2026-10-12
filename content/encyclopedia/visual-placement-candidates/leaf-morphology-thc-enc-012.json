@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "THC-ENC-012",
+  "title": "Leaf Morphology, Leaflets, and Phyllotaxy",
+  "status": "candidate_not_published",
+  "figures": [
+    {
+      "id": "THC-ENC-012-FIG01",
+      "type": "AI-generated photorealistic botanical illustration",
+      "subject": "juvenile and mature leaf arrangement with leaf close-up",
+      "location": "coreScience after paragraph 2",
+      "caption": "Illustrated variation in compound leaves and stem leaf arrangement; conceptual reconstruction, not a documented research specimen.",
+      "alt": "Scientific botanical illustration comparing young and mature cannabis stems and a palmate compound leaf.",
+      "source": "Original generated image in project conversation, 2026-10-11",
+      "needsVerification": [
+        "Confirm opposite and alternate node landmarks",
+        "Check leaflet attachment and morphology",
+        "No inferred measurements from rendered image",
+        "Export responsive WebP/PNG and record file SHA256"
+      ],
+      "publicationEnabled": false
+    },
+    {
+      "id": "THC-ENC-012-FIG02",
+      "type": "editable vector chart",
+      "subject": "leaflet count by node from Hesami et al 2023 White Widow study",
+      "location": "following cultivar-specific study interpretation",
+      "source": "https://doi.org/10.3390/plants12203646",
+      "requirement": "extract actual full table/observations; do not interpolate missing node values",
+      "publicationEnabled": false
+    }
+  ],
+  "sources": [
+    {
+      "title": "Hesami et al 2023",
+      "doi": "10.3390/plants12203646",
+      "scope": "one cultivar under studied conditions"
+    },
+    {
+      "title": "MIAPPE v1.2",
+      "url": "https://github.com/MIAPPE/MIAPPE",
+      "scope": "phenotyping metadata framework"
+    }
+  ],
+  "statusChecks": {
+    "anatomyApproved": false,
+    "provenanceRecorded": true,
+    "assetBytesUploaded": false,
+    "rendererVerified": false
+  }
+}
