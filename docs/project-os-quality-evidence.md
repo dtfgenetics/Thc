@@ -54,3 +54,7 @@ GitHub's run-level artifact listing does not prove which retry attempt or specif
 ### Full workflow job-set validation
 
 The run inspector now rejects a nominally successful workflow unless the complete reported job set is nonempty and **every job** has completed successfully. Skipped, cancelled, failed and missing jobs are not accepted as passing evidence. A successful workflow conclusion alone is insufficient. This remains a conservative run-level check, not application-specific certification.
+
+## Release qualification safety (October 2026)
+
+Self-declared `status: pass` entries with HTTPS links and matching SHAs are **not** independent attestations. The evaluator deliberately marks them `unknown` with the reason `unattested evidence claim; independent verification required`. Until a trusted collector validates authentic application-scoped jobs, artifacts, content reviews, browser results and production deployment identities, no submitted evidence record can confer release readiness. The audit is usable for inventory and blocker tracking; it must not authorize release.
