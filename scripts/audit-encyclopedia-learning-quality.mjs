@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { publicationReviewState } from './lib/encyclopedia-publication-review.mjs';
 
 const root=process.cwd();
 const strict=process.argv.includes('--strict');
@@ -59,13 +60,14 @@ const rows=registry.entries.map(entry=>{
   const checkCount=exists?checksOf(l).length:0;
   const materializedAssessmentCount=arr(rationaleById.get(entry.id)?.prompts).length;
   const individualCanonical=Boolean(l?._file?.replaceAll('\\','/').includes('/lessons/'));
-  const publicationAuthorized=Boolean(l?.reviewControl?.publicationAuthorized??l?.publicationAuthorized??false);
+  const review=publicationReviewState(l||{});
+  const publicationAuthorized=review.publicationAuthorized;
   const record={
     id:entry.id,number:entry.number,part:entry.part,title:entry.title,
     exists,sourceFile:l?._file||null,individualCanonical,publicationAuthorized,
-    independentApproval: l?.reviewControl?.independentApproval === true,
-    publicationReviewConflict: publicationAuthorized && l?.reviewControl?.independentApproval === false,
-    publicationReviewPending: publicationAuthorized && /pending|not_recorded|incomplete|unreviewed/i.test(txt(l?.reviewControl?.externalReview)),
+    independentApproval:review.independentApproval,
+    publicationReviewConflict:review.publicationReviewConflict,
+    publicationReviewPending:review.publicationReviewPending,
     objective:Boolean(txt(l?.objective||arr(l?.learningObjectives)[0]).length>=24),
     terms:termsOf(l||{}).length,
     coreScience:arr(l?.coreScience).length,
