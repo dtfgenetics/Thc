@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "id": "root-zone-soil-observation-v1",
+  "caseId": "DX-CASE-SOIL-EC-01",
+  "purpose": "Collect comparable evidence before interpreting suspected salt, pH, aeration or elemental stress.",
+  "fields": [
+    {
+      "id": "recordedAt",
+      "label": "Observation date/time",
+      "kind": "datetime",
+      "required": true
+    },
+    {
+      "id": "medium",
+      "label": "Growing medium",
+      "kind": "enum",
+      "choices": [
+        "soil",
+        "coco",
+        "hydro",
+        "other"
+      ],
+      "required": true
+    },
+    {
+      "id": "containerLiters",
+      "label": "Container volume",
+      "kind": "number",
+      "unit": "L",
+      "minimum": 0.1,
+      "required": true
+    },
+    {
+      "id": "floweringWeek",
+      "label": "Flowering week",
+      "kind": "number",
+      "unit": "week",
+      "minimum": 0,
+      "required": false
+    },
+    {
+      "id": "soilPH",
+      "label": "Soil/root-zone pH",
+      "kind": "number",
+      "minimum": 0,
+      "maximum": 14,
+      "required": false,
+      "methodRequired": true
+    },
+    {
+      "id": "soilEC",
+      "label": "Root-zone electrical conductivity",
+      "kind": "number",
+      "unit": "mS/cm",
+      "minimum": 0,
+      "required": false,
+      "methodRequired": true
+    },
+    {
+      "id": "feedEC",
+      "label": "Fertilizer solution conductivity",
+      "kind": "number",
+      "unit": "mS/cm",
+      "minimum": 0,
+      "required": false,
+      "methodRequired": true
+    },
+    {
+      "id": "irrigationVolume",
+      "label": "Irrigation volume",
+      "kind": "number",
+      "unit": "L",
+      "minimum": 0,
+      "required": false
+    },
+    {
+      "id": "drainage",
+      "label": "Observed drainage",
+      "kind": "enum",
+      "choices": [
+        "none",
+        "some",
+        "substantial",
+        "not_observed"
+      ],
+      "required": false
+    },
+    {
+      "id": "moisturePattern",
+      "label": "Between-irrigation moisture pattern",
+      "kind": "enum",
+      "choices": [
+        "persistent_wet",
+        "variable_dryback",
+        "excessively_dry",
+        "unknown"
+      ],
+      "required": false
+    },
+    {
+      "id": "rootCondition",
+      "label": "Observed root condition",
+      "kind": "enum",
+      "choices": [
+        "not_inspected",
+        "appears_healthy",
+        "suspect",
+        "unknown"
+      ],
+      "required": false
+    },
+    {
+      "id": "leafPosition",
+      "label": "First affected leaf age",
+      "kind": "enum",
+      "choices": [
+        "older",
+        "newer",
+        "mixed",
+        "unknown"
+      ],
+      "required": false
+    },
+    {
+      "id": "newInjury",
+      "label": "New necrosis since prior observation",
+      "kind": "enum",
+      "choices": [
+        "yes",
+        "no",
+        "uncertain",
+        "not_applicable"
+      ],
+      "required": false
+    }
+  ],
+  "measurementMetadata": [
+    "instrument",
+    "calibrationDate",
+    "method",
+    "sampleLocation",
+    "sampleDate"
+  ],
+  "imageSlots": [
+    {
+      "id": "canopy",
+      "description": "Whole plant overview"
+    },
+    {
+      "id": "matureLeaf",
+      "description": "Mature affected leaf"
+    },
+    {
+      "id": "newLeaf",
+      "description": "New growth"
+    },
+    {
+      "id": "container",
+      "description": "Container and drainage"
+    }
+  ],
+  "interpretationRules": [
+    "Missing values must stay unknown; never substitute an assumed value.",
+    "Numeric EC without sample method must not be compared with values from other extraction methods.",
+    "Report source observations separately from user-reported history.",
+    "The template records observations and does not compute diagnosis or fertilizer dosing."
+  ],
+  "privacy": "Photos and measurement records should remain user-controlled; never publish them by default."
+}
