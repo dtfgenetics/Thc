@@ -96,7 +96,10 @@ jobs:
                 else if (entry.isFile() && entry.name === 'index.html') {
                   const relative = path.relative(root, file);
                   const next = path.join(incoming, relative);
-                  if (!fs.existsSync(next)) continue;
+                  if (!fs.existsSync(next) || !fs.statSync(next).isFile()) {
+                    failures.push(relative + ': missing canonical replacement');
+                    continue;
+                  }
                   const oldWords = plainText(fs.readFileSync(file, 'utf8')).split(/\s+/).filter(Boolean).length;
                   const newWords = plainText(fs.readFileSync(next, 'utf8')).split(/\s+/).filter(Boolean).length;
                   if (oldWords >= 100 && newWords < Math.floor(oldWords * 0.7)) {
