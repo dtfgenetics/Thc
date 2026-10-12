@@ -1,0 +1,66 @@
+name: Project OS Quality Evidence
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/project-os-*.mjs'
+      - 'scripts/project-os-*.test.mjs'
+      - 'data/project-os-quality-evidence.json'
+      - 'data/project-registry.json'
+      - 'site/deployment/public-apps.json'
+      - '.github/workflows/project-os-quality-evidence.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/project-os-*.mjs'
+      - 'scripts/project-os-*.test.mjs'
+      - 'data/project-os-quality-evidence.json'
+      - 'data/project-registry.json'
+      - 'site/deployment/public-apps.json'
+      - '.github/workflows/project-os-quality-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test evidence contracts
+        run: node --test scripts/project-os-quality-evidence.test.mjs
+      - name: Test workflow observation collector
+        run: node --test scripts/project-os-workflow-observations.test.mjs
+      - name: Test per-application attribution gates
+        run: node --test scripts/project-os-app-coverage.test.mjs
+      - name: Test authenticated run evidence inspector
+        run: node --test scripts/project-os-run-evidence.test.mjs
+      - name: Collect exact-revision GitHub Actions observations
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PROJECT_OS_TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/project-os-workflow-observations.mjs
+      - name: Test portfolio blocker summary
+        run: node --test scripts/project-os-evidence-summary.test.mjs
+      - name: Generate portfolio evidence audit
+        run: node scripts/project-os-quality-evidence.mjs
+      - name: Generate actionable blocker summary
+        run: node scripts/project-os-evidence-summary-cli.mjs
+      - name: Upload evidence report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-os-quality-evidence-${{ github.run_id }}
+          path: |
+            .artifacts/project-os/quality-evidence.json
+            .artifacts/project-os/workflow-observations.json
+            .artifacts/project-os/evidence-summary.json
+          if-no-files-found: error
