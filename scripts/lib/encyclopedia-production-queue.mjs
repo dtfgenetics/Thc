@@ -1,8 +1,6 @@
 const fields = [
   ['exists', 'missing_source', 100],
   ['individualCanonical', 'noncanonical_source', 80],
-  ['publicationReviewConflict', 'publication_review_conflict', 95, true],
-  ['publicationReviewPending', 'publication_review_pending', 70, true],
   ['sourceCopyIssue', 'malformed_source_reference', 75, true],
   ['placeholderIssue', 'generic_placeholder', 75, true],
   ['objective', 'missing_objective', 35],
@@ -17,7 +15,7 @@ export function buildProductionQueue(audit) {
   }
   const seenIds = new Set();
   for (const row of audit.lessons) {
-    if (!row || typeof row.id !== 'string' || !/^THC-ENC-\\d{3,}$/.test(row.id)) {
+    if (!row || typeof row.id !== 'string' || !/^THC-ENC-\d{3,}$/.test(row.id)) {
       throw new Error('Every lesson must have a canonical THC-ENC-### ID.');
     }
     if (seenIds.has(row.id)) throw new Error('Duplicate encyclopedia lesson ID: ' + row.id);
@@ -37,12 +35,12 @@ export function buildProductionQueue(audit) {
       const briefIndex = gaps.findIndex(gap => gap.code === 'missing_visual_brief');
       if (briefIndex >= 0) gaps.splice(briefIndex, 1);
     }
-    // Passing structural metadata checks is not proof that content is independently
-    // reviewed or that production routes and assets are functional.
+    // Scientific peer review is a separate handoff AFTER content production.
+    // Content quality, citations, diagrams and assessments drive this queue.
     const score = gaps.reduce((total, gap) => total + gap.weight, 0);
     return {lessonId:row.id, number:row.number, title:row.title, part:row.part,
       sourceFile:row.sourceFile ?? null, authorized:row.publicationAuthorized === true,
-      completionRecorded:row.complete === true, priorityScore:score,
+      completionRecorded:row.complete === true, peerReviewPending:row.independentApproval !== true, priorityScore:score,
       status:gaps.length ? 'needs_work' : 'audit_criteria_met',
       gaps:gaps.map(({code}) => code)};
   }).sort((a,b) => b.priorityScore-a.priorityScore ||
@@ -50,7 +48,7 @@ export function buildProductionQueue(audit) {
   const gapTotals = {};
   for (const row of rows) for (const code of row.gaps) gapTotals[code]=(gapTotals[code]??0)+1;
   return {schemaVersion:1, source:'data/encyclopedia-learning-quality-audit.json',
-    warning:'Queue reports metadata and rubric coverage, not independent scientific fact-checking, live asset resolution or deployment success.',
+    warning:'Production queue prioritizes content and assets. Independent peer review is a subsequent team handoff, not a prerequisite to completing drafts. Rubric coverage does not prove scientific claims or deployment.',
     summary:{total:rows.length,needsWork:rows.filter(r=>r.gaps.length).length,
       auditCriteriaMet:rows.filter(r=>!r.gaps.length).length,gapTotals},
     items:rows};
