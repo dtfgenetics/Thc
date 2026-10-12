@@ -50,10 +50,14 @@ jobs:
         run: node scripts/project-os-workflow-observations.mjs
       - name: Test portfolio blocker summary
         run: node --test scripts/project-os-evidence-summary.test.mjs
+      - name: Test human-readable evidence summary
+        run: node --test scripts/project-os-ci-summary.test.mjs
       - name: Generate portfolio evidence audit
         run: node scripts/project-os-quality-evidence.mjs
       - name: Generate actionable blocker summary
         run: node scripts/project-os-evidence-summary-cli.mjs
+      - name: Publish Project OS job summary
+        run: node scripts/project-os-ci-summary.mjs
       - name: Upload evidence report
         if: always()
         uses: actions/upload-artifact@v4
