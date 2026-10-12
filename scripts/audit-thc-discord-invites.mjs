@@ -9,7 +9,7 @@ const paths = ['README.md', 'site', 'scripts', 'docs'];
 const extensions = new Set(['.md', '.html', '.js', '.mjs', '.ts', '.tsx', '.json', '.php', '.css']);
 const ignored = new Set(['node_modules', '.git', 'dist', 'build', 'coverage', '.next']);
 const results = new Map();
-const invitePattern = /https?:\\/\\/(?:www\\.)?(?:discord\\.gg|discord(?:app)?\\.com\\/invite)\\/([a-zA-Z0-9-]+)/g;
+const invitePattern = /https?:\/\/(?:www\.)?(?:discord\.gg|discord(?:app)?\.com\/invite)\/([a-zA-Z0-9-]+)/g;
 
 async function walk(path) {
   let entries;
@@ -30,8 +30,8 @@ async function scan(path) {
   matches.forEach(match => {
     const key = match[1];
     const rows = results.get(key) || [];
-    const line = source.slice(0, match.index).split('\\n').length;
-    rows.push({ path: relative(root, path).replaceAll('\\\\', '/'), line });
+    const line = source.slice(0, match.index).split('\n').length;
+    rows.push({ path: relative(root, path).replaceAll('\\', '/'), line });
     results.set(key, rows);
   });
 }
