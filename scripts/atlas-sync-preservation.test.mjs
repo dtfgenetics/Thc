@@ -49,3 +49,12 @@ test('Atlas content measurement ignores hidden markup without discarding visible
   const withHidden = '<main><section hidden><p>Invisible content</p></section><p>Keep this visible lesson paragraph.</p></main>';
   assert.equal(meaningful(withHidden), meaningful(visible));
 });
+
+test('Atlas gate flags a canonical lesson shortened below seventy percent', () => {
+  const published = '<article>' + 'Evidence-based root-zone lesson. '.repeat(120) + '</article>';
+  const incoming = '<article>' + 'Shortened lesson. '.repeat(20) + '</article>';
+  const oldSize = meaningful(published);
+  const newSize = meaningful(incoming);
+  assert.ok(oldSize >= 600);
+  assert.ok(newSize < oldSize * 0.7);
+});
