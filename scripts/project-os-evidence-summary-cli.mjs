@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {summarizeQualityReport} from './project-os-evidence-summary.mjs';
+const input=process.env.PROJECT_OS_EVIDENCE_REPORT||'.artifacts/project-os/quality-evidence.json';
+const output=process.env.PROJECT_OS_SUMMARY_REPORT||'.artifacts/project-os/evidence-summary.json';
+const report=JSON.parse(fs.readFileSync(input,'utf8'));
+const result=summarizeQualityReport(report);
+fs.mkdirSync(path.dirname(output),{recursive:true});
+fs.writeFileSync(output,JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify({totalApps:result.totalApps,readyApps:result.readyApps,blockedApps:result.blockedApps,categories:result.categories},null,2));
+if(result.registryErrors.length) process.exitCode=1;
