@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readCanonicalEncyclopediaLessons } from './lib/encyclopedia-canonical-lessons.mjs';
+import { publicationReviewState } from './lib/encyclopedia-publication-review.mjs';
 
 const root=process.cwd();
 const strict=process.argv.includes('--strict');
@@ -59,10 +60,14 @@ const rows=registry.entries.map(entry=>{
   const checkCount=exists?checksOf(l).length:0;
   const materializedAssessmentCount=arr(rationaleById.get(entry.id)?.prompts).length;
   const individualCanonical=Boolean(l?._file?.replaceAll('\\','/').includes('/lessons/'));
-  const publicationAuthorized=Boolean(l?.reviewControl?.publicationAuthorized??l?.publicationAuthorized??false);
+  const review=publicationReviewState(l||{});
+  const publicationAuthorized=review.publicationAuthorized;
   const record={
     id:entry.id,number:entry.number,part:entry.part,title:entry.title,
     exists,sourceFile:l?._file||null,individualCanonical,publicationAuthorized,
+    independentApproval:review.independentApproval,
+    publicationReviewConflict:review.publicationReviewConflict,
+    publicationReviewPending:review.publicationReviewPending,
     objective:Boolean(txt(l?.objective||arr(l?.learningObjectives)[0]).length>=24),
     terms:termsOf(l||{}).length,
     coreScience:arr(l?.coreScience).length,
@@ -95,6 +100,9 @@ const summary={
   represented:count('exists'),
   individualCanonical:count('individualCanonical'),
   publicationAuthorized:count('publicationAuthorized'),
+  independentApproval:count('independentApproval'),
+  publicationReviewConflicts:count('publicationReviewConflict'),
+  publicationReviewPending:count('publicationReviewPending'),
   visualComplete:count('approvedVisual'),
   visualBriefReady:count('visualBriefReady'),
   assessmentComplete:count('assessmentComplete'),
@@ -108,7 +116,7 @@ const summary={
 const byPart=[...new Set(rows.map(r=>r.part))].sort((a,b)=>a-b).map(part=>{
   const partRows=rows.filter(r=>r.part===part);
   const c=k=>partRows.filter(r=>r[k]).length;
-  return {part,count:partRows.length,represented:c('exists'),individualCanonical:c('individualCanonical'),visualBriefReady:c('visualBriefReady'),visualComplete:c('approvedVisual'),assessmentComplete:c('assessmentComplete'),assessmentMaterialized:c('assessmentMaterialized'),rationaleDraftComplete:c('rationaleDraftComplete'),rationaleComplete:c('rationaleComplete'),fullyComplete:c('complete')};
+  return {part,count:partRows.length,represented:c('exists'),publicationReviewConflicts:c('publicationReviewConflict'),publicationReviewPending:c('publicationReviewPending'),individualCanonical:c('individualCanonical'),visualBriefReady:c('visualBriefReady'),visualComplete:c('approvedVisual'),assessmentComplete:c('assessmentComplete'),assessmentMaterialized:c('assessmentMaterialized'),rationaleDraftComplete:c('rationaleDraftComplete'),rationaleComplete:c('rationaleComplete'),fullyComplete:c('complete')};
 });
 const output={
   schemaVersion:1,
@@ -121,6 +129,9 @@ fs.writeFileSync(outPath,JSON.stringify(output,null,2)+'\n');
 
 console.log('Encyclopedia learning quality audit');
 console.log(JSON.stringify(summary,null,2));
+if(summary.publicationReviewConflicts || summary.publicationReviewPending){
+  console.warn('Publication review warning: authorized lessons include independent-approval conflicts or pending external review. See JSON report; authorization alone does not establish independent scientific approval.');
+}
 
 const hardErrors=[];
 if(rows.length<420)hardErrors.push('Controlled registry contains fewer than 420 lessons.');

@@ -27,6 +27,8 @@ on:
       - 'site/wordpress/mu-plugins/dtf-learning-search.php'
       - 'scripts/*encyclopedia*.mjs'
       - 'scripts/lib/encyclopedia-*.mjs'
+      - 'scripts/test/encyclopedia-production-queue.test.mjs'
+      - 'scripts/test/encyclopedia-publication-review.test.mjs'
       - 'scripts/*evidence*.mjs'
       - 'site/wordpress/education/academy-deployment-target.json'
       - 'site/wordpress/education/course-catalog-v4.json'
@@ -63,6 +65,8 @@ on:
       - 'scripts/validate-encyclopedia-source-pin.mjs'
       - 'scripts/*encyclopedia*.mjs'
       - 'scripts/lib/encyclopedia-*.mjs'
+      - 'scripts/test/encyclopedia-production-queue.test.mjs'
+      - 'scripts/test/encyclopedia-publication-review.test.mjs'
       - 'scripts/*evidence*.mjs'
       - '.agents/skills/thc-encyclopedia-production/**'
       - '.github/workflows/thc-encyclopedia-production.yml'
@@ -87,6 +91,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Regression-test production queue and independent review reporting
+        run: node --test scripts/test/encyclopedia-production-queue.test.mjs scripts/test/encyclopedia-publication-review.test.mjs
       - name: Enforce scientific depth on changed canonical lessons
         if: github.event_name == 'pull_request'
         env:
