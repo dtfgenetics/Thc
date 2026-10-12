@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const community=readFileSync(new URL('../site/wordpress/pages/community.html',import.meta.url),'utf8');
+const learn=readFileSync(new URL('../site/wordpress/pages/learn.html',import.meta.url),'utf8');
+test('canonical community layout and production hero preserved',()=>{assert.match(community,/data-dtf-layout="community-visual-v2"/);assert.match(community,/Stronger together\./);});
+test('landing page communicates educational value and rules',()=>{for(const phrase of ['Learn with people who ask better questions','New to plant science','Bring a real observation','no sale, sourcing, or trade'])assert.ok(community.includes(phrase),phrase);});
+test('external invite links use approved destination and secure target',()=>{const links=[...community.matchAll(/<a\b[^>]*href="(https:\/\/discord\.gg\/[^"]+)"[^>]*>/g)];assert.ok(links.length>=3);for(const [,url] of links)assert.equal(url,'https://discord.gg/ZzYTUWKKW');for(const match of links)assert.match(match[0],/rel="noopener noreferrer"/);});
+test('learn cross-link has campaign source and points to first-party page',()=>{assert.match(learn,/href="\/community\/\?source=learn"/);assert.match(learn,/THC community · Adults only/);});
+test('new content has accessible headings and mobile layout rules',()=>{assert.match(community,/aria-labelledby="thc-join-heading"/);assert.match(community,/@media\(max-width:920px\)/);assert.match(learn,/aria-labelledby="thc-community-invite-title"/);});

@@ -1,0 +1,28 @@
+name: THC Community Growth CI
+on:
+  pull_request:
+    paths:
+      - 'site/wordpress/pages/community.html'
+      - 'site/wordpress/pages/learn.html'
+      - 'scripts/test-thc-community-growth.mjs'
+      - '.github/workflows/thc-community-growth-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/pages/community.html'
+      - 'site/wordpress/pages/learn.html'
+      - 'scripts/test-thc-community-growth.mjs'
+      - '.github/workflows/thc-community-growth-ci.yml'
+permissions:
+  contents: read
+jobs:
+  community-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate THC Community integration
+        run: node --test scripts/test-thc-community-growth.mjs
