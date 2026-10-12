@@ -1,0 +1,28 @@
+name: Atlas Diagnostic Intake Route
+on:
+  pull_request:
+    paths:
+      - 'site/public-route-patch/atlas/diagnostics/**'
+      - 'docs/education/diagnostics/**'
+      - 'scripts/test-atlas-diagnostic-intake-route.mjs'
+      - '.github/workflows/atlas-diagnostic-intake-route.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/public-route-patch/atlas/diagnostics/**'
+      - 'docs/education/diagnostics/**'
+      - 'scripts/test-atlas-diagnostic-intake-route.mjs'
+      - '.github/workflows/atlas-diagnostic-intake-route.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate Atlas route and schema
+        run: node scripts/test-atlas-diagnostic-intake-route.mjs
