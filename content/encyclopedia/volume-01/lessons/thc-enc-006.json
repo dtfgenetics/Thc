@@ -25,13 +25,19 @@
     "Cannabis sativa is an herbaceous annual. A seed-derived plant passes through imbibition and germination, seedling establishment, vegetative growth, reproductive transition, flowering, and senescence. If pollination occurs, fertilization and achene development are added to the reproductive sequence. Clones enter the sequence differently because they are already-developed shoot tissues rather than embryos.",
     "Developmental stage is not the same as time since planting. Temperature, light, root-zone conditions, plant health, container restriction, photoperiod, day-neutral genetics, and stress can speed, delay, or distort visible development. A “week number” is a schedule label; morphology and physiology determine the actual stage.",
     "Photoperiod-responsive plants require an appropriate uninterrupted dark signal to induce flowering, whereas day-neutral or autoflowering plants initiate reproduction more independently of daylength. Even within those categories, onset and duration vary. This is why stage records should include observable criteria such as leaf development, node count, preflowers, first pistillate flowers, pollen shed, and seed maturity.",
-    "The transition between stages reflects changing meristem activity, source-sink relationships, and reproductive signaling rather than a simple switch in calendar week. Young leaves and roots are strong sinks for assimilated carbon; expanding canopy tissue increases photosynthetic capacity; reproductive organs later become major sinks. Senescence includes regulated nutrient remobilization and declining photosynthetic function, but stress-induced yellowing or tissue death can overlap visually with normal aging. Stage assignment therefore benefits from both morphology and crop context."
+    "The transition between stages reflects changing meristem activity, source-sink relationships, and reproductive signaling rather than a simple switch in calendar week. Young leaves and roots are strong sinks for assimilated carbon; expanding canopy tissue increases photosynthetic capacity; reproductive organs later become major sinks. Senescence includes regulated nutrient remobilization and declining photosynthetic function, but stress-induced yellowing or tissue death can overlap visually with normal aging. Stage assignment therefore benefits from both morphology and crop context.",
+    "Plant developmental phases are best described by events rather than rigid durations. Seed germination begins with water uptake (imbibition), followed by metabolic reactivation and radicle emergence if viability, temperature, oxygen and water availability permit. Cotyledon expansion and the appearance of true leaves mark early establishment; neither event independently guarantees a healthy functional root system. A rooted cutting instead starts from donor stem tissue and forms adventitious roots, so elapsed days since cutting cannot be equated directly with seedling age.",
+    "Growth involves linked source and sink organs. Mature illuminated leaves supply carbohydrates through photosynthesis, whereas expanding organs, roots and developing reproductive structures compete for assimilates. As vegetative structures expand, changes in leaf area and branching alter light interception and transpiration. During reproductive development, allocation patterns change but remain responsive to genotype, light, temperature, water status and pollination. This physiology explains why stage, size, and condition all matter when comparing plant performance.",
+    "Developmental transitions are not controlled by a single universal clock. In photoperiod-sensitive cannabis, the duration and continuity of the dark interval influence floral signaling. Day-neutral lines can transition at different times even when daylength remains similar; this does not mean they are immune to other environmental factors. The morphological onset of flowers, the initiation of reproductive signaling, and the completion of reproductive maturation are different events and should not be recorded interchangeably.",
+    "Senescence is an organized physiological process that can include loss of chlorophyll, altered hormone signaling and redistribution of mobile nutrients. It should not be inferred from yellow foliage alone: nutrient stress, root impairment, pathogens and water imbalance can also alter leaf color or accelerate tissue decline. Distinguishing planned developmental aging from stress requires observing pattern, stage, root-zone status and other plant symptoms together."
   ],
   "cultivationRelevance": [
     "Stage-based management is more reliable than copying a calendar. Light, irrigation, nutrition, humidity risk, training tolerance, scouting emphasis, and sampling all change with development.",
     "Record both age and stage. Age supports scheduling; stage supports biological interpretation.",
     "Define management transitions by observable development rather than by a copied schedule. For example, transplant readiness should consider root occupancy and shoot balance; training decisions should consider active meristems and branch structure; reproductive management should use visible preflower and floral development; and harvest planning should use crop-specific maturity observations rather than an assumed number of weeks.",
-    "Stage records also improve interpretation of stress. The same environmental event can have different consequences during seedling establishment, rapid vegetative expansion, floral initiation, seed development, or late senescence. When comparing crops, align observations by developmental stage as well as chronological age so a later or earlier phenotype is not mistaken for a treatment effect."
+    "Stage records also improve interpretation of stress. The same environmental event can have different consequences during seedling establishment, rapid vegetative expansion, floral initiation, seed development, or late senescence. When comparing crops, align observations by developmental stage as well as chronological age so a later or earlier phenotype is not mistaken for a treatment effect.",
+    "Applied comparison — suppose two accessions are both 35 days from sowing, but one has substantially more developed nodes and canopy. Comparing their growth solely by calendar age can obscure developmental differences. Record both days from a clearly defined start event and morphological indicators such as true-leaf number, node number, branching and floral observations before attributing the difference to genetics or environment.",
+    "Stage-based chart reading: use a timeline to organize anticipated observations, not as a promise of flowering or maturity dates. Annotate actual measured milestones and any transplant, photoperiod, environmental or plant-health events, then distinguish what was observed from what was predicted."
   ],
   "measureAndRecord": [
     {
@@ -57,12 +63,22 @@
     {
       "field": "Environmental context",
       "requirement": "For each milestone, preserve the relevant light schedule, temperature, root-zone condition, major stress events, and propagation method so developmental duration can be compared without implying that time alone caused the difference."
+    },
+    {
+      "field": "Stage definition and observer",
+      "requirement": "Use a consistent written rubric for each visible milestone; record the observation date, plant ID, observer, photographs if authorized, and whether the stage assignment is certain or ambiguous."
+    },
+    {
+      "field": "Comparison basis",
+      "requirement": "For comparisons across plants or trials, document both chronological age and stage indicators plus propagation method, photoperiod context, environment, sample size and known stress events."
     }
   ],
   "misconceptions": [
     "Every plant follows the same week-by-week chart: Calendars organize work but do not replace stage observations.",
     "Clones are biologically the same age as new seedlings: A cutting begins as developed donor shoot tissue and may carry aspects of donor ontogenetic, physiological, epigenetic, and pathogen history. Its state can change after rooting and environment change.",
-    "Senescence is always a nutrient deficiency: Senescence is regulated, although stress and root-zone problems can accelerate or mimic it."
+    "Senescence is always a nutrient deficiency: Senescence is regulated, although stress and root-zone problems can accelerate or mimic it.",
+    "Days from a seed soak and days from taking a cutting are equivalent biological age: These events begin different physiological histories and cannot be treated as interchangeable developmental clocks.",
+    "Flower initiation and flower maturity are the same event: They are distinct points in reproductive development, with timing that varies across genotypes and environments."
   ],
   "evidenceLimits": [
     "Life-cycle stages are broadly transferable, but their timing and visible expression depend on genotype, propagation method, photoperiod sensitivity, temperature, light, root-zone conditions, plant health, and management. Published timelines often describe a particular cultivar or experiment rather than a universal cannabis schedule. Developmental stage should therefore be assigned from defined observations, with calendar age retained as supporting context rather than treated as proof of physiological state."
@@ -84,5 +100,22 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
+  },
+  "knowledgeCheck": [
+    "Explain how imbibition, radicle emergence, cotyledon expansion and first true leaves differ as life-cycle observations, and identify one record needed to compare germination batches fairly.",
+    "Two plants are the same number of days from sowing but differ in node number and visible flowers. Why is calendar age alone insufficient to compare developmental stage, and what would you record?",
+    "A clone and a seedling were started on the same date. Why should they not be assumed to have identical physiological age?",
+    "A plant has yellowing leaves late in its cycle. Give two competing explanations and describe which measurements or observations might separate them."
+  ],
+  "assessmentDesign": {
+    "version": 1,
+    "answerRationaleStatus": "draft_for_editorial_review",
+    "scoringIntent": "Require clear distinctions between chronology, morphology, physiology and uncertainty.",
+    "answerRationales": [
+      "Imbibition is water uptake, radicle emergence indicates visible germination, cotyledon expansion indicates early shoot establishment, and true leaves mark later organ development. Preserve a consistent start-point definition, temperature, moisture context, viability and sample counts.",
+      "Developmental stages are established by biological markers rather than age alone. Record dates, node counts, branching, preflowers or flowers, genotype, propagation method and environmental conditions.",
+      "A cutting originates as mature donor shoot tissue and must form adventitious roots; it is not a new seed embryo. Donor physiological history, health and rooting conditions can affect its state.",
+      "Regulated senescence and stress-related chlorosis are competing explanations. Assess pattern and age of affected leaves, root-zone conditions, water status, nutrient records, pests, pathogens and the progression over time."
+    ]
   }
 }
