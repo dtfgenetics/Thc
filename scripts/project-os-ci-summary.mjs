@@ -4,7 +4,7 @@ import {pathToFileURL} from 'node:url';
 export function renderProjectOsSummary(summary) {
   if(!summary || !Array.isArray(summary.blockers) || !summary.categories || !Number.isSafeInteger(summary.totalApps))
     throw Error('Invalid Project OS summary');
-  const escape=value=>String(value??'').replaceAll('|','\\|').replaceAll('\\n',' ').replaceAll('\\r',' ');
+  const escape=value=>String(value??'').replaceAll('|','\\|') .replaceAll(String.fromCharCode(10),' ').replaceAll(String.fromCharCode(13),' ');
   const lines=['## Project OS quality evidence','',`**Applications:** ${summary.totalApps} · **Ready:** ${summary.readyApps} · **Blocked:** ${summary.blockedApps}`,'',
     '| Category | Pass | Fail | Unknown |','|---|---:|---:|---:|'];
   for(const category of ['source','build','responsive','content','security','production']){
@@ -19,7 +19,7 @@ export function renderProjectOsSummary(summary) {
   if(summary.blockers.length>40)lines.push('',`Showing first 40 of ${summary.blockers.length} blocked applications; see attached JSON artifact for all.`);
   if(summary.registryErrors?.length)lines.push('','### Registry errors',...summary.registryErrors.map(x=>'- '+escape(x)));
   lines.push('','> Audit status is **not** production authorization. Evidence claims remain unverified until independently attested.','');
-  return lines.join('\\n');
+  return lines.join(String.fromCharCode(10));
 }
 if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href){
   const file=process.env.PROJECT_OS_SUMMARY_REPORT || '.artifacts/project-os/evidence-summary.json';
