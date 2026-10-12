@@ -8,11 +8,12 @@ const apps=[{id:'app',repository:'dtfgenetics/Thc',route:'/app/'}];
 const proof=()=>({status:'pass',url:'https://github.com/dtfgenetics/Thc/actions/runs/123',commitSha:sha,verifiedAt:date});
 const evidence=()=>[{appId:'app',repository:'dtfgenetics/Thc',commitSha:sha,categories:Object.fromEntries(CATEGORIES.map(c=>[c,proof()]))}];
 const evaluate=(entries=evidence(),p=project,a=apps)=>evaluateEvidence(p,a,entries,{now:'2026-10-11T11:00:00Z'});
-test('all six categories explicitly verified results in readiness',()=>{
+test('six self-reported claims cannot certify readiness',()=>{
   const report=evaluate();
-  assert.equal(report.readyApps,1);
+  assert.equal(report.readyApps,0);
   assert.equal(report.totalApps,1);
   assert.deepEqual(report.errors,[]);
+  assert.equal(report.results[0].categories.build.reason,'unattested evidence claim; independent verification required');
 });
 test('absence of evidence never counts as passing',()=>{
   const report=evaluate([]);
