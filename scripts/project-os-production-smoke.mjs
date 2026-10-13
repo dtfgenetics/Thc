@@ -3,10 +3,10 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 
 export const PUBLIC_ROUTES=Object.freeze([
-  {path:'/',marker:'DTF Genetics'},
-  {path:'/learn/',marker:'Teaching Healthy Cultivation'},
-  {path:'/tools/',marker:'GrowLens'},
-  {path:'/games/',marker:'Game'}
+  {path:'/',marker:'Genetics first.'},
+  {path:'/learn/',marker:'Learn the plant as one connected system.'},
+  {path:'/tools/',marker:'Grow with records.'},
+  {path:'/games/',marker:'Pick what is playable.'}
 ]);
 export async function probePublicRoutes({base='https://dtfseeds.com',routes=PUBLIC_ROUTES,fetchImpl=fetch,now=()=>new Date().toISOString()}={}) {
   const origin=new URL(base);
@@ -19,8 +19,8 @@ export async function probePublicRoutes({base='https://dtfseeds.com',routes=PUBL
       const response=await fetchImpl(url,{redirect:'manual',signal:AbortSignal.timeout(15000),headers:{Accept:'text/html','User-Agent':'DTF-ProjectOS-Smoke/1.0'}});
       const contentType=response.headers.get('content-type')||'';
       const html=response.ok&&contentType.includes('text/html')?(await response.text()).slice(0,1024*1024):'';
-      const pass=response.status===200&&contentType.includes('text/html')&&html.toLowerCase().includes(route.marker.toLowerCase());
-      results.push({route:route.path,url:url.href,status:response.status,pass,reason:pass?null:'unexpected status, content-type, or missing expected page content'});
+      const heading=html.match(/<h1\\b[^>]*>([\\s\\S]*?)<\\/h1>/i)?.[1]\n        ?.replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').trim()||'';\n      const pass=response.status===200&&contentType.includes('text/html')&&heading.toLowerCase().includes(route.marker.toLowerCase());
+      results.push({route:route.path,url:url.href,status:response.status,pass,reason:pass?null:'unexpected status, content-type, or missing route-specific h1'});
     }catch(error){results.push({route:route.path,url:url.href,status:null,pass:false,reason:error?.name==='TimeoutError'?'timeout':'request failure'});}
   }
   return {schemaVersion:1,checkedAt:now(),origin:origin.href,scope:'public HTTP and content smoke only; no source SHA, browser UX, or release attestation',total:results.length,passing:results.filter(x=>x.pass).length,results};
