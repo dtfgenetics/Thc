@@ -27,3 +27,20 @@ test('shared footer text cannot masquerade as a route-specific page',async()=>{
  const result=await probePublicRoutes({routes,fetchImpl:async()=>response(html)});
  assert.equal(result.passing,0);
 });
+
+test('deployment SHA is an unauthenticated observation, never automatic release approval',async()=>{
+ const sha='a'.repeat(40);
+ const fetchImpl=async()=>({ok:true,status:200,headers:{get:key=>key==='content-type'?'text/html':key==='x-dtf-deployment-sha'?sha:null},text:async()=>'<h1>Grow with records.</h1>'});
+ const report=await probePublicRoutes({routes,fetchImpl,expectedDeploymentSha:sha});
+ assert.equal(report.results[0].deploymentIdentity,'header-matches-expected');
+ assert.equal(report.results[0].observedDeploymentSha,sha);
+ assert.match(report.scope,/not proof of artifact provenance/);
+});
+test('missing or mismatched deployment headers remain visible without false attestation',async()=>{
+ const sha='a'.repeat(40);
+ for(const header of [null,'b'.repeat(40),'not-a-hash']){
+  const report=await probePublicRoutes({routes,expectedDeploymentSha:sha,fetchImpl:async()=>({ok:true,status:200,headers:{get:key=>key==='content-type'?'text/html':header},text:async()=>'<h1>Grow with records.</h1>'})});
+  assert.notEqual(report.results[0].deploymentIdentity,'header-matches-expected');
+ }
+ await assert.rejects(()=>probePublicRoutes({routes:[],expectedDeploymentSha:'oops'}),/Invalid expected deployment SHA/);
+});
