@@ -8,7 +8,7 @@ import {verifyLive} from './verify-project-os-release-fingerprint-live.mjs';
 
 const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'project-os-live-'));
 const out=path.join(tmp,'expected.json');
-const env={...process.env,PROJECT_OS_SOURCE_REVISION:'abc123',PROJECT_OS_BUILD_ID:'42',PROJECT_OS_GENERATED_AT:'2026-10-06T10:00:00Z',PROJECT_OS_FINGERPRINT_OUT:out};
+const env={...process.env,PROJECT_OS_SOURCE_REVISION:'a'.repeat(40),PROJECT_OS_BUILD_ID:'42',PROJECT_OS_GENERATED_AT:'2026-10-06T10:00:00Z',PROJECT_OS_FINGERPRINT_OUT:out};
 const built=spawnSync(process.execPath,['scripts/build-project-os-release-fingerprint.mjs'],{encoding:'utf8',env});
 assert.equal(built.status,0,built.stderr);
 const expected=JSON.parse(fs.readFileSync(out,'utf8'));

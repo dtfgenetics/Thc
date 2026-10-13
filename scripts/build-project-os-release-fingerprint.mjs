@@ -15,7 +15,7 @@ for(const file of contract.hashedInputs){
 const sourceRevision=process.env.PROJECT_OS_SOURCE_REVISION||process.env.GITHUB_SHA;
 const buildId=process.env.PROJECT_OS_BUILD_ID||process.env.GITHUB_RUN_ID;
 const generatedAt=process.env.PROJECT_OS_GENERATED_AT||new Date().toISOString();
-if(!sourceRevision) throw new Error('PROJECT_OS_SOURCE_REVISION or GITHUB_SHA required');
+if(!/^[0-9a-f]{40}$/i.test(sourceRevision||'')) throw new Error('PROJECT_OS_SOURCE_REVISION or GITHUB_SHA must be a full 40-character Git SHA');
 if(!buildId) throw new Error('PROJECT_OS_BUILD_ID or GITHUB_RUN_ID required');
 const canonical=JSON.stringify({repository:contract.sourceOfTruth,sourceRevision,buildId,dataHashes});
 const fingerprint={
