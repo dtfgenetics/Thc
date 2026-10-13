@@ -13,6 +13,8 @@ on:
     paths:
       - 'scripts/project-os-production-smoke.mjs'
       - 'scripts/project-os-production-smoke.test.mjs'
+      - 'scripts/reconcile-project-os-deployment.mjs'
+      - 'scripts/reconcile-project-os-deployment.expected.test.mjs'
       - '.github/workflows/project-os-production-smoke.yml'
 permissions:
   contents: read
@@ -30,7 +32,7 @@ jobs:
       - name: Check smoke script syntax
         run: node --check scripts/project-os-production-smoke.mjs && node --check scripts/project-os-production-smoke.test.mjs
       - name: Test smoke probe contracts
-        run: node --test scripts/project-os-production-smoke.test.mjs
+        run: node --test scripts/project-os-production-smoke.test.mjs scripts/reconcile-project-os-deployment.expected.test.mjs
       - name: Probe actual public HTTP routes
         env:
           PROJECT_OS_EXPECTED_DEPLOYMENT_SHA: ${{ inputs.expected_deployment_sha || '' }}
