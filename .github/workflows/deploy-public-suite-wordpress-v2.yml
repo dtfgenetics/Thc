@@ -16,6 +16,12 @@ on:
       - games/seed-man-platformer/**
       - site/public-route-patch/**
       - site/deployment/public-apps.json
+      - data/project-os/deployment-fingerprint-contract.json
+      - data/project-os/acceptance-manifests.json
+      - data/project-os/definitions-of-done.json
+      - scripts/build-project-os-release-fingerprint.mjs
+      - scripts/reconcile-project-os-deployment.mjs
+      - scripts/verify-project-os-release-fingerprint-live.mjs
       - site/deployment/release-resources.json
       - scripts/build-canonical-sitemap.mjs
       - scripts/package-public-suite-wordpress.py
