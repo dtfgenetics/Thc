@@ -1,0 +1,44 @@
+name: Verify live Fertigation audit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/verify-live-fertigation.yml
+  schedule:
+    - cron: '17 13 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify real public HTML and audit module
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://dtfseeds.com"
+          dir="$(mktemp -d)"
+          curl --fail --show-error --silent --location --connect-timeout 12 --max-time 30 \
+            -D "$dir/page.headers" -o "$dir/page.html" "$base/fertigation-lab/"
+          curl --fail --show-error --silent --location --connect-timeout 12 --max-time 30 \
+            -D "$dir/module.headers" -o "$dir/audit.mjs" "$base/assets/thc-fertigation-audit-v1.mjs"
+          test -s "$dir/page.html"
+          test -s "$dir/audit.mjs"
+          grep -Fq "auditFertigationRecipe" "$dir/page.html"
+          grep -Fq "/assets/thc-fertigation-audit-v1.mjs" "$dir/page.html"
+          grep -Fq "Recipe blocked by feasibility audit." "$dir/page.html"
+          grep -Fq "export function auditFertigationRecipe" "$dir/audit.mjs"
+          if ! grep -Eiq '^content-type: *(application|text)/(javascript|ecmascript|x-javascript)' "$dir/module.headers"; then
+            echo "::error::Audit module has incorrect JavaScript Content-Type" >&2
+            grep -i '^content-type:' "$dir/module.headers" || true
+            exit 1
+          fi
+          if grep -Eiq '<html|<!doctype' "$dir/audit.mjs"; then
+            echo "::error::Audit module returned an HTML page instead of JavaScript" >&2
+            exit 1
+          fi
+          echo "PASS: live route imports feasibility audit and serves the module as JavaScript"
