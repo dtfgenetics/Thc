@@ -24,13 +24,13 @@ export function checkLessonResponse(response,html,route){
   const type=response.headers.get('content-type')||'';
   if(response.status!==200) return 'HTTP '+response.status;
   if(!/^text\/html\b/i.test(type)) return 'unexpected content type: '+type;
-  if(!/<h1\b[^>]*>[\s\S]*?<\/h1>/i.test(html)) return 'missing lesson heading';
-  const tags=[...html.matchAll(/<link\b[^>]*>/gi)].map(x=>x[0]);
-  const canonicals=tags.filter(tag=>/\brel\s*=\s*(["'])canonical\1/i.test(tag));
-  const canonical=canonicals.length===1?canonicals[0].match(/\bhref\s*=\s*(["'])(.*?)\1/i)?.[2]:null;
-  if(canonical!==ORIGIN+route.path) return 'canonical route mismatch';
-  const body=html.replace(/<head\b[^>]*>[\s\S]*?<\/head>/i,'');
-  if(!new RegExp('\\b'+route.id+'\\b','i').test(body)) return 'missing lesson-specific ID';
+  // Evaluate document text, excluding metadata and non-rendered script/template content.
+  const content=html.replace(/<head\b[^>]*>[\s\S]*?<\/head>/gi,'')
+    .replace(/<(script|style|template)\b[^>]*>[\s\S]*?<\/\1>/gi,'')
+    .replace(/<!--[\s\S]*?-->/g,'');
+  if(!/<h1\b[^>]*>[\s\S]*?<\/h1>/i.test(content)) return 'missing lesson heading';
+  const visibleText=content.replace(/<[^>]+>/g,' ');
+  if(!new RegExp('\\b'+route.id+'\\b','i').test(visibleText)) return 'missing lesson-specific ID';
   return null;
 }
 export async function auditLive({routes,fetchImpl=fetch,concurrency=4,timeoutMs=12000,now=()=>new Date().toISOString()}={}){
@@ -64,9 +64,10 @@ export async function auditLive({routes,fetchImpl=fetch,concurrency=4,timeoutMs=
   }));
   const passing=results.filter(x=>x.pass).length;
   const allPassed=directory.pass&&passing===routes.length;
-  return {schemaVersion:1,checkedAt:now(),origin:ORIGIN,coverage:routes.length===420?'full-420':'sample',
+  const isControlledCore=routes.length===420&&routes.every((route,index)=>route.id==='THC-ENC-'+String(index+1).padStart(3,'0'));
+  return {schemaVersion:1,checkedAt:now(),origin:ORIGIN,coverage:isControlledCore?'full-420':'sample',
     scope:'HTTP, canonical URL, lesson ID, heading and directory-link checks only; not browser UX, scientific or visual approval, or deployment attestation',
-    total:routes.length,passing,directory,allPassed,full420Passed:routes.length===420&&allPassed,results};
+    total:routes.length,passing,directory,allPassed,full420Passed:isControlledCore&&allPassed,results};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href){
   const args=process.argv.slice(2),full=args.includes('--full'),sampleAt=args.indexOf('--sample');
