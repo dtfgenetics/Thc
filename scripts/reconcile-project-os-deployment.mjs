@@ -3,6 +3,18 @@ import fs from 'node:fs';
 
 export function verifyFingerprint(contract,expected,observed){
  const errors=[];
+ if(!expected || typeof expected!=='object' || Array.isArray(expected)) return ['expected fingerprint must be an object'];
+ if(!observed || typeof observed!=='object' || Array.isArray(observed)) return ['observed fingerprint must be an object'];
+ for(const field of contract.requiredFields||[]){
+  if(expected[field]===undefined||expected[field]===null||expected[field]==='') errors.push('expected fingerprint missing '+field);
+ }
+ if(typeof expected.sourceRevision!=='string'||!(/^[a-f0-9]{40}$/i).test(expected.sourceRevision)) errors.push('expected sourceRevision must be a full Git SHA');
+ if(typeof expected.bundleHash!=='string'||!(/^[a-f0-9]{64}$/i).test(expected.bundleHash)) errors.push('expected bundleHash must be a SHA-256 digest');
+ if(!expected.dataHashes||typeof expected.dataHashes!=='object'||Array.isArray(expected.dataHashes)) errors.push('expected dataHashes must be an object');
+ for(const file of contract.hashedInputs||[]){
+  if(typeof expected.dataHashes?.[file]!=='string'||!(/^[a-f0-9]{64}$/i).test(expected.dataHashes[file])) errors.push('expected data hash missing or invalid '+file);
+ }
+
  for(const field of contract.requiredFields||[]){
   if(observed?.[field]===undefined||observed?.[field]===null||observed?.[field]==='') errors.push('observed fingerprint missing '+field);
  }
