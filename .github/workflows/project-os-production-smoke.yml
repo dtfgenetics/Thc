@@ -1,0 +1,37 @@
+name: Project OS Production HTTP Smoke
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '18 13 * * *'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/project-os-production-smoke.mjs'
+      - 'scripts/project-os-production-smoke.test.mjs'
+      - '.github/workflows/project-os-production-smoke.yml'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check smoke script syntax
+        run: node --check scripts/project-os-production-smoke.mjs && node --check scripts/project-os-production-smoke.test.mjs
+      - name: Test smoke probe contracts
+        run: node --test scripts/project-os-production-smoke.test.mjs
+      - name: Probe actual public HTTP routes
+        run: node scripts/project-os-production-smoke.mjs
+      - name: Upload production smoke observation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-os-production-http-smoke-${{ github.run_id }}
+          path: .artifacts/project-os/production-smoke.json
+          if-no-files-found: warn
