@@ -19,7 +19,9 @@ export async function probePublicRoutes({base='https://dtfseeds.com',routes=PUBL
       const response=await fetchImpl(url,{redirect:'manual',signal:AbortSignal.timeout(15000),headers:{Accept:'text/html','User-Agent':'DTF-ProjectOS-Smoke/1.0'}});
       const contentType=response.headers.get('content-type')||'';
       const html=response.ok&&contentType.includes('text/html')?(await response.text()).slice(0,1024*1024):'';
-      const heading=html.match(/<h1\\b[^>]*>([\\s\\S]*?)<\\/h1>/i)?.[1]\n        ?.replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').trim()||'';\n      const pass=response.status===200&&contentType.includes('text/html')&&heading.toLowerCase().includes(route.marker.toLowerCase());
+      const heading=html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]
+        ?.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()||'';
+      const pass=response.status===200&&contentType.includes('text/html')&&heading.toLowerCase().includes(route.marker.toLowerCase());
       results.push({route:route.path,url:url.href,status:response.status,pass,reason:pass?null:'unexpected status, content-type, or missing route-specific h1'});
     }catch(error){results.push({route:route.path,url:url.href,status:null,pass:false,reason:error?.name==='TimeoutError'?'timeout':'request failure'});}
   }
