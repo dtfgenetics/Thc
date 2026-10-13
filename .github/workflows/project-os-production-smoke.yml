@@ -1,6 +1,11 @@
 name: Project OS Production HTTP Smoke
 on:
   workflow_dispatch:
+    inputs:
+      expected_deployment_sha:
+        description: Optional 40-character expected deployed revision (diagnostic only)
+        required: false
+        type: string
   schedule:
     - cron: '18 13 * * *'
   pull_request:
@@ -27,6 +32,8 @@ jobs:
       - name: Test smoke probe contracts
         run: node --test scripts/project-os-production-smoke.test.mjs
       - name: Probe actual public HTTP routes
+        env:
+          PROJECT_OS_EXPECTED_DEPLOYMENT_SHA: ${{ inputs.expected_deployment_sha || '' }}
         run: node scripts/project-os-production-smoke.mjs
       - name: Upload production smoke observation
         if: always()
