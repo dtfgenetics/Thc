@@ -23,7 +23,7 @@ export async function probePublicRoutes({base='https://dtfseeds.com',routes=PUBL
         ?.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()||'';
       const pass=response.status===200&&contentType.includes('text/html')&&heading.toLowerCase().includes(route.marker.toLowerCase());
       results.push({route:route.path,url:url.href,status:response.status,pass,reason:pass?null:'unexpected status, content-type, or missing route-specific h1'});
-    }catch(error){results.push({route:route.path,url:url.href,status:null,pass:false,reason:error?.name==='TimeoutError'?'timeout':'request failure'});}
+    }catch(error){results.push({route:route.path,url:url.href,status:null,pass:false,reason:error?.name==='TimeoutError'?'timeout':('request failure'+(typeof error?.cause?.code==='string'&&/^[A-Z0-9_]+$/.test(error.cause.code)?': '+error.cause.code:''))});}
   }
   return {schemaVersion:1,checkedAt:now(),origin:origin.href,scope:'public HTTP and content smoke only; no source SHA, browser UX, or release attestation',total:results.length,passing:results.filter(x=>x.pass).length,results};
 }
