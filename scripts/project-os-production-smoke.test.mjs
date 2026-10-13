@@ -44,3 +44,9 @@ test('missing or mismatched deployment headers remain visible without false atte
  }
  await assert.rejects(()=>probePublicRoutes({routes:[],expectedDeploymentSha:'oops'}),/Invalid expected deployment SHA/);
 });
+
+test('CLI rejects malformed expected deployment SHA before network requests',()=>{
+ const run=spawnSync(process.execPath,['scripts/project-os-production-smoke.mjs'],{encoding:'utf8',env:{...process.env,PROJECT_OS_EXPECTED_DEPLOYMENT_SHA:'not-a-sha'}});
+ assert.notEqual(run.status,0);
+ assert.match(run.stderr,/Invalid expected deployment SHA/);
+});
