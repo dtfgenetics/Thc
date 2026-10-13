@@ -33,7 +33,8 @@ export async function probePublicRoutes({expectedDeploymentSha=null,base='https:
   return {schemaVersion:1,checkedAt:now(),origin:origin.href,scope:'public HTTP and content smoke with optional unauthenticated deployment header observation; header agreement is not proof of artifact provenance, browser UX, or release attestation',expectedDeploymentSha,total:results.length,passing:results.filter(x=>x.pass).length,results};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href){
-  const report=await probePublicRoutes();
+  const expectedDeploymentSha=process.env.PROJECT_OS_EXPECTED_DEPLOYMENT_SHA||null;
+  const report=await probePublicRoutes({expectedDeploymentSha});
   const dest=process.env.PROJECT_OS_PRODUCTION_SMOKE_REPORT||'.artifacts/project-os/production-smoke.json';
   fs.mkdirSync(path.dirname(dest),{recursive:true});
   fs.writeFileSync(dest,JSON.stringify(report,null,2)+'\n');
