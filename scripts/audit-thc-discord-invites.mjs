@@ -4,7 +4,10 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { join, relative, extname } from 'node:path';
 
-const root = process.cwd();
+const rootArg = process.argv.find(arg => arg.startsWith('--root='));
+const root = rootArg ? rootArg.slice('--root='.length) : process.cwd();
+const expectedArg = process.argv.find(arg => arg.startsWith('--expected='));
+const expected = expectedArg ? expectedArg.slice('--expected='.length) : null;
 const paths = ['README.md', 'site', 'scripts', 'docs'];
 const extensions = new Set(['.md', '.html', '.js', '.mjs', '.ts', '.tsx', '.json', '.php', '.css']);
 const ignored = new Set(['node_modules', '.git', 'dist', 'build', 'coverage', '.next']);
@@ -40,13 +43,14 @@ for (const path of paths) await walk(join(root, path));
 const report = {
   timestamp: new Date().toISOString(),
   verifiedInDiscord: false,
+  expectedCode: expected,
   distinctInviteCodes: results.size,
   invites: [...results.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([code, occurrences]) => ({
     code, count: occurrences.length, occurrences
   }))
 };
 console.log(JSON.stringify(report, null, 2));
-if (process.argv.includes('--strict') && results.size !== 1) {
-  console.error('Invite audit failed: exactly one confirmed canonical invite code expected. Verify all codes with an authorized Discord admin before enforcing.');
+if (process.argv.includes('--strict') && (!expected || results.size !== 1 || !results.has(expected))) {
+  console.error('Invite audit failed: provide --expected=VERIFIED_CODE and ensure that exact code is the only invite. Confirm it with a Discord admin first.');
   process.exitCode = 1;
 }
