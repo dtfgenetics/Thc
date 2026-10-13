@@ -1,6 +1,10 @@
 name: Verify live Fertigation audit
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/verify-live-fertigation.yml
   workflow_dispatch:
   pull_request:
     paths:
