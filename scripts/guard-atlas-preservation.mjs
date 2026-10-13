@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-const canonical='/tmp/tools/site/public-route-patch/atlas';
-const mirror='site/public-route-patch/atlas';
+const canonical=process.env.DTF_ATLAS_CANONICAL_DIR || '/tmp/tools/site/public-route-patch/atlas';
+const mirror=process.env.DTF_ATLAS_MIRROR_DIR || 'site/public-route-patch/atlas';
 let inspected=0;
 const losses=[];
 function* pages(dir,relative='') {
