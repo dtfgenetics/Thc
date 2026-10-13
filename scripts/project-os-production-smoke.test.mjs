@@ -6,7 +6,7 @@ const response=(html,status=200,type='text/html')=>({ok:status>=200&&status<300,
 test('accepts expected HTML on fixed HTTPS production host',async()=>{
  const result=await probePublicRoutes({routes,fetchImpl:async(url,options)=>{assert.equal(url.href,'https://dtfseeds.com/tools/');assert.equal(options.redirect,'manual');return response('<h1>Grow with records.</h1>');}});
  assert.equal(result.passing,1);
- assert.match(result.scope,/no source SHA/);
+ assert.match(result.scope,/not proof of artifact provenance/);
 });
 test('rejects missing content and non-200 responses',async()=>{
  for(const item of [response('<h1>other</h1>'),response('GrowLens',404),response('GrowLens',200,'application/json'),response('',302)]){
