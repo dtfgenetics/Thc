@@ -66,6 +66,12 @@ on:
       - scripts/validate-education-visual-system.mjs
       - scripts/validate-learning-content-quality.mjs
       - site/deployment/public-apps.json
+      - data/project-os/deployment-fingerprint-contract.json
+      - data/project-os/acceptance-manifests.json
+      - data/project-os/definitions-of-done.json
+      - scripts/build-project-os-release-fingerprint.mjs
+      - scripts/reconcile-project-os-deployment.mjs
+      - scripts/verify-project-os-release-fingerprint-live.mjs
       - data/public-navigation.json
       - docs/ATLAS_ROUTE_OWNERSHIP.md
       - scripts/validate-atlas-route-ownership.mjs
