@@ -17,6 +17,28 @@ for(const root of [canonical,mirror]) {
  if(!stat?.isDirectory()||stat.isSymbolicLink()) throw Error('Missing or unsafe Atlas directory: '+root);
 }
 const visible=html=>html.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi,'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().length;
+// Preserve canonical route identity and approved instructional graphics.
+const canonicalPath=html=>{
+ const tags=html.match(/<link\b[^>]*>/gi)||[];
+ let found=null;
+ for(const tag of tags){
+  const rel=tag.match(/\brel\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+  if(!rel||!(rel[1]||rel[2]||rel[3]).split(/\s+/).some(x=>x.toLowerCase()==='canonical'))continue;
+  const href=tag.match(/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+  if(!href)return null;
+  try {
+   const url=new URL(href[1]||href[2]||href[3], 'https://dtfseeds.com');
+   if(!['dtfseeds.com','www.dtfseeds.com'].includes(url.hostname.toLowerCase()))return null;
+   if(!['https:','http:'].includes(url.protocol)||url.port||url.username||url.password)return null;
+   if(found!==null)return null;
+   found=url.pathname.replace(/\/+$/,'')||'/';
+  }catch{return null;}
+ }
+ return found;
+};
+const instructionalSvgCount=html=>(html.match(/<svg\b[^>]*>/gi)||[])
+ .filter(tag=>/\brole\s*=\s*(?:"img"|'img')/i.test(tag)).length;
+
 for(const relative of pages(mirror)){
  inspected++;
  let current=canonical;
@@ -32,6 +54,10 @@ for(const relative of pages(mirror)){
  const incoming=fs.readFileSync(current,'utf8');
  const before=visible(old),after=visible(incoming);
  if(before>=600&&after<before*.7)losses.push(relative+': visible text '+before+' -> '+after);
+ const oldRoute=canonicalPath(old),newRoute=canonicalPath(incoming);
+ if(oldRoute&&oldRoute!==newRoute)losses.push(relative+': canonical route '+oldRoute+' -> '+(newRoute||'missing or off-site'));
+ const oldVisuals=instructionalSvgCount(old),newVisuals=instructionalSvgCount(incoming);
+ if(newVisuals<oldVisuals)losses.push(relative+': instructional SVG count '+oldVisuals+' -> '+newVisuals);
 }
 if(!inspected)throw Error('No existing Atlas lesson pages were checked');
 if(losses.length)throw Error('Atlas preservation failed:\n'+losses.join('\n'));
