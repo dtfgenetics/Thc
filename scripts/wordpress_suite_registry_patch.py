@@ -45,6 +45,7 @@ SHARED_EXACT_FILES = (
     "assets/thc-chemistry-formula-v1.mjs",
     "assets/thc-fertigation-compatibility-v1.mjs",
     "assets/thc-fertigation-solver-v1.mjs",
+    "assets/thc-fertigation-audit-v1.mjs",
     "assets/thc-history-core-v1.mjs",
     "assets/thc-light-lab-math-v1.mjs",
     "assets/thc-live-data-core-v1.mjs",
