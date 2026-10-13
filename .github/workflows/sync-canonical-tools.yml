@@ -70,6 +70,7 @@ jobs:
             echo "::warning::Canonical Tools mirror is stale: pinned ${pinned_sha:-missing}, canonical ${canonical_sha}. Synchronization will repair it."
           fi
 
+      # Fail closed before canonical Tools overwrites any published Atlas lesson.
       - name: Prevent destructive Atlas lesson synchronization
         shell: bash
         run: |
