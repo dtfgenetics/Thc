@@ -97,7 +97,7 @@ window.THCMeasurementJournal?.create({
  storageKey:'thc-ph-measurements-v1',filename:'thc-ph-measurements',
  saveBtnId:'savePhRecord',clearBtnId:'clearPhLog',exportBtnId:'exportPhCsv',importBtnId:'importPhCsv',importInputId:'phCsvFile',
  statusId:'phJournalStatus',tableBodyId:'phJournalBody',chartWrapId:'phChartWrap',chartHostId:'phChart',countId:'phSavedCount',
- getRecord:()=>({date:phDate.value||localNow(),ph:Number(ph.value),context:ctx.options[ctx.selectedIndex]?.text||ctx.value,meter:document.getElementById('phMeterId').value.trim(),calibration:phCalibrationDate.value,calibrationRefs:document.getElementById('phCalibrationRefs').value.trim(),tempC:document.getElementById('phSampleTemp').value,notes:document.getElementById('phNotes').value.trim()}),
+ getRecord:()=>({date:phDate.value||localNow(),ph:ph.value.trim()===''?null:Number(ph.value),context:ctx.options[ctx.selectedIndex]?.text||ctx.value,meter:document.getElementById('phMeterId').value.trim(),calibration:phCalibrationDate.value,calibrationRefs:document.getElementById('phCalibrationRefs').value.trim(),tempC:document.getElementById('phSampleTemp').value,notes:document.getElementById('phNotes').value.trim()}),
  normalizeRecord:r=>{try{const v=validatePh(r?.ph),meter=normalizeMeterRecord(r);return{date:String(r?.date||localNow()).slice(0,32),ph:Number(v.toFixed(2)),context:String(r?.context||'').slice(0,120),meter:meter.meter,calibration:meter.calibration,calibrationRefs:meter.calibrationRefs,tempC:meter.tempC,notes:meter.notes}}catch{return null}},
  columns:[
   {key:'date',header:'date'},{key:'ph',header:'ph'},{key:'context',header:'context'},{key:'meter',header:'meter'},{key:'calibration',header:'calibration'},{key:'calibrationRefs',header:'calibration_refs'},{key:'tempC',header:'temperature_C'},{key:'notes',header:'notes'}
@@ -110,12 +110,12 @@ window.THCMeasurementJournal?.create({
 <script>
 (()=>{
  const THC=window.THC,key='thc-ph-measurements-v1',status=document.getElementById('phJournalStatus'),file=document.getElementById('phJsonFile');
- const current=()=>({date:document.getElementById('phDate').value||new Date().toISOString(),ph:Number(document.getElementById('ph').value),context:document.getElementById('context').options[document.getElementById('context').selectedIndex]?.text||document.getElementById('context').value,meter:document.getElementById('phMeterId').value.trim(),calibration:document.getElementById('phCalibrationDate').value,calibrationRefs:document.getElementById('phCalibrationRefs').value.trim(),tempC:document.getElementById('phSampleTemp').value,notes:document.getElementById('phNotes').value.trim()});
- document.getElementById('savePhGrowLens').onclick=()=>{const r=current(),result=THC.growlens.addDiaryEntry({title:'pH measurement · '+r.context,notes:'pH '+Number(r.ph).toFixed(2)+(r.meter?'; meter '+r.meter:'')+(r.calibration?'; last calibration '+r.calibration:'')+(r.calibrationRefs?'; buffers '+r.calibrationRefs:'')+(r.tempC!==''?'; sample '+r.tempC+' °C':'')+(r.notes?'; '+r.notes:'')});status.textContent=result.ok?'Saved current pH measurement to GrowLens diary.':(result.reason||'GrowLens save failed.')};
+ const current=()=>({date:document.getElementById('phDate').value||new Date().toISOString(),ph:document.getElementById('ph').value.trim()===''?null:Number(document.getElementById('ph').value),context:document.getElementById('context').options[document.getElementById('context').selectedIndex]?.text||document.getElementById('context').value,meter:document.getElementById('phMeterId').value.trim(),calibration:document.getElementById('phCalibrationDate').value,calibrationRefs:document.getElementById('phCalibrationRefs').value.trim(),tempC:document.getElementById('phSampleTemp').value,notes:document.getElementById('phNotes').value.trim()});
+ document.getElementById('savePhGrowLens').onclick=()=>{const r=current();if(r.ph===null||!Number.isFinite(r.ph)||r.ph<0||r.ph>14){status.textContent='Enter a valid pH reading before saving to GrowLens.';return;}const result=THC.growlens.addDiaryEntry({title:'pH measurement · '+r.context,notes:'pH '+Number(r.ph).toFixed(2)+(r.meter?'; meter '+r.meter:'')+(r.calibration?'; last calibration '+r.calibration:'')+(r.calibrationRefs?'; buffers '+r.calibrationRefs:'')+(r.tempC!==''?'; sample '+r.tempC+' °C':'')+(r.notes?'; '+r.notes:'')});status.textContent=result.ok?'Saved current pH measurement to GrowLens diary.':(result.reason||'GrowLens save failed.')};
  document.getElementById('backupPhJson').onclick=()=>THC.backupJson('thc-ph-measurements-backup.json','thc-ph-measurements',1,THC.load(key,[]));
  document.getElementById('restorePhJson').onclick=()=>file.click();
  document.getElementById('printPhReport').onclick=()=>window.print();
- file.addEventListener('change',async()=>{try{const records=await THC.restoreJson(file.files?.[0],'thc-ph-measurements',1,r=>r&&Number.isFinite(Number(r.ph))&&Number(r.ph)>=0&&Number(r.ph)<=14,2000);if(THC.load(key,[]).length&&!confirm('Replace current pH journal with this JSON backup?'))return;THC.save(key,records);status.textContent='pH JSON backup restored. Reloading journal…';location.reload()}catch(error){status.textContent=error?.message||'Could not restore pH backup.'}finally{file.value=''}});
+ file.addEventListener('change',async()=>{try{const records=await THC.restoreJson(file.files?.[0],'thc-ph-measurements',1,r=>r&&r.ph!==null&&r.ph!==undefined&&String(r.ph).trim()!==''&&Number.isFinite(Number(r.ph))&&Number(r.ph)>=0&&Number(r.ph)<=14,2000);if(THC.load(key,[]).length&&!confirm('Replace current pH journal with this JSON backup?'))return;THC.save(key,records);status.textContent='pH JSON backup restored. Reloading journal…';location.reload()}catch(error){status.textContent=error?.message||'Could not restore pH backup.'}finally{file.value=''}});
 })();
 </script>
 <script type="module">
@@ -126,9 +126,11 @@ mountLiveToolAdapter({container:document.getElementById('liveToolAdapter'),tool:
 import {collectManualCultivationMeasurement} from '/assets/thc-cultivation-data-ui-v1.mjs';
 const button=document.getElementById('savePhRecord');
 button?.addEventListener('click',()=>{
-  const value=Number(document.getElementById('ph').value);
-  if(!Number.isFinite(value)||value<0||value>14)return;
-  const temp=Number(document.getElementById('phSampleTemp')?.value);
+  const raw=document.getElementById('ph').value.trim();
+  const value=Number(raw);
+  if(raw===''||!Number.isFinite(value)||value<0||value>14)return;
+  const tempRaw=document.getElementById('phSampleTemp')?.value.trim()??'';
+  const temp=tempRaw===''?null:Number(tempRaw);
   collectManualCultivationMeasurement({
     type:'solution',toolId:'ph-meter',observedAt:document.getElementById('phDate')?.value,
     metrics:{ph:value,solutionTemperatureC:Number.isFinite(temp)?temp:null},

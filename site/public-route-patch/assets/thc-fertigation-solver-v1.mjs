@@ -41,16 +41,18 @@ export function evaluateRecipe({volumeL,sourceWater={},products=[],amounts=[]}){
   return achieved;
 }
 
-export function optimizeRecipe({volumeL,sourceWater={},targets={},products=[],maxGrams=5000,iterations=600}){
+export function optimizeRecipe({volumeL,sourceWater={},targets={},products=[],maxGrams=5000,iterations=600,activeTargets=null}){
   const L=positive(volumeL,'Final volume');
   if(!Array.isArray(products)||!products.length)throw new RangeError('At least one product is required');
   const max=positive(maxGrams,'Maximum grams per product');
   const target=Object.fromEntries(NUTRIENTS.map(k=>[k,nonnegative(targets[k]??0,'Target '+k)]));
   const source=Object.fromEntries(NUTRIENTS.map(k=>[k,nonnegative(sourceWater[k]??0,'Source '+k)]));
+  if(activeTargets!==null&&(!Array.isArray(activeTargets)||!activeTargets.length||activeTargets.some(k=>!NUTRIENTS.includes(k))))throw new RangeError('Active targets must be known nutrients');
+  const fitted=activeTargets===null?NUTRIENTS:[...new Set(activeTargets)];
   const vectors=products.map(p=>contributionPerGram(p,L));
   const amounts=new Array(products.length).fill(0);
   const scale=Object.fromEntries(NUTRIENTS.map(k=>[k,Math.max(target[k],20)]));
-  const weights=Object.fromEntries(NUTRIENTS.map(k=>[k,1/(scale[k]*scale[k])]));
+  const weights=Object.fromEntries(NUTRIENTS.map(k=>[k,fitted.includes(k)?1/(scale[k]*scale[k]):0]));
 
   for(let iter=0;iter<iterations;iter++){
     let maxChange=0;
@@ -75,7 +77,7 @@ export function optimizeRecipe({volumeL,sourceWater={},targets={},products=[],ma
 
   const achieved=evaluateRecipe({volumeL:L,sourceWater:source,products,amounts});
   const difference=Object.fromEntries(NUTRIENTS.map(k=>[k,achieved[k]-target[k]]));
-  const active=NUTRIENTS.filter(k=>target[k]>0||source[k]>0||vectors.some(v=>v[k]>0));
+  const active=fitted.filter(k=>target[k]>0||source[k]>0||vectors.some(v=>v[k]>0));
   const weightedRmsPct=active.length?Math.sqrt(active.reduce((sum,k)=>sum+Math.pow(difference[k]/scale[k],2),0)/active.length)*100:0;
   return {amounts,achieved,difference,weightedRmsPct,nutrients:NUTRIENTS.slice()};
 }
