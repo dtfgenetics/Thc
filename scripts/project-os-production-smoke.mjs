@@ -13,7 +13,7 @@ export async function probePublicRoutes({base='https://dtfseeds.com',routes=PUBL
   if(origin.protocol!=='https:' || origin.hostname!=='dtfseeds.com' || origin.pathname!=='/' || origin.search || origin.hash) throw Error('Unsupported production origin');
   const results=[];
   for(const route of routes){
-    if(typeof route.path!=='string'||!/^\/[a-z0-9/-]*\/$/.test(route.path)||typeof route.marker!=='string'||!route.marker)throw Error('Invalid smoke route');
+    if(typeof route.path!=='string'||!(route.path==='/' || /^\/[a-z0-9/-]+\/$/.test(route.path))||typeof route.marker!=='string'||!route.marker)throw Error('Invalid smoke route');
     const url=new URL(route.path,origin);
     try{
       const response=await fetchImpl(url,{redirect:'manual',signal:AbortSignal.timeout(15000),headers:{Accept:'text/html','User-Agent':'DTF-ProjectOS-Smoke/1.0'}});
