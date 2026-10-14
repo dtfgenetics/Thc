@@ -43,7 +43,7 @@ jobs:
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       BACKUP_ROOT: /tmp/dtf-encyclopedia-copy-repair
       WP_PUBLISH_CONCURRENCY: '4'
-      ENC_COPY_REPAIR_REFRESH_CITATION_DISPLAY: ${{ github.event_name == 'push' && contains(toJSON(github.event.commits), 'encyclopedia-source-note-display.mjs') }}
+      ENC_COPY_REPAIR_REFRESH_CITATION_DISPLAY: ${{ github.event_name == 'push' && (contains(toJSON(github.event.commits), 'encyclopedia-source-note-display.mjs') || contains(toJSON(github.event.commits), 'wordpress-encyclopedia-copy-repair.yml')) }}
     steps:
       - uses: actions/checkout@v4
         with:
