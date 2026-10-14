@@ -33,7 +33,8 @@ export function validateDirectory(html,routes){
   }
   const hrefs=new Set();
   for(const match of navigableHtml.matchAll(/<a\b[^>]*>/gi)){
-    const href=match[0].match(/\shref\s*=\s*(["'])(.*?)\1/i)?.[2];
+    const hrefMatch=match[0].match(/\shref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'`=<>]+))/i);
+    const href=hrefMatch?.[1]??hrefMatch?.[2]??hrefMatch?.[3];
     if(!href)continue;
     try{
       const url=new URL(href,documentBase);
