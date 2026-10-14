@@ -39,6 +39,23 @@ try{
   assert.equal(result.code,1);
   assert.match(result.report.findings.map(f=>f.message).join(' '),/embedded claim\/correction label/);
 
+  // A whitespace-separated extra correction must fail too (regression for
+  // regex literals accidentally matching backslash-s instead of whitespace).
+  fs.writeFileSync(file,JSON.stringify({...good,misconceptions:[
+    'All wet media are oxygenated: pore structures differ. Correction: A second accidentally joined correction.'
+  ]}));
+  result=run();
+  assert.equal(result.code,1);
+  assert.match(result.report.findings.map(f=>f.message).join(' '),/embedded claim\\/correction label/);
+
+  // No punctuation at the boundary also indicates two joined segments.
+  fs.writeFileSync(file,JSON.stringify({...good,misconceptions:[
+    'Roots respire continuously Correction: Oxygen availability still matters.'
+  ]}));
+  result=run();
+  assert.equal(result.code,1);
+  assert.match(result.report.findings.map(f=>f.message).join(' '),/embedded claim\\/correction label/);
+
   fs.writeFileSync(file,JSON.stringify({...good,sourceNotes:['Paper. 2020. Open sourcee']}));
   result=run();
   assert.equal(result.code,1);
