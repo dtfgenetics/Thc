@@ -24,13 +24,18 @@
   "coreScience": [
     "The controlled botanical baseline for this encyclopedia is Cannabis sativa L. The abbreviation “L.” credits Carl Linnaeus, who published the name in 1753. Plants of the World Online currently accepts Cannabis sativa as the single accepted species in the genus Cannabis. The genus belongs to the family Cannabaceae in the order Rosales. NCBI assigns Cannabis sativa Taxonomy ID 3483.",
     "This baseline does not erase scientific debate below the species level. Cannabis is highly variable because of geography, domestication, breeding, introgression, and repeated selection for fiber, seed, flowering time, architecture, and chemical profile. Authors have used C. indica and C. ruderalis as species, subspecies, varieties, informal groups, or historical labels. The safest practice is to name the authority being followed and avoid presenting a disputed rank as settled fact.",
-    "Commercial “strain” names are not equivalent to botanical identity. The same name can be used for genetically different material, and different names can be applied to closely related or identical clones. A useful identity record combines the supplied name with breeder or source, seed lot, filial generation, clone identifier, acquisition date, and laboratory or marker data when available."
+    "Commercial “strain” names are not equivalent to botanical identity. The same name can be used for genetically different material, and different names can be applied to closely related or identical clones. A useful identity record combines the supplied name with breeder or source, seed lot, filial generation, clone identifier, acquisition date, and laboratory or marker data when available.",
+    "Botanical nomenclature, taxonomy and individual accession identity answer different questions. The accepted scientific name refers to a taxon according to a named authority, not proof of any commercial seed lot's parentage. A taxonomic authority can accept Cannabis sativa L. while researchers continue studying population structure, domestication and historical infraspecific names. Therefore, capture the authority and date alongside the name.",
+    "A reusable record needs both a taxon concept and a durable material accession ID. The taxon concept stores accepted name, authority and references. The accession links actual seeds, clones or plants to source documents, supplied marketing name, generation, custody events, samples and assays. Preserving both lets nomenclature change without corrupting experiment history.",
+    "Genetic markers, chemotypes and morphology are complementary observations, not interchangeable identity certificates. Different genotypes may produce similar cannabinoid profiles; clones can differ in measured chemistry when grown or sampled under different conditions. Any claimed identity match should specify the assay, comparison set, sampling method and uncertainty."
   ],
   "cultivationRelevance": [
     "Accurate naming prevents records from mixing unlike plants. It is essential when comparing morphology, disease response, flowering time, chemistry, and postharvest behavior.",
     "Use botanical names for species-level discussion, controlled genetic identifiers for actual plant material, and legal terms only when discussing a defined jurisdiction.",
     "Identity records should persist across seed intake, cloning, mother-plant maintenance, trials, breeding, harvest, laboratory testing, and storage. Use one internal material ID that does not change when a marketing name changes. Keep the supplied name as metadata rather than as the sole identifier so observations can be traced back to the actual seed lot, clone, accession, or parent plant.",
-    "When a phenotype or laboratory result appears inconsistent with the expected line, do not rename the plant from appearance alone. Verify label history, propagation records, sample identity, generation, source material, and analytical or marker results where available. Identity errors can mimic biological variation and can invalidate comparisons across rooms, seasons, or breeding generations."
+    "When a phenotype or laboratory result appears inconsistent with the expected line, do not rename the plant from appearance alone. Verify label history, propagation records, sample identity, generation, source material, and analytical or marker results where available. Identity errors can mimic biological variation and can invalidate comparisons across rooms, seasons, or breeding generations.",
+    "Applied example: two lots arrive with the same retail name. Assign distinct accession IDs, record supplier and claimed lineage separately, then compare environmental and sample records before attributing observed differences to labeling error.",
+    "Maintain a name-mapping history: received name, accepted taxon, authority/date, accession ID, propagation source, and every later relabeling. Never overwrite the historical received label."
   ],
   "measureAndRecord": [
     {
@@ -52,15 +57,22 @@
     {
       "field": "Identity discrepancies",
       "requirement": "When labels, phenotype, chemistry, or marker evidence conflict, record the discrepancy, quarantine the interpretation, trace the chain of custody, and resolve the record before combining the material with other datasets or breeding decisions."
+    },
+    {
+      "field": "Inference scope",
+      "requirement": "Record sample identity, tested material, method, comparison group, conditions and limitations; distinguish observed phenotype from inferred ancestry or taxonomic classification."
     }
   ],
   "misconceptions": [
     "Indica and sativa are precise effects categories: Those labels do not reliably predict a consumer effect or verify genetic identity.",
     "A popular name proves lineage: Names are evidence only when supported by traceable records.",
-    "Legal hemp is a separate species: In U.S. law, hemp is a statutory category within Cannabis sativa, not a separate botanical species."
+    "Legal hemp is a separate species: In U.S. law, hemp is a statutory category within Cannabis sativa, not a separate botanical species.",
+    "Matching chemotype proves genetic identity: Chemical profiles reflect measured phenotypes and cannot by themselves verify clone identity.",
+    "A retail strain label is a scientific taxon: Commercial labels generally do not provide a formally accepted species identity or traceable genotype."
   ],
   "evidenceLimits": [
-    "Taxonomic authorities can revise accepted names and ranks as new evidence is evaluated, while commercial naming systems often have no central registration or identity-control standard. The one-species baseline used here follows the cited taxonomic authorities and should not be interpreted as proof that every commercial line is genetically uniform or that disputed infraspecific categories are biologically meaningless. Legal definitions are separate from botanical identity and must be checked against the current jurisdiction at release time."
+    "Taxonomic authorities can revise accepted names and ranks as new evidence is evaluated, while commercial naming systems often have no central registration or identity-control standard. The one-species baseline used here follows the cited taxonomic authorities and should not be interpreted as proof that every commercial line is genetically uniform or that disputed infraspecific categories are biologically meaningless. Legal definitions are separate from botanical identity and must be checked against the current jurisdiction at release time.",
+    "A taxonomic authority's accepted name is a classification position; it does not settle every disputed historical rank or guarantee uniformity among accessions."
   ],
   "crossLinks": "THC-ENC-003, THC-ENC-005, THC-ENC-170, THC-ENC-400, and the genetic identity data standard.",
   "sourceNotes": [
@@ -79,5 +91,32 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-03_canonical_identity_content_and_release_boundary_checked"
-  }
+  },
+  "knowledgeCheck": [
+    "Two incoming lots share a retail name but differ in performance. What identifiers and context must be preserved before claiming mislabeling?",
+    "Why does matching cannabinoid chemistry not, by itself, establish that two samples are identical clones?",
+    "A historical study uses Cannabis indica while the encyclopedia's taxonomic baseline is Cannabis sativa L. How should the original source term and current accepted name be recorded?"
+  ],
+  "assessmentDesign": {
+    "version": 1,
+    "answerRationaleStatus": "draft_for_editorial_review",
+    "answerRationales": [
+      "Preserve separate durable accession or lot IDs, received names, sources, lineage claims, dates, transfers, environments and sampled methods; consider both genetic variation and identity errors.",
+      "Chemistry is a context-dependent measured phenotype. Sample tissue, developmental stage, environment, assay and storage can affect the result; suitable genetic and provenance evidence is needed.",
+      "Quote the original author's label accurately and separately note the current authority-backed taxonomic mapping and its date; do not silently rewrite the source."
+    ],
+    "scoringIntent": "Explain evidence, botanical identity and uncertainty using appropriate examples."
+  },
+  "visuals": [
+    {
+      "assetId": "THC-ENC-002-VIS-SRC-01",
+      "type": "educational_diagram_source",
+      "purpose": "The taxonomic name connects to an accepted authority while the material accession connects to physical samples and history.",
+      "caption": "The taxonomic name connects to an accepted authority while the material accession connects to physical samples and history.",
+      "altText": "The taxonomic name connects to an accepted authority while the material accession connects to physical samples and history.",
+      "repositoryPath": "content/encyclopedia/volume-01/visual-sources/taxonomy-versus-accession.svg",
+      "rightsStatus": "original_project_artwork",
+      "qaStatus": "draft_source_not_raster_approved"
+    }
+  ]
 }
