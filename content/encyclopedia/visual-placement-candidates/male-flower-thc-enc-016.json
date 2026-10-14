@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "THC-ENC-016",
+  "figures": [
+    {
+      "id": "THC-ENC-016-FIG01",
+      "placement": "after coreScience paragraph 1",
+      "type": "photorealistic AI botanical reconstruction",
+      "localSource": "a_wide_high_resolution_infographic_style_botanic.png",
+      "caption": "Staminate inflorescence, open flower and anther release stages shown as illustrative reconstructions, not verified botanical specimens.",
+      "alt": "Illustrated close-ups of cannabis male flower clusters, exposed stamens and opened pollen-bearing anther.",
+      "status": "candidate_not_uploaded",
+      "verified": "visual style only; botanical stage and label review outstanding"
+    },
+    {
+      "id": "THC-ENC-016-FIG02",
+      "placement": "after coreScience paragraph 6",
+      "type": "primary-research-linked chart",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7284845/",
+      "caption": "Cannabis pollen germination after storage at 4 degrees Celsius by harvest stage, from Gaudet et al. 2020; use published data and error bars only.",
+      "requirements": [
+        "extract original measured values only",
+        "preserve n and SE",
+        "do not extend beyond reported days"
+      ],
+      "status": "chart_pending"
+    },
+    {
+      "id": "THC-ENC-016-FIG03",
+      "placement": "measureAndRecord",
+      "type": "editable floral stage and pollen-function record",
+      "status": "template_pending"
+    }
+  ],
+  "review": {
+    "imageUploaded": false,
+    "scientificAccuracyApproved": false,
+    "sourceRightsVerified": false,
+    "assetHashRecorded": false,
+    "websiteVerified": false
+  },
+  "evidence": [
+    {
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7329997/",
+      "role": "staminate flower anatomy"
+    },
+    {
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9262209/",
+      "role": "pollen staining vs germination"
+    },
+    {
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7284845/",
+      "role": "collection-stage-dependent pollen germination"
+    }
+  ]
+}
