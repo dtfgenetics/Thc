@@ -104,9 +104,9 @@ for(const token of [
 // fail closed before accepting any live data changes without deployment identity.
 const deployWorkflow=fs.readFileSync(deployWorkflowPath,'utf8');
 for(const [name,workflow] of [['GrowLens Hostinger deployment',deployWorkflow],['GrowLens live acceptance',liveAcceptance]]){
-  if(!/group:\\s*growlens-production-deploy\\b/.test(workflow))fail(`${name} must share the GrowLens production concurrency group.`);
-  if(!/cancel-in-progress:\\s*false\\b/.test(workflow))fail(`${name} must not cancel an in-flight production operation.`);
-  if(!/refs\\/heads\\/main/.test(workflow))fail(`${name} must be limited to the main branch.`);
+  if(!/group:\s*growlens-production-deploy\b/.test(workflow))fail(`${name} must share the GrowLens production concurrency group.`);
+  if(!/cancel-in-progress:\s*false\b/.test(workflow))fail(`${name} must not cancel an in-flight production operation.`);
+  if(!/refs\/heads\/main/.test(workflow))fail(`${name} must be limited to the main branch.`);
 }
 for(const token of [
   'Require attested standalone GrowLens deployment before destructive tests',
