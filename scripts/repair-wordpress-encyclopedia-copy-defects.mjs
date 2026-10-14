@@ -15,6 +15,10 @@ if(!user||!pass) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are requir
 
 const auth='Basic '+Buffer.from(`${user}:${pass}`).toString('base64');
 const malformedPublicCopy=/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i;
+// Historical citations with presentation-only labels need a renderer refresh
+// when source-note display code changes; the canonical fingerprint is unchanged.
+const orphanCitationLabel=/\\s{2,}(?:Open source|Publisher record)\\s*$/i;
+const refreshCitationDisplay=process.env.ENC_COPY_REPAIR_REFRESH_CITATION_DISPLAY==='true';
 const genericMisconceptionPlaceholder=/Correction:\s*See the (?:controlled )?lesson evidence and context\.?/i;
 const joinedClaimBoundary=/[.!?](?:Claim|Misconception|Correction):/i;
 const fingerprintOf=a=>createHash('sha256').update(JSON.stringify({
@@ -157,7 +161,9 @@ async function scanWorker(){
     const renderedKinds=publicView.status===200
       ? [...copyDefectKinds(publicView.text),...publicParityDefectKinds(publicView.raw,id,expectedFingerprint)]
       : [];
-    const kinds=[...new Set([...storedKinds,...renderedKinds])];
+    const displayRefresh=refreshCitationDisplay && Array.isArray(lesson?.sourceNotes) &&
+      lesson.sourceNotes.some(note=>orphanCitationLabel.test(String(note||'')));
+    const kinds=[...new Set([...storedKinds,...renderedKinds,...(displayRefresh?['citation-display-refresh']:[])])];
     scanResults[index]={page,id,expectedFingerprint,storedKinds,publicView,renderedKinds,kinds};
   }
 }
