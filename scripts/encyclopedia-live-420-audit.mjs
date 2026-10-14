@@ -16,7 +16,30 @@ export function buildCoreRoutes(entries){
   });
 }
 export function validateDirectory(html,routes){
-  const hrefs=new Set([...html.matchAll(/<a\b[^>]*\bhref\s*=\s*(["'])(.*?)\1[^>]*>/gi)].map(x=>x[2]));
+  // Only navigable body anchors count; comments and inert HTML are not links.
+  const activeHtml=html.replace(/<!--[\s\S]*?-->/g,'')
+    .replace(/<(script|style|template|noscript|textarea)\b[^>]*>[\s\S]*?<\/\1>/gi,'');
+  const head=activeHtml.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1]??'';
+  const body=activeHtml.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i)?.[1];
+  const navigableHtml=body??activeHtml.replace(/<head\b[^>]*>[\s\S]*?<\/head>/gi,'');
+  // A document base changes how browsers resolve relative anchor URLs.
+  const baseTag=[...head.matchAll(/<base\b[^>]*>/gi)].map(x=>x[0])
+    .find(tag=>/\shref\s*=/.test(tag.toLowerCase()));
+  const baseValue=baseTag?.match(/\shref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+  let documentBase=ORIGIN+'/learn/encyclopedia/';
+  if(baseValue){
+    try{documentBase=new URL(baseValue[1]??baseValue[2]??baseValue[3],documentBase).href;}
+    catch{documentBase='about:invalid';}
+  }
+  const hrefs=new Set();
+  for(const match of navigableHtml.matchAll(/<a\b[^>]*>/gi)){
+    const href=match[0].match(/\shref\s*=\s*(["'])(.*?)\1/i)?.[2];
+    if(!href)continue;
+    try{
+      const url=new URL(href,documentBase);
+      if(url.origin===ORIGIN&&!url.search)hrefs.add(url.pathname);
+    }catch{ /* Malformed links never satisfy coverage. */ }
+  }
   const missing=routes.filter(route=>!hrefs.has(route.path)).map(route=>route.id);
   return {pass:missing.length===0,missing};
 }
@@ -30,7 +53,7 @@ export function checkLessonResponse(response,html,route){
     .replace(/<!--[\s\S]*?-->/g,'');
   // Require one real canonical declaration in the active document head.
   // Attributes such as data-rel and inert noscript/template content are not evidence.
-  const head=html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1]||'';
+  const head=html.replace(/<!--[\s\S]*?-->/g,'').match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1]||'';
   const activeHead=head.replace(/<!--[\s\S]*?-->/g,'')
     .replace(/<(script|style|template|textarea|noscript)\b[^>]*>[\s\S]*?<\/\1>/gi,'');
   const canonicalLinks=[...activeHead.matchAll(/<link\b[^>]*>/gi)]
@@ -53,6 +76,7 @@ export async function auditLive({routes,fetchImpl=fetch,concurrency=4,timeoutMs=
     routes.some(x=>!/^THC-ENC-\d{3}$/.test(x.id)||x.path!=='/learn/encyclopedia/'+x.id.toLowerCase()+'/')||
     new Set(routes.map(x=>x.id)).size!==routes.length) throw Error('Invalid route list');
   if(!Number.isInteger(concurrency)||concurrency<1||concurrency>8) throw Error('Invalid concurrency');
+  if(!Number.isInteger(timeoutMs)||timeoutMs<100||timeoutMs>120000) throw Error('Invalid timeoutMs');
   const fetchPage=async route=>{
     try{
       const response=await fetchImpl(ORIGIN+route,{

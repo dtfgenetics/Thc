@@ -71,3 +71,25 @@ test('canonical link must use a genuine rel attribute',()=>{
  const route=routes[0];
  assert.match(checkLessonResponse(response('',200),html(route).replace('rel="canonical"','data-rel="canonical"'),route),/canonical route mismatch/);
 });
+
+test('directory does not accept links in head or inert HTML',()=>{
+ const first=routes[0],second=routes[1];
+ const page=`<html><head><a href="${second.path}">not navigable</a></head><body><a href="${first.path}">real link</a><template><a href="${second.path}">inert</a></template></body></html>`;
+ assert.deepEqual(validateDirectory(page,[first,second]).missing,[second.id]);
+});
+test('directory resolves relative links using the effective document base',()=>{
+ const first=routes[0];
+ const relative='<html><head></head><body><a href="thc-enc-001/">lesson</a></body></html>';
+ assert.equal(validateDirectory(relative,[first]).pass,true);
+ const redirected='<html><head><base href="/elsewhere/"></head><body><a href="thc-enc-001/">lesson</a></body></html>';
+ assert.deepEqual(validateDirectory(redirected,[first]).missing,[first.id]);
+});
+test('commented-out document head cannot provide canonical metadata',()=>{
+ const route=routes[0];
+ const spoof=`<html><!-- <head><link rel="canonical" href="${ORIGIN+route.path}"></head> --><head></head><body><span>${route.id}</span><h1>Lesson</h1></body></html>`;
+ assert.match(checkLessonResponse(response('',200),spoof,route),/canonical route mismatch/);
+});
+test('invalid timeout configuration is rejected before making requests',async()=>{
+ await assert.rejects(()=>auditLive({routes:[routes[0]],timeoutMs:-1}),/Invalid timeoutMs/);
+ await assert.rejects(()=>auditLive({routes:[routes[0]],timeoutMs:0}),/Invalid timeoutMs/);
+});
