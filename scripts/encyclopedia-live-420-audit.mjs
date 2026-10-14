@@ -26,8 +26,23 @@ export function checkLessonResponse(response,html,route){
   if(!/^text\/html\b/i.test(type)) return 'unexpected content type: '+type;
   // Evaluate document text, excluding metadata and non-rendered script/template content.
   const content=html.replace(/<head\b[^>]*>[\s\S]*?<\/head>/gi,'')
-    .replace(/<(script|style|template)\b[^>]*>[\s\S]*?<\/\1>/gi,'')
+    .replace(/<(script|style|template|noscript|textarea)\b[^>]*>[\s\S]*?<\/\1>/gi,'')
     .replace(/<!--[\s\S]*?-->/g,'');
+  // Require one real canonical declaration in the active document head.
+  // Attributes such as data-rel and inert noscript/template content are not evidence.
+  const head=html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1]||'';
+  const activeHead=head.replace(/<!--[\s\S]*?-->/g,'')
+    .replace(/<(script|style|template|textarea|noscript)\b[^>]*>[\s\S]*?<\/\1>/gi,'');
+  const canonicalLinks=[...activeHead.matchAll(/<link\b[^>]*>/gi)]
+    .map(match=>match[0])
+    .filter(tag=>{
+      const rel=tag.match(/\srel\s*=\s*(["'])(.*?)\1/i)?.[2]||'';
+      return rel.split(/\s+/).some(token=>token.toLowerCase()==='canonical');
+    });
+  const canonical=canonicalLinks.length===1
+    ?canonicalLinks[0].match(/\shref\s*=\s*(["'])(.*?)\1/i)?.[2]
+    :null;
+  if(canonical!==ORIGIN+route.path) return 'canonical route mismatch';
   if(!/<h1\b[^>]*>[\s\S]*?<\/h1>/i.test(content)) return 'missing lesson heading';
   const visibleText=content.replace(/<[^>]+>/g,' ');
   if(!new RegExp('\\b'+route.id+'\\b','i').test(visibleText)) return 'missing lesson-specific ID';
