@@ -24,13 +24,19 @@
   "coreScience": [
     "Cannabis information is unusually vulnerable to overstatement. Decades of legal restriction limited formal crop research while an experienced but largely informal grower culture developed its own vocabulary, target ranges, and cause-and-effect explanations. Both sources can contain useful observations. Neither should be accepted without asking what was measured, how it was measured, what plants were tested, and what alternative explanation could fit the result.",
     "A strong claim identifies the genetic material, developmental stage, root-zone system, environmental conditions, treatment, sample size, measurement method, and uncertainty. A weak claim uses a cultivar name as if it were a verified genetic identity, changes several inputs at once, reports only the best plant, or treats a visual impression as proof of a biochemical change. Yield, cannabinoid concentration, terpene composition, disease response, and morphology are all affected by genotype and environment; a result from one crop cannot automatically become a rule for all cannabis.",
-    "Evidence also has different jobs. Primary cannabis research is best for cannabis-specific response. Hemp extension literature is often practical and valuable, but fiber, grain, and cannabinoid hemp can differ from indoor drug-type flower production. General horticulture explains mechanisms such as water potential, nutrient availability, and disease cycles, but those sources should be labeled as general plant science. Regulations, pesticide labels, equipment manuals, and laboratory standards answer different questions and can override a general recommendation in their own domain."
+    "Evidence also has different jobs. Primary cannabis research is best for cannabis-specific response. Hemp extension literature is often practical and valuable, but fiber, grain, and cannabinoid hemp can differ from indoor drug-type flower production. General horticulture explains mechanisms such as water potential, nutrient availability, and disease cycles, but those sources should be labeled as general plant science. Regulations, pesticide labels, equipment manuals, and laboratory standards answer different questions and can override a general recommendation in their own domain.",
+    "Experimental design determines whether an observed difference supports a causal explanation. Biological replication means testing multiple independently treated experimental units; repeatedly measuring one plant creates technical or repeated-measure observations but does not substitute for additional independently assigned plants. When plants share a reservoir, lighting zone, tray, or chamber, those shared units may be the true experimental units. Treating many leaves from one plant or many plants in one chamber as fully independent replicates can exaggerate certainty (pseudoreplication). Proper inference therefore requires the unit of treatment assignment, the unit of measurement, and the sources of shared variation to be described separately.",
+    "Randomization and appropriate comparison groups help separate treatment effects from bench position, age, rooting differences, sensor placement, and time. Blocking can compare treatments within relatively similar spatial or temporal groups, while repeated measurements can reveal trajectories rather than relying on an endpoint photograph. Neither practice guarantees that all confounding is removed. A well-designed report should distinguish effect magnitude, interval estimates and measurement uncertainty from a simple yes/no significance label; a small p-value does not, by itself, demonstrate a large or practically useful crop response.",
+    "Consider a hypothetical trial comparing two lighting treatments: if only one chamber receives each treatment, any measured difference could reflect chamber-specific airflow or temperature rather than the light variable. The independent experimental unit is the chamber for that treatment assignment, not every plant inside it. More plants within each chamber improve description of within-chamber variation but do not provide independent chamber replication. A stronger design rotates or randomizes treatments among independently controlled chambers across replicated runs, while keeping a documented record of irradiance distribution, temperature, plant material and measurement methods.",
+    "Correlation, prediction and mechanism answer different scientific questions. A sensor signal may predict visible stress without identifying its cause; a physiological mechanism such as stomatal regulation can be biologically plausible without proving it caused a particular crop symptom. Distinguish the observed phenomenon, the hypothesized causal pathway, the measurements that test it, and the decision made under uncertainty. If the experiment lacks the measurements needed to distinguish competing mechanisms, present the result as unresolved rather than treating an attractive explanation as a finding."
   ],
   "cultivationRelevance": [
     "Before changing a crop, write the hypothesis in plain language: what is wrong, what evidence supports that diagnosis, what single change is proposed, and what measurement will show whether it worked. This converts reaction into controlled learning.",
     "Numerical targets require context. A temperature, VPD, PPFD, DLI, pH, EC, or drying value should be described as a study condition, measured response, practical starting range, equipment limit, or legal limit. Calling every number an optimum creates false precision.",
     "Use an evidence ladder when deciding whether to change a crop: first define the observation, then identify plausible mechanisms, then check cannabis-specific studies where available, then use general plant science to test whether the mechanism is biologically coherent, and finally compare the claim against your own repeatable records. A recommendation becomes stronger when independent evidence types point in the same direction and weaker when it depends on one uncontrolled observation.",
-    "Treat every intervention as a small experiment whenever practical. Keep unaffected comparison plants or previous-cycle baselines, change as few variables as possible, define the expected response before acting, and set a review time. This reduces hindsight bias and helps separate true improvement from normal plant-to-plant variation, environmental drift, measurement error, or regression toward the mean."
+    "Treat every intervention as a small experiment whenever practical. Keep unaffected comparison plants or previous-cycle baselines, change as few variables as possible, define the expected response before acting, and set a review time. This reduces hindsight bias and helps separate true improvement from normal plant-to-plant variation, environmental drift, measurement error, or regression toward the mean.",
+    "Worked example — evaluating a nutrient-change claim: document the proposed change, cultivar identity, developmental stage, irrigation and substrate context, and baseline root-zone EC/pH readings. Choose a comparable untreated group only when feasible and lawful; track sampling time and location, visual assessments with consistent lighting, growth measurements and any other altered inputs. If substrate moisture, lighting or temperature changed simultaneously, acknowledge that the nutrient change cannot be isolated as the cause. Compare the magnitude and repeatability of the response, not just before/after photographs.",
+    "Read a chart by checking the axes, units, axis limits, error bars, sample counts, sampling design and the location of measurements. A plot with no labeled units or a narrow truncated vertical axis can suggest a dramatic difference unsupported by the underlying measurements. Graphical uncertainty should represent the quantity actually calculated (for example standard deviation, standard error, or confidence interval), and the caption should name it explicitly."
   ],
   "measureAndRecord": [
     {
@@ -56,21 +62,33 @@
     {
       "field": "Decision and follow-up",
       "requirement": "Record whether the claim is accepted for the current context, rejected, or retained as a hypothesis; what action was taken; what comparison or baseline will be used; when the result will be reviewed; and whether repeated cycles support the same conclusion."
+    },
+    {
+      "field": "Experimental unit and replication",
+      "requirement": "Specify the unit assigned to each treatment (plant, tray, reservoir, chamber or field plot), number of independently assigned units, the distinction between biological replicates and repeated readings, and any spatial or temporal blocking."
+    },
+    {
+      "field": "Graph interpretation and uncertainty",
+      "requirement": "Identify every axis and unit, aggregation method, sample count, uncertainty interval definition, reference/control line, exclusion rule and whether plotting choices change the perceived size of the response."
     }
   ],
   "misconceptions": [
     "Published means proven: Publication quality varies, and one study rarely establishes a universal cultivation rule.",
     "Anecdotes are worthless: Repeated observations can generate strong hypotheses; they are not the same as controlled evidence.",
-    "One perfect target exists: The useful target depends on plant response, genotype, stage, measurement method, and management goal."
+    "One perfect target exists: The useful target depends on plant response, genotype, stage, measurement method, and management goal.",
+    "Ten leaves from one plant equal ten independent treated plants: Leaf-level measurements describe sampling within that plant but do not create ten independently assigned plant replicates.",
+    "A visually higher bar proves the treatment is better: Differences must be interpreted against the experimental unit, baseline, measurement method, dispersion, uncertainty and the practical outcome being measured."
   ],
   "evidenceLimits": [
-    "Evidence hierarchies help organize questions but do not remove the need to inspect methods. A peer-reviewed paper can still have weak controls or narrow applicability, while a repeated grower observation can be valuable for hypothesis generation without proving mechanism. Cannabis-specific evidence remains uneven across genetics, environments, production systems, and postharvest practices; general horticulture can explain mechanisms but should be labeled when cannabis was not studied. Numerical targets should therefore carry their source, context, measurement method, and uncertainty rather than being presented as universal optima."
+    "Evidence hierarchies help organize questions but do not remove the need to inspect methods. A peer-reviewed paper can still have weak controls or narrow applicability, while a repeated grower observation can be valuable for hypothesis generation without proving mechanism. Cannabis-specific evidence remains uneven across genetics, environments, production systems, and postharvest practices; general horticulture can explain mechanisms but should be labeled when cannabis was not studied. Numerical targets should therefore carry their source, context, measurement method, and uncertainty rather than being presented as universal optima.",
+    "The hypothetical chamber and nutrition examples are teaching scenarios, not experimental cannabis findings. Experimental design principles derive from general scientific methodology; they do not supply cultivar-specific optimum settings."
   ],
   "crossLinks": "THC-ENC-020, THC-ENC-401–420, and every numerical or diagnostic lesson in the encyclopedia.",
   "sourceNotes": [
     "National Institutes of Health. Enhancing Reproducibility through Rigor and Transparency. Scientific-rigor and transparent-reporting guidance; reviewed July 30, 2026.",
     "Papoutsoglou E.A. et al. (2020). Enabling reusability of plant phenomic datasets with MIAPPE 1.1. New Phytologist 227(1):260–273.",
-    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; evidence hierarchy, source-aware drafting, measurable-data, and uncertainty-control framework."
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; evidence hierarchy, source-aware drafting, measurable-data, and uncertainty-control framework.",
+    "Lazic, S. E. (2010). The problem of pseudoreplication in neuroscientific studies: is it affecting your analysis? BMC Neuroscience, 11, Article 5. DOI: 10.1186/1471-2202-11-5. General experimental-design methodology; not cannabis-specific."
   ],
   "slug": "how-to-read-cannabis-plant-science-critically",
   "route": "/learn/encyclopedia/thc-enc-001/",
@@ -82,5 +100,52 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-03_canonical_identity_content_and_release_boundary_checked"
-  }
+  },
+  "knowledgeCheck": [
+    "An investigator gives two lighting treatments in two separate chambers, grows eight plants per chamber, then reports eight independent treatment replicates per treatment. Identify the experimental unit, explain why the replication claim is invalid, and propose a stronger design.",
+    "A bar chart reports group A = 90 and group B = 100, but its vertical axis begins at 80. What information must accompany the chart before deciding whether the difference is biologically meaningful? Distinguish graph presentation from statistical inference.",
+    "A grower changes nutrient concentration, irrigation frequency and temperature in the same week and reports improved growth. Explain which causal claim is supportable, which is not, and what measurement and comparison design would improve the evidence."
+  ],
+  "assessmentDesign": {
+    "version": 1,
+    "answerRationaleStatus": "draft_for_editorial_review",
+    "scoringIntent": "Require design-aware interpretation and explain how to separate observations from causal claims.",
+    "answerRationales": [
+      "The chamber is the experimental unit because the lighting treatment was assigned to whole chambers. Eight plants sharing one treated chamber are not eight independent chamber replicates. Replicate treatment assignments across multiple independent chambers or independent runs with planned blocking/randomization and document chamber effects.",
+      "Both plots show exactly a ten-unit difference. A truncated y-axis changes visual emphasis, not the data. Review the stated unit, baseline, sample counts, experimental units, within-group spread, interval definition, measurement reliability and the practical relevance of the effect before drawing a conclusion.",
+      "An association between a package of simultaneous changes and later growth is observed; the result does not identify which change caused it. Establish baseline measures, comparable controls or repeatable matched cycles, stable covariates and a specified outcome and sampling schedule, changing one factor at a time where appropriate."
+    ]
+  },
+  "visuals": [
+    {
+      "assetId": "THC-ENC-001-VIS-SRC-01",
+      "type": "scientific_diagram_source",
+      "purpose": "Explain independent experimental units and pseudoreplication",
+      "caption": "A treatment assigned to an entire chamber has one independent chamber replicate per chamber, even when multiple plants or leaves are measured.",
+      "altText": "Two chambers, one per treatment, each containing three plants, illustrate why plant measurements within a chamber are not independent chamber replicates.",
+      "repositoryPath": "content/encyclopedia/volume-01/visual-sources/experimental-units-and-pseudoreplication.svg",
+      "rightsStatus": "original_project_artwork",
+      "qaStatus": "draft_source_not_raster_approved"
+    },
+    {
+      "assetId": "THC-ENC-001-VIS-SRC-02",
+      "type": "process_diagram_source",
+      "purpose": "Teach structured evidence appraisal",
+      "caption": "A five-stage evidence evaluation process from claim definition to a qualified conclusion.",
+      "altText": "Five stacked stages: define claim, check source, match biological context, evaluate controls and uncertainty, and state supported conclusion.",
+      "repositoryPath": "content/encyclopedia/volume-01/visual-sources/claim-evidence-decision-path.svg",
+      "rightsStatus": "original_project_artwork",
+      "qaStatus": "draft_source_not_raster_approved"
+    },
+    {
+      "assetId": "THC-ENC-001-VIS-SRC-03",
+      "type": "graph_source",
+      "purpose": "Teach graph axis scaling and data literacy",
+      "caption": "Hypothetical groups of 90 and 100 units shown with axes beginning at 0 and 80. These are illustrative values, not measured cannabis data.",
+      "altText": "Two graphs plot the same hypothetical 90 and 100 values; a truncated axis exaggerates the apparent difference.",
+      "repositoryPath": "content/encyclopedia/volume-01/visual-sources/graph-axis-truncation-example.svg",
+      "rightsStatus": "original_project_artwork",
+      "qaStatus": "draft_source_not_raster_approved"
+    }
+  ]
 }
