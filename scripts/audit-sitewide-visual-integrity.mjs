@@ -1,6 +1,6 @@
 import { setDefaultResultOrder } from 'node:dns';
 import { readFile, writeFile } from 'node:fs/promises';
-import { stripNonRenderedMarkup, duplicateHtmlIds } from './lib/html-audit-markup.mjs';
+import { stripNonRenderedMarkup, duplicateHtmlIds, getHtmlAttribute } from './lib/html-audit-markup.mjs';
 
 setDefaultResultOrder('ipv4first');
 
@@ -43,10 +43,7 @@ function normalizeInternal(raw,base){
   return path||'/';
 }
 
-function getAttr(tag,name){
-  const match=tag.match(new RegExp(`\\b${name}\\s*=\\s*(["'])(.*?)\\1`,'i'));
-  return match?.[2]??null;
-}
+const getAttr=getHtmlAttribute;
 
 function stripTags(value=''){
   return String(value).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim();
