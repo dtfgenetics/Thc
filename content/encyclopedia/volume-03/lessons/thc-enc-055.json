@@ -29,7 +29,8 @@
   ],
   "cultivationRelevance": [
     "Hydrate compressed blocks with measured water, account for expansion, mix completely, and sample the finished lot rather than only the runoff from the first container.",
-    "Develop irrigation and nutrition from measured root-zone behavior. Coir's frequent-irrigation reputation does not mean roots should remain continuously saturated or that runoff targets can be copied blindly."
+    "Develop irrigation and nutrition from measured root-zone behavior. Coir's frequent-irrigation reputation does not mean roots should remain continuously saturated or that runoff targets can be copied blindly.",
+    "For a controlled comparison, prepare two matched containers with the same crop age and irrigation water, but document the coir lot and buffering history separately. Track irrigation input and runoff EC and pH over several events rather than interpreting one number as proof of a nutrient shortage. If root growth differs, check wetting uniformity and salt accumulation before attributing the response to calcium or magnesium exchange alone."
   ],
   "measureAndRecord": [
     {
@@ -51,6 +52,10 @@
     {
       "field": "Plant response",
       "requirement": "Tissue Ca/Mg/K, growth, symptoms, yield, and chemistry with genotype."
+    },
+    {
+      "field": "Comparative evidence protocol",
+      "requirement": "When sampling coir, collect representative subsamples across the delivered lot rather than selecting only material from a wet surface or one pot. Document the laboratory extraction protocol, sample handling time, replicate count, result units, and the water used for extraction so apparent changes can be compared reproducibly."
     }
   ],
   "misconceptions": [
@@ -59,7 +64,8 @@
     "Coco requires one universal calcium-magnesium supplement: Need depends on water, base fertilizer, processing, exchange status, and tissue response."
   ],
   "evidenceLimits": [
-    "Coir varies strongly by source and processing. Extract values depend on method, and responses from two study genotypes do not establish universal cannabis targets."
+    "Coir varies strongly by source and processing. Extract values depend on method, and responses from two study genotypes do not establish universal cannabis targets.",
+    "Supplier buffering claims and container runoff chemistry are indirect indicators; neither alone measures exchange-site saturation or identifies the cause of a crop symptom. A controlled comparison still needs matched genotypes, environments, root-zone moisture conditions, and sufficiently replicated observations before inferring a treatment effect."
   ],
   "crossLinks": "THC-ENC-052–054, THC-ENC-057–060, and calcium/magnesium/potassium lessons.",
   "sourceNotes": [
