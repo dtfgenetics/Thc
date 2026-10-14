@@ -39,10 +39,10 @@ for(let part=1;part<=21;part++){
     // legitimate entries cannot be mistaken for a corruption.
     for(const entry of Array.isArray(lesson.misconceptions)?lesson.misconceptions:[]){
       const value=text(entry);
-      if(/(?:[.!?]|\\s)(?:Claim|Correction|Misconception)\\s*:/i.test(value)){
+      if(/(?:[.!?]\\s*|\\s+)(?:Claim|Correction|Misconception)\\s*:/i.test(value)){
         failures.push(`${lesson.id}: misconception entry contains an embedded claim/correction label`);
       }
-      if(/(?:\\S)(?:Claim|Correction|Misconception)\\s*:/i.test(value)){
+      if(/\\S(?:Claim|Correction|Misconception)\\s*:/i.test(value)){
         failures.push(`${lesson.id}: misconception entry has a missing separator before a label`);
       }
     }
