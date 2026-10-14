@@ -72,6 +72,15 @@ function extractLinks(html,base){
   return links;
 }
 
+// Responsive images may load a candidate from srcset instead of the fallback src.
+// Audit each distinct candidate, including <picture> sources and lazy-load attributes.
+function srcsetUrls(value,base){
+  if(!value) return [];
+  return value.split(',').map(candidate=>candidate.trim().split(/\s+/)[0]).filter(Boolean).flatMap(candidate=>{
+    try{return [new URL(candidate,base).href];}catch{return [];}
+  });
+}
+
 function extractImages(html,base){
   const images=[];
   for(const match of html.matchAll(/<img\b[^>]*>/gi)){
@@ -80,7 +89,13 @@ function extractImages(html,base){
     const alt=getAttr(tag,'alt');
     let absolute='';
     try{absolute=src?new URL(src,base).href:'';}catch{}
-    images.push({src,absolute,alt,tag:tag.slice(0,260)});
+    const variants=[...srcsetUrls(getAttr(tag,'srcset'),base),...srcsetUrls(getAttr(tag,'data-srcset'),base)];
+    images.push({src,absolute,variants,alt,tag:tag.slice(0,260)});
+  }
+  for(const match of html.matchAll(/<source\b[^>]*>/gi)){
+    const tag=match[0];
+    const variants=[...srcsetUrls(getAttr(tag,'srcset'),base),...srcsetUrls(getAttr(tag,'data-srcset'),base)];
+    if(variants.length) images.push({src:'',absolute:'',variants,alt:'',sourceOnly:true,tag:tag.slice(0,260)});
   }
   return images;
 }
@@ -160,9 +175,9 @@ function inspectPage(fetched,depth){
   if(dups.length) issues.push(`Duplicate HTML ids: ${dups.slice(0,8).map(item=>`${item.id}×${item.count}`).join(', ')}${dups.length>8?'…':''}`);
 
   const images=extractImages(rendered,base);
-  const missingAlt=images.filter(image=>image.alt===null);
+  const missingAlt=images.filter(image=>!image.sourceOnly&&image.alt===null);
   if(missingAlt.length) issues.push(`${missingAlt.length} image(s) missing an alt attribute`);
-  const emptySrc=images.filter(image=>!image.src);
+  const emptySrc=images.filter(image=>!image.sourceOnly&&!image.src&&!image.variants.length);
   if(emptySrc.length) issues.push(`${emptySrc.length} image(s) have no usable src/data-src`);
 
   const links=extractLinks(rendered,base);
@@ -201,10 +216,13 @@ async function inspectImages(pages){
   const candidates=[];const seen=new Set();
   for(const page of pages){
     for(const image of page.images||[]){
-      if(!image.absolute||seen.has(image.absolute)) continue;
-      let url;try{url=new URL(image.absolute);}catch{continue;}
-      if(url.origin!==new URL(BASE_URL).origin) continue;
-      seen.add(image.absolute);candidates.push({url:image.absolute,page:page.path});
+      for(const candidate of [image.absolute,...image.variants]){
+        if(!candidate||seen.has(candidate)) continue;
+        let url;try{url=new URL(candidate);}catch{continue;}
+        if(url.origin!==new URL(BASE_URL).origin) continue;
+        seen.add(candidate);candidates.push({url:candidate,page:page.path});
+        if(candidates.length>=MAX_IMAGES) break;
+      }
       if(candidates.length>=MAX_IMAGES) break;
     }
     if(candidates.length>=MAX_IMAGES) break;
