@@ -92,7 +92,7 @@ function extractImages(html,base){
     const variants=[...srcsetUrls(getAttr(tag,'srcset'),base),...srcsetUrls(getAttr(tag,'data-srcset'),base)];
     images.push({src,absolute,variants,alt,tag:tag.slice(0,260)});
   }
-  for(const match of html.matchAll(/<source\\b[^>]*>/gi)){
+  for(const match of html.matchAll(/<source\b[^>]*>/gi)){
     const tag=match[0];
     const variants=[...srcsetUrls(getAttr(tag,'srcset'),base),...srcsetUrls(getAttr(tag,'data-srcset'),base)];
     if(variants.length) images.push({src:'',absolute:'',variants,alt:'',sourceOnly:true,tag:tag.slice(0,260)});
