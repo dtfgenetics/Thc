@@ -206,7 +206,7 @@
     "audit:encyclopedia-substantive-quality:strict": "node scripts/audit-encyclopedia-substantive-quality.mjs --strict",
     "build:encyclopedia-catalog": "node scripts/build-encyclopedia-catalog.mjs",
     "verify:encyclopedia-catalog": "node scripts/build-encyclopedia-catalog.mjs --check",
-    "verify:encyclopedia-copy-quality": "node scripts/validate-encyclopedia-copy-quality.mjs",
+    "verify:encyclopedia-copy-quality": "node scripts/test-encyclopedia-copy-quality-regression.mjs && node scripts/validate-encyclopedia-copy-quality.mjs",
     "verify:encyclopedia-visual-review-state": "npm run build:encyclopedia-visual-preflight && node scripts/build-encyclopedia-visual-review-packets.mjs && node scripts/validate-encyclopedia-visual-review-packets.mjs && node scripts/build-encyclopedia-visual-review-ledger.mjs",
     "verify:encyclopedia-assessment-review-state": "npm run build:encyclopedia-assessment-rationales && node scripts/build-encyclopedia-assessment-review-packets.mjs && node scripts/validate-encyclopedia-assessment-review-packets.mjs && node scripts/build-encyclopedia-assessment-review-ledger.mjs",
     "verify:encyclopedia-claim-review-state": "npm run verify:encyclopedia-claim-evidence-candidates && node scripts/build-encyclopedia-claim-review-packets.mjs && node scripts/validate-encyclopedia-claim-review-packets.mjs && node scripts/build-encyclopedia-claim-review-ledger.mjs",

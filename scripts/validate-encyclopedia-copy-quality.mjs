@@ -33,6 +33,19 @@ for(let part=1;part<=21;part++){
     if(/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i.test(sourceNotes)){
       failures.push(`${lesson.id}: malformed source-note label`);
     }
+    // Each misconception is a single claim/correction pair. A second embedded
+    // label often means two pairs were accidentally concatenated by a pipeline.
+    // Check individual entries rather than the joined lesson body so adjacent
+    // legitimate entries cannot be mistaken for a corruption.
+    for(const entry of Array.isArray(lesson.misconceptions)?lesson.misconceptions:[]){
+      const value=text(entry);
+      if(/(?:[.!?]|\\s)(?:Claim|Correction|Misconception)\\s*:/i.test(value)){
+        failures.push(`${lesson.id}: misconception entry contains an embedded claim/correction label`);
+      }
+      if(/(?:\\S)(?:Claim|Correction|Misconception)\\s*:/i.test(value)){
+        failures.push(`${lesson.id}: misconception entry has a missing separator before a label`);
+      }
+    }
     for(const field of ['measureAndRecord','misconceptions','evidenceLimits']){
       const rows=Array.isArray(lesson[field])?lesson[field]:[];
       if(rows.some(x=>text(x).trim().length<35)) failures.push(`${lesson.id}: ${field} contains a thin entry`);
