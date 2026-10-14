@@ -10,6 +10,7 @@ on:
       - 'package-lock.json'
       - '.github/workflows/growlens-ci.yml'
       - '.github/workflows/growlens-deploy-hostinger.yml'
+      - '.github/workflows/growlens-live-acceptance.yml'
   push:
     branches: [main]
     paths:
@@ -20,6 +21,7 @@ on:
       - 'package-lock.json'
       - '.github/workflows/growlens-ci.yml'
       - '.github/workflows/growlens-deploy-hostinger.yml'
+      - '.github/workflows/growlens-live-acceptance.yml'
   workflow_dispatch:
 
 permissions:
