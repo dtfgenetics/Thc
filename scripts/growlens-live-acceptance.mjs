@@ -51,7 +51,9 @@ async function cleanupAccount({ registered, deleted, credentials, clients, baseU
   const recovery = new GrowLensApiClient(baseUrl, `${label}-cleanup`);
   try {
     const login = await recovery.login(credentials, [200, 401]);
-    if (login.response.status === 401) return null;
+    if (login.response.status === 401) {
+      throw new Error('Recovery login rejected with HTTP 401; deletion of the registered disposable account is unverified. Investigate and clean up the account before rerunning acceptance.');
+    }
     await recovery.deleteAccount(credentials.password);
     return null;
   } catch (error) {
