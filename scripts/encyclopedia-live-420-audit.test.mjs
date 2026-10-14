@@ -93,3 +93,9 @@ test('invalid timeout configuration is rejected before making requests',async()=
  await assert.rejects(()=>auditLive({routes:[routes[0]],timeoutMs:-1}),/Invalid timeoutMs/);
  await assert.rejects(()=>auditLive({routes:[routes[0]],timeoutMs:0}),/Invalid timeoutMs/);
 });
+
+test('directory accepts valid unquoted href attributes',()=>{
+ const route=routes[0];
+ assert.equal(validateDirectory(`<a href=${route.path}>Lesson</a>`,[route]).pass,true);
+ assert.deepEqual(validateDirectory(`<a href=${route.path}?tracking=1>Lesson</a>`,[route]).missing,[route.id]);
+});
