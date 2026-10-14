@@ -1,3 +1,4 @@
+import { displaySourceNote } from './lib/encyclopedia-source-note-display.mjs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
@@ -101,7 +102,7 @@ const sourceNotesHtml=a=>{
       const locationHtml=/^https:\/\//i.test(location)?`<a class="thc-source-link" href="${esc(location)}" rel="noopener noreferrer">Open source ↗</a>`:(location?`<span class="thc-source-location">${esc(location)}</span>`:'');
       return `<li><div class="thc-source-head"><strong>${title}</strong><span class="thc-source-id">${esc(source.id||raw)}</span></div>${limitation?`<p>${esc(limitation)}</p>`:''}${locationHtml}</li>`;
     }
-    const escaped=esc(raw);
+    const escaped=esc(displaySourceNote(raw));
     const linked=escaped.replace(/(https:\/\/[^\s<]+)/g,url=>`<a href="${url.replace(/[),.;]+$/,'')}" rel="noopener noreferrer">${url.replace(/[),.;]+$/,'')}</a>`);
     return '<li>'+linked+'</li>';
   }).join('')+'</ol>';
