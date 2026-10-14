@@ -66,3 +66,8 @@ test('headings hidden in scripts or templates cannot satisfy lesson heading gate
  const spoof=`<html><head><link rel="canonical" href="${ORIGIN+route.path}"></head><body><span>${route.id}</span><script>const html='<h1>Fake heading</h1>'</script><template><h1>Hidden heading</h1></template></body></html>`;
  assert.match(checkLessonResponse(response('',200),spoof,route),/missing lesson heading/);
 });
+
+test('canonical link must use a genuine rel attribute',()=>{
+ const route=routes[0];
+ assert.match(checkLessonResponse(response('',200),html(route).replace('rel="canonical"','data-rel="canonical"'),route),/canonical route mismatch/);
+});
