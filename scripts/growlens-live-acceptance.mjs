@@ -41,7 +41,10 @@ async function cleanupAccount({ registered, deleted, credentials, clients, baseU
   for (const client of clients) {
     if (!client?.sessionCookie || !client?.csrfToken) continue;
     try {
-      await client.deleteAccount(credentials.password);
+      const deletion = await client.deleteAccount(credentials.password);
+      if (deletion.payload?.deleted !== true || deletion.payload?.authenticated !== false) {
+        throw new Error('Delete endpoint did not confirm account deletion and session revocation.');
+      }
       return null;
     } catch {
       // Try another live session, then a fresh login below.
@@ -54,7 +57,10 @@ async function cleanupAccount({ registered, deleted, credentials, clients, baseU
     if (login.response.status === 401) {
       throw new Error('Recovery login rejected with HTTP 401; deletion of the registered disposable account is unverified. Investigate and clean up the account before rerunning acceptance.');
     }
-    await recovery.deleteAccount(credentials.password);
+    const deletion = await recovery.deleteAccount(credentials.password);
+    if (deletion.payload?.deleted !== true || deletion.payload?.authenticated !== false) {
+      throw new Error('Recovery delete endpoint did not confirm account deletion and session revocation.');
+    }
     return null;
   } catch (error) {
     return new Error(`${label} cleanup failed: ${error instanceof Error ? error.message : String(error)}`);
