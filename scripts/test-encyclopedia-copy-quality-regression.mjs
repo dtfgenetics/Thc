@@ -46,7 +46,7 @@ try{
   ]}));
   result=run();
   assert.equal(result.code,1);
-  assert.match(result.report.findings.map(f=>f.message).join(' '),/embedded claim\\/correction label/);
+  assert.match(result.report.findings.map(f=>f.message).join(' '),/embedded claim\/correction label/);
 
   // No punctuation at the boundary also indicates two joined segments.
   fs.writeFileSync(file,JSON.stringify({...good,misconceptions:[
@@ -54,7 +54,7 @@ try{
   ]}));
   result=run();
   assert.equal(result.code,1);
-  assert.match(result.report.findings.map(f=>f.message).join(' '),/embedded claim\\/correction label/);
+  assert.match(result.report.findings.map(f=>f.message).join(' '),/embedded claim\/correction label/);
 
   fs.writeFileSync(file,JSON.stringify({...good,sourceNotes:['Paper. 2020. Open sourcee']}));
   result=run();
