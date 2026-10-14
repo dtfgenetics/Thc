@@ -25,11 +25,12 @@
     "Rockwool provides a manufactured pore network with substantial water retention and air space when irrigation is controlled. Perlite provides large pores and low bulk density but its behavior depends on grade, particle breakage, container, and whether it is blended or used alone. Neither material is chemically invisible.",
     "Low CEC means root-zone chemistry can respond rapidly to the delivered solution. That precision is useful, but it also reduces buffering against dosing errors, pump failures, pH drift, and dryback. Salts can accumulate where water evaporates or distribution is uneven.",
     "Rockwool and perlite do not supply balanced nutrition. Initial conditioning, irrigation pattern, drainage, root density, and sanitation determine performance. Dust exposure during dry handling requires manufacturer-recommended respiratory and eye protection.",
-    "Figure THC-ENC-057. Rockwool, Perlite, and Inert Media. Controlled educational visual for Volume 03; interpret observations and measurements within the lesson's stated methods and evidence limits."
+    "Physical water retention and actual plant access to water are distinct. A cube or slab can hold water in pores while its wetting pattern, root distribution, and drainage configuration still produce zones with different oxygen and ionic conditions. Gravimetric trends indicate changing container water mass, but do not directly resolve within-slab gradients or root-surface oxygen concentration. To interpret a treatment, record irrigation volume, interval, input and drainage EC and pH, slab or root-zone temperature, and where each sensor or sample was taken. Compare matched units before attributing uneven growth to the media material itself."
   ],
   "cultivationRelevance": [
     "Qualify slab, cube, or aggregate dimensions and measure saturated/drained behavior in the actual container. Do not infer water status from surface color alone.",
-    "Track each emitter and drainage path. In low-buffer media, a clogged line or concentrated stock error can damage roots quickly."
+    "Track each emitter and drainage path. In low-buffer media, a clogged line or concentrated stock error can damage roots quickly.",
+    "If one slab dries or accumulates salts faster than a neighboring slab, compare delivered volume, emitter flow, drainage fraction, slab size, root distribution, and sensor position before increasing feed strength. Run paired tests under the same irrigation schedule and record repeated input and drainage measurements. This helps distinguish inconsistent water delivery from the physical response of the substrate."
   ],
   "measureAndRecord": [
     {
@@ -51,6 +52,10 @@
     {
       "field": "Disposition",
       "requirement": "Root condition, contamination, reuse feasibility, recycling, and waste route."
+    },
+    {
+      "field": "Comparative evidence protocol",
+      "requirement": "Record exact product name, slab or cube dimensions, installation orientation, conditioning procedure, and pre-irrigation mass. Where practical, compare repeated container weights and representative drainage samples from matched units over time. Document when readings were collected relative to each irrigation event, since time and sampling location can change the interpretation."
     }
   ],
   "misconceptions": [
@@ -59,7 +64,8 @@
     "Any perlite grade behaves the same: Particle size and breakage change air-water properties."
   ],
   "evidenceLimits": [
-    "Manufacturer products differ in fiber orientation, density, binders, wetting treatment, and geometry. Report the exact product and test the production unit."
+    "Manufacturer products differ in fiber orientation, density, binders, wetting treatment, and geometry. Report the exact product and test the production unit.",
+    "Low exchange capacity should not be interpreted as an absolute absence of chemical interactions, and a reservoir EC reading does not describe every local salt concentration near roots. Findings from one mineral-wool product, emitter pattern, or container geometry cannot automatically be transferred to another brand or production layout."
   ],
   "crossLinks": "THC-ENC-052–055, THC-ENC-058–060, and irrigation/fertigation lessons.",
   "sourceNotes": [
