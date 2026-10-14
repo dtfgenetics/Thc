@@ -1,6 +1,6 @@
 import { setDefaultResultOrder } from 'node:dns';
 import { readFile, writeFile } from 'node:fs/promises';
-import { stripNonRenderedMarkup } from './lib/html-audit-markup.mjs';
+import { stripNonRenderedMarkup, duplicateHtmlIds } from './lib/html-audit-markup.mjs';
 
 setDefaultResultOrder('ipv4first');
 
@@ -85,15 +85,6 @@ function extractImages(html,base){
   return images;
 }
 
-function duplicateIds(html){
-  const counts=new Map();
-  for(const tag of html.matchAll(/<[^>]+\bid\s*=\s*(["'])(.*?)\1[^>]*>/gi)){
-    const id=tag[2];
-    counts.set(id,(counts.get(id)||0)+1);
-  }
-  return [...counts.entries()].filter(([,count])=>count>1).map(([id,count])=>({id,count}));
-}
-
 function hasViewport(html){
   return /<meta\b[^>]*name\s*=\s*["']viewport["'][^>]*content\s*=\s*["'][^"']*width=device-width/i.test(html)||/<meta\b[^>]*content\s*=\s*["'][^"']*width=device-width[^"']*["'][^>]*name\s*=\s*["']viewport["']/i.test(html);
 }
@@ -156,7 +147,7 @@ function inspectPage(fetched,depth){
   if(h1===0) warnings.push('No H1 found');
   if(h1>1) issues.push(`Multiple H1 elements found (${h1}); production pages must expose one primary H1`);
 
-  const dups=duplicateIds(rendered);
+  const dups=duplicateHtmlIds(rendered);
   if(dups.length) issues.push(`Duplicate HTML ids: ${dups.slice(0,8).map(item=>`${item.id}×${item.count}`).join(', ')}${dups.length>8?'…':''}`);
 
   const images=extractImages(rendered,base);

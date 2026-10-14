@@ -9,8 +9,8 @@ export function stripNonRenderedMarkup(html='') {
 // data-thc-lesson-visual-id and falsely reports duplicated lesson IDs.
 export function duplicateHtmlIds(html='') {
   const counts=new Map();
-  const withoutComments=String(html).replace(/<!--[\\s\\S]*?-->/g,'');
-  for(const tag of withoutComments.matchAll(/<[a-z][^>]*?\\sid\\s*=\\s*(["'])(.*?)\\1[^>]*>/gi)){
+  const withoutComments=String(html).replace(/<!--[\s\S]*?-->/g,'');
+  for(const tag of withoutComments.matchAll(/<[a-z][^>]*?\sid\s*=\s*(["'])(.*?)\1[^>]*>/gi)){
     const id=tag[2];
     counts.set(id,(counts.get(id)||0)+1);
   }
