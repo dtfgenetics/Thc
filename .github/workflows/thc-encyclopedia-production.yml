@@ -92,7 +92,9 @@ jobs:
         with:
           node-version: '22'
       - name: Regression-test production queue and independent review reporting
-        run: node --test scripts/test/encyclopedia-production-queue.test.mjs scripts/test/encyclopedia-publication-review.test.mjs
+        run: |
+          node --test scripts/test/encyclopedia-production-queue.test.mjs scripts/test/encyclopedia-publication-review.test.mjs
+          node scripts/test-encyclopedia-live-fingerprint.mjs
       - name: Enforce scientific depth on changed canonical lessons
         if: github.event_name == 'pull_request'
         env:
