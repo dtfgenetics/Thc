@@ -10,6 +10,8 @@ on:
       - scripts/audit-sitewide-link-integrity.mjs
       - scripts/lib/html-audit-markup.mjs
       - scripts/test-html-audit-markup.mjs
+      - scripts/test-html-audit-comment-regression.mjs
+      - scripts/test-sitewide-attribute-reader.mjs
       - .github/workflows/sitewide-visual-integrity.yml
       - scripts/lib/sitewide-header-template-v6.mjs
       - scripts/lib/sitewide-content-density-v1.mjs
@@ -43,6 +45,8 @@ jobs:
           node --check scripts/audit-sitewide-visual-integrity.mjs
           node --check scripts/audit-sitewide-link-integrity.mjs
           node scripts/test-html-audit-markup.mjs
+          node scripts/test-html-audit-comment-regression.mjs
+          node scripts/test-sitewide-attribute-reader.mjs
           grep -Fq 'header-v6' scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq 'canonical-five-v1' scripts/audit-sitewide-visual-integrity.mjs
           grep -Fq 'dtf-content-density-v1' scripts/audit-sitewide-visual-integrity.mjs
