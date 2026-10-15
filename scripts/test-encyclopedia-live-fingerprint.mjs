@@ -10,6 +10,7 @@ import path from 'node:path';
 const root=mkdtempSync(path.join(tmpdir(),'thc-live-fingerprint-'));
 const lessons=new Map();
 let corruptId=null;
+let missingId=null;
 const fingerprintOf=a=>createHash('sha256').update(JSON.stringify({
   id:a.id,title:a.title,objective:a.objective,terms:a.terms,
   coreScience:a.coreScience,cultivationRelevance:a.cultivationRelevance,
@@ -34,8 +35,9 @@ const server=createServer((req,res)=>{
   const id=/^\/learn\/encyclopedia\/(thc-enc-\d{3})\/$/.exec(new URL(req.url,'http://localhost').pathname)?.[1]?.toUpperCase();
   if(!id||!lessons.has(id)){res.writeHead(404).end('Not found');return;}
   const fingerprint=id===corruptId?'000000000000000000000000':lessons.get(id).fingerprint;
+  const fingerprintAttribute=id===missingId?'':' data-thc-source-fingerprint="'+fingerprint+'"';
   res.setHeader('Content-Type','text/html; charset=utf-8');
-  res.end('<main data-thc-encyclopedia-id="'+id+'" data-thc-source-fingerprint="'+fingerprint+'">Key concepts · Terms to know</main>'+
+  res.end('<main data-thc-encyclopedia-id="'+id+'"'+fingerprintAttribute+'>Key concepts · Terms to know</main>'+
     '<script type="application/ld+json">{"identifier":"'+id+'"}</script>');
 });
 async function run(site,report){
@@ -70,7 +72,17 @@ try{
   assert.equal(failure.passed,false);
   assert.equal(failure.failures[0].id,corruptId);
   assert.match(failure.failures[0].error,/source fingerprint mismatch/);
-  console.log('420-route fingerprint acceptance: matching source passes; one stale source fails');
+  corruptId=null;
+  missingId='THC-ENC-211';
+  const absent=await run(site,path.join(root,'missing.json'));
+  assert.notEqual(absent.code,0,'missing source fingerprint must fail acceptance');
+  const absentReport=JSON.parse(readFileSync(path.join(root,'missing.json'),'utf8'));
+  assert.equal(absentReport.verified,419);
+  assert.equal(absentReport.failed,1);
+  assert.equal(absentReport.passed,false);
+  assert.equal(absentReport.failures[0].id,missingId);
+  assert.match(absentReport.failures[0].error,/source fingerprint mismatch:.*observed missing/);
+  console.log('420-route fingerprint acceptance: matching source passes; stale and missing fingerprints fail');
 } finally {
   await new Promise(resolve=>server.close(resolve));
   rmSync(root,{recursive:true,force:true});
