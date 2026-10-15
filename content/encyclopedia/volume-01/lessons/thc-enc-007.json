@@ -26,13 +26,19 @@
     "Inside are the seed coat, a limited peripheral endosperm, and the embryo. The embryo contains two cotyledons, an embryonic root or radicle, a hypocotyl region, and a shoot apex or plumule region. Cannabis therefore lacks the large persistent cereal-like endosperm familiar from many grain diagrams; it does not lack endosperm entirely. Stored reserves support early development until expanding tissues become photosynthetically productive.",
     "Size, color, striping, and firmness can support a physical inspection, but they do not prove germination capacity, sex, chemotype, or genetic purity. Viability is a physiological state. A representative germination test gives better evidence than selecting only the darkest or largest achenes.",
     "The fruit wall and seed tissues also differ in developmental origin. The pericarp develops from ovary tissue after fertilization, whereas the seed coat derives from ovule integuments and surrounds the embryo and remaining nutritive tissues. This distinction matters when interpreting damage, permeability, storage behavior, and anatomical images. A visibly intact pericarp does not guarantee an undamaged embryo, and an embryo can lose physiological viability without an obvious external defect.",
-    "Reading a labeled achene cutaway requires following nested boundaries from outside inward: pericarp (fruit wall), true seed coat, nutritive tissues, and embryo. A cutaway is an interpretation of a section plane, not proof that every layer has the same thickness everywhere. Photorealistic plates must therefore show a specimen or explicitly identify themselves as reconstructions; annotations should be added separately after anatomical verification."
+    "Reading a labeled achene cutaway requires following nested boundaries from outside inward: pericarp (fruit wall), true seed coat, nutritive tissues, and embryo. A cutaway is an interpretation of a section plane, not proof that every layer has the same thickness everywhere. Photorealistic plates must therefore show a specimen or explicitly identify themselves as reconstructions; annotations should be added separately after anatomical verification.",
+    "Anatomical terminology describes structures, while seed-quality assays describe physiological performance. The mature achene encloses the true seed; the embryo includes the radicle and paired cotyledons, with food reserves supporting establishment before autotrophic photosynthesis becomes sufficient. A cut section must be interpreted by its actual plane and maturity: diagrams that exaggerate the thickness of a protective layer or omit the embryo are simplified teaching illustrations rather than literal measurements.",
+    "Viability and vigor are related but distinct. Viability concerns whether an achene contains a living embryo capable of germinating under suitable test conditions. Vigor describes aspects of performance across demanding or variable conditions, such as germination speed and uniformity. Two lots can show similar final laboratory germination yet differ in emergence rate. A negative germination test does not automatically prove embryo death if dormancy or unsuitable testing conditions remain plausible.",
+    "Geneve and colleagues (2022) measured germination across constant-temperature treatments in two industrial hemp oilseed cultivars, 'Georgina' and 'Victoria'. The reported range associated with high germination percentage and rate was 19–30 °C under those experimental conditions. This range is evidence about the studied materials and protocol, not a universal prescription for every cannabis genotype, storage history, test substrate, or production purpose. The authors also reported germination-rate modeling; such fitted cardinal temperatures should not be confused with directly measured plant survival thresholds.",
+    "An interpretable germination chart needs a denominator, a defined scoring event and complete follow-up. If 18 of 20 tested achenes produce normal seedlings under the specified protocol, the observed normal-seedling percentage is 90%, but the small sample does not establish that every remaining achene in the lot has the same probability. Distinguish radicle emergence from normal seedling development, and record both when the study or operational decision depends on establishment quality."
   ],
   "cultivationRelevance": [
     "Accurate diagrams should label the fruit wall, seed coat, cotyledons, radicle, hypocotyl, and shoot region separately. The radicle is embryonic tissue and should not be illustrated as a green root before emergence.",
     "Handle achenes as biological inventory: preserve lot identity, avoid crushing or moisture cycling, and test representative samples rather than relying on appearance.",
     "Use the anatomical distinction when diagnosing physical damage and during image-based education. A cracked outer fruit wall, a damaged embryo, and poor physiological viability are different problems. Cutting tests, germination tests, radiography, tetrazolium methods, or laboratory seed tests answer different questions; external color alone does not identify which tissue or process failed.",
-    "For inventory management, treat each seed lot as a population sample rather than a bag of interchangeable objects. Preserve source, generation, harvest year, storage history, sample size, germination result, abnormal seedling rate, and retest date. This creates evidence for viability decline and lot-to-lot differences without selecting only visually preferred achenes."
+    "For inventory management, treat each seed lot as a population sample rather than a bag of interchangeable objects. Preserve source, generation, harvest year, storage history, sample size, germination result, abnormal seedling rate, and retest date. This creates evidence for viability decline and lot-to-lot differences without selecting only visually preferred achenes.",
+    "Worked data example — compare Lot A (18 normal seedlings of 20 tested) with Lot B (90 of 100 tested). Both observed proportions equal 90%, but their sample sizes differ substantially. Neither number is a promise about the entire batch; a larger and representative test generally permits a more precise estimate. The example is hypothetical and not a cannabis trial result.",
+    "Interpret a temperature-response graph by reading the tested cultivars, exact germination endpoint, temperature regime, replication, spread and time-to-event method. Avoid copying the 19–30 °C research finding into an unqualified optimum for different genetic materials."
   ],
   "measureAndRecord": [
     {
@@ -54,12 +60,22 @@
     {
       "field": "Interpretation",
       "requirement": "Report percentage with sample size and test conditions. Separate physical quality from physiological viability, and avoid conclusions about sex, chemotype, or genetic purity unless those variables were independently tested."
+    },
+    {
+      "field": "Germination end point",
+      "requirement": "Declare whether scoring means visible radicle emergence, normal seedling formation, or field emergence; these outcomes cannot be treated as interchangeable."
+    },
+    {
+      "field": "Sample representation and uncertainty",
+      "requirement": "Report number tested, sampling method, germinated and normal seedlings, observed proportion, duration, conditions and whether confidence intervals or repeat runs were performed."
     }
   ],
   "misconceptions": [
     "Dark striped seeds are always viable: Color and mottling vary and do not replace testing.",
     "Large seeds produce female plants: Achene size does not establish sex.",
-    "The outer shell is only a seed coat: Botanically, the planted unit also includes the fruit wall."
+    "The outer shell is only a seed coat: Botanically, the planted unit also includes the fruit wall.",
+    "A radicle emerging proves a normal seedling will establish: Radicle emergence is an earlier observation; abnormal growth or later failure can prevent normal establishment.",
+    "Two germination percentages with different sample sizes offer equal certainty: Sample count and selection affect the precision and representativeness of each estimate."
   ],
   "evidenceLimits": [
     "Achene anatomy is well supported, but the predictive value of external color, mottling, size, or firmness for cannabis viability is limited and lot-dependent. Germination percentage also depends on the testing method, temperature, moisture, dormancy state, seed age, and scoring criteria. Everyday use of the word 'seed' is acceptable; the term 'achene' is needed when the fruit wall and true seed structures must be distinguished scientifically."
@@ -68,7 +84,8 @@
   "sourceNotes": [
     "Mangeot-Peter L. et al. (2023). Development and anatomy of hemp achenes. AoB PLANTS 15(6):plad082.",
     "Geneve R.L. et al. (2022). Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.). Crops 2(4):415–427.",
-    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; seed/achene anatomy, lot traceability, viability, storage, and germination-record framework."
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1. Project source packet supplied by the publisher; seed/achene anatomy, lot traceability, viability, storage, and germination-record framework.",
+    "Geneve, R. L., Janes, E. W., Kester, S. T., Hildebrand, D. F., & Davis, D. (2022). Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.). Crops 2(4), 415–427. DOI: 10.3390/crops2040029; study of Georgina and Victoria, with constant-temperature germination experiments."
   ],
   "slug": "the-cannabis-achene-what-growers-call-a-seed",
   "route": "/learn/encyclopedia/thc-enc-007/",
@@ -80,5 +97,34 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "knowledgeCheck": [
+    "Explain why the visible hard exterior of the planted cannabis unit is not simply a true seed coat, and identify the pericarp's developmental origin.",
+    "Two sample tests give 18 normal seedlings out of 20 and 90 out of 100. Calculate the observed proportions and explain why their precision should not be treated as identical.",
+    "Describe the difference between radicle emergence, normal seedling percentage, and vigor, including one reason these outcomes can disagree.",
+    "Geneve et al. studied two oilseed hemp cultivars across controlled temperatures. What result may be reported, and which generalization to all cannabis material would be unsupported?"
+  ],
+  "assessmentDesign": {
+    "version": 1,
+    "answerRationaleStatus": "draft_for_editorial_review",
+    "scoringIntent": "Require precise fruit anatomy and sample-aware interpretation of seed-quality evidence.",
+    "answerRationales": [
+      "The outer fruit wall is the pericarp, derived from mature ovary tissue; the true seed coat derives from ovule integuments and surrounds the embryo and associated tissues.",
+      "Both observed proportions equal 90%. The twenty-unit sample provides less information about lot-level uncertainty than a comparable representative hundred-unit sample; neither warrants a perfect prediction for the remaining lot.",
+      "Radicle emergence precedes establishment; normal-seedling scoring requires acceptable developed structures; vigor includes performance such as speed or uniformity under test or stress conditions. They can diverge through dormancy, weak embryos or adverse test conditions.",
+      "The paper reports favorable germination percentage and rate around 19–30 °C for Georgina and Victoria under the stated constant-temperature methods. A universal optimum across all cannabis accessions, media and production classes was not demonstrated."
+    ]
+  },
+  "visuals": [
+    {
+      "assetId": "THC-ENC-007-VIS-SRC-01",
+      "type": "anatomical_cutaway_source",
+      "purpose": "Distinguish fruit wall, true seed coat, cotyledons and radicle",
+      "caption": "Schematic cannabis achene cutaway; layer dimensions are not to scale.",
+      "altText": "Conceptual cross-section of cannabis achene with labeled pericarp, seed coat, embryo cotyledons and radicle.",
+      "repositoryPath": "content/encyclopedia/volume-01/visual-sources/achene-anatomy-cutaway.svg",
+      "rightsStatus": "original_project_artwork",
+      "qaStatus": "draft_source_not_raster_approved"
+    }
+  ]
 }
