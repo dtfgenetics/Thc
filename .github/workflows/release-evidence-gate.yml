@@ -5,7 +5,7 @@ on:
       - 'scripts/verify-release-evidence.mjs'
       - 'scripts/verify-release-evidence.test.mjs'
       - 'scripts/build-project-quality-report.mjs'
-      - 'scripts/build-project-quality-report.test.mjs scripts/smoke-public-routes.test.mjs scripts/test-lesson-natural-query.mjs'
+      - 'scripts/build-project-quality-report.test.mjs'
       - 'docs/examples/release-evidence.template.json'
       - 'scripts/smoke-public-routes.mjs'
       - 'scripts/smoke-public-routes.test.mjs'
@@ -25,4 +25,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test scripts/verify-release-evidence.test.mjs scripts/build-project-quality-report.test.mjs
+      - run: node --test scripts/verify-release-evidence.test.mjs scripts/build-project-quality-report.test.mjs scripts/smoke-public-routes.test.mjs scripts/test-lesson-natural-query.mjs
