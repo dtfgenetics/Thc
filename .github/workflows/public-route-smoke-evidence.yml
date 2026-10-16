@@ -1,0 +1,24 @@
+name: Public Route Smoke Evidence
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check public route responses and expected content
+        run: |
+          mkdir -p artifacts
+          node scripts/smoke-public-routes.mjs docs/examples/public-route-smoke-targets.json > artifacts/public-route-smoke.json
+      - name: Preserve check evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-route-smoke-evidence
+          path: artifacts/public-route-smoke.json
+          if-no-files-found: warn
