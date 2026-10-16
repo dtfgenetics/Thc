@@ -1,4 +1,5 @@
 import Fuse from './fuse-7.1.0.min.js';
+import {searchLessons} from './thc-lesson-query-v1.js';
 import {explainSearchMatch} from './thc-search-explain-v1.js';
 
 const q=document.querySelector('[data-q]');
@@ -49,7 +50,7 @@ function setPressed(host,button){[...host.querySelectorAll('button')].forEach(x=
 
 function filtered(){
  const query=q.value.trim();
- let rows=query&&fuse?fuse.search(query,{limit:Math.max(1000,payload.lessons.length)}).map(x=>x.item):payload.lessons.slice();
+ let rows=query&&fuse?searchLessons(fuse,query,Math.max(1000,payload.lessons.length)):payload.lessons.slice();
  if(activePart)rows=rows.filter(x=>x.part===activePart);
  if(activeStatus!=='all')rows=rows.filter(x=>x.status===activeStatus);
  if(activeFormat!=='all')rows=rows.filter(x=>normalize(x.primaryFormat)===normalize(activeFormat));
