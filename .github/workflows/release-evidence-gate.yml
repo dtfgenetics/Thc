@@ -4,6 +4,9 @@ on:
     paths:
       - 'scripts/verify-release-evidence.mjs'
       - 'scripts/verify-release-evidence.test.mjs'
+      - 'scripts/build-project-quality-report.mjs'
+      - 'scripts/build-project-quality-report.test.mjs'
+      - 'docs/examples/release-evidence.template.json'
       - 'docs/RELEASE_EVIDENCE_GATE.md'
       - '.github/workflows/release-evidence-gate.yml'
   workflow_dispatch:
@@ -17,4 +20,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test scripts/verify-release-evidence.test.mjs
+      - run: node --test scripts/verify-release-evidence.test.mjs scripts/build-project-quality-report.test.mjs
