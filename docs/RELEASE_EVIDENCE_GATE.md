@@ -31,3 +31,13 @@ Do not fabricate metrics or evidence links. For new features with no postrelease
 - `Dtf420`: transitional only; no duplicate canonical implementation.
 
 This pilot gate is deliberately **not wired to all existing deployments**: first capture baseline evidence and migrate release jobs carefully, then enforce on designated release workflows.
+
+## Reviewer record (pilot; NOT release authorization)
+
+The project report optionally reads a directory of JSON review records as its second argument:
+
+`node scripts/build-project-quality-report.mjs path/to/manifests path/to/reviews`
+
+A review JSON object must have `project`, `release`, `manifestSha256` (SHA-256 of JSON.stringify of the parsed manifest), `decision: "approved"`, `reviewer`, `reviewedAt`, and `reviewUrl` pointing to a GitHub pull request under `dtfgenetics/Thc`.
+
+A matching review is reported as `review-recorded-provenance-unverified`. It does **not** increment `independentlyVerified`, since free-text reviewer IDs and URLs do not authenticate an approval. A changed manifest invalidates its hash binding. The CLI deliberately exits nonzero until an authenticated authorization mechanism is integrated. Do not treat this pilot as a production release key.
