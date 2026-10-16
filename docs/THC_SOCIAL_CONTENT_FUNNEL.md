@@ -220,3 +220,39 @@ Metricool brand 7320929, timezone America/Chicago. Read back nine previously aut
 ## Verified post-level analytics baseline — 2026-10-16
 
 Metricool brand 7320929; post dates October 11–15, 2026. Facebook posts connector: 15 published post permalinks, 246 summed post impressions, 59 summed per-post reach (not deduplicated audience), zero reported link clicks, zero comments, one share. Instagram posts connector: 6 published post permalinks, 336 summed post views, 198 summed per-post reach (not deduplicated audience), 25 organic interactions, 1 save. These are small platform-reported samples, not Discord join attribution, unique aggregate reach, or proof that links were never opened elsewhere. No claim of conversion or growth. Review the Metricool account-limit error before relying on future scheduled delivery. Improve content with authentic licensed imagery, explicit scientific references, relevant discussion prompts and verified community path; do not expand the video queue while release gate remains closed.
+
+
+## Publishing reliability and video QA operating procedure — 2026-10-16
+
+### Live queue verification
+
+Rechecked Metricool brand 7320929 across October 16–30, 2026 (America/Chicago). No non-draft MP4 entries were found in the inspected ranges; the nine video safety holds remain draft and autoPublish=false. The October 16 Facebook post 392893664 and Instagram post 394423410 still show the provider error `You have reached your Metricool account limit.` This is a provider-side failure requiring account/plan/usage review; it is not fixed by rescheduling or by toggling `autoPublish`. Other posts labeled PENDING are not counted as published. No additional posts or videos were created or published in this audit.
+
+### Required status machine
+
+`IDEA → RESEARCHED → SOURCED → MEDIA_LICENSED → SCIENCE_QA → EDITORIAL_QA → APPROVED → SCHEDULED → PUBLISHED_VERIFIED → PERFORMANCE_REVIEWED`.
+
+Any missing source, media license, approval, or human narration returns a video to `BLOCKED`. Metricool `ERROR` means `PUBLISH_FAILED`, not `PUBLISHED`; `PENDING` means `SCHEDULED_UNVERIFIED`. A real post permalink is required to advance to `PUBLISHED_VERIFIED`. A scheduled date in the past with PENDING is a reconciliation exception, not proof of publication.
+
+### Preflight checklist (hard gate)
+
+1. Confirm correct THC Facebook/Instagram/YouTube destination, adult-education context, no sales/trades, correct invitation `https://discord.gg/ZzYTUWKKW` and approved CTA.
+2. Verify each scientific claim with a source that actually supports it; preserve caveats about medium, cultivar, conditions, units, and evidence quality. Log exact URL/DOI and access date.
+3. Require documentary images/footage with rights record (creator, license, URL, permitted edits/attribution); distinguish actual plant evidence from illustrative diagrams. Never imply synthetic imagery is real microscopy or actual footage.
+4. Videos: human-recorded voice only, no TTS/AI narration; check waveform, intelligibility, noise, level consistency, captions and on-screen timing. Require visually correct biological stage for each spoken claim. Review full exported MP4, not just thumbnails.
+5. Inspect mobile-safe text, legibility, captions, alt text, color contrast, audio, branding and link destinations.
+6. Obtain explicit editorial signoff; preserve signed-off asset hashes and QA notes. Keep unapproved videos `draft=true`, `autoPublish=false`.
+7. Before release check Metricool account/plan capacity and platform connection. Do not schedule additional content when existing posts are failing from account limits. After publication retrieve permalink and analytics; verify Discord joins from actual invite-use logs rather than social impressions.
+
+### Account-limit incident response
+
+- In Metricool inspect account plan, posting quota, number of brands, usage limits, account connection, and any relevant notifications/support messages; document which limit is actually being reached rather than guessing.
+- Export/record failed post IDs and provider error text; preserve content and original media URLs. Do not repeatedly retry blindly or duplicate queue items.
+- Once capacity is confirmed restored, republish only approved image/text content intentionally, one test at a time; check public permalink before resuming a batch. Do not auto-enable any video draft.
+- Track incident timestamps, owner, provider response, confirmed resolution, failed-post reconciliation and post-publication verification.
+
+### Production scorecard fields
+
+`date,channel,post_id,topic,media_origin,license_url,source_url,qa_owner,approval,scheduled_at,provider_status,public_permalink,impressions,reach,interactions,link_clicks,invite_code,verified_invite_uses,verified_joins,seven_day_active_members`.
+
+Use `unknown` for unavailable measurements; never substitute zero for unknown. Post-level reach summed across posts is not deduplicated audience reach. No verified Discord conversions have been reported.
