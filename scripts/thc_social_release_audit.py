@@ -8,9 +8,21 @@ posts or publishing errors are detected. Never modifies posts.
 import json
 import pathlib
 import sys
+from urllib.parse import urlsplit
 
 CANONICAL_INVITE = "https://discord.gg/ZzYTUWKKW"
 VIDEO_SUFFIXES = (".mp4", ".mov", ".m4v", ".webm")
+VIDEO_TYPES = {"REEL", "STORY", "VIDEO", "SHORT"}
+
+
+def media_is_video(item):
+    if isinstance(item, str):
+        return urlsplit(item).path.lower().endswith(VIDEO_SUFFIXES)
+    if isinstance(item, dict):
+        if "video" in str(item.get("type") or item.get("mimeType") or "").lower():
+            return True
+        return any(media_is_video(item.get(k)) for k in ("url", "mediaUrl", "src", "fileName") if item.get(k))
+    return False
 
 
 def audit(posts):
@@ -19,9 +31,11 @@ def audit(posts):
         ident = str(post.get("id", "unknown"))
         providers = post.get("providers") or []
         media = post.get("media") or []
-        video = any(str(item).split("?")[0].lower().endswith(VIDEO_SUFFIXES)
-                    for item in media)
-        active = not post.get("draft", False) and post.get("autoPublish", True)
+        video = any(media_is_video(item) for item in media)
+        video = video or any(isinstance(post.get(k), dict) and str(post[k].get("type", "")).upper() in VIDEO_TYPES for k in ("facebookData", "instagramData", "youtubeData"))
+        active = post.get("draft") is False and post.get("autoPublish") is True
+        if video and ("draft" not in post or "autoPublish" not in post):
+            findings.append({"id": ident, "severity": "BLOCK", "code": "UNKNOWN_VIDEO_PUBLISH_STATE", "detail": "Cannot verify video safety"})
         if video and active:
             findings.append({"id": ident, "severity": "BLOCK",
                              "code": "UNAPPROVED_VIDEO_AUTOPUBLISH",
