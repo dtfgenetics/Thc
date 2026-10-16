@@ -81,7 +81,7 @@ console.log(`Encyclopedia search benchmark: ${passed}/${rows.length} recall case
 if (!rows.length) failures.push('Benchmark contains no queries');
 for(const row of weakQueries) console.warn(`WEAK_RANKING: ${row.query}; first relevant rank: ${row.firstRelevantRank ?? 'not found'}; top result: ${row.top?.id||'-'}`);
 if(process.env.GITHUB_STEP_SUMMARY){
- const summary=['## Encyclopedia subject search relevance',`- Recall@${maxDefault}: ${passed}/${rows.length}`,`- Top-1: ${top1Count}/${rows.length}`,`- Top-3: ${top3Count}/${rows.length}`,`- MRR (subject-level): ${reciprocalRank.toFixed(3)}`,'','### Weak queries',...weakQueries.map(x=>`- ${x.query}: first relevant rank ${x.firstRelevantRank??'not found'}`),''].join('\\n');
+ const summary=['## Encyclopedia subject search relevance',`- Recall@${maxDefault}: ${passed}/${rows.length}`,`- Top-1: ${top1Count}/${rows.length}`,`- Top-3: ${top3Count}/${rows.length}`,`- MRR (subject-level): ${reciprocalRank.toFixed(3)}`,'','### Weak queries',...weakQueries.map(x=>`- ${x.query}: first relevant rank ${x.firstRelevantRank??'not found'}`),''].join(String.fromCharCode(10));
  fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,summary);
 }
 for(const row of rows)console.log(`${row.passed?'PASS':'FAIL'}\t${row.query}\t${row.hit?.id||'-'}\tpart ${row.hit?.part||'-'}\trank ${row.hit?.rank||'-'}`);
