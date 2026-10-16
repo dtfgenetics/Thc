@@ -25,7 +25,7 @@ export async function probe(targets, fetcher=fetch) {
       let safeFinalUrl = false;
       try { const u = new URL(finalUrl); safeFinalUrl = u.protocol === 'https:' && u.hostname === 'dtfseeds.com'; } catch {}
       const contentType = response.headers?.get?.('content-type') || '';
-      const html = !contentType || /text\\/html/i.test(contentType);
+      const html = !contentType || contentType.toLowerCase().includes('text/html');
       const body = await response.text();
       const matches = !target.mustContain || body.includes(target.mustContain);
       const ok = response.ok && safeFinalUrl && html && matches;
