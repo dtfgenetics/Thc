@@ -35,7 +35,7 @@ const fuse=new Fuse(lessons,{
 const failures=[];
 // Fail if the production and benchmark search configurations diverge.
 const benchmarkKeys=fuse.options.keys.map(k=>({name:k.path.join('.'),weight:k.weight}));
-const runtimeKeys=[...runtimeSource.matchAll(/\\{name:'([^']+)',weight:([0-9.]+)\\}/g)].map(m=>({name:m[1],weight:Number(m[2])}));
+const runtimeKeys=[...runtimeSource.matchAll(/\{name:'([^']+)',weight:([0-9.]+)\}/g)].map(m=>({name:m[1],weight:Number(m[2])}));
 if(JSON.stringify(benchmarkKeys)!==JSON.stringify(runtimeKeys)) failures.push('Search benchmark Fuse keys/weights differ from production runtime');
 for(const token of ['threshold:.3','minMatchCharLength:2','ignoreLocation:true','shouldSort:true']) if(!runtimeSource.includes(token)) failures.push('Production search settings changed: '+token);
 const rows=[];
