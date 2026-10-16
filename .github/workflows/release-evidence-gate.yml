@@ -1,0 +1,20 @@
+name: Release Evidence Gate Pilot
+on:
+  pull_request:
+    paths:
+      - 'scripts/verify-release-evidence.mjs'
+      - 'scripts/verify-release-evidence.test.mjs'
+      - 'docs/RELEASE_EVIDENCE_GATE.md'
+      - '.github/workflows/release-evidence-gate.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test scripts/verify-release-evidence.test.mjs
