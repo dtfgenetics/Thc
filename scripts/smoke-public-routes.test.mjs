@@ -34,3 +34,18 @@ test('accepts valid HTML with charset information',async()=>{
  const result=await probe(target,async()=>({ok:true,status:200,url:target[0].url,headers:{get:()=> 'text/html; charset=utf-8'},text:async()=>'<title>DTF</title>'}));
  assert.equal(result[0].ok,true);
 });
+
+test('rejects missing content-type header',async()=>{
+ const result=await probe(target,async()=>({ok:true,status:200,url:target[0].url,headers:{get:()=>null},text:async()=>'<title>DTF</title>'}));
+ assert.equal(result[0].ok,false);
+ assert.equal(result[0].reason,'unexpected content type');
+});
+test('rejects same-site redirect to a different route',async()=>{
+ const result=await probe(target,async()=>({ok:true,status:200,url:'https://dtfseeds.com/learn/',headers:{get:()=> 'text/html'},text:async()=>'<title>DTF</title>'}));
+ assert.equal(result[0].ok,false);
+ assert.equal(result[0].reason,'unexpected redirect destination');
+});
+test('accepts canonical trailing slash normalization',async()=>{
+ const result=await probe(target,async()=>({ok:true,status:200,url:'https://dtfseeds.com',headers:{get:()=> 'text/html'},text:async()=>'<title>DTF</title>'}));
+ assert.equal(result[0].ok,true);
+});
