@@ -23,7 +23,7 @@ export async function probe(targets, fetcher=fetch) {
       // A CDN error page, off-site redirect, or JSON response is not a healthy HTML route.
       const finalUrl = response.url || target.url;
       let safeFinalUrl = false;
-      try { const u = new URL(finalUrl); const expected = new URL(target.url); safeFinalUrl = u.protocol === 'https:' && u.hostname === 'dtfseeds.com' && u.pathname.replace(/\\/$/, '') === expected.pathname.replace(/\\/$/, ''); } catch {}
+      try { const u = new URL(finalUrl); const expected = new URL(target.url); const normalized = p => p.endsWith('/') && p !== '/' ? p.slice(0, -1) : p; safeFinalUrl = u.protocol === 'https:' && u.hostname === 'dtfseeds.com' && normalized(u.pathname) === normalized(expected.pathname); } catch {}
       const contentType = response.headers?.get?.('content-type') || '';
       const html = /^text\/html(?:\s*;|\s*$)/i.test(contentType);
       const body = await response.text();
