@@ -68,7 +68,7 @@ for(const test of benchmark.cases||[]){
   const top3Relevant=results.slice(0,3).some(x=>(test.expectedParts||[]).includes(Number(x.part)));
   rows.push({
     query:test.query,
-    passed:Boolean(hit&&explained),
+    passed:Boolean(hit&&explained&&(!expectedIds.length||exactHit)),
     top1Relevant, top3Relevant,
     firstRelevantRank:hit?.rank ?? null,
     exactRank, judgmentStatus,
@@ -84,10 +84,12 @@ const passed=rows.filter(x=>x.passed).length;
 const top1Count=rows.filter(x=>x.top1Relevant).length;
 const top3Count=rows.filter(x=>x.top3Relevant).length;
 const reciprocalRank=rows.reduce((sum,x)=>sum+(x.firstRelevantRank?1/x.firstRelevantRank:0),0)/(rows.length||1);
-const exactCases=rows.filter(x=>x.exactRank!==null);
+const exactCases=rows.filter(x=>x.judgmentStatus!=='unreviewed');
 const exactTop3=exactCases.filter(x=>x.exactRank<=3).length;
 const independentlyReviewed=exactCases.filter(x=>x.judgmentStatus==='independently-reviewed').length;
-if(!exactCases.length) console.warn('LESSON_RELEVANCE_UNVERIFIED: no independently curated expectedIds judgments; 41 broad subject results cannot establish individual lesson accuracy.');
+const absentExact=exactCases.filter(x=>x.exactRank===null);
+for(const row of absentExact) console.error(`MISSING_EXACT_LESSON: ${row.query}`);
+if(!independentlyReviewed) console.warn('LESSON_RELEVANCE_UNVERIFIED: exact lesson judgments remain provisional; independent review missing.');
 const weakQueries=rows.filter(x=>!x.top3Relevant).map(x=>({query:x.query,firstRelevantRank:x.firstRelevantRank,top:x.top}));
 console.log(`Exact lesson ranking: ${exactTop3}/${exactCases.length} provisional/curated ID cases in top 3; independently reviewed cases: ${independentlyReviewed}.`);
 console.log(`Encyclopedia search benchmark: ${passed}/${rows.length} recall cases passed; top-1 subject relevance ${top1Count}/${rows.length}; top-3 subject relevance ${top3Count}/${rows.length}; mean reciprocal subject rank ${reciprocalRank.toFixed(3)}.`);
