@@ -23,6 +23,8 @@ export function summarize(entries) {
   }};
 }
 
+export const acceptedForRelease = report => report.totals.projects > 0 && report.totals.blocked === 0 && report.totals.pendingReview === 0 && report.totals.independentlyVerified === report.totals.projects;
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const dir = process.argv[2];
   if (!dir) {console.error('Usage: node scripts/build-project-quality-report.mjs <manifest-directory>');process.exit(2);}
@@ -32,6 +34,6 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     const report=summarize(entries);
     console.log(JSON.stringify(report,null,2));
     // A structurally valid manifest is not independent release approval.
-    if (report.totals.blocked || report.totals.pendingReview || report.totals.projects === 0) process.exitCode=1;
+    if (!acceptedForRelease(report)) process.exitCode=1;
   } catch(err) {console.error(err.message);process.exitCode=2;}
 }
