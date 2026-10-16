@@ -5,8 +5,11 @@ on:
       - 'scripts/verify-release-evidence.mjs'
       - 'scripts/verify-release-evidence.test.mjs'
       - 'scripts/build-project-quality-report.mjs'
-      - 'scripts/build-project-quality-report.test.mjs'
+      - 'scripts/build-project-quality-report.test.mjs scripts/smoke-public-routes.test.mjs'
       - 'docs/examples/release-evidence.template.json'
+      - 'scripts/smoke-public-routes.mjs'
+      - 'scripts/smoke-public-routes.test.mjs'
+      - 'docs/examples/public-route-smoke-targets.json'
       - 'docs/RELEASE_EVIDENCE_GATE.md'
       - '.github/workflows/release-evidence-gate.yml'
   workflow_dispatch:
