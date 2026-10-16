@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "description": "Search relevance regression set for THC encyclopedia. expectedParts means at least one result from one of these subject parts must appear within maxRank. Queries are retrieval tests, not diagnoses.",
+  "description": "Search relevance regression set for THC encyclopedia. expectedParts means at least one result from one of these subject parts must appear within maxRank. Queries are retrieval tests, not diagnoses. Six explicit lesson IDs are provisional editorial candidates grounded in lesson titles, not independent expert adjudications.",
   "defaultMaxRank": 10,
   "cases": [
     {
@@ -102,7 +102,11 @@
         3,
         16,
         17
-      ]
+      ],
+      "expectedIds": [
+        "THC-ENC-305"
+      ],
+      "judgmentStatus": "provisional-title-match"
     },
     {
       "query": "seed won't sprout",
@@ -149,7 +153,11 @@
       "expectedParts": [
         15,
         17
-      ]
+      ],
+      "expectedIds": [
+        "THC-ENC-282"
+      ],
+      "judgmentStatus": "provisional-title-match"
     },
     {
       "query": "fungus gnats",
@@ -190,7 +198,11 @@
       "query": "vapor pressure deficit",
       "expectedParts": [
         5
-      ]
+      ],
+      "expectedIds": [
+        "THC-ENC-085"
+      ],
+      "judgmentStatus": "provisional-title-match"
     },
     {
       "query": "dryback",
@@ -198,7 +210,11 @@
         3,
         5,
         7
-      ]
+      ],
+      "expectedIds": [
+        "THC-ENC-092"
+      ],
+      "judgmentStatus": "provisional-title-match"
     },
     {
       "query": "ph drift",
@@ -257,7 +273,11 @@
       "query": "backcross",
       "expectedParts": [
         20
-      ]
+      ],
+      "expectedIds": [
+        "THC-ENC-387"
+      ],
+      "judgmentStatus": "provisional-title-match"
     },
     {
       "query": "s1",
@@ -270,7 +290,11 @@
       "query": "daily light integral",
       "expectedParts": [
         6
-      ]
+      ],
+      "expectedIds": [
+        "THC-ENC-103"
+      ],
+      "judgmentStatus": "provisional-title-match"
     },
     {
       "query": "par meter",
