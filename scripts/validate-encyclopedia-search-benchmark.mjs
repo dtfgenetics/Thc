@@ -5,6 +5,7 @@ import {explainSearchMatch} from '../site/public-route-patch/learn/search/thc-se
 const benchmark=JSON.parse(fs.readFileSync('configuration/encyclopedia-search-benchmark.json','utf8'));
 const discovery=JSON.parse(fs.readFileSync('site/public-route-patch/learn/encyclopedia/encyclopedia-index.json','utf8'));
 const lessons=Array.isArray(discovery.lessons)?discovery.lessons:[];
+const runtimeSource=fs.readFileSync('site/public-route-patch/learn/encyclopedia/encyclopedia-v1.mjs','utf8');
 const maxDefault=Number(benchmark.defaultMaxRank||10);
 const fuse=new Fuse(lessons,{
   includeScore:true,
@@ -25,11 +26,18 @@ const fuse=new Fuse(lessons,{
     {name:'coreScience',weight:.05},
     {name:'cultivation',weight:.04},
     {name:'tools',weight:.025},
+    {name:'evidence.sourceTitles',weight:.035},
+    {name:'evidence.claimTypes',weight:.02},
     {name:'keywords',weight:.025}
   ]
 });
 
 const failures=[];
+// Fail if the production and benchmark search configurations diverge.
+const benchmarkKeys=fuse.options.keys.map(k=>({name:k.path.join('.'),weight:k.weight}));
+const runtimeKeys=[...runtimeSource.matchAll(/\\{name:'([^']+)',weight:([0-9.]+)\\}/g)].map(m=>({name:m[1],weight:Number(m[2])}));
+if(JSON.stringify(benchmarkKeys)!==JSON.stringify(runtimeKeys)) failures.push('Search benchmark Fuse keys/weights differ from production runtime');
+for(const token of ['threshold:.3','minMatchCharLength:2','ignoreLocation:true','shouldSort:true']) if(!runtimeSource.includes(token)) failures.push('Production search settings changed: '+token);
 const rows=[];
 const seenQueries=new Set();
 const availableParts=new Set(lessons.map(x=>Number(x.part)).filter(Number.isInteger));
