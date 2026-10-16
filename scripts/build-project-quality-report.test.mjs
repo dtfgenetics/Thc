@@ -25,12 +25,20 @@ test('empty report cannot pass release decision',()=>assert.equal(acceptedForRel
 test('hash-bound review is recorded but is not cryptographic identity proof',()=>{
  const manifest={project:'THC',release:'v1',productionUrl:'https://dtfseeds.com',gates:{}};
  for(const name of ['functional','scientific','visual','deployment','outcome']) manifest.gates[name]={status:'passed',checkedAt:'2026-10-16T18:00:00Z',evidence:['https://github.com/dtfgenetics/Thc/actions']};
- const review={project:'THC',release:'v1',manifestSha256:fingerprint(manifest),decision:'approved',reviewer:'a-reviewer',reviewedAt:'2026-10-16T19:00:00Z',reviewUrl:'https://github.com/dtfgenetics/Thc/pull/2499'};
+ const review={project:'THC',release:'v1',manifestSha256:fingerprint(manifest),decision:'approved',reviewer:'a-reviewer',reviewedAt:'2026-10-15T19:00:00Z',reviewUrl:'https://github.com/dtfgenetics/Thc/pull/2499'};
  assert.equal(reviewRecordValid(manifest,review),true);
  const report=summarize([{file:'record.json',manifest}],[review]);
  assert.equal(report.totals.reviewRecorded,1);
  assert.equal(report.totals.independentlyVerified,0);
  assert.equal(acceptedForRelease(report),false);
  manifest.release='v2';
+ assert.equal(reviewRecordValid(manifest,review),false);
+});
+
+test('future review timestamps cannot claim approval',()=>{
+ const manifest={project:'THC',release:'v1',productionUrl:'https://dtfseeds.com',gates:{}};
+ const review={project:'THC',release:'v1',manifestSha256:fingerprint(manifest),decision:'approved',reviewer:'reviewer',reviewUrl:'https://github.com/dtfgenetics/Thc/pull/2499',reviewedAt:'2099-01-01T00:00:00Z'};
+ assert.equal(reviewRecordValid(manifest,review),false);
+ review.reviewedAt='2026-10-15';
  assert.equal(reviewRecordValid(manifest,review),false);
 });
