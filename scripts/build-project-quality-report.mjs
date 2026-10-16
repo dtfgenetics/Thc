@@ -31,6 +31,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     const entries=files.map(f=>({file:f,manifest:JSON.parse(fs.readFileSync(path.join(dir,f),'utf8'))}));
     const report=summarize(entries);
     console.log(JSON.stringify(report,null,2));
-    if (report.totals.blocked) process.exitCode=1;
+    // A structurally valid manifest is not independent release approval.
+    if (report.totals.blocked || report.totals.pendingReview || report.totals.projects === 0) process.exitCode=1;
   } catch(err) {console.error(err.message);process.exitCode=2;}
 }
