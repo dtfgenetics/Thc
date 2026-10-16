@@ -36,9 +36,12 @@ for(const test of benchmark.cases||[]){
   const results=fuse.search(test.query,{limit:maxRank}).map((row,index)=>({...row.item,rank:index+1,score:row.score}));
   const hit=results.find(x=>(test.expectedParts||[]).includes(Number(x.part)));
   const explained=results[0]?explainSearchMatch(results[0],test.query):null;
+  const top1Relevant=Boolean(results[0]&&(test.expectedParts||[]).includes(Number(results[0].part)));
+  const top3Relevant=results.slice(0,3).some(x=>(test.expectedParts||[]).includes(Number(x.part)));
   rows.push({
     query:test.query,
     passed:Boolean(hit&&explained),
+    top1Relevant, top3Relevant,
     hit:hit?{id:hit.id,part:hit.part,rank:hit.rank,title:hit.title}:null,
     top:results[0]?{id:results[0].id,part:results[0].part,score:results[0].score,title:results[0].title}:null,
     explanation:explained
@@ -47,7 +50,11 @@ for(const test of benchmark.cases||[]){
   if(results[0]&&!explained)failures.push(`${test.query}: top result had no match explanation`);
 }
 const passed=rows.filter(x=>x.passed).length;
-console.log(`Encyclopedia search benchmark: ${passed}/${rows.length} cases passed.`);
+const top1Count=rows.filter(x=>x.top1Relevant).length;
+const top3Count=rows.filter(x=>x.top3Relevant).length;
+console.log(`Encyclopedia search benchmark: ${passed}/${rows.length} recall cases passed; top-1 subject relevance ${top1Count}/${rows.length}; top-3 subject relevance ${top3Count}/${rows.length}.`);
+if (!rows.length) failures.push('Benchmark contains no queries');
+for(const row of rows.filter(x=>!x.top3Relevant)) console.warn(`WEAK_RANKING\\t${row.query}\\ttop result: ${row.top?.id||'-'}`);
 for(const row of rows)console.log(`${row.passed?'PASS':'FAIL'}\t${row.query}\t${row.hit?.id||'-'}\tpart ${row.hit?.part||'-'}\trank ${row.hit?.rank||'-'}`);
 if(failures.length){
   console.error('Search benchmark failures:');
