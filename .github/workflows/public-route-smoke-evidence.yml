@@ -1,6 +1,11 @@
 name: Public Route Smoke Evidence
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/smoke-public-routes.mjs'
+      - 'docs/examples/public-route-smoke-targets.json'
+      - '.github/workflows/public-route-smoke-evidence.yml'
 permissions:
   contents: read
 jobs:
