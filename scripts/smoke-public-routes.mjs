@@ -20,9 +20,17 @@ export async function probe(targets, fetcher=fetch) {
   return Promise.all(targets.map(async target=>{
     try {
       const response=await fetcher(target.url,{method:'GET',redirect:'follow',signal:AbortSignal.timeout(12000)});
-      const body=await response.text();
-      const ok=response.ok && (!target.mustContain || body.includes(target.mustContain));
-      return {name:target.name,url:target.url,status:response.status,ok,reason:ok?'ok':response.ok?'expected content missing':'HTTP error'};
+      // A CDN error page, off-site redirect, or JSON response is not a healthy HTML route.
+      const finalUrl = response.url || target.url;
+      let safeFinalUrl = false;
+      try { const u = new URL(finalUrl); safeFinalUrl = u.protocol === 'https:' && u.hostname === 'dtfseeds.com'; } catch {}
+      const contentType = response.headers?.get?.('content-type') || '';
+      const html = !contentType || /text\\/html/i.test(contentType);
+      const body = await response.text();
+      const matches = !target.mustContain || body.includes(target.mustContain);
+      const ok = response.ok && safeFinalUrl && html && matches;
+      const reason = !response.ok ? 'HTTP error' : !safeFinalUrl ? 'unexpected redirect destination' : !html ? 'unexpected content type' : !matches ? 'expected content missing' : 'ok';
+      return {name:target.name,url:target.url,finalUrl,status:response.status,ok,reason};
     }catch(e){return {name:target.name,url:target.url,status:null,ok:false,reason:'network/timeout failure: '+e.message};}
   }));
 }
