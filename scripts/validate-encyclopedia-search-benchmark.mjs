@@ -61,6 +61,7 @@ for(const test of benchmark.cases||[]){
   const hit=results.find(x=>(test.expectedParts||[]).includes(Number(x.part)));
   const explained=results[0]?explainSearchMatch(results[0],test.query):null;
   const expectedIds=Array.isArray(test.expectedIds)?test.expectedIds:[];
+  const judgmentStatus=test.judgmentStatus||'unreviewed';
   const exactHit=expectedIds.length?results.find(x=>expectedIds.includes(x.id)):null;
   const exactRank=exactHit?.rank ?? null;
   const top1Relevant=Boolean(results[0]&&(test.expectedParts||[]).includes(Number(results[0].part)));
@@ -70,7 +71,7 @@ for(const test of benchmark.cases||[]){
     passed:Boolean(hit&&explained),
     top1Relevant, top3Relevant,
     firstRelevantRank:hit?.rank ?? null,
-    exactRank,
+    exactRank, judgmentStatus,
     hit:hit?{id:hit.id,part:hit.part,rank:hit.rank,title:hit.title}:null,
     top:results[0]?{id:results[0].id,part:results[0].part,score:results[0].score,title:results[0].title}:null,
     explanation:explained
@@ -85,9 +86,10 @@ const top3Count=rows.filter(x=>x.top3Relevant).length;
 const reciprocalRank=rows.reduce((sum,x)=>sum+(x.firstRelevantRank?1/x.firstRelevantRank:0),0)/(rows.length||1);
 const exactCases=rows.filter(x=>x.exactRank!==null);
 const exactTop3=exactCases.filter(x=>x.exactRank<=3).length;
+const independentlyReviewed=exactCases.filter(x=>x.judgmentStatus==='independently-reviewed').length;
 if(!exactCases.length) console.warn('LESSON_RELEVANCE_UNVERIFIED: no independently curated expectedIds judgments; 41 broad subject results cannot establish individual lesson accuracy.');
 const weakQueries=rows.filter(x=>!x.top3Relevant).map(x=>({query:x.query,firstRelevantRank:x.firstRelevantRank,top:x.top}));
-console.log(`Exact lesson relevance: ${exactTop3}/${exactCases.length} curated ID cases in top 3 (${exactCases.length===0?'not yet established':'measured'}).`);
+console.log(`Exact lesson ranking: ${exactTop3}/${exactCases.length} provisional/curated ID cases in top 3; independently reviewed cases: ${independentlyReviewed}.`);
 console.log(`Encyclopedia search benchmark: ${passed}/${rows.length} recall cases passed; top-1 subject relevance ${top1Count}/${rows.length}; top-3 subject relevance ${top3Count}/${rows.length}; mean reciprocal subject rank ${reciprocalRank.toFixed(3)}.`);
 if (!rows.length) failures.push('Benchmark contains no queries');
 for(const row of weakQueries) console.warn(`WEAK_RANKING: ${row.query}; first relevant rank: ${row.firstRelevantRank ?? 'not found'}; top result: ${row.top?.id||'-'}`);
