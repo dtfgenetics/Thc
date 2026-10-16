@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {searchLessons} from '../site/public-route-patch/learn/search/thc-lesson-query-v1.mjs';
 import Fuse from '../site/public-route-patch/assets/vendor/fuse-7.1.0.min.mjs';
 import {explainSearchMatch} from '../site/public-route-patch/learn/search/thc-search-explain-v1.mjs';
 
@@ -57,7 +58,7 @@ if(failures.length){console.error(['Invalid benchmark configuration:',...failure
 
 for(const test of benchmark.cases||[]){
   const maxRank=Number(test.maxRank||maxDefault);
-  const results=fuse.search(test.query,{limit:maxRank}).map((row,index)=>({...row.item,rank:index+1,score:row.score}));
+  const results=searchLessons(fuse,test.query,maxRank).map((item,index)=>({...item,rank:index+1}));
   const hit=results.find(x=>(test.expectedParts||[]).includes(Number(x.part)));
   const explained=results[0]?explainSearchMatch(results[0],test.query):null;
   const expectedIds=Array.isArray(test.expectedIds)?test.expectedIds:[];
