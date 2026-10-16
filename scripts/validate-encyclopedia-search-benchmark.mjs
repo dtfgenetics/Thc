@@ -64,6 +64,7 @@ for(const test of benchmark.cases||[]){
     query:test.query,
     passed:Boolean(hit&&explained),
     top1Relevant, top3Relevant,
+    firstRelevantRank:hit?.rank ?? null,
     hit:hit?{id:hit.id,part:hit.part,rank:hit.rank,title:hit.title}:null,
     top:results[0]?{id:results[0].id,part:results[0].part,score:results[0].score,title:results[0].title}:null,
     explanation:explained
@@ -74,9 +75,15 @@ for(const test of benchmark.cases||[]){
 const passed=rows.filter(x=>x.passed).length;
 const top1Count=rows.filter(x=>x.top1Relevant).length;
 const top3Count=rows.filter(x=>x.top3Relevant).length;
-console.log(`Encyclopedia search benchmark: ${passed}/${rows.length} recall cases passed; top-1 subject relevance ${top1Count}/${rows.length}; top-3 subject relevance ${top3Count}/${rows.length}.`);
+const reciprocalRank=rows.reduce((sum,x)=>sum+(x.firstRelevantRank?1/x.firstRelevantRank:0),0)/(rows.length||1);
+const weakQueries=rows.filter(x=>!x.top3Relevant).map(x=>({query:x.query,firstRelevantRank:x.firstRelevantRank,top:x.top}));
+console.log(`Encyclopedia search benchmark: ${passed}/${rows.length} recall cases passed; top-1 subject relevance ${top1Count}/${rows.length}; top-3 subject relevance ${top3Count}/${rows.length}; mean reciprocal subject rank ${reciprocalRank.toFixed(3)}.`);
 if (!rows.length) failures.push('Benchmark contains no queries');
-for(const row of rows.filter(x=>!x.top3Relevant)) console.warn(`WEAK_RANKING\\t${row.query}\\ttop result: ${row.top?.id||'-'}`);
+for(const row of weakQueries) console.warn(`WEAK_RANKING: ${row.query}; first relevant rank: ${row.firstRelevantRank ?? 'not found'}; top result: ${row.top?.id||'-'}`);
+if(process.env.GITHUB_STEP_SUMMARY){
+ const summary=['## Encyclopedia subject search relevance',`- Recall@${maxDefault}: ${passed}/${rows.length}`,`- Top-1: ${top1Count}/${rows.length}`,`- Top-3: ${top3Count}/${rows.length}`,`- MRR (subject-level): ${reciprocalRank.toFixed(3)}`,'','### Weak queries',...weakQueries.map(x=>`- ${x.query}: first relevant rank ${x.firstRelevantRank??'not found'}`),''].join('\\n');
+ fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,summary);
+}
 for(const row of rows)console.log(`${row.passed?'PASS':'FAIL'}\t${row.query}\t${row.hit?.id||'-'}\tpart ${row.hit?.part||'-'}\trank ${row.hit?.rank||'-'}`);
 if(failures.length){
   console.error('Search benchmark failures:');
