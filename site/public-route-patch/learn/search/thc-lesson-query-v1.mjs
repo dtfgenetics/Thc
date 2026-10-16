@@ -24,7 +24,7 @@ function lessonScore(item,terms){
 export function searchLessons(fuse,query,limit=1000){
  const terms=termsForQuery(query);
  const original=fuse.search(query,{limit}).map(x=>x.item);
- if(terms.length<3)return original;
+ if(terms.length<2)return original;
  const scores=new Map();
  for(const term of terms){
   for(const [rank,hit] of fuse.search(term,{limit}).entries()){
