@@ -38,6 +38,27 @@ class SocialReleaseAuditTests(unittest.TestCase):
         self.assertIn("NONCANONICAL_INVITE",
                       [x["code"] for x in audit_module.audit(posts)])
 
+    def test_media_object_video_is_blocked(self):
+        posts = [{"id": 5, "draft": False, "autoPublish": True,
+                  "media": [{"url": "https://cdn.example/video.mov?sig=1"}],
+                  "publicationDate": {"dateTime": "2026-10-17T17:00:00"}}]
+        self.assertIn("UNAPPROVED_VIDEO_AUTOPUBLISH",
+                      [x["code"] for x in audit_module.audit(posts)])
+
+    def test_reel_type_without_extension_is_blocked(self):
+        posts = [{"id": 6, "draft": False, "autoPublish": True,
+                  "media": [], "facebookData": {"type": "REEL"},
+                  "publicationDate": {"dateTime": "2026-10-17T17:00:00"}}]
+        self.assertIn("UNAPPROVED_VIDEO_AUTOPUBLISH",
+                      [x["code"] for x in audit_module.audit(posts)])
+
+    def test_unknown_video_state_is_blocked(self):
+        posts = [{"id": 7, "draft": False,
+                  "media": ["https://cdn.example/video.mp4"],
+                  "publicationDate": {"dateTime": "2026-10-17T17:00:00"}}]
+        self.assertIn("UNKNOWN_VIDEO_PUBLISH_STATE",
+                      [x["code"] for x in audit_module.audit(posts)])
+
 
 if __name__ == "__main__":
     unittest.main()
