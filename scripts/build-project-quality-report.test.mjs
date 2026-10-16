@@ -9,7 +9,7 @@ test('missing evidence is blocked rather than inferred complete', () => {
 });
 test('empty manifests do not invent completion',()=> {
  const report=summarize([]);
- assert.deepEqual(report.totals,{projects:0,blocked:0,pendingReview:0,independentlyVerified:0});
+ assert.deepEqual(report.totals,{projects:0,blocked:0,pendingReview:0,reviewRecorded:0,independentlyVerified:0});
 });
 
 test('self-reported complete evidence does not grant release acceptance',()=>{
