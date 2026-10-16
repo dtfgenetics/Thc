@@ -1,0 +1,28 @@
+name: Release Evidence Gate Pilot
+on:
+  pull_request:
+    paths:
+      - 'scripts/verify-release-evidence.mjs'
+      - 'scripts/verify-release-evidence.test.mjs'
+      - 'scripts/build-project-quality-report.mjs'
+      - 'scripts/build-project-quality-report.test.mjs'
+      - 'docs/examples/release-evidence.template.json'
+      - 'scripts/smoke-public-routes.mjs'
+      - 'scripts/smoke-public-routes.test.mjs'
+      - 'scripts/test-lesson-natural-query.mjs'
+      - 'site/public-route-patch/learn/search/thc-lesson-query-v1.mjs'
+      - 'docs/examples/public-route-smoke-targets.json'
+      - 'docs/RELEASE_EVIDENCE_GATE.md'
+      - '.github/workflows/release-evidence-gate.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test scripts/verify-release-evidence.test.mjs scripts/build-project-quality-report.test.mjs scripts/smoke-public-routes.test.mjs scripts/test-lesson-natural-query.mjs
