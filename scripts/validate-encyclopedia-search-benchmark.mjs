@@ -36,14 +36,14 @@ const availableParts=new Set(lessons.map(x=>Number(x.part)).filter(Number.isInte
 if(!Number.isInteger(maxDefault) || maxDefault < 1 || maxDefault > 100) failures.push('defaultMaxRank must be an integer from 1 to 100');
 for(const [i, test] of (benchmark.cases||[]).entries()){
   const query=typeof test?.query==='string' ? test.query.trim() : '';
-  const normalized=query.toLowerCase().replace(/\\s+/g,' ');
+  const normalized=query.toLowerCase().split(/\s+/).join(' ');
   if(!query) failures.push('case '+i+': empty query');
   if(seenQueries.has(normalized)) failures.push('case '+i+': duplicate query '+query);
   seenQueries.add(normalized);
   if(!Array.isArray(test?.expectedParts) || !test.expectedParts.length || test.expectedParts.some(p=>!Number.isInteger(p) || !availableParts.has(p))) failures.push('case '+i+': expectedParts must reference existing subject parts');
   if(test?.maxRank!==undefined && (!Number.isInteger(test.maxRank) || test.maxRank<1 || test.maxRank>100)) failures.push('case '+i+': invalid maxRank');
 }
-if(failures.length){console.error('Invalid benchmark configuration:\\n'+failures.join('\\n'));process.exit(1);}
+if(failures.length){console.error(['Invalid benchmark configuration:',...failures].join(String.fromCharCode(10)));process.exit(1);}
 
 for(const test of benchmark.cases||[]){
   const maxRank=Number(test.maxRank||maxDefault);
