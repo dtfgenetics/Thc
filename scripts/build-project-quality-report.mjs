@@ -12,7 +12,7 @@ export function reviewRecordValid(manifest, review) {
   if (review.manifestSha256 !== fingerprint(manifest)) return false;
   if (review.decision !== 'approved' || typeof review.reviewer !== 'string' || !review.reviewer.trim()) return false;
   if (typeof review.reviewUrl !== 'string' || !/^https:\/\/github\.com\/dtfgenetics\/Thc\/pull\/\d+(?:\/.*)?$/.test(review.reviewUrl)) return false;
-  if (typeof review.reviewedAt !== 'string' || !/^\\d{4}-\\d{2}-\\d{2}T.*(?:Z|[+-]\\d{2}:\\d{2})$/.test(review.reviewedAt)) return false;
+  if (typeof review.reviewedAt !== 'string' || !review.reviewedAt.includes('T') || !(review.reviewedAt.endsWith('Z') || /[+-][0-9]{2}:[0-9]{2}$/.test(review.reviewedAt))) return false;
   const reviewedAt = Date.parse(review.reviewedAt);
   if (!Number.isFinite(reviewedAt) || reviewedAt > Date.now()) return false;
   return true;
