@@ -5,9 +5,17 @@
  async function render(){
   const [systemsRes,pathsRes]=await Promise.all([fetch('/atlas/data/systems.json',{cache:'no-store'}),fetch('/atlas/data/study-paths-v1.json',{cache:'no-store'})]);
   if(!systemsRes.ok||!pathsRes.ok)throw new Error('Study data unavailable');
-  const systems=(await systemsRes.json()).systems||[], config=await pathsRes.json(), byId=new Map(systems.map(s=>[s.id,s])), state=read(), complete=new Set(state.completed), visited=new Set(state.visited);
+  const systems=(await systemsRes.json()).systems||[], config=await pathsRes.json(), byId=new Map(systems.map(s=>[s.id,s])), state=read();
+  if(!Array.isArray(systems)||!Array.isArray(config.paths))throw new Error('Invalid Atlas study data format');
+  const complete=new Set(state.completed.filter(id=>byId.has(id)));
+  const visited=new Set(state.visited.filter(id=>byId.has(id)));
+  for(const path of config.paths){
+   if(!Array.isArray(path.systems)||path.systems.length===0||path.systems.some(id=>!byId.has(id))){
+    throw new Error('A guided path refers to a missing system; progress cannot be displayed reliably');
+   }
+  }
   document.querySelector('[data-visited]').textContent=visited.size; document.querySelector('[data-completed]').textContent=complete.size;
-  const finished=(config.paths||[]).filter(p=>p.systems.every(id=>complete.has(id))).length; document.querySelector('[data-paths]').textContent=finished;
+  const finished=config.paths.filter(p=>p.systems.every(id=>complete.has(id))).length; document.querySelector('[data-paths]').textContent=finished;
   root.innerHTML=(config.paths||[]).map(p=>{const done=p.systems.filter(id=>complete.has(id)).length,pct=Math.round(done/p.systems.length*100);return '<article class="path"><small>'+done+'/'+p.systems.length+' systems complete</small><h2>'+esc(p.title)+'</h2><p>'+esc(p.summary)+'</p><div class="track" role="progressbar" aria-valuemin="0" aria-valuemax="'+p.systems.length+'" aria-valuenow="'+done+'"><span style="width:'+pct+'%"></span></div><div class="systems">'+p.systems.map(id=>{const s=byId.get(id);if(!s)return'';const cls=complete.has(id)?'done':visited.has(id)?'visited':'';return '<a class="system '+cls+'" href="'+esc(s.route)+'"><span><strong>'+esc(s.title)+'</strong><br><small>'+esc(s.category)+'</small></span><b>'+(complete.has(id)?'Complete ✓':visited.has(id)?'Visited':'Open')+'</b></a>';}).join('')+'</div><p><strong>Outcome:</strong> '+esc(p.outcome)+'</p></article>';}).join('');
  }
  document.querySelector('[data-export]').addEventListener('click',()=>{const payload={format:'DTF Atlas Study Progress',version:1,exportedAt:new Date().toISOString(),...read()};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='dtf-atlas-study-progress-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
