@@ -125,65 +125,72 @@ add_action('rest_api_init', static function (): void {
 });
 
 /**
- * Repair the third-party age gate's unsafe/off-brand outbound "No" action.
+ * Safeguard the third-party age gate's unexpected outbound "No" link.
  *
- * The production age-gate plugin currently renders "No" as a link to Google.
- * Keep visitors on the gated page instead: prevent navigation and surface an
- * explicit, accessible eligibility message. The script is defensive and only
- * touches a Google-bound "No" link inside a container that also contains the
- * age-gate copy.
+ * This is a client-side defense, not a substitute for correcting the age-gate
+ * plugin setting/template. Scope strictly to its agl_no_button control.
  */
 add_action('wp_footer', static function (): void {
     ?>
-    <script data-dtf-age-gate-safeguard="mu-v1">
+    <script data-dtf-age-gate-safeguard="mu-v2">
     (() => {
       const deniedMessage = 'You must be at least 18 to enter this site.';
-      const repairAgeGate = () => {
-        const links = Array.from(document.querySelectorAll('a[href*="google.com"]'));
-        for (const link of links) {
-          if ((link.textContent || '').trim().toLowerCase() !== 'no') continue;
-          const gate = link.closest('section,dialog,[role="dialog"],div');
-          if (!gate) continue;
-          const gateText = (gate.textContent || '').toLowerCase();
-          if (!gateText.includes('old enough') && !gateText.includes('at least 18')) continue;
-
-          link.setAttribute('href', '#');
-          link.setAttribute('role', 'button');
-          link.setAttribute('aria-label', 'I am not old enough to enter');
-          link.dataset.dtfAgeGateNo = 'safe-v1';
-
-          if (link.dataset.dtfAgeGateBound === 'true') continue;
-          link.dataset.dtfAgeGateBound = 'true';
-          link.addEventListener('click', event => {
-            event.preventDefault();
-            event.stopPropagation();
-
-            let status = gate.querySelector('[data-dtf-age-gate-denied]');
-            if (!status) {
-              status = document.createElement('p');
-              status.dataset.dtfAgeGateDenied = 'true';
-              status.setAttribute('role', 'status');
-              status.setAttribute('aria-live', 'polite');
-              status.style.margin = '12px 0 0';
-              status.style.fontWeight = '700';
-              status.textContent = deniedMessage;
-              gate.appendChild(status);
-            } else {
-              status.textContent = deniedMessage;
-            }
-          });
-        }
+      const selector = 'a.agl_no_button[href]';
+      const isUnsafeNoLink = link => {
+        if (!link.matches(selector)) return false;
+        if ((link.textContent || '').trim().toLowerCase() !== 'no') return false;
+        try {
+          const url = new URL(link.getAttribute('href'), document.baseURI);
+          return url.hostname === 'google.com' || url.hostname.endsWith('.google.com');
+        } catch { return false; }
       };
-
+      const safeguard = link => {
+        if (!isUnsafeNoLink(link)) return;
+        link.setAttribute('href', '#');
+        link.setAttribute('role', 'button');
+        link.setAttribute('aria-label', 'I am not old enough to enter');
+        link.dataset.dtfAgeGateNo = 'safe-v2';
+      };
+      const scan = root => {
+        if (root.nodeType !== Node.ELEMENT_NODE && root.nodeType !== Node.DOCUMENT_NODE) return;
+        if (root.nodeType === Node.ELEMENT_NODE && root.matches(selector)) safeguard(root);
+        root.querySelectorAll(selector).forEach(safeguard);
+      };
+      // Capture events before the age-gate plugin can navigate externally.
+      document.addEventListener('click', event => {
+        const link = event.target instanceof Element ? event.target.closest('a.agl_no_button') : null;
+        if (!link || (link.dataset.dtfAgeGateNo !== 'safe-v2' && !isUnsafeNoLink(link))) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        safeguard(link);
+        const gate = link.closest('[role="dialog"],dialog,section,.age-gate,.age_gate') || link.parentElement;
+        if (!gate) return;
+        let status = gate.querySelector('[data-dtf-age-gate-denied]');
+        if (!status) {
+          status = document.createElement('p');
+          status.dataset.dtfAgeGateDenied = 'true';
+          status.setAttribute('role', 'status');
+          status.setAttribute('aria-live', 'polite');
+          status.style.margin = '12px 0 0';
+          status.style.fontWeight = '700';
+          gate.appendChild(status);
+        }
+        status.textContent = deniedMessage;
+      }, true);
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', repairAgeGate, {once:true});
+        document.addEventListener('DOMContentLoaded', () => scan(document), {once:true});
       } else {
-        repairAgeGate();
+        scan(document);
       }
-
-      const observer = new MutationObserver(repairAgeGate);
-      observer.observe(document.documentElement, {childList:true, subtree:true});
-      window.setTimeout(() => observer.disconnect(), 15000);
+      const observer = new MutationObserver(records => {
+        for (const record of records) {
+          for (const node of record.addedNodes) scan(node);
+          if (record.type === 'attributes') safeguard(record.target);
+        }
+      });
+      observer.observe(document.documentElement, {
+        childList: true, subtree: true, attributes: true, attributeFilter: ['href']
+      });
     })();
     </script>
     <?php
