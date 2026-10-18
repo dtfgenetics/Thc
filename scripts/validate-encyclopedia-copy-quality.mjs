@@ -33,6 +33,32 @@ for(let part=1;part<=21;part++){
     if(/\b(?:Open|ppen) sourc(?:\b|ee\b)|\bsourcee\b|\babstracte\b/i.test(sourceNotes)){
       failures.push(`${lesson.id}: malformed source-note label`);
     }
+    // Reject duplicate or incomplete misconception pairs before publication.
+    // Preserve the original wording: scientific corrections must be reviewed,
+    // not generated automatically by this validator.
+    const misconceptionRows=Array.isArray(lesson.misconceptions)?lesson.misconceptions:[];
+    const seenPairs=new Set();
+    for(const entry of misconceptionRows){
+      const value=text(entry).trim();
+      const colon=value.indexOf(':');
+      if(colon<=0 || colon===value.length-1){
+        failures.push(`${lesson.id}: misconception missing a claim/correction separator`);
+        continue;
+      }
+      const claim=value.slice(0,colon).trim();
+      const correction=value.slice(colon+1).trim();
+      if(claim.length<12 || correction.length<25){
+        failures.push(`${lesson.id}: misconception claim or correction is too short for a useful teaching pair`);
+      }
+      const fingerprint=claim.toLocaleLowerCase('en-US').replace(/[^a-z0-9]+/g,' ').trim();
+      if(seenPairs.has(fingerprint)){
+        failures.push(`${lesson.id}: repeated misconception claim: "${claim.slice(0,80)}"`);
+      }
+      seenPairs.add(fingerprint);
+      if(/^(?:see|refer to|consult|review) (?:the )?(?:lesson|evidence|context)\b/i.test(correction)){
+        failures.push(`${lesson.id}: misconception correction does not explain the scientific distinction`);
+      }
+    }
     // Each misconception is a single claim/correction pair. A second embedded
     // label often means two pairs were accidentally concatenated by a pipeline.
     // Check individual entries rather than the joined lesson body so adjacent
