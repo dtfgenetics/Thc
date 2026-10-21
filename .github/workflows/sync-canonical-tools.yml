@@ -70,6 +70,13 @@ jobs:
             echo "::warning::Canonical Tools mirror is stale: pinned ${pinned_sha:-missing}, canonical ${canonical_sha}. Synchronization will repair it."
           fi
 
+      - name: Enforce Atlas instructional preservation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test scripts/test/atlas-guard-traversal.test.mjs
+          node scripts/guard-atlas-preservation.mjs
+
       - name: Prevent destructive Atlas lesson shortening
         shell: bash
         run: |
