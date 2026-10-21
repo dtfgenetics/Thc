@@ -1,0 +1,20 @@
+name: Atlas Preservation Guard Tests
+on:
+  pull_request:
+    paths:
+      - 'scripts/guard-atlas-preservation.mjs'
+      - 'scripts/test/atlas-guard-traversal.test.mjs'
+      - '.github/workflows/atlas-preservation-guard-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check scripts/guard-atlas-preservation.mjs
+      - run: node --test scripts/test/atlas-guard-traversal.test.mjs
