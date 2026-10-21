@@ -4,7 +4,7 @@ import {probe,validateTargets} from './smoke-public-routes.mjs';
 const target=[{name:'homepage',url:'https://dtfseeds.com/',mustContain:'DTF'}];
 test('rejects third-party targets',()=>assert.match(validateTargets([{name:'bad',url:'https://example.com/'}]).join(' '),/dtfseeds/));
 test('reports successful content check',async()=>{
- const result=await probe(target,async()=>({ok:true,status:200,text:async()=>'<title>DTF</title>'}));
+ const result=await probe(target,async()=>({ok:true,status:200,url:target[0].url,headers:{get:()=> 'text/html'},text:async()=>'<title>DTF</title>'}));
  assert.equal(result[0].ok,true);
 });
 test('HTTP 200 without expected content fails',async()=>{
