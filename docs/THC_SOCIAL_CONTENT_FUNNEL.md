@@ -256,3 +256,26 @@ Any missing source, media license, approval, or human narration returns a video 
 `date,channel,post_id,topic,media_origin,license_url,source_url,qa_owner,approval,scheduled_at,provider_status,public_permalink,impressions,reach,interactions,link_clicks,invite_code,verified_invite_uses,verified_joins,seven_day_active_members`.
 
 Use `unknown` for unavailable measurements; never substitute zero for unknown. Post-level reach summed across posts is not deduplicated audience reach. No verified Discord conversions have been reported.
+
+
+## Verified October 22, 2026 — November publishing allocation
+
+Metricool brand 7320929, America/Chicago; live read of four date-scoped November windows on October 22:
+
+| Window | Active FB | Active IG | Active YouTube | Held drafts |
+|---|---:|---:|---:|---:|
+| Nov 1–7 | 5 | 0 | 0 | 4 |
+| Nov 8–14 | 5 | 0 | 0 | 2 |
+| Nov 15–21 | 3 | 2 | 0 | 4 |
+| Nov 22–30 | 5 | 0 | 0 | 0 |
+| **Total** | **18** | **2** | **0** | **10** |
+
+All 20 active entries were reported PENDING by the scheduled-post connector; this is **not** evidence of publication or remaining free-plan quota. Actual published network deliveries count separately per platform; cross-platform duplicate posts count once for each network delivered. November planned slots = 20; November actual publication count is not yet established from a planner counter. Keep the ten drafts held. No queue changes made in this audit.
+
+October 21 provider errors were reconfirmed for IDs 394504262 (Facebook), 394525010 (Instagram), and 396388959 (Facebook), all reporting `You have reached your Metricool account limit.` Do not blindly retry or increase the queue.
+
+### November candidate conversions, not approved or applied
+
+Replace, rather than add, six existing Facebook deliveries with Instagram versions only after authentic licensed visual assets and editorial signoff: Nov 2 leaf pigments (392894233), Nov 7 damping-off (393049890), Nov 10 trichomes (392928206), Nov 12 stomata (392928236), Nov 23 leaf temperature (392902747), Nov 30 leaf anatomy (392903398). This would yield 12 FB + 8 IG, preserving 20 total delivery slots. Each conversion requires source URL, creator/license/attribution, visual species-stage verification, alt text, mobile graphic review, platform-specific caption, approved community CTA and explicit approval. No auto-approval of synthetic visuals or AI/TTS narration.
+
+A recurring read-only daily THC publishing audit was scheduled for America/Chicago mornings beginning Oct 23. It reports results but does not independently resolve provider account limits or grant publication approval.
