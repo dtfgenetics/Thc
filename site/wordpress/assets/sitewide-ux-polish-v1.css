@@ -82,6 +82,15 @@ body:has(.dc6) :where(.entry-content,.wp-block-post-content),
 body:has(.dtf-courses) :where(.entry-content,.wp-block-post-content),
 body:has(.dtf-v1) :where(.entry-content,.wp-block-post-content){margin:0!important;padding:0!important;max-width:none!important}
 
+/* WordPress constrains each direct child too, independently of the content
+ * wrapper. Release only our full-page surfaces; article blocks keep their
+ * reading width. Use parent-relative width so phone scrollbars add no overflow. */
+:where(.entry-content,.wp-block-post-content).is-layout-constrained > :is(.v3,.dtf-page,.dc6,.dtf-courses,.dtf-v1){
+  width:100%!important;
+  max-width:none!important;
+  margin-inline:0!important;
+}
+
 /* Shared reading rhythm. */
 .dtf-page,.v3,.lhv3,.game-hub-page,body:has(.tool-chooser){color:var(--dtf-ux-ink)}
 .dtf-page :where(p,li),.v3 :where(p,li),.lhv3 :where(p,li),.game-hub-page :where(p,li),body:has(.tool-chooser) :where(p,li){line-height:1.68}
