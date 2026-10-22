@@ -37,7 +37,16 @@ genetics:function(parent){
  function calc(){const p=+inputs[0].input.value,q=+inputs[1].input.value;inputs[0].out.textContent=fmt(p);inputs[1].out.textContent=fmt(q);const aa=p*q,hetero=p*(1-q)+(1-p)*q,recessive=(1-p)*(1-q);result.textContent='AA: '+fmt(100*aa,1)+'% · Aa: '+fmt(100*hetero,1)+'% · aa: '+fmt(100*recessive,1)+'%';}
  inputs.forEach(x=>x.input.addEventListener('input',calc));calc();add('p',w,'muted','No predictions of vigor, yield, cannabinoid concentration or other quantitative traits are justified by this one-locus probability model.');}
 };
-function mount(id){const area=document.getElementById('interactive');if(!area)return;area.querySelector('[data-quantitative-lab]')?.remove();if(!modules[id])return;const slot=add('div',area);slot.dataset.quantitativeLab=id;modules[id](slot)}
+function mount(id){const area=document.getElementById('interactive');if(!area)return;area.querySelector('[data-quantitative-lab]')?.remove();
+ let render;
+ switch(id){
+  case 'vpd': render=modules.vpd;break;
+  case 'lighting': render=modules.lighting;break;
+  case 'genetics': render=modules.genetics;break;
+  default:return;
+ }
+ const slot=add('div',area);slot.dataset.quantitativeLab=id;render(slot);
+}
 window.addEventListener('thc:lab-change',event=>mount(event.detail?.id||''));
 mount(location.hash.slice(1)||'anatomy');
 })();
