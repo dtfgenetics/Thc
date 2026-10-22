@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "purpose": "Evidence register for the THC interactive science labs. Links are supporting sources, not claims that each simulation was empirically validated.",
+  "sources": [
+    {
+      "id": "trichome-review-2023",
+      "title": "Cannabis sativa: origin and history, glandular trichome development, and cannabinoid biosynthesis",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10485653/",
+      "appliesTo": [
+        "trichomes"
+      ],
+      "strength": "review; established core enzyme pathways",
+      "limits": "Metabolite transport details and environmental regulation remain under investigation."
+    },
+    {
+      "id": "trichome-review-2021",
+      "title": "Cannabis Glandular Trichomes: A Cellular Metabolite Factory",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8488169/",
+      "appliesTo": [
+        "trichomes",
+        "anatomy"
+      ],
+      "strength": "peer-reviewed review",
+      "limits": "Trichome appearance alone is not a quantitative cannabinoid assay."
+    },
+    {
+      "id": "terpene-synthase-2017",
+      "title": "Terpene synthases from Cannabis sativa",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5371325/",
+      "appliesTo": [
+        "trichomes"
+      ],
+      "strength": "experimental terpene synthase characterization",
+      "limits": "Individual cultivars vary; no terpene-effect predictions follow from the enzymatic pathway."
+    }
+  ],
+  "editorialRules": [
+    "Mark schematic models as schematic; do not label them experimental measurements.",
+    "Do not present rhizophagy hypotheses as established universal processes.",
+    "Do not infer exact nutrient deficiencies or pathogens from isolated symptoms.",
+    "Do not claim fixed stage VPD optima without crop-specific controlled evidence.",
+    "Do not claim certification until identity, grading, persistence, and print verification pass."
+  ]
+}
