@@ -35,6 +35,14 @@ function gitDiff() {
 
 const responsive = read('site/wordpress/assets/responsive-layout-v1.css');
 const standard = read('docs/RESPONSIVE_LAYOUT_STANDARD.md');
+const ux = read('site/wordpress/assets/sitewide-ux-polish-v1.css');
+
+// Resetting only the post-content parent leaves WordPress's 700px direct-child
+// constraint active. Desktop two-column layouts then render in an article slot.
+const surfaceReset = ux.match(/:where\(\.entry-content,\.wp-block-post-content\)\.is-layout-constrained\s*>\s*:is\(\.v3,\.dtf-page,\.dc6,\.dtf-courses,\.dtf-v1\)\s*\{([^}]+)\}/)?.[1] || '';
+requireMatch(surfaceReset, /width\s*:\s*100%\s*!important/, 'WordPress full-page surfaces must fill their parent without viewport-width overflow.');
+requireMatch(surfaceReset, /max-width\s*:\s*none\s*!important/, 'WordPress must not constrain custom full-page surfaces to article width.');
+requireMatch(surfaceReset, /margin-inline\s*:\s*0\s*!important/, 'WordPress full-page surfaces must reset constrained-child auto margins.');
 
 requireMatch(responsive, /--dtf-layout-gutter\s*:\s*clamp\(/, 'Shared responsive CSS must keep a fluid gutter token.');
 requireMatch(responsive, /--dtf-layout-touch\s*:\s*44px/, 'Shared responsive CSS must keep the 44px touch-target token.');
