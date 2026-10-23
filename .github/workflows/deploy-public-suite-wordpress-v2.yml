@@ -26,6 +26,7 @@ on:
       - scripts/build-canonical-sitemap.mjs
       - scripts/package-public-suite-wordpress.py
       - scripts/package-public-suite-wordpress-resource-aware.py
+      - scripts/verify-public-hub-contract.mjs
       - scripts/public_suite_resource_ownership.py
       - scripts/assemble-wordpress-suite-v2.py
       - scripts/assemble-wordpress-suite-resource-aware.py
@@ -545,8 +546,13 @@ jobs:
             fi
             rm -f "$body" "$headers"
           }
-          check 'https://dtfseeds.com/games/' '23 playable browser games'
-          check 'https://dtfseeds.com/projects/' '23 public browser games'
+          for hub in games projects; do
+            hub_body="$RUNNER_TEMP/current-${hub}-hub.html"
+            curl -fsS --retry 5 --retry-delay 5 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "https://dtfseeds.com/${hub}/?dtf_hub_verify=${GITHUB_RUN_ID}" -o "$hub_body"
+            node scripts/verify-public-hub-contract.mjs "site/public-route-patch/${hub}/index.html" "$hub_body"
+          done
           check 'https://dtfseeds.com/games/high-land/' 'High Land'
           check 'https://dtfseeds.com/games/dtf-route.css' '.game-detail-page'
           check 'https://dtfseeds.com/games/weedopolis/' 'Weedopolis'
@@ -618,7 +624,7 @@ jobs:
             echo "- Atlas verification: ${{ steps.live_atlas.outcome }}"
             echo '- High IQ is resource-owned and intentionally excluded from this transaction and its suite-owned live verification.'
             echo '- High Land remains suite-owned until its independent SSH publisher is proven in production.'
-            echo '- Game Hub and Projects verification require the current 23-game public registry while this writer publishes all suite-owned routes.'
+            echo '- Game Hub and Projects verification require packaged headings and all internal destinations; release counts are not hardcoded.'
             echo '- Who Took It verification requires the current case-board edition marker and its own canonical public route.'
             echo '- PhenoQuest must package as a verified self-contained canonical build.'
             echo '- Terpocalypse must package validated browser runtime JavaScript from the integration snapshot.'

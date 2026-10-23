@@ -7,6 +7,8 @@ on:
       - scripts/package-public-suite-wordpress.py
       - scripts/test-wordpress-suite-shared-assets-parity.py
       - scripts/test-public-tool-inline-modules.py
+      - scripts/verify-public-hub-contract.mjs
+      - scripts/test-public-hub-contract.mjs
       - scripts/assemble-wordpress-suite-v2.py
       - scripts/wordpress_suite_registry_patch.py
       - scripts/wordpress-suite-v2/**
@@ -19,6 +21,8 @@ on:
       - scripts/package-public-suite-wordpress.py
       - scripts/test-wordpress-suite-shared-assets-parity.py
       - scripts/test-public-tool-inline-modules.py
+      - scripts/verify-public-hub-contract.mjs
+      - scripts/test-public-hub-contract.mjs
       - scripts/assemble-wordpress-suite-v2.py
       - scripts/wordpress_suite_registry_patch.py
       - scripts/wordpress-suite-v2/**
@@ -55,6 +59,7 @@ jobs:
           python -m py_compile scripts/assemble-wordpress-suite-v2.py scripts/wordpress_suite_registry_patch.py scripts/test-public-tool-inline-modules.py
           python scripts/test-wordpress-suite-shared-assets-parity.py
           python scripts/test-public-tool-inline-modules.py
+          node scripts/test-public-hub-contract.mjs
           python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           python scripts/wordpress_suite_registry_patch.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs" | tee "$RUNNER_TEMP/registry-parity.json"
           grep -Fq '"breeder-pedigree"' "$RUNNER_TEMP/registry-parity.json"
