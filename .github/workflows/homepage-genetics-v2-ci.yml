@@ -7,6 +7,8 @@ on:
       - 'scripts/finalize-wordpress-home-genetics-art.mjs'
       - 'scripts/fix-wordpress-home-release-visuals.mjs'
       - 'scripts/run-learning-v3-production.mjs'
+      - 'scripts/lib/reviewed-genetics-media.mjs'
+      - 'scripts/test-reviewed-genetics-media.mjs'
       - 'scripts/run-learning-v3-connected-production.sh'
       - 'scripts/improve-wordpress-learning-v4.mjs'
       - 'scripts/reconcile-wordpress-learning-v3-ownership.mjs'
@@ -187,6 +189,9 @@ jobs:
           if(!publisher.includes(releaseCss)) throw new Error('V3 release CSS patch target drifted.');
           console.log('Learning V3 parent-namespace and reviewed-genetics patch targets are stable.');
           NODE
+
+      - name: Verify genetics artwork survives education media filtering
+        run: node scripts/test-reviewed-genetics-media.mjs
 
       - name: Regression-test premium post-V3 matchers
         shell: bash

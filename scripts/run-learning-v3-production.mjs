@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
+import { reviewedGeneticsMedia } from './lib/reviewed-genetics-media.mjs';
 
 // Canonical owner-chain trigger: V3 base owners -> V4 guided learning -> subject V6 finalizers.
 const sourcePath = process.env.CANONICAL_TOPIC_LITERATURE_PATH || 'site/wordpress/education/topic-literature.json';
@@ -178,12 +179,18 @@ const originalReleaseImages = `const releaseImages = {
   mangoFem: chooseMedia(media, [['trichome'], ['flower']], used) || fallbackHero,
   bubblegum: chooseMedia(media, [['sex', 'expression'], ['genetics']], used) || fallbackHero
 };`;
-const reviewedReleaseImages = `const releaseImages = {
-  mangoRegular: chooseMedia(media, [['dtf-strain-card-blue-mango-f2-regular']], new Set()) || fallbackHero,
-  mangoFem: chooseMedia(media, [['dtf-strain-card-blue-mango-f2-feminized']], new Set()) || fallbackHero,
-  bubblegum: chooseMedia(media, [['dtf-strain-card-blue-bubblegum-f1-regular']], new Set()) || fallbackHero
+const strainCardRegistry = JSON.parse(await readFile('site/wordpress/products/strain-card-images.json', 'utf8'));
+if (!Array.isArray(strainCardRegistry.cards) || strainCardRegistry.cards.length !== 3) {
+  throw new Error('Expected the three reviewed homepage release cards');
+}
+const reviewedReleaseImages = `const reviewedStrainCards = ${JSON.stringify(strainCardRegistry.cards)};
+${reviewedGeneticsMedia.toString()}
+const releaseImages = {
+  mangoRegular: reviewedGeneticsMedia(reviewedStrainCards, media, 'dtf-strain-card-blue-mango-f2-regular'),
+  mangoFem: reviewedGeneticsMedia(reviewedStrainCards, media, 'dtf-strain-card-blue-mango-f2-feminized'),
+  bubblegum: reviewedGeneticsMedia(reviewedStrainCards, media, 'dtf-strain-card-blue-bubblegum-f1-regular')
 };
-const reviewedGeneticsHero = chooseMedia(media, [['dtf-strain-card-blue-mango-f2-regular']], new Set()) || releaseImages.mangoRegular || fallbackHero;`;
+const reviewedGeneticsHero = releaseImages.mangoRegular;`;
 if (!publisher.includes(originalReleaseImages) && !publisher.includes(reviewedReleaseImages)) {
   throw new Error('Could not locate the Learning V3 Home release-image selector; refusing to publish education art into genetics positions.');
 }
