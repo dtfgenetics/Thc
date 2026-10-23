@@ -121,10 +121,11 @@ const report={
   missingLessons:missing.map(({lessonId,number,title})=>({lessonId,number,title})),
   coveredLessons:withRaster
 };
+if(lessons.length!==registry.totalCount) errors.push(`Canonical lesson count ${lessons.length} does not match registry ${registry.totalCount}`);
+
+// Keep the generated audit artifact consistent with the final validation result.
 fs.mkdirSync(path.dirname(reportPath),{recursive:true});
 fs.writeFileSync(reportPath,JSON.stringify(report,null,2)+'\n');
-
-if(lessons.length!==registry.totalCount) errors.push(`Canonical lesson count ${lessons.length} does not match registry ${registry.totalCount}`);
 if(errors.length){
   console.error(`Education asset audit failed with ${errors.length} error(s):`);
   for(const error of errors.slice(0,100)) console.error(' - '+error);
