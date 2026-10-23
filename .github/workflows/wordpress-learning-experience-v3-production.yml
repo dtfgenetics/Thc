@@ -113,6 +113,7 @@ jobs:
         run: |
           set -euo pipefail
           expected_header_marker="$(node --input-type=module -e "import { SITEWIDE_HEADER_MARKER } from './scripts/lib/sitewide-header-template.mjs'; process.stdout.write(SITEWIDE_HEADER_MARKER)")"
+          expected_footer_marker="$(node --input-type=module -e "import { SITEWIDE_FOOTER_MARKER } from './scripts/lib/sitewide-footer-template-v6.mjs'; process.stdout.write(SITEWIDE_FOOTER_MARKER)")"
           needs_publish=false
           for route in / /learn/ /shop/; do
             body="$RUNNER_TEMP/shell-state-$(echo "$route" | tr '/' '_' | tr -cd '[:alnum:]_').html"
@@ -123,7 +124,7 @@ jobs:
               needs_publish=true
               continue
             fi
-            if ! grep -Fq "$expected_header_marker" "$body" || ! grep -Fq 'data-dtf-shell="footer-v3"' "$body"; then
+            if ! grep -Fq "$expected_header_marker" "$body" || ! grep -Fq "$expected_footer_marker" "$body"; then
               needs_publish=true
             fi
           done
@@ -188,11 +189,12 @@ jobs:
         run: |
           set -euo pipefail
           expected_header_marker="$(node --input-type=module -e "import { SITEWIDE_HEADER_MARKER } from './scripts/lib/sitewide-header-template.mjs'; process.stdout.write(SITEWIDE_HEADER_MARKER)")"
+          expected_footer_marker="$(node --input-type=module -e "import { SITEWIDE_FOOTER_MARKER } from './scripts/lib/sitewide-footer-template-v6.mjs'; process.stdout.write(SITEWIDE_FOOTER_MARKER)")"
           grep -Fq 'data-dtf-layout="home-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq 'data-dtf-layout="learn-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq 'data-dtf-topic=' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq 'SITEWIDE_HEADER_MARKER' scripts/rebuild-wordpress-shared-shell-v3.mjs
-          grep -Fq 'data-dtf-shell="footer-v3"' scripts/rebuild-wordpress-shared-shell-v3.mjs
+          grep -Fq 'getWordPressSitewideFooterBlock' scripts/rebuild-wordpress-shared-shell-v3.mjs
           grep -Fq 'overflow-x:auto' scripts/rebuild-wordpress-shared-shell-v3.mjs
           grep -Fq 'water-root-zone' scripts/run-learning-v3-production.mjs
           grep -Fq 'plant-health-ipm' scripts/run-learning-v3-production.mjs
@@ -209,7 +211,7 @@ jobs:
                 --header 'Cache-Control: no-cache, no-store, max-age=0' \
                 --header 'Pragma: no-cache' \
                 "https://dtfseeds.com${route}?dtf_shell=${GITHUB_RUN_ID}-${attempt}" --output "$body"
-              if grep -Fq "$expected_header_marker" "$body" && grep -Fq 'data-dtf-shell="footer-v3"' "$body"; then ok=1; break; fi
+              if grep -Fq "$expected_header_marker" "$body" && grep -Fq "$expected_footer_marker" "$body"; then ok=1; break; fi
               sleep 5
             done
             if [[ "$ok" -ne 1 ]]; then
