@@ -25,4 +25,7 @@ assert.match(publisher, /if \(slug\.startsWith\('dtf-strain-card-'\)\) return fa
 const wrapper = readFileSync('scripts/run-learning-v3-production.mjs','utf8');
 assert.match(wrapper, /mangoRegular: reviewedGeneticsMedia\(reviewedStrainCards, media,/);
 assert.doesNotMatch(wrapper, /mangoRegular: chooseMedia\(media, \[\['dtf-strain-card-/);
+const finalOwner = readFileSync('.github/workflows/wordpress-home-release-visuals.yml','utf8');
+assert.match(finalOwner, /Current releases, shown with the real strain cards\./);
+assert.match(wrapper, /publisher = publisher\.replace\('Current genetics stay simple and direct\.', releaseHeading\)/);
 console.log('Reviewed genetics media: all cards survive education filtering; exact identities and education exclusion preserved.');

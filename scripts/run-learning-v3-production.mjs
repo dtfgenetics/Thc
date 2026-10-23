@@ -196,6 +196,14 @@ if (!publisher.includes(originalReleaseImages) && !publisher.includes(reviewedRe
 }
 publisher = publisher.replace(originalReleaseImages, reviewedReleaseImages);
 
+// The final Home owner verifies this copy after restoring the three real cards.
+// Its retired premium-art predecessor must not be required to set the heading.
+const releaseHeading = 'Current releases, shown with the real strain cards.';
+if (!publisher.includes('Current genetics stay simple and direct.') && !publisher.includes(releaseHeading)) {
+  throw new Error('Could not locate the Home release heading required by the final visual owner.');
+}
+publisher = publisher.replace('Current genetics stay simple and direct.', releaseHeading);
+
 const originalReleaseCss = `.v3 .release img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}`;
 const reviewedReleaseCss = `.v3 .release img{display:block;width:100%;aspect-ratio:2/3;object-fit:contain;background:#fff;padding:10px}.v3 .hero-media img{object-fit:contain!important;background:#fff!important;padding:10px}`;
 if (!publisher.includes(originalReleaseCss) && !publisher.includes(reviewedReleaseCss)) {
