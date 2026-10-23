@@ -44,7 +44,7 @@ iframe{max-width:100%}
 /* Keep media from becoming the page on wide screens. */
 .v3 .hero-media,
 .dtf-page .dtf-hero-media,
-.dtf-v1 :where(.hero-media,.genetics-hero-media){max-width:min(100%,560px);justify-self:end}
+.dtf-v1 :where(.hero-media,.genetics-hero-media){width:100%;max-width:min(100%,560px);justify-self:end}
 .v3 .hero-media img,
 .dtf-page .dtf-hero-media img,
 .dtf-v1 :where(.hero-media img,.genetics-hero-media img){width:100%;max-height:620px;object-fit:cover}
