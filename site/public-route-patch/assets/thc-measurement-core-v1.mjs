@@ -7,7 +7,9 @@ export function normalizeHeader(value){
 export function calibrationAgeDays(dateValue,now=new Date()){
   const raw=String(dateValue??'').trim();
   if(!/^\d{4}-\d{2}-\d{2}$/.test(raw))return null;
-  const at=new Date(raw+'T12:00:00');
+  // Date-only calibration records use UTC noon so device timezone and DST do
+  // not change their age. Preserve the existing UTC whole-day calculation.
+  const at=new Date(raw+'T12:00:00Z');
   const ref=now instanceof Date?now:new Date(now);
   if(Number.isNaN(at.getTime())||Number.isNaN(ref.getTime()))return null;
   return Math.max(0,Math.floor((ref.getTime()-at.getTime())/86400000));
