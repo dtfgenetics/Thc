@@ -36,6 +36,7 @@ function gitDiff() {
 const responsive = read('site/wordpress/assets/responsive-layout-v1.css');
 const standard = read('docs/RESPONSIVE_LAYOUT_STANDARD.md');
 const ux = read('site/wordpress/assets/sitewide-ux-polish-v1.css');
+requireMatch(responsive, /\.dtf-v1 :where\(\.hero-media,\.genetics-hero-media\)\{width:100%;max-width:min\(100%,560px\);justify-self:end\}/, 'Hero media grid items need an explicit width so percentage-sized or lazy images cannot collapse their container.');
 
 // Resetting only the post-content parent leaves WordPress's 700px direct-child
 // constraint active. Desktop two-column layouts then render in an article slot.
