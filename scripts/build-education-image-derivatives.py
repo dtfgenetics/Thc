@@ -135,17 +135,23 @@ def build_derivatives(path: Path, output: Path, widths: list[int], quality: int)
 
 
 def optimize_img_tag(tag: str, record: ImageRecord) -> str:
+    """Replace stale responsive candidates with the derivatives generated for this source."""
     derivatives = sorted(record.derivatives, key=lambda item: item.width)
     first = derivatives[0]
     first_url = PREVIEW_PREFIX + first.filename
     srcset = ", ".join(f"{PREVIEW_PREFIX}{item.filename} {item.width}w" for item in derivatives)
     sizes = "(max-width: 700px) 92vw, (max-width: 1100px) 46vw, 30vw"
 
-    tag = re.sub(r'\bsrc="[^"]+"', f'src="{first_url}"', tag, count=1)
-    if " srcset=" not in tag:
-        tag = tag[:-1] + f' srcset="{srcset}" sizes="{sizes}">'
-    if " decoding=" not in tag:
-        tag = tag[:-1] + ' decoding="async">'
+    def set_attr(markup: str, name: str, value: str) -> str:
+        pattern = rf"(?<![\\w-]){re.escape(name)}\\s*=\\s*([\\\"'])(.*?)\\1"
+        if re.search(pattern, markup, flags=re.IGNORECASE):
+            return re.sub(pattern, lambda _: f'{name}="{value}"', markup, count=1, flags=re.IGNORECASE)
+        return markup[:-1] + f' {name}="{value}">'
+
+    tag = set_attr(tag, "src", first_url)
+    tag = set_attr(tag, "srcset", srcset)
+    tag = set_attr(tag, "sizes", sizes)
+    tag = set_attr(tag, "decoding", "async")
     return tag
 
 
