@@ -23,6 +23,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 SUPPORTED_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
 DEFAULT_WIDTHS = (640, 1280)
 DEFAULT_QUALITY = 82
+DEFAULT_WEBP_METHOD = 4  # Balanced encoding effort; method 6 is substantially slower.
 ASSET_PREFIX = "/assets/education/infographics/"
 PREVIEW_PREFIX = "/assets/education/infographics-web/"
 
@@ -53,6 +54,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--library-json", required=True, type=Path)
     parser.add_argument("--library-output", required=True, type=Path)
     parser.add_argument("--quality", type=int, default=DEFAULT_QUALITY)
+    parser.add_argument("--method", type=int, choices=range(0, 7), default=DEFAULT_WEBP_METHOD)
     parser.add_argument("--widths", nargs="+", type=int, default=list(DEFAULT_WIDTHS))
     return parser.parse_args()
 
@@ -75,7 +77,7 @@ def derivative_name(source: Path, width: int) -> str:
     return f"{source.stem}-{width}.webp"
 
 
-def build_derivatives(path: Path, output: Path, widths: list[int], quality: int) -> ImageRecord:
+def build_derivatives(path: Path, output: Path, widths: list[int], quality: int, method: int = DEFAULT_WEBP_METHOD) -> ImageRecord:
     source_size = path.stat().st_size
     try:
         with Image.open(path) as opened:
@@ -112,7 +114,7 @@ def build_derivatives(path: Path, output: Path, widths: list[int], quality: int)
             destination,
             format="WEBP",
             quality=quality,
-            method=6,
+            method=method,
             optimize=True,
         )
         derivatives.append(
@@ -196,7 +198,7 @@ def main() -> int:
         if image.name in seen_names:
             raise RuntimeError(f"Duplicate canonical filename: {image.name}")
         seen_names.add(image.name)
-        records.append(build_derivatives(image, args.output, args.widths, args.quality))
+        records.append(build_derivatives(image, args.output, args.widths, args.quality, args.method))
 
     record_map = {record.source: record for record in records}
     library_html = args.library_page.read_text(encoding="utf-8")
@@ -212,6 +214,7 @@ def main() -> int:
         "previewFormat": "webp",
         "previewWidths": sorted(set(args.widths)),
         "quality": args.quality,
+        "webpMethod": args.method,
         "fullResolutionLinksPreserved": True,
         "generatedAt": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
     }
