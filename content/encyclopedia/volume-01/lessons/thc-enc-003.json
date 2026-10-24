@@ -97,19 +97,20 @@
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
   },
   "knowledgeCheck": [
-    "Explain why two genomic studies might infer different Cannabis clusters without either result automatically being invalid.",
-    "A graph assigns three ancestry colors to a plant. What does it show and what does it not prove?",
-    "Specify a reproducible dataset for comparing two seed populations without relying on retail labels as biological classes."
+    "For \"Taxonomic Debate: One Species, Multiple Lineages\", Explain how a single recognized species can still encompass multiple cannabis lineages, substantial genetic diversity, and environmentally affected phenotypes.",
+    "A learner claims, \"One species means no meaningful diversity.\" Explain the lesson-specific scientific limitations of this claim, and describe evidence that could distinguish reliable findings from an unsupported shortcut.",
+    "Applied case — Two cannabis accessions have different leaf architecture and flowering responses. Create a comparison plan using provenance, environmental records and genetic evidence that avoids declaring separate species solely from appearance. State which evidence would change your interpretation."
   ],
   "assessmentDesign": {
-    "version": 1,
+    "version": 2,
     "answerRationaleStatus": "draft_for_editorial_review",
     "answerRationales": [
-      "Sampling, markers, population representation, introgression, filtering and algorithms can change inferred structure. Compare methods and uncertainty.",
-      "Colors indicate estimated ancestry components under a particular model, not a verified species count or pedigree.",
-      "Record durable IDs, generation, sample count, provenance, growing conditions, defined plant traits, sampling timing, lab methodology and within-population variability."
+      "A strong response must address: Explain why a one-species reference system can coexist with meaningful genetic and morphological diversity. Support the mechanism with the controlled lesson science and a relevant reference or measurement.",
+      "The claim \"One species means no meaningful diversity\" is unreliable without the lesson's context and evidence limitations. Distinguish appearance or common language from measured biology and record relevant counterevidence.",
+      "Use explicit study or lot identity, observable criteria, relevant environmental or laboratory measurements, controls and repeat observations. Revise the conclusion if competing explanations remain plausible or new evidence contradicts the initial inference."
     ],
-    "scoringIntent": "Explain evidence, botanical identity and uncertainty using appropriate examples."
+    "scoringIntent": "Explain evidence, botanical identity and uncertainty using appropriate examples.",
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification"
   },
   "visuals": [
     {
