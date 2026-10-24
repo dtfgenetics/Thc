@@ -40,6 +40,13 @@ class ResponsiveTagTests(unittest.TestCase):
         self.assertIn(module["DEFAULT_WEBP_METHOD"], range(0, 7))
         self.assertLess(module["DEFAULT_WEBP_METHOD"], 6)
 
+    def test_library_rewrites_single_quoted_src(self):
+        html = "<img src='/assets/education/infographics/example.png' alt='Example'>"
+        rendered, count, missing = module["rewrite_library"](html, {"example.png": self.record})
+        self.assertEqual(count, 1)
+        self.assertEqual(missing, [])
+        self.assertIn("example-640.webp", rendered)
+
     def test_missing_responsive_attributes_are_added(self):
         rendered = optimize_img_tag('<img src="/original.png" alt="">', self.record)
         self.assertIn(" srcset=", rendered)
