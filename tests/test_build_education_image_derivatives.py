@@ -47,6 +47,14 @@ class ResponsiveTagTests(unittest.TestCase):
         self.assertEqual(missing, [])
         self.assertIn("example-640.webp", rendered)
 
+    def test_lazy_data_src_is_not_mistaken_for_src(self):
+        html = ('<img data-src="/assets/education/infographics/example.png" '
+                'src="/assets/education/infographics/other.png" alt="Example">')
+        rendered, count, missing = module["rewrite_library"](html, {"example.png": self.record})
+        self.assertEqual(count, 0)
+        self.assertEqual(missing, ["other.png"])
+        self.assertIn("data-src=", rendered)
+
     def test_missing_responsive_attributes_are_added(self):
         rendered = optimize_img_tag('<img src="/original.png" alt="">', self.record)
         self.assertIn(" srcset=", rendered)
