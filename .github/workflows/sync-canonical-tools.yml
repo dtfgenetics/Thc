@@ -132,7 +132,20 @@ jobs:
           tools_sha="$(git -C /tmp/tools rev-parse HEAD)"
           test "${#tools_sha}" -eq 40
           mapfile -t slugs < <(node -e "const m=require('/tmp/tools/migration/manifest.json'); for (const s of m.canonicalToolSlugs) console.log(s)")
-          test "${#slugs[@]}" -ge 23
+          node - <<'NODE'
+          const manifest = require('/tmp/tools/migration/manifest.json');
+          const slugs = manifest.canonicalToolSlugs || [];
+          const publicRoutes = manifest.publicRoutes || [];
+          const expected = new Set(slugs.map(slug => '/' + slug + '/'));
+          if (!slugs.length || expected.size !== slugs.length ||
+              publicRoutes.length !== slugs.length ||
+              new Set(publicRoutes).size !== publicRoutes.length ||
+              publicRoutes.some(route => !expected.has(route))) {
+            console.error('::error::Canonical Tools manifest route inventory is inconsistent; refusing mirror publication.');
+            process.exit(1);
+          }
+          console.log('Validated ' + slugs.length + ' canonical tool routes before mirroring.');
+          NODE
           for d in "${slugs[@]}"; do
             test -d "/tmp/tools/site/public-route-patch/$d"
             rm -rf "site/public-route-patch/$d"
