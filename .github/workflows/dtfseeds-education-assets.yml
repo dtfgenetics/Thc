@@ -114,6 +114,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install --disable-pip-version-check --no-cache-dir "Pillow==$PILLOW_VERSION"
+          python -m unittest discover -s tests -p "test_build_education_image_derivatives.py"
           rm -rf "$EDUCATION_WEB_BUILD" "$EDUCATION_LIBRARY_BUILD"
           python scripts/build-education-image-derivatives.py --source "$EDUCATION_SOURCE" --output "$EDUCATION_WEB_BUILD" --library-page "$EDUCATION_LIBRARY_SOURCE/index.html" --library-json "$EDUCATION_LIBRARY_SOURCE/library.json" --library-output "$EDUCATION_LIBRARY_BUILD" --widths 640 1280 --quality 82
           test -s "$EDUCATION_WEB_BUILD/optimization-manifest.json"
