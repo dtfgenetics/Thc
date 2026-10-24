@@ -71,3 +71,12 @@ test('anatomy learning module links to the published canonical interactive explo
 assert.match(html,/\["anatomy","Plant anatomy"[^\n]*"\/atlas\/anatomy-explorer\/"/);
 assert.match(html,/\/atlas\/anatomy-explorer\//);
 });
+
+test('quantitative lab dispatch rejects uncontrolled module method names',()=>{
+  assert.doesNotMatch(quantitative,/modules\s*\[\s*id\s*\]\s*\(/);
+  for(const id of ['vpd','lighting','genetics']) {
+    assert.match(quantitative,new RegExp("case '"+id+"': render=modules\\."+id));
+  }
+  assert.match(quantitative,/default\s*:\s*return\s*;/);
+  assert.match(quantitative,/render\(slot\)/);
+});
