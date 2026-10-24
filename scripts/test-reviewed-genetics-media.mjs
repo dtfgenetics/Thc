@@ -54,6 +54,8 @@ const headerCheckImports = [...learningOwner.matchAll(/import \{ SITEWIDE_HEADER
 assert.deepEqual(headerCheckImports, Array(2).fill('./scripts/lib/sitewide-header-template-v6.mjs'), 'both live shell checks must follow the V6 publisher');
 const shellPublisher = readFileSync('scripts/rebuild-wordpress-shared-shell-v3.mjs','utf8');
 assert.match(shellPublisher, /from '\.\/lib\/sitewide-header-template-v6\.mjs'/);
-assert.match(finalOwner, /Current releases, shown with the real strain cards\./);
+assert.match(finalOwner, /node scripts\/verify-home-release-artwork\.mjs/);
+const finalVerifier = readFileSync('scripts/verify-home-release-artwork.mjs','utf8');
+assert.match(finalVerifier, /Current releases, shown with the real strain cards\./);
 assert.match(wrapper, /publisher = publisher\.replace\('Current genetics stay simple and direct\.', releaseHeading\)/);
 console.log('Reviewed genetics media: all cards survive education filtering; exact identities and education exclusion preserved.');
