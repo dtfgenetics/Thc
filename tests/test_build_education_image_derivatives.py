@@ -36,6 +36,10 @@ class ResponsiveTagTests(unittest.TestCase):
         self.assertIn('decoding="async"', rendered)
         self.assertIn("alt='Example'", rendered)
 
+    def test_encoding_effort_default_is_bounded(self):
+        self.assertIn(module["DEFAULT_WEBP_METHOD"], range(0, 7))
+        self.assertLess(module["DEFAULT_WEBP_METHOD"], 6)
+
     def test_missing_responsive_attributes_are_added(self):
         rendered = optimize_img_tag('<img src="/original.png" alt="">', self.record)
         self.assertIn(" srcset=", rendered)
