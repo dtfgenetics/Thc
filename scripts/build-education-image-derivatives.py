@@ -143,7 +143,7 @@ def optimize_img_tag(tag: str, record: ImageRecord) -> str:
     sizes = "(max-width: 700px) 92vw, (max-width: 1100px) 46vw, 30vw"
 
     def set_attr(markup: str, name: str, value: str) -> str:
-        pattern = rf"(?<![\\w-]){re.escape(name)}\\s*=\\s*([\\\"'])(.*?)\\1"
+        pattern = rf'(?<![\w-]){re.escape(name)}\s*=\s*(["\x27])(.*?)\1'
         if re.search(pattern, markup, flags=re.IGNORECASE):
             return re.sub(pattern, lambda _: f'{name}="{value}"', markup, count=1, flags=re.IGNORECASE)
         return markup[:-1] + f' {name}="{value}">'
