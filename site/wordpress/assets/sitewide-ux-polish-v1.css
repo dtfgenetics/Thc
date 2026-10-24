@@ -39,6 +39,11 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
+/* Standalone Science Labs supplies a dark palette; preserve its inherited text. */
+body:has(#navigation[aria-label="Science laboratories"]){
+  color:var(--text,#f1f7f0);
+}
+
 :where(main,section,article,aside,nav,footer)[id],
 :where(h1,h2,h3,h4,h5,h6)[id],
 :where(.dtf-page,.v3,.lhv3,.game-hub-page,.tool-chooser) [id]{
