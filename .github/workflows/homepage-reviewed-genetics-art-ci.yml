@@ -13,6 +13,9 @@ on:
       - '.github/workflows/homepage-genetics-v2-ci.yml'
       - 'scripts/finalize-wordpress-home-genetics-art.mjs'
       - 'scripts/fix-wordpress-home-release-visuals.mjs'
+      - 'scripts/verify-home-release-artwork.mjs'
+      - 'scripts/test-home-release-artwork.mjs'
+      - 'scripts/lib/html-audit-markup.mjs'
       - 'site/wordpress/products/strain-card-images.json'
 
 permissions:
@@ -128,8 +131,7 @@ jobs:
           }
           console.log('Reviewed current-release registry is exact and portrait-oriented.');
           NODE
-          grep -Fq 'classCount === registry.cards.length' "$owner"
-          grep -Fq 'routesOk' "$owner"
-          grep -Fq 'altOk' "$owner"
-          grep -Fq 'portraitOk' "$owner"
+          grep -Fq 'node scripts/verify-home-release-artwork.mjs "$body" "$attempt"' "$owner"
+          node --check scripts/verify-home-release-artwork.mjs
+          node scripts/test-home-release-artwork.mjs
           echo 'Reviewed Homepage Genetics Art protection contract verified.'

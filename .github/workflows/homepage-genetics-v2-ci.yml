@@ -9,6 +9,9 @@ on:
       - 'scripts/run-learning-v3-production.mjs'
       - 'scripts/lib/reviewed-genetics-media.mjs'
       - 'scripts/test-reviewed-genetics-media.mjs'
+      - 'scripts/verify-home-release-artwork.mjs'
+      - 'scripts/test-home-release-artwork.mjs'
+      - 'scripts/lib/html-audit-markup.mjs'
       - 'scripts/run-learning-v3-connected-production.sh'
       - 'scripts/improve-wordpress-learning-v4.mjs'
       - 'scripts/reconcile-wordpress-learning-v3-ownership.mjs'
@@ -191,7 +194,9 @@ jobs:
           NODE
 
       - name: Verify genetics artwork survives education media filtering
-        run: node scripts/test-reviewed-genetics-media.mjs
+        run: |
+          node scripts/test-reviewed-genetics-media.mjs
+          node scripts/test-home-release-artwork.mjs
 
       - name: Regression-test premium post-V3 matchers
         shell: bash
