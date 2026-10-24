@@ -95,6 +95,7 @@ jobs:
         run: |
           node --test scripts/test/encyclopedia-production-queue.test.mjs scripts/test/encyclopedia-publication-review.test.mjs
           node scripts/test-encyclopedia-live-fingerprint.mjs
+          node scripts/test-encyclopedia-007-assessment-rationale.mjs
       - name: Enforce scientific depth on changed canonical lessons
         if: github.event_name == 'pull_request'
         env:
