@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const lesson=JSON.parse(readFileSync('content/encyclopedia/volume-01/lessons/thc-enc-007.json','utf8'));
+assert.equal(lesson.assessmentDesign.version,2);
+assert.equal(lesson.knowledgeCheck.length,3);
+assert.equal(lesson.assessmentDesign.answerRationales.length,3);
+assert.match(lesson.knowledgeCheck[1],/dark striped seeds/i);
+assert.match(lesson.assessmentDesign.answerRationales[1],/color and striping/i);
+assert.match(lesson.assessmentDesign.answerRationales[1],/viability/i);
+assert.match(lesson.assessmentDesign.answerRationales[2],/20-unit sample/i);
+console.log('Lesson 007: assessment questions and rationales align.');
