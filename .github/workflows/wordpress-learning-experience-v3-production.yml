@@ -112,7 +112,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          expected_header_marker="$(node --input-type=module -e "import { SITEWIDE_HEADER_MARKER } from './scripts/lib/sitewide-header-template.mjs'; process.stdout.write(SITEWIDE_HEADER_MARKER)")"
+          expected_header_marker="$(node --input-type=module -e "import { SITEWIDE_HEADER_MARKER } from './scripts/lib/sitewide-header-template-v6.mjs'; process.stdout.write(SITEWIDE_HEADER_MARKER)")"
           expected_footer_marker="$(node --input-type=module -e "import { SITEWIDE_FOOTER_MARKER } from './scripts/lib/sitewide-footer-template-v6.mjs'; process.stdout.write(SITEWIDE_FOOTER_MARKER)")"
           needs_publish=false
           for route in / /learn/ /shop/; do
@@ -188,7 +188,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          expected_header_marker="$(node --input-type=module -e "import { SITEWIDE_HEADER_MARKER } from './scripts/lib/sitewide-header-template.mjs'; process.stdout.write(SITEWIDE_HEADER_MARKER)")"
+          expected_header_marker="$(node --input-type=module -e "import { SITEWIDE_HEADER_MARKER } from './scripts/lib/sitewide-header-template-v6.mjs'; process.stdout.write(SITEWIDE_HEADER_MARKER)")"
           expected_footer_marker="$(node --input-type=module -e "import { SITEWIDE_FOOTER_MARKER } from './scripts/lib/sitewide-footer-template-v6.mjs'; process.stdout.write(SITEWIDE_FOOTER_MARKER)")"
           grep -Fq 'data-dtf-layout="home-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq 'data-dtf-layout="learn-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
