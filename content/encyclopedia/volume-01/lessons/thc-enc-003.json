@@ -24,13 +24,18 @@
   "coreScience": [
     "Taxonomy groups organisms; it does not guarantee that every member of a species looks or behaves alike. Cannabis has been moved and selected by people for thousands of years. Fiber types, seed types, geographically adapted populations, drug-type lineages, and modern hybrids can differ markedly in stature, branching, flowering time, leaflet form, sex system, and chemotype. This encyclopedia follows the current one-species treatment; breeding compatibility and historical crossing support gene flow among many lineages but are not, by themselves, a complete species test.",
     "The one-species treatment used by Kew is a practical and defensible baseline. Historical multi-species treatments attempted to organize recurring forms using names such as sativa, indica, and ruderalis. Modern genomic work shows real population structure and domestication history, but commercial breeding and extensive crossing have blurred many simple category boundaries. A genetic cluster is not automatically a botanical species, and a marketing category is not automatically a genetic cluster.",
-    "For an encyclopedia, the solution is layered identity. Species-level chapters use Cannabis sativa L. Population, ancestry, chemotype, photoperiod response, morphology, and pedigree are recorded as separate descriptors. This preserves biological information without pretending that one informal label can carry all of it."
+    "For an encyclopedia, the solution is layered identity. Species-level chapters use Cannabis sativa L. Population, ancestry, chemotype, photoperiod response, morphology, and pedigree are recorded as separate descriptors. This preserves biological information without pretending that one informal label can carry all of it.",
+    "Population structure describes nonrandom genetic differentiation among sampled groups, not automatic species boundaries. Inferred clusters depend on the populations sampled, marker density, filtering, introgression and model choice. Distinct genetic lineages can exist within one accepted species.",
+    "Domestication and breeding can shape flowering, architecture and chemistry through selection, bottlenecks and exchange of germplasm. Similar leaf or branching forms can result from shared ancestry, convergent selection or environmental plasticity; phenotype alone cannot uniquely establish geographic ancestry.",
+    "Principal-component plots describe axes of variation for the selected dataset, not a full evolutionary tree. Colored admixture bars represent estimated model components and are not literal species assignments. Always record the sample set, algorithm, assumptions and uncertainty when teaching ancestry graphics."
   ],
   "cultivationRelevance": [
     "Layered identity improves comparisons. Two plants sold under the same broad category can require different flowering schedules, show different disease pressure, or produce different chemistry.",
     "Do not infer cultivation targets from “indica,” “sativa,” or “ruderalis” alone. Observe the actual plant and preserve its source and performance records.",
     "Use population, pedigree, phenology, morphology, and chemistry as separate variables when comparing plants. This allows a grower or breeder to discover that two materials with similar commercial labels behave differently without forcing the observations into a disputed taxonomic category. It also makes data reusable when naming conventions change.",
-    "For breeding and conservation, preserve the level of biological organization being claimed. A clone preserves one genotype; a seed family samples a parental cross; a maintained population can preserve broader allele diversity. Calling all three a 'strain' erases distinctions that matter for selection response, segregation, disease resistance, and reproducibility."
+    "For breeding and conservation, preserve the level of biological organization being claimed. A clone preserves one genotype; a seed family samples a parental cross; a maintained population can preserve broader allele diversity. Calling all three a 'strain' erases distinctions that matter for selection response, segregation, disease resistance, and reproducibility.",
+    "Worked example: comparing broad- and narrow-leaf plants raised in different environments cannot isolate lineage from environmental effects. Preserve IDs, stage, light, temperature, and standardized phenotype records; add genomic information if ancestry is the question.",
+    "For breeding data, distinguish a single clone, a seed family and a population sample. Report sample count, accession provenance, generation, marker panel and variation before generalizing."
   ],
   "measureAndRecord": [
     {
@@ -56,15 +61,22 @@
     {
       "field": "Interpretation status",
       "requirement": "State whether the conclusion concerns taxonomy, ancestry, production class, phenotype, or marketing language. Record uncertainty and the alternative classification that would also fit the available evidence."
+    },
+    {
+      "field": "Inference scope",
+      "requirement": "Record sample identity, tested material, method, comparison group, conditions and limitations; distinguish observed phenotype from inferred ancestry or taxonomic classification."
     }
   ],
   "misconceptions": [
     "One species means no meaningful diversity: A species can contain extensive genetic and phenotypic variation.",
     "Three popular labels are a complete taxonomy: They combine historical, morphological, geographic, and marketing ideas inconsistently.",
-    "Appearance proves ancestry: Environment and convergent selection can produce similar forms in different lineages."
+    "Appearance proves ancestry: Environment and convergent selection can produce similar forms in different lineages.",
+    "Three ancestry colors prove three Cannabis species: Model components are statistical inferences and should not be translated directly into recognized species.",
+    "Different leaf shapes prove different lineages: Morphology can respond to environment and selection within a lineage."
   ],
   "evidenceLimits": [
-    "Species concepts and infraspecific ranks are scientific interpretations that can differ among authorities and datasets. Genomic clustering depends on which accessions were sampled, marker density, analytical method, domestication history, introgression, and modern hybridization. A cluster or recurring morphology can document population structure without automatically proving a separate species, while broad interbreeding does not by itself settle every species concept. The encyclopedia therefore states its authority and preserves ancestry evidence separately."
+    "Species concepts and infraspecific ranks are scientific interpretations that can differ among authorities and datasets. Genomic clustering depends on which accessions were sampled, marker density, analytical method, domestication history, introgression, and modern hybridization. A cluster or recurring morphology can document population structure without automatically proving a separate species, while broad interbreeding does not by itself settle every species concept. The encyclopedia therefore states its authority and preserves ancestry evidence separately.",
+    "Genomic clustering depends on marker panels, samples and methods. Do not infer formal taxonomic rank solely from a clustering or principal-component graphic."
   ],
   "crossLinks": "THC-ENC-002, THC-ENC-004, THC-ENC-168–170, and THC-ENC-381–400.",
   "sourceNotes": [
@@ -83,5 +95,33 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "knowledgeCheck": [
+    "For \"Taxonomic Debate: One Species, Multiple Lineages\", Explain how a single recognized species can still encompass multiple cannabis lineages, substantial genetic diversity, and environmentally affected phenotypes.",
+    "A learner claims, \"One species means no meaningful diversity.\" Explain the lesson-specific scientific limitations of this claim, and describe evidence that could distinguish reliable findings from an unsupported shortcut.",
+    "Applied case — Two cannabis accessions have different leaf architecture and flowering responses. Create a comparison plan using provenance, environmental records and genetic evidence that avoids declaring separate species solely from appearance. State which evidence would change your interpretation."
+  ],
+  "assessmentDesign": {
+    "version": 2,
+    "answerRationaleStatus": "draft_for_editorial_review",
+    "answerRationales": [
+      "A strong response must address: Explain why a one-species reference system can coexist with meaningful genetic and morphological diversity. Support the mechanism with the controlled lesson science and a relevant reference or measurement.",
+      "The claim \"One species means no meaningful diversity\" is unreliable without the lesson's context and evidence limitations. Distinguish appearance or common language from measured biology and record relevant counterevidence.",
+      "Use explicit study or lot identity, observable criteria, relevant environmental or laboratory measurements, controls and repeat observations. Revise the conclusion if competing explanations remain plausible or new evidence contradicts the initial inference."
+    ],
+    "scoringIntent": "Explain evidence, botanical identity and uncertainty using appropriate examples.",
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification"
+  },
+  "visuals": [
+    {
+      "assetId": "THC-ENC-003-VIS-SRC-01",
+      "type": "educational_diagram_source",
+      "purpose": "A structure plot is an inference conditioned on the dataset; a genetic component is not a species label.",
+      "caption": "A structure plot is an inference conditioned on the dataset; a genetic component is not a species label.",
+      "altText": "A structure plot is an inference conditioned on the dataset; a genetic component is not a species label.",
+      "repositoryPath": "content/encyclopedia/volume-01/visual-sources/population-structure-interpretation.svg",
+      "rightsStatus": "original_project_artwork",
+      "qaStatus": "draft_source_not_raster_approved"
+    }
+  ]
 }
