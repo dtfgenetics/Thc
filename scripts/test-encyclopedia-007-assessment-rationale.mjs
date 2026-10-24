@@ -8,4 +8,5 @@ assert.match(lesson.knowledgeCheck[1],/dark striped seeds/i);
 assert.match(lesson.assessmentDesign.answerRationales[1],/color and striping/i);
 assert.match(lesson.assessmentDesign.answerRationales[1],/viability/i);
 assert.match(lesson.assessmentDesign.answerRationales[2],/20-unit sample/i);
+assert.match(lesson.knowledgeCheck[2],/applied case/i);
 console.log('Lesson 007: assessment questions and rationales align.');
