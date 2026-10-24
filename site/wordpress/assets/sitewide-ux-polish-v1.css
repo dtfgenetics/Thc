@@ -39,8 +39,9 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* Standalone Science Labs supplies a dark palette; preserve its inherited text. */
-body:has(#navigation[aria-label="Science laboratories"]){
+/* Standalone science surfaces supply dark palettes; preserve inherited text. */
+body:has(#navigation[aria-label="Science laboratories"]),
+body:has([aria-label="Interactive botanical specimen"]){
   color:var(--text,#f1f7f0);
 }
 

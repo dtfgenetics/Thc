@@ -36,7 +36,7 @@ function gitDiff() {
 const responsive = read('site/wordpress/assets/responsive-layout-v1.css');
 const standard = read('docs/RESPONSIVE_LAYOUT_STANDARD.md');
 const ux = read('site/wordpress/assets/sitewide-ux-polish-v1.css');
-requireMatch(ux, /body:has\(#navigation\[aria-label="Science laboratories"\]\)\s*\{\s*color:var\(--text,#f1f7f0\);\s*\}/, 'Science Labs must retain light inherited text when the shared shell adds its global body color.');
+requireMatch(ux, /body:has\(#navigation\[aria-label="Science laboratories"\]\),\s*body:has\(\[aria-label="Interactive botanical specimen"\]\)\s*\{\s*color:var\(--text,#f1f7f0\);\s*\}/, 'Science Labs and Anatomy Explorer must retain light inherited text when the shared shell adds its global body color.');
 requireMatch(responsive, /\.dtf-v1 :where\(\.hero-media,\.genetics-hero-media\)\{width:100%;max-width:min\(100%,560px\);justify-self:end\}/, 'Hero media grid items need an explicit width so percentage-sized or lazy images cannot collapse their container.');
 
 // Resetting only the post-content parent leaves WordPress's 700px direct-child
