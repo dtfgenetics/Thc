@@ -11,6 +11,7 @@ const indexPath=path.join(root,'apps/growlens-web/index.html');
 const readmePath=path.join(root,'apps/growlens-web/README.md');
 const packagePath=path.join(root,'package.json');
 const liveAcceptancePath=path.join(root,'.github/workflows/growlens-live-acceptance.yml');
+const deployWorkflowPath=path.join(root,'.github/workflows/growlens-deploy-hostinger.yml');
 const privateAuditPath=path.join(root,'scripts/growlens-private-data-audit.php');
 const privateBackupWorkflowPath=path.join(root,'.github/workflows/growlens-private-data-backup.yml');
 const privateBackupDocsPath=path.join(root,'docs/GROWLENS_PRIVATE_DATA_BACKUP.md');
@@ -21,7 +22,7 @@ const canonicalObservationPath=path.join(root,'apps/growlens-web/src/canonicalOb
 const canonicalObservationTestPath=path.join(root,'apps/growlens-web/src/canonicalObservation.test.ts');
 
 const fail=(message)=>{console.error('GrowLens release contract validation failed:',message);process.exitCode=1;};
-for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath,indexPath,readmePath,packagePath,liveAcceptancePath,privateAuditPath,privateBackupWorkflowPath,privateBackupDocsPath,observationProducerPath,observationProducerTestPath,observationFixturePath,canonicalObservationPath,canonicalObservationTestPath]){
+for(const file of [registryPath,ciPath,suitePath,swPath,pwaTestPath,indexPath,readmePath,packagePath,liveAcceptancePath,deployWorkflowPath,privateAuditPath,privateBackupWorkflowPath,privateBackupDocsPath,observationProducerPath,observationProducerTestPath,observationFixturePath,canonicalObservationPath,canonicalObservationTestPath]){
   if(!fs.existsSync(file))fail(`Required file missing: ${path.relative(root,file)}`);
 }
 if(process.exitCode)process.exit();
@@ -97,6 +98,32 @@ for(const token of [
   'RUN-DESTRUCTIVE-ACCEPTANCE'
 ]){
   if(!liveAcceptance.includes(token))fail(`GrowLens live acceptance workflow is missing current gate: ${token}`);
+}
+
+// Keep production cutover and destructive acceptance mutually exclusive, and
+// fail closed before accepting any live data changes without deployment identity.
+const deployWorkflow=fs.readFileSync(deployWorkflowPath,'utf8');
+for(const [name,workflow] of [['GrowLens Hostinger deployment',deployWorkflow],['GrowLens live acceptance',liveAcceptance]]){
+  if(!/group:\s*growlens-production-deploy\b/.test(workflow))fail(`${name} must share the GrowLens production concurrency group.`);
+  if(!/cancel-in-progress:\s*false\b/.test(workflow))fail(`${name} must not cancel an in-flight production operation.`);
+  if(!/refs\/heads\/main/.test(workflow))fail(`${name} must be limited to the main branch.`);
+}
+for(const token of [
+  'Require attested standalone GrowLens deployment before destructive tests',
+  '/growlens/deploy.json',
+  'marker.app',
+  'marker.commit',
+  'marker.builtAt',
+  "parsed.hostname !== 'dtfseeds.com'",
+]){
+  if(!liveAcceptance.includes(token))fail(`Live acceptance is missing release attestation safeguard: ${token}`);
+}
+if(liveAcceptance.indexOf('Require attested standalone GrowLens deployment before destructive tests') >
+   liveAcceptance.indexOf('Run destructive live acceptance with cleanup')){
+  fail('Live release attestation must run before destructive account creation.');
+}
+if(!ci.includes("'.github/workflows/growlens-live-acceptance.yml'")){
+  fail('GrowLens CI must trigger when live acceptance workflow changes.');
 }
 
 const privateAudit=fs.readFileSync(privateAuditPath,'utf8');
