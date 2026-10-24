@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">How axis choices change the appearance of the same data</title>
+<desc id="desc">Two bar graphs show identical hypothetical values: Group A is 90 units, Group B is 100 units. The left axis starts at zero, while the right axis begins at 80, making the same ten-unit difference look much larger.</desc>
+<rect width="1200" height="720" fill="#f8fafc"/>
+<text x="65" y="75" font-family="Arial" font-size="35" font-weight="bold" fill="#183b54">Same values, different visual impression</text>
+<text x="65" y="115" font-family="Arial" font-size="21" fill="#506c7e">Hypothetical teaching values only — not cannabis experimental data.</text>
+<rect x="60" y="165" width="520" height="438" rx="16" fill="#fff" stroke="#bac8d3" stroke-width="2"/>
+<rect x="620" y="165" width="520" height="438" rx="16" fill="#fff" stroke="#bac8d3" stroke-width="2"/>
+<g font-family="Arial" fill="#183b54"><text x="90" y="212" font-size="23" font-weight="bold">Y-axis starts at 0</text><text x="650" y="212" font-size="23" font-weight="bold">Y-axis starts at 80</text></g>
+<g stroke="#566d7c" stroke-width="3"><path d="M140 255V530H510"/><path d="M700 255V530H1070"/></g>
+<g font-family="Arial" font-size="17" fill="#3f5b6d">
+<text x="96" y="537">0</text><text x="86" y="405">50</text><text x="77" y="270">100</text>
+<text x="654" y="537">80</text><text x="654" y="405">90</text><text x="644" y="270">100</text>
+<text x="210" y="567">A</text><text x="375" y="567">B</text><text x="775" y="567">A</text><text x="940" y="567">B</text>
+</g>
+<g stroke="#d6e0e6" stroke-width="2"><path d="M140 393H510M140 255H510M700 393H1070M700 255H1070"/></g>
+<g fill="#2d7594"><rect x="175" y="282.5" width="105" height="247.5"/><rect x="735" y="393" width="105" height="137"/></g>
+<g fill="#37906f"><rect x="340" y="255" width="105" height="275"/><rect x="900" y="255" width="105" height="275"/></g>
+<g font-family="Arial" font-size="22" font-weight="bold" fill="#173950"><text x="202" y="276">90</text><text x="360" y="248">100</text><text x="762" y="385">90</text><text x="922" y="248">100</text></g>
+<rect x="65" y="627" width="1070" height="64" rx="13" fill="#fff0d2" stroke="#b7832d" stroke-width="2"/>
+<text x="90" y="667" font-family="Arial" font-size="22" fill="#654615">Read axes, units, sample sizes and uncertainty before interpreting apparent effects.</text>
+</svg>
