@@ -159,7 +159,7 @@ def optimize_img_tag(tag: str, record: ImageRecord) -> str:
 
 def rewrite_library(html: str, records: dict[str, ImageRecord]) -> tuple[str, int, list[str]]:
     pattern = re.compile(
-        r'<img\\b[^>]*\\bsrc=(["\\x27])' + re.escape(ASSET_PREFIX) + r'([^"\\x27]+)\\1[^>]*>',
+        r'<img\\b[^>]*\\ssrc=(["\\x27])' + re.escape(ASSET_PREFIX) + r'([^"\\x27]+)\\1[^>]*>',
         flags=re.IGNORECASE,
     )
     replaced = 0
