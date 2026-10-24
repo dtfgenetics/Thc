@@ -129,7 +129,10 @@ jobs:
           grep -Fq 'aria-label="Game navigation"' "$high_land"
           ! grep -Fq '<style>' "$high_land"
           ! grep -Fq 'style="' "$high_land"
-          for slug in weedopolis crossword who-took-it ganjumanji thc-rpg; do
+          # Only unreleased candidates must keep holding-page markup.
+          # Ganjumanji and THC RPG use pinned external playable bundles and must
+          # be allowed to replace their integration placeholders upon promotion.
+          for slug in weedopolis crossword who-took-it; do
             page="site/public-route-patch/games/$slug/index.html"
             test -s "$page"
             grep -Fq 'href="/games/dtf-route.css"' "$page"
