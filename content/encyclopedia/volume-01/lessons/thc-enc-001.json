@@ -102,19 +102,20 @@
     "releaseTimeReview": "completed_2026-10-03_canonical_identity_content_and_release_boundary_checked"
   },
   "knowledgeCheck": [
-    "An investigator gives two lighting treatments in two separate chambers, grows eight plants per chamber, then reports eight independent treatment replicates per treatment. Identify the experimental unit, explain why the replication claim is invalid, and propose a stronger design.",
-    "A bar chart reports group A = 90 and group B = 100, but its vertical axis begins at 80. What information must accompany the chart before deciding whether the difference is biologically meaningful? Distinguish graph presentation from statistical inference.",
-    "A grower changes nutrient concentration, irrigation frequency and temperature in the same week and reports improved growth. Explain which causal claim is supportable, which is not, and what measurement and comparison design would improve the evidence."
+    "For \"How to Read Cannabis Plant Science Critically\", a researcher assigns one entire chamber to each lighting treatment and measures eight plants per chamber. Identify the experimental unit, explain the pseudoreplication problem, and state what independent chamber-level replication would change.",
+    "A learner claims, \"Published means proven.\" Use the lesson's distinction between observation, controlled evidence and transfer limits to challenge that misconception. What information about design, biological context and uncertainty must be checked before applying a cannabis science claim?",
+    "Applied case — A grower changes nutrient concentration, irrigation frequency and temperature simultaneously and reports faster growth. Design a comparison and recordkeeping plan that separates correlation from causation. Identify the baseline, controls, independent experimental units, relevant outcome measures and one result that would make you revise the causal interpretation."
   ],
   "assessmentDesign": {
-    "version": 1,
+    "version": 2,
     "answerRationaleStatus": "draft_for_editorial_review",
     "scoringIntent": "Require design-aware interpretation and explain how to separate observations from causal claims.",
     "answerRationales": [
-      "The chamber is the experimental unit because the lighting treatment was assigned to whole chambers. Eight plants sharing one treated chamber are not eight independent chamber replicates. Replicate treatment assignments across multiple independent chambers or independent runs with planned blocking/randomization and document chamber effects.",
-      "Both plots show exactly a ten-unit difference. A truncated y-axis changes visual emphasis, not the data. Review the stated unit, baseline, sample counts, experimental units, within-group spread, interval definition, measurement reliability and the practical relevance of the effect before drawing a conclusion.",
-      "An association between a package of simultaneous changes and later growth is observed; the result does not identify which change caused it. Establish baseline measures, comparable controls or repeatable matched cycles, stable covariates and a specified outcome and sampling schedule, changing one factor at a time where appropriate."
-    ]
+      "A chamber is the unit receiving the lighting treatment. Plants sharing one treatment chamber are subsamples rather than eight independent treatment replicates. Use multiple independently assigned chambers or suitable blocked experimental runs, and report measured outcomes and uncertainty.",
+      "Publication alone cannot establish universal truth. Evaluate experiment design, measured outcomes, replication, biological material, context, controls, possible confounders and independent corroboration; distinguish evidence from guidance or legal requirements.",
+      "Simultaneous changes only support an association with the treatment bundle. Record pre-change conditions, growth metrics, plant and chamber identity, the time series and confounders; compare with suitable independent control units and change one factor at a time where feasible. Revise causation claims when independent comparisons do not reproduce the effect."
+    ],
+    "pattern": "mechanism_or_workflow + misconception_challenge + applied_verification"
   },
   "visuals": [
     {
