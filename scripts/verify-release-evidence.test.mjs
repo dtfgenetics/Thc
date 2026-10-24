@@ -10,3 +10,9 @@ test('a missing gate blocks release', () => { const m=good(); delete m.gates.vis
 test('unchecked or placeholder evidence blocks release', () => { const m=good(); m.gates.scientific.evidence=['todo']; assert.match(validate(m).join(','),/scientific/); });
 test('insecure production URL blocks release', () => {const m=good();m.productionUrl='http://example.com'; assert.match(validate(m).join(','),/productionUrl/);});
 test('invalid timestamp blocks release', () => {const m=good();m.gates.outcome.checkedAt='not-a-date';assert.match(validate(m).join(','),/outcome/);});
+test("future timestamps block release", () => { const m=good(); m.gates.visual.checkedAt="2099-01-01T00:00:00Z"; assert.match(validate(m).join(','), /visual/); });
+test("impossible calendar dates block release", () => { const m=good(); m.gates.visual.checkedAt="2026-02-30T12:00:00Z"; assert.match(validate(m).join(','), /visual/); });
+test("timestamps without timezone block release", () => { const m=good(); m.gates.visual.checkedAt="2026-10-16T12:00:00"; assert.match(validate(m).join(','), /visual/); });
+test("placeholder HTTPS hosts block release", () => { const m=good(); m.gates.visual.evidence=["https://example.com/report"]; assert.match(validate(m).join(','), /visual/); });
+test("local HTTPS hosts block release", () => { const m=good(); m.gates.visual.evidence=["https://localhost/report"]; assert.match(validate(m).join(','), /visual/); });
+test("credentialed HTTPS URLs block release", () => { const m=good(); m.gates.visual.evidence=["https://user:password@github.com/file"]; assert.match(validate(m).join(','), /visual/); });

@@ -4,19 +4,37 @@ import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
 export const REQUIRED = ['functional','scientific','visual','deployment','outcome'];
+function validHttpsUrl(value) {
+  if (typeof value !== 'string' || !value.trim()) return false;
+  try {
+    const url = new URL(value);
+    const host = url.hostname.toLowerCase();
+    return url.protocol === 'https:' && !url.username && !url.password &&
+      host.includes('.') && !['example.com', 'example.org', 'example.net', 'localhost'].includes(host) &&
+      !host.endsWith('.localhost') && !host.endsWith('.local') && !host.endsWith('.invalid');
+  } catch { return false; }
+}
+function validTimestamp(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/.test(value)) return false;
+  const parsed = Date.parse(value);
+  if (!Number.isFinite(parsed) || parsed > Date.now()) return false;
+  const [year, month, day] = value.slice(0, 10).split('-').map(Number);
+  const d = new Date(Date.UTC(year, month - 1, day));
+  return d.getUTCFullYear() === year && d.getUTCMonth() + 1 === month && d.getUTCDate() === day;
+}
 export function validate(manifest) {
   const errors = [];
   if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest)) return ['manifest must be an object'];
   for (const field of ['project','release','productionUrl']) {
     if (typeof manifest[field] !== 'string' || !manifest[field].trim()) errors.push(`${field} is required`);
   }
-  if (manifest.productionUrl && (!/^https:\/\//.test(manifest.productionUrl) || !URL.canParse(manifest.productionUrl))) errors.push('productionUrl must be a valid HTTPS URL');
+  if (manifest.productionUrl && !validHttpsUrl(manifest.productionUrl)) errors.push('productionUrl must be a valid public HTTPS URL');
   if (!manifest.gates || typeof manifest.gates !== 'object' || Array.isArray(manifest.gates)) return [...errors, 'gates object is required'];
   for (const gate of REQUIRED) {
     const item = manifest.gates[gate];
     if (!item || item.status !== 'passed') { errors.push(`${gate}: status must be passed`); continue; }
-    if (typeof item.checkedAt !== 'string' || !/^\d{4}-\d{2}-\d{2}T/.test(item.checkedAt) || !Number.isFinite(Date.parse(item.checkedAt))) errors.push(`${gate}: valid checkedAt timestamp required`);
-    if (!Array.isArray(item.evidence) || !item.evidence.length || item.evidence.some(e => typeof e !== 'string' || !/^https:\/\//.test(e) || !URL.canParse(e))) errors.push(`${gate}: at least one valid HTTPS evidence URL required`);
+    if (!validTimestamp(item.checkedAt)) errors.push(`${gate}: valid nonfuture checkedAt timestamp required`);
+    if (!Array.isArray(item.evidence) || !item.evidence.length || item.evidence.some(e => !validHttpsUrl(e))) errors.push(`${gate}: at least one valid public HTTPS evidence URL required`);
   }
   return errors;
 }
