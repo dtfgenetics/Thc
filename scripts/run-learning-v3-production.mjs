@@ -159,7 +159,7 @@ const originalMissingVisual = `function img(item, alt, { ratio = '4/3', eager = 
 }`;
 const brandedMissingVisual = `function img(item, alt, { ratio = '4/3', eager = false } = {}) {
   if (!item) return \`<div class="v3-image-placeholder" role="img" aria-label="\${esc(alt)}"><span>Teaching Healthy Cultivation</span><strong>\${esc(alt)}</strong></div>\`;
-  return \`<img src="\${esc(imageUrl(item))}" alt="\${esc(imageAlt(item, alt))}" \${eager ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'} decoding="async" style="aspect-ratio:\${esc(ratio)}">\`;
+  return \`<img src="\${esc(imageUrl(item))}" alt="\${esc(imageAlt(item, alt))}" \${eager ? 'loading="eager" fetchpriority="high" data-no-lazy="1"' : 'loading="lazy"'} decoding="async" style="aspect-ratio:\${esc(ratio)}">\`;
 }`;
 if (!publisher.includes(originalMissingVisual) && !publisher.includes(brandedMissingVisual)) {
   throw new Error('Could not locate the Learning V3 missing-visual renderer; refusing an unreviewed runtime patch.');
