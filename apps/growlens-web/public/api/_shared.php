@@ -440,10 +440,15 @@ function growlens_cookie_path(): string
     return $configured !== '' ? $configured : '/growlens/';
 }
 
+function growlens_cookie_is_secure(): bool
+{
+    return (!empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off')
+        || ((string)($_SERVER['SERVER_PORT'] ?? '') === '443');
+}
+
 function growlens_set_session_cookie(string $token, int $expiresAt): void
 {
-    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-        || ((string)($_SERVER['SERVER_PORT'] ?? '') === '443');
+    $secure = growlens_cookie_is_secure();
 
     setcookie(GROWLENS_SESSION_COOKIE, $token, [
         'expires' => $expiresAt,
@@ -459,7 +464,7 @@ function growlens_clear_session_cookie(): void
     setcookie(GROWLENS_SESSION_COOKIE, '', [
         'expires' => time() - 3600,
         'path' => growlens_cookie_path(),
-        'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+        'secure' => growlens_cookie_is_secure(),
         'httponly' => true,
         'samesite' => 'Strict'
     ]);
