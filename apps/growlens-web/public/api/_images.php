@@ -93,21 +93,33 @@ function growlens_store_uploaded_image(
 
     $extension = $allowedTypes[$mimeType];
     $directory = growlens_user_image_dir($userId);
-    foreach (['jpg', 'png', 'webp'] as $candidateExtension) {
-        $candidate = $directory . DIRECTORY_SEPARATOR . $photoId . '.' . $candidateExtension;
-        if ($candidateExtension !== $extension) {
-            @unlink($candidate);
-        }
-    }
-
     $destination = $directory . DIRECTORY_SEPARATOR . $photoId . '.' . $extension;
-    if (!move_uploaded_file($temporaryPath, $destination)) {
+
+    // Stage within the same private directory: failed transfers cannot destroy
+    // an existing photo before the replacement is ready.
+    $staging = $directory . DIRECTORY_SEPARATOR . '.upload-' . bin2hex(random_bytes(16)) . '.tmp';
+    if (!move_uploaded_file($temporaryPath, $staging)) {
+        growlens_send_json([
+            'ok' => false,
+            'error' => 'Could not stage the uploaded image.'
+        ], 500);
+    }
+    @chmod($staging, 0600);
+    if (!rename($staging, $destination)) {
+        @unlink($staging);
         growlens_send_json([
             'ok' => false,
             'error' => 'Could not store the uploaded image.'
         ], 500);
     }
     @chmod($destination, 0600);
+
+    // Only remove obsolete image extensions after replacement succeeded.
+    foreach (['jpg', 'png', 'webp'] as $candidateExtension) {
+        if ($candidateExtension !== $extension) {
+            @unlink($directory . DIRECTORY_SEPARATOR . $photoId . '.' . $candidateExtension);
+        }
+    }
 
     $metadata = [
         'id' => $photoId,
