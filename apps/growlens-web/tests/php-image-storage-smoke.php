@@ -67,6 +67,26 @@ try {
     image_smoke_assert(($listed[0]['id'] ?? '') === $photoId, 'Listed metadata should identify the stored photo.');
     image_smoke_assert(growlens_image_file_path($userId, $listed[0]) === $imagePath, 'Stored image path should resolve inside the user directory.');
 
+    // A malformed upload must not disturb an existing private image.
+    // Validation is performed before any replacement or cleanup.
+    $invalidUploadScript = sprintf(
+        'putenv(%s);$_SERVER["DOCUMENT_ROOT"]=%s;require %s;growlens_store_uploaded_image(%s,%s,%s,null,%s,%s);',
+        var_export('GROWLENS_DATA_DIR=' . $privateRoot, true),
+        var_export($documentRoot, true),
+        var_export(realpath(dirname(__DIR__) . '/public/api/_images.php'), true),
+        var_export($userId, true),
+        var_export($photoId, true),
+        var_export(['error' => UPLOAD_ERR_INI_SIZE, 'tmp_name' => '', 'size' => 0], true),
+        var_export('observation-smoke-test', true),
+        var_export(growlens_now(), true)
+    );
+    $output = [];
+    $exitStatus = 0;
+    exec(escapeshellarg(PHP_BINARY) . ' -r ' . escapeshellarg($invalidUploadScript), $output, $exitStatus);
+    image_smoke_assert($exitStatus === 0 && str_contains(implode("\\n", $output), 'Image upload failed.'), 'Invalid upload must be rejected.');
+    image_smoke_assert(file_get_contents($imagePath) === 'private-image-test', 'Rejected replacement must retain original bytes.');
+    image_smoke_assert(is_array(growlens_get_image_metadata($userId, $photoId)), 'Rejected replacement must retain metadata.');
+
     image_smoke_assert(growlens_delete_image($userId, $photoId), 'Private image deletion should succeed.');
     image_smoke_assert(!is_file($imagePath), 'Private image bytes should be removed.');
     image_smoke_assert(!is_file(growlens_image_metadata_path($userId, $photoId)), 'Private image metadata should be removed.');
