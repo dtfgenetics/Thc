@@ -1,0 +1,24 @@
+name: Technology Ownership Reconciliation
+on:
+  pull_request:
+    paths:
+      - 'scripts/report-technology-ownership.mjs'
+      - 'tests/technology-ownership-reconciliation.test.mjs'
+      - 'data/technology-adoption-registry.json'
+      - 'data/tool-execution-registry.json'
+      - '.github/workflows/technology-ownership-reconciliation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/technology-ownership-reconciliation.test.mjs
