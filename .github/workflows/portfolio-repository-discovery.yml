@@ -1,0 +1,23 @@
+name: Portfolio Repository Discovery Validation
+on:
+  pull_request:
+    paths:
+      - 'data/portfolio-repository-discovery.json'
+      - 'data/tool-execution-registry.json'
+      - 'scripts/validate-portfolio-repository-discovery.mjs'
+      - '.github/workflows/portfolio-repository-discovery.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/validate-portfolio-repository-discovery.mjs
