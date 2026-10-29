@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "policy": "Reference-only competitive engineering research. Implement original DTF code; do not fetch, vendor, or copy external source.",
+  "sources": [
+    {
+      "id": "boardgameio",
+      "repository": "boardgameio/boardgame.io",
+      "license": "MIT",
+      "use": "Turn-based game-state architecture and test fixtures",
+      "mode": "reference-only"
+    },
+    {
+      "id": "colyseus",
+      "repository": "colyseus/colyseus",
+      "license": "MIT",
+      "use": "Server-authoritative multiplayer architecture",
+      "mode": "reference-only"
+    },
+    {
+      "id": "pagefind",
+      "repository": "Pagefind/pagefind",
+      "license": "MIT",
+      "use": "Static encyclopedia search and indexing",
+      "mode": "reference-only"
+    },
+    {
+      "id": "docusaurus",
+      "repository": "facebook/docusaurus",
+      "license": "MIT",
+      "use": "Education navigation and content organization",
+      "mode": "reference-only"
+    },
+    {
+      "id": "moodle",
+      "repository": "moodle/moodle",
+      "license": "GPL-3.0",
+      "use": "Assessment design and gradebook reference; architecture-only pending license review",
+      "mode": "reference-only"
+    },
+    {
+      "id": "openedx",
+      "repository": "openedx/openedx-platform",
+      "license": "VERIFY",
+      "use": "Academy assessment architecture reference",
+      "mode": "reference-only"
+    },
+    {
+      "id": "plantvillage",
+      "repository": "spMohanty/PlantVillage-Dataset",
+      "license": "VERIFY-DATA-RIGHTS",
+      "use": "Diagnostic dataset organization and evaluation; do not ingest image data",
+      "mode": "reference-only"
+    }
+  ]
+}
