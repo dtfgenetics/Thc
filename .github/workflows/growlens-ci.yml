@@ -66,6 +66,9 @@ jobs:
       - name: Run GrowLens PHP backend smoke test
         run: php apps/growlens-web/tests/php-backend-smoke.php
 
+      - name: Test GrowLens Origin security boundary
+        run: php apps/growlens-web/tests/php-origin-security-smoke.php
+
       - name: Run GrowLens schema-v2 persistence smoke test
         run: php apps/growlens-web/tests/php-state-v2-smoke.php
 
