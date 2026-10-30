@@ -259,9 +259,7 @@ function linePageHtml(line, mediaList) {
     `${image(mediaList[index], card.altText, index === 0)}<p>${badge(`${card.generation} · ${card.seedType}`)}</p><h3>${esc(line.name)}</h3>`
   )).join('');
   const traits = (line.breedingDirection || []).map((value) => `<li>${esc(value)}</li>`).join('');
-  const stores = Array.isArray(line.storeRoutes) && line.storeRoutes.length
-    ? line.storeRoutes.map((route, index) => button(route.path, route.label, index === 0)).join('')
-    : '<p>No current WooCommerce route is claimed from this catalog page.</p>';
+  const stores = '<p><strong>Seed sales are temporarily on hold.</strong> This profile remains available for genetics and breeding education only. Purchasing is currently disabled.</p>';
 
   return `<div data-dtf-genetics-line="${esc(line.slug)}" style="background:#f4f8f4;color:#173522">
 <section style="max-width:1180px;margin:auto;padding:52px 22px 30px">
@@ -343,7 +341,7 @@ function catalogCardHtml({ line, mediaList }, { current = false } = {}) {
   const releaseLabels = line.releaseCards.map((card) => `${card.generation} ${card.seedType}`).join(' · ');
   const lineage = line.lineage || (line.lineageStatus === 'intentionally-unknown-on-reviewed-card' ? 'Unknown lineage' : 'Lineage record pending');
   const storeStatus = current
-    ? `<span class="dtf-genetics-commerce-chip">Current store route</span>`
+    ? `<span class="dtf-genetics-commerce-chip">Sales on hold</span>`
     : `<span class="dtf-genetics-commerce-chip is-library">Breeding library</span>`;
 
   return panel(`<a href="/seeds/${esc(line.slug)}/" class="dtf-genetics-card-link" style="color:inherit;text-decoration:none">${image(mediaList[0], firstCard.altText)}<div class="dtf-genetics-card-copy"><div class="dtf-genetics-card-meta">${badge(releaseLabels)}${storeStatus}</div><h2>${esc(line.name)}</h2><p><strong>${esc(lineage)}</strong></p><p>${esc(line.summary)}</p><strong class="dtf-genetics-card-cta">Open line profile →</strong></div></a>`);
@@ -359,11 +357,11 @@ const blueMango = prepared.find(({ line }) => line.id === 'blue-mango');
 
 const seedsHtml = `<div data-dtf-genetics-library="2026" data-dtf-genetics-structure="release-first-v2" style="background:#f4f8f4;color:#173522">
 <section style="max-width:1240px;margin:auto;padding:58px 22px 38px;display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:38px;align-items:center">
-  <div><p style="color:#2d7d48;font-weight:900;text-transform:uppercase">DTF Genetics · documented breeding library</p><h2 style="font-size:clamp(2.6rem,6vw,5rem);margin:0 0 20px">From breeding notes to current releases.</h2><p style="font-size:1.13rem;line-height:1.8;color:#46604e">Start with the breeding projects that have current store listings, then open the full library when you want to explore the broader DTF Genetics catalog. Every profile preserves reviewed strain-card art, generation context, documented lineage where available, and clearly labeled unknowns.</p><p>${button('#current-genetics', 'Current release projects')}${button('#genetics-library', 'Full breeding library', false)}${button('/shop/', 'Shop current releases', false)}</p></div>
+  <div><p style="color:#2d7d48;font-weight:900;text-transform:uppercase">DTF Genetics · documented breeding library</p><h2 style="font-size:clamp(2.6rem,6vw,5rem);margin:0 0 20px">Explore our documented breeding projects.</h2><p style="font-size:1.13rem;line-height:1.8;color:#46604e">Explore the documented genetics profiles, including projects previously listed in our store, without purchasing or checkout links. Every profile preserves reviewed strain-card art, generation context, documented lineage where available, and clearly labeled unknowns.</p><p>${button('#current-genetics', 'Current release projects')}${button('#genetics-library', 'Full breeding library', false)}</p></div>
   <div>${image(blueMango?.mediaList?.[0], blueMango?.line?.releaseCards?.[0]?.altText || 'Blue Mango strain card', true)}</div>
 </section>
 <section id="current-genetics" class="dtf-genetics-current" style="max-width:1240px;margin:auto;padding:18px 22px 72px">
-  <div class="dtf-genetics-section-heading"><div><p class="dtf-genetics-eyebrow">Available now</p><h2>Current release projects</h2></div><p>These breeding projects currently connect to WooCommerce listings. Open the project for context; use the Shop for price, stock, quantity, and checkout.</p></div>
+  <div class="dtf-genetics-section-heading"><div><p class="dtf-genetics-eyebrow">Sales on hold</p><h2>Featured breeding projects</h2></div><p>Seed sales are temporarily on hold. Explore genetics, lineage, breeding notes and reviewed strain-card imagery; purchasing is currently disabled.</p></div>
   <div class="dtf-genetics-current-grid">${currentProjectsHtml}</div>
 </section>
 <section id="genetics-library" class="dtf-genetics-library-section" style="max-width:1240px;margin:auto;padding:12px 22px 72px">
@@ -373,7 +371,7 @@ const seedsHtml = `<div data-dtf-genetics-library="2026" data-dtf-genetics-struc
     <div class="dtf-genetics-library-grid">${libraryProjectsHtml}</div>
   </details>
 </section>
-<section style="background:#12341f;color:#fff"><div style="max-width:1240px;margin:auto;padding:52px 22px"><h2 style="color:#fff">Catalog standard: observation over hype.</h2><p>Product pages control current price, inventory, quantity, seed type, fulfillment information and policies. The genetics library does not invent availability or guarantee phenotype, aroma, yield or finish date.</p></div></section>
+<section style="background:#12341f;color:#fff"><div style="max-width:1240px;margin:auto;padding:52px 22px"><h2 style="color:#fff">Catalog standard: observation over hype.</h2><p>Seed sales are temporarily on hold. This educational genetics library does not offer checkout, inventory claims or purchasing links. Traits are observations and breeding directions, not guaranteed outcomes.</p></div></section>
 </div>`;
 
 if (apply) {
