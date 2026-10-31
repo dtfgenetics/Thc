@@ -17,5 +17,11 @@ for (const relativePath of pages) {
     if (!ok) { console.error(relativePath + ': FAIL ' + label); failed = true; }
   }
 }
+// Legacy Shop V5 can overwrite WordPress content; require its production guard.
+const workflow = fs.readFileSync(path.join(root, '.github/workflows/wordpress-shop-storefront-v5.yml'), 'utf8');
+if (!workflow.includes('id: sales_hold') || !workflow.includes("if: steps.sales_hold.outputs.active != 'true'")) {
+  console.error('Legacy Shop V5 publisher is not suspended during the seed sales hold.');
+  failed = true;
+}
 if (failed) process.exit(1);
 console.log('Seed-sales hold editorial page guard passed. Live WooCommerce checkout must also be disabled and separately verified.');
