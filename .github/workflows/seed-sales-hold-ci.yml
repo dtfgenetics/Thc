@@ -29,4 +29,10 @@ jobs:
             if (!isset($GLOBALS["hooks"][$key]) || $GLOBALS["hooks"][$key](true, null) !== false) {fwrite(STDERR,"FAIL: ".$key.PHP_EOL); exit(1);}
           }
           if (!isset($GLOBALS["hooks"]["woocommerce_checkout_process"]) || !isset($GLOBALS["hooks"]["woocommerce_check_cart_items"]) || !isset($GLOBALS["hooks"]["woocommerce_store_api_checkout_update_order_from_request"])) {exit(1);}
+          $GLOBALS["hooks"]["woocommerce_checkout_process"]();
+          if (empty($GLOBALS["notices"])) {fwrite(STDERR,"FAIL: no checkout block notice".PHP_EOL);exit(1);}
+          $blocked = false;
+          try {$GLOBALS["hooks"]["woocommerce_store_api_checkout_update_order_from_request"]();}
+          catch (\\Exception $error) {$blocked = str_contains($error->getMessage(), "on hold");}
+          if (!$blocked) {fwrite(STDERR,"FAIL: Store API checkout was not blocked".PHP_EOL);exit(1);}
           echo "Sales hold hooks validated".PHP_EOL;'
