@@ -39,6 +39,6 @@ jobs:
           foreach (["woocommerce_before_shop_loop","woocommerce_before_single_product"] as $name) {
             if (!isset($GLOBALS["hooks"][$name])) {fwrite(STDERR,"FAIL: missing hold notice hook".PHP_EOL);exit(1);}
             ob_start(); $GLOBALS["hooks"][$name](); $html = ob_get_clean();
-            if (!str_contains($html, "Seed sales are temporarily on hold") || !str_contains($html, "role=\\"status\\"")) {fwrite(STDERR,"FAIL: no public hold notice".PHP_EOL);exit(1);}
+            if (!str_contains($html, "Seed sales are temporarily on hold") || !str_contains($html, "dtf-sales-hold-notice")) {fwrite(STDERR,"FAIL: no public hold notice".PHP_EOL);exit(1);}
           }
           echo "Sales hold hooks validated".PHP_EOL;'
