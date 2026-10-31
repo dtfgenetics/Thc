@@ -88,9 +88,8 @@ jobs:
           test -s site/wordpress/assets/infographics/Nutrient_Uptake_and_Root_Zone_Chemistry.png
           image_count="$(find site/wordpress/assets/infographics -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | wc -l | tr -d ' ')"
           test "$image_count" -ge 20
-          grep -Fq '/product/10-regular-f2-blue-mango-seeds/' site/wordpress/pages/seeds.html
-          grep -Fq '/product/10-feminized-f2-blue-mango-x/' site/wordpress/pages/shop.html
-          grep -Fq '/product/10-reg-f1-blueberry-bubblegum/' site/wordpress/pages/shop.html
+          # Sales are temporarily on hold. Require the visible notice and block public purchase links.
+          node scripts/validate-seed-sales-hold.mjs
 
       - name: Probe live WooCommerce products without writing
         id: commerce_probe
