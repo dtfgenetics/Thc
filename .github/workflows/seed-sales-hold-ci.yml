@@ -1,0 +1,32 @@
+name: Verify Seed Sales Hold Transaction Guard
+on:
+  pull_request:
+    paths:
+      - 'site/wordpress/mu-plugins/dtf-seed-sales-hold.php'
+      - '.github/workflows/seed-sales-hold-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/mu-plugins/dtf-seed-sales-hold.php'
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP syntax check
+        run: php -l site/wordpress/mu-plugins/dtf-seed-sales-hold.php
+      - name: Verify purchase-blocking hooks
+        run: |
+          php -r '
+          define("ABSPATH", __DIR__);
+          $GLOBALS["hooks"] = [];
+          function add_filter($name,$fn,$priority=10,$count=1) {$GLOBALS["hooks"][$name]=$fn;}
+          function add_action($name,$fn,$priority=10,$count=1) {$GLOBALS["hooks"][$name]=$fn;}
+          function __($s,$domain) {return $s;}
+          function wc_add_notice($message,$type) {$GLOBALS["notices"][]=$message;}
+          require "site/wordpress/mu-plugins/dtf-seed-sales-hold.php";
+          foreach (["woocommerce_is_purchasable","woocommerce_variation_is_purchasable","woocommerce_add_to_cart_validation"] as $key) {
+            if (!isset($GLOBALS["hooks"][$key]) || $GLOBALS["hooks"][$key](true, null) !== false) {fwrite(STDERR,"FAIL: ".$key.PHP_EOL); exit(1);}
+          }
+          if (!isset($GLOBALS["hooks"]["woocommerce_checkout_process"]) || !isset($GLOBALS["hooks"]["woocommerce_check_cart_items"]) || !isset($GLOBALS["hooks"]["woocommerce_store_api_checkout_update_order_from_request"])) {exit(1);}
+          echo "Sales hold hooks validated".PHP_EOL;'
