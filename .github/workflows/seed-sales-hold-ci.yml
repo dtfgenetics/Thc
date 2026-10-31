@@ -33,6 +33,6 @@ jobs:
           if (empty($GLOBALS["notices"])) {fwrite(STDERR,"FAIL: no checkout block notice".PHP_EOL);exit(1);}
           $blocked = false;
           try {$GLOBALS["hooks"]["woocommerce_store_api_checkout_update_order_from_request"]();}
-          catch (\\Exception $error) {$blocked = str_contains($error->getMessage(), "on hold");}
+          catch (\Exception $error) {$blocked = str_contains($error->getMessage(), "on hold");}
           if (!$blocked) {fwrite(STDERR,"FAIL: Store API checkout was not blocked".PHP_EOL);exit(1);}
           echo "Sales hold hooks validated".PHP_EOL;'
