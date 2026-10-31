@@ -57,3 +57,16 @@ add_action('woocommerce_store_api_checkout_update_order_from_request', static fu
 add_filter('woocommerce_loop_add_to_cart_link', static function ($html) {
     return dtf_seed_sales_hold_active() ? '<span class="dtf-sales-hold">Sales temporarily on hold</span>' : $html;
 }, PHP_INT_MAX, 1);
+
+/**
+ * Show the suspension on WooCommerce-owned pages, including dynamic catalog
+ * templates which are not replaced by the static Seeds/Shop editorial files.
+ */
+function dtf_seed_sales_hold_notice(): void {
+    if (!dtf_seed_sales_hold_active()) { return; }
+    echo '<div class="woocommerce-info dtf-sales-hold-notice" role="status">'
+        . esc_html__('Seed sales are temporarily on hold. Genetics information remains available, but purchasing is disabled.', 'dtf')
+        . '</div>';
+}
+add_action('woocommerce_before_shop_loop', 'dtf_seed_sales_hold_notice', 5);
+add_action('woocommerce_before_single_product', 'dtf_seed_sales_hold_notice', 5);
