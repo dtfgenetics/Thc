@@ -47,7 +47,10 @@ add_action('woocommerce_checkout_process', static function (): void {
 // The Store API uses a different validation path from classic checkout.
 add_action('woocommerce_store_api_checkout_update_order_from_request', static function () {
     if (dtf_seed_sales_hold_active()) {
-        if (class_exists('Automattic\\WooCommerce\\StoreApi\\Exceptions\\RouteException')) {\n            throw new \\Automattic\\WooCommerce\\StoreApi\\Exceptions\\RouteException('dtf_sales_hold', 'Seed sales are temporarily on hold. Checkout is unavailable.', 403);\n        }\n        throw new \\Exception('Seed sales are temporarily on hold. Checkout is unavailable.');
+        if (class_exists('Automattic\\WooCommerce\\StoreApi\\Exceptions\\RouteException')) {
+            throw new \\Automattic\\WooCommerce\\StoreApi\\Exceptions\\RouteException('dtf_sales_hold', 'Seed sales are temporarily on hold. Checkout is unavailable.', 403);
+        }
+        throw new \\Exception('Seed sales are temporarily on hold. Checkout is unavailable.');
     }
 }, PHP_INT_MAX, 1);
 
