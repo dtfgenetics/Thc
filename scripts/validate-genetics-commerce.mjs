@@ -15,6 +15,11 @@ const errors = [];
 const warnings = [];
 const seedsLower = seedsHtml.toLowerCase();
 const shopLower = shopHtml.toLowerCase();
+const holdText = 'Seed sales are temporarily on hold.';
+const seedsHold = seedsHtml.includes(holdText);
+const shopHold = shopHtml.includes(holdText);
+if (seedsHold !== shopHold) errors.push('Seeds and Shop pages disagree on seed-sales hold status');
+const salesHold = seedsHold && shopHold;
 
 if (registry?.schemaVersion !== 1) errors.push('genetics.json schemaVersion must be 1');
 if (!Array.isArray(registry?.products) || registry.products.length === 0) {
@@ -58,11 +63,15 @@ for (const product of registry.products || []) {
     }
   }
 
-  if (!seedsHtml.includes(product.productPath)) {
-    errors.push(`${label}: Seeds page does not link ${product.productPath}`);
-  }
-  if (!shopHtml.includes(product.productPath)) {
-    errors.push(`${label}: Shop page does not link ${product.productPath}`);
+  // Commerce routes remain recorded in the registry, but the editorial pages
+  // must not expose purchase links while the temporary sales hold is active.
+  if (salesHold) {
+    if (seedsHtml.includes(product.productPath) || shopHtml.includes(product.productPath)) {
+      errors.push(`${label}: product purchase route exposed during sales hold`);
+    }
+  } else {
+    if (!seedsHtml.includes(product.productPath)) errors.push(`${label}: Seeds page does not link ${product.productPath}`);
+    if (!shopHtml.includes(product.productPath)) errors.push(`${label}: Shop page does not link ${product.productPath}`);
   }
 
   if (product.titleNormalization?.automaticRenameAllowed !== undefined &&

@@ -48,12 +48,25 @@ jobs:
         with:
           ref: main
 
+      - name: Detect temporary seed-sales hold
+        id: sales_hold
+        shell: bash
+        run: |
+          if grep -Fq 'Seed sales are temporarily on hold.' site/wordpress/pages/shop.html; then
+            echo 'active=true' >> "$GITHUB_OUTPUT"
+            echo 'Seed sales hold active: skip legacy storefront publisher.'
+          else
+            echo 'active=false' >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup Node
+        if: steps.sales_hold.outputs.active != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
       - name: Validate isolated Shop V5 production package
+        if: steps.sales_hold.outputs.active != 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -89,6 +102,7 @@ jobs:
           NODE
 
       - name: Restore V4 portrait release-card styling
+        if: steps.sales_hold.outputs.active != 'true'
         id: v4
         env:
           APPLY_COMMERCE_ARCHIVE_V4: 'true'
@@ -100,6 +114,7 @@ jobs:
           node scripts/polish-wordpress-commerce-archive-v4.mjs | tee "$RUNNER_TEMP/shop-v4.json"
 
       - name: Publish server-rendered Shop V5 storefront
+        if: steps.sales_hold.outputs.active != 'true'
         id: v5
         env:
           APPLY_SHOP_STOREFRONT_V5: 'true'
@@ -115,6 +130,7 @@ jobs:
           echo "template_id=$template_id" >> "$GITHUB_OUTPUT"
 
       - name: Install source-controlled Shop SEO head metadata
+        if: steps.sales_hold.outputs.active != 'true'
         id: shop_seo
         shell: bash
         run: |
@@ -122,6 +138,7 @@ jobs:
           node scripts/install-wordpress-shop-seo-meta.mjs | tee "$RUNNER_TEMP/shop-seo-meta.json"
 
       - name: Purge Hostinger LiteSpeed cache
+        if: steps.sales_hold.outputs.active != 'true'
         id: cache
         shell: bash
         run: |
@@ -135,6 +152,7 @@ jobs:
           sleep 5
 
       - name: Verify Shop V5 origin and public cache
+        if: steps.sales_hold.outputs.active != 'true'
         id: verify
         shell: bash
         run: |
@@ -192,6 +210,7 @@ jobs:
           echo 'Shop V5 premium storefront, Shop SEO metadata and all three reviewed WooCommerce release images verified on public routes.'
 
       - name: Run full current production audits
+        if: steps.sales_hold.outputs.active != 'true'
         id: production_audit
         shell: bash
         run: |
