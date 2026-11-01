@@ -1,0 +1,26 @@
+name: Validate Seed Sales Hold Installer
+on:
+  pull_request:
+    paths:
+      - scripts/install-seed-sales-hold-snippet.mjs
+      - .github/workflows/install-seed-sales-hold-production.yml
+      - .github/workflows/seed-sales-hold-installer-ci.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/install-seed-sales-hold-snippet.mjs
+      - .github/workflows/install-seed-sales-hold-production.yml
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: |
+          node --check scripts/install-seed-sales-hold-snippet.mjs
+          php -l site/wordpress/mu-plugins/dtf-seed-sales-hold.php
+          grep -Fq 'workflow_dispatch:' .github/workflows/install-seed-sales-hold-production.yml
+          grep -Fq 'environment: production' .github/workflows/install-seed-sales-hold-production.yml
+          grep -Fq "if(!active(now)||now.code!==code)" scripts/install-seed-sales-hold-snippet.mjs
