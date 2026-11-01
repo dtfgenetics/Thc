@@ -1,0 +1,41 @@
+name: Install and Verify DTF Seed Sales Hold
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  install:
+    runs-on: ubuntu-24.04
+    environment: production
+    timeout-minutes: 12
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate guarded installer and PHP source
+        run: |
+          node --check scripts/install-seed-sales-hold-snippet.mjs
+          php -l site/wordpress/mu-plugins/dtf-seed-sales-hold.php
+          test -n "$WP_API_USERNAME"
+          test -n "$WP_API_PASSWORD"
+      - name: Install active sitewide hold with protected credentials
+        run: node scripts/install-seed-sales-hold-snippet.mjs
+      - name: Verify no purchasing controls in public shop response
+        run: |
+          set -euo pipefail
+          curl -4 -fsSL --retry 3 --retry-delay 3 -H 'Cache-Control: no-cache' "$WP_SITE_URL/shop/?seed_sales_hold_verify=$GITHUB_RUN_ID" -o "$RUNNER_TEMP/shop.html"
+          grep -Fqi 'Seed sales are temporarily on hold' "$RUNNER_TEMP/shop.html"
+          ! grep -Eqi 'name="add-to-cart"|class="[^"]*add_to_cart_button' "$RUNNER_TEMP/shop.html"
+      - name: Verify sample product purchasability
+        run: |
+          set -euo pipefail
+          curl -4 -fsSL --retry 3 --retry-delay 3 -H 'Cache-Control: no-cache' "$WP_SITE_URL/product/10-regular-f2-blue-mango-seeds/?seed_sales_hold_verify=$GITHUB_RUN_ID" -o "$RUNNER_TEMP/product.html"
+          grep -Fqi 'Seed sales are temporarily on hold' "$RUNNER_TEMP/product.html"
+          ! grep -Eqi 'name="add-to-cart"|name="quantity"[^>]*' "$RUNNER_TEMP/product.html"
