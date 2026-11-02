@@ -9,6 +9,10 @@
  */
 if (!defined('ABSPATH')) { exit; }
 
+// Ensure MU-plugin and Code Snippets fallback cannot register duplicate hooks
+// or redeclare functions when the same hold is installed through both paths.
+if (!function_exists('dtf_seed_sales_hold_active')) {
+
 function dtf_seed_sales_hold_active(): bool {
     // Deliberately fail closed until the site owner explicitly retires this plugin.
     return true;
@@ -70,3 +74,5 @@ function dtf_seed_sales_hold_notice(): void {
 }
 add_action('woocommerce_before_shop_loop', 'dtf_seed_sales_hold_notice', 5);
 add_action('woocommerce_before_single_product', 'dtf_seed_sales_hold_notice', 5);
+
+} // End dual-install guard.
