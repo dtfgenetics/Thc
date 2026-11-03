@@ -244,7 +244,7 @@
 
     <section class="section" id="expanded-tools">
       <div class="wrap">
-        <div class="section-heading"><div><p class="eyebrow">THC Tool Suite</p><h2>Choose the job, not the acronym.</h2></div><p>Browse the full toolbox by task: water and irrigation, environment and light, plant health, lifecycle, and genetics. Start with GrowLens or Grow Doc if you are not sure which tool you need.</p></div><div class="tool-search"><div><label for="toolSearch">Find a tool</label><input id="toolSearch" type="search" placeholder="Try: pH, irrigation, light, breeding, dryback…" autocomplete="off" aria-describedby="toolSearchHelp toolSearchStatus"><p id="toolSearchHelp" class="muted" style="font-size:.85rem;margin:6px 0 0">Search by task, measurement, or symptom. Press Escape to clear.</p></div><div id="toolSearchStatus" class="tool-search-status" aria-live="polite">Tool count updates automatically</div></div><div id="toolSearchEmpty" class="tool-hidden" role="status" style="padding:20px;margin-bottom:18px;background:var(--paper);border:1px solid var(--line);border-radius:14px"><strong>No tools matched that search.</strong><p>Try a broader subject such as water, light, environment, or plant health.</p><button id="toolSearchReset" class="button primary" type="button">Clear search</button></div><div class="community-callout" style="margin-bottom:34px"><div><p class="eyebrow">Shared cultivation context</p><h3 style="font-size:1.7rem;margin-bottom:8px">Select the grow once. Carry the context across tools.</h3><p>Grow, room, zone, plant, cultivar and stage follow the user through the new tool suite. When a matching GrowLens record exists, supported tools can save directly into the existing GrowLens environment, irrigation, observation, feeding, reservoir and harvest record families without inventing IDs.</p></div><div class="actions"><a class="button primary" href="/growlens/">Open GrowLens</a></div></div>
+        <div class="section-heading"><div><p class="eyebrow">THC Tool Suite</p><h2>Choose the job, not the acronym.</h2></div><p>Browse the full toolbox by task: water and irrigation, environment and light, plant health, lifecycle, and genetics. Start with GrowLens or Grow Doc if you are not sure which tool you need.</p></div><div class="tool-search"><div><label for="toolSearch">Find a tool</label><input id="toolSearch" type="search" placeholder="Try: pH, irrigation, light, breeding, dryback…" autocomplete="off" aria-describedby="toolSearchHelp toolSearchStatus"><p id="toolSearchHelp" class="muted" style="font-size:.85rem;margin:6px 0 0">Search by task, measurement, or symptom. Press Enter to open the best match, Escape to clear, or / to focus search.</p></div><div id="toolSearchStatus" class="tool-search-status" aria-live="polite">Tool count updates automatically</div></div><div id="toolSearchEmpty" class="tool-hidden" role="status" style="padding:20px;margin-bottom:18px;background:var(--paper);border:1px solid var(--line);border-radius:14px"><strong>No tools matched that search.</strong><p>Try a broader subject such as water, light, environment, or plant health.</p><button id="toolSearchReset" class="button primary" type="button">Clear search</button></div><div class="community-callout" style="margin-bottom:34px"><div><p class="eyebrow">Shared cultivation context</p><h3 style="font-size:1.7rem;margin-bottom:8px">Select the grow once. Carry the context across tools.</h3><p>Grow, room, zone, plant, cultivar and stage follow the user through the new tool suite. When a matching GrowLens record exists, supported tools can save directly into the existing GrowLens environment, irrigation, observation, feeding, reservoir and harvest record families without inventing IDs.</p></div><div class="actions"><a class="button primary" href="/growlens/">Open GrowLens</a></div></div>
         <details class="tool-group" open><summary>Water, nutrition & irrigation</summary><div class="measure-panel">
         <article><strong>Water Quality Lab</strong><p>Keep pH, EC, alkalinity, hardness and major ions together.</p><a class="text-link" href="/water-quality-lab/">Open Water Lab →</a></article>
         <article><strong>Fertigation Lab</strong><p>Mass-balance fertilizer calculations with explicit units and assumptions.</p><a class="text-link" href="/fertigation-lab/">Open Fertigation Lab →</a></article>
@@ -382,7 +382,24 @@
     status.textContent=visible.length?(visible.length+' matching tool'+(visible.length===1?'':'s')+(best?' · best: '+best.title:'')):'No matching tools';
   }
   reset?.addEventListener('click',()=>{input.value='';apply();input.focus()});
-  input.addEventListener('keydown',event=>{if(event.key==='Escape'&&input.value){input.value='';apply();event.preventDefault()}});
+  input.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&input.value){input.value='';apply();event.preventDefault();return}
+    if(event.key==='Enter'){
+      const query=input.value.trim().toLowerCase().replace(/\\s+/g,' ');
+      if(!query)return;
+      const best=cards.map(item=>({...item,score:scoreCard(item,query)}))
+        .filter(item=>item.score>0&&item.href.startsWith('/'))
+        .sort((a,b)=>b.score-a.score||a.order-b.order)[0];
+      if(best){event.preventDefault();window.location.assign(best.href)}
+    }
+  });
+  document.addEventListener('keydown',event=>{
+    const tag=event.target?.tagName;
+    if(event.key==='/'&&!event.ctrlKey&&!event.metaKey&&!event.altKey&&!event.shiftKey&&
+       !event.target?.isContentEditable&&!['INPUT','TEXTAREA','SELECT'].includes(tag)){
+      event.preventDefault();input.focus();
+    }
+  });
   input.addEventListener('input',apply);
   input.addEventListener('search',apply);
   apply();
