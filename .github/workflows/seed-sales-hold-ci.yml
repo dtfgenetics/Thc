@@ -30,6 +30,24 @@ jobs:
             if (!isset($GLOBALS["hooks"][$key]) || $GLOBALS["hooks"][$key](true, null) !== false) {fwrite(STDERR,"FAIL: ".$key.PHP_EOL); exit(1);}
           }
           if (!isset($GLOBALS["hooks"]["woocommerce_checkout_process"]) || !isset($GLOBALS["hooks"]["woocommerce_check_cart_items"]) || !isset($GLOBALS["hooks"]["woocommerce_store_api_checkout_update_order_from_request"])) {exit(1);}
+          class WP_Error {
+            public $errors = [];
+            public function __construct($code="", $message="") {if ($code) {$this->add($code, $message);}}
+            public function add($code,$message) {$this->errors[$code][]=$message;}
+            public function has_errors() {return !empty($this->errors);}
+          }
+          foreach (["woocommerce_store_api_validate_add_to_cart","woocommerce_store_api_cart_errors","woocommerce_store_api_cart_item_quantity_validation"] as $key) {
+            if (!isset($GLOBALS["hooks"][$key])) {fwrite(STDERR,"FAIL: missing Store API hook ".$key.PHP_EOL);exit(1);}
+          }
+          $blockedAdd = false;
+          try {$GLOBALS["hooks"]["woocommerce_store_api_validate_add_to_cart"]();}
+          catch (\Exception $error) {$blockedAdd = str_contains($error->getMessage(), "on hold");}
+          if (!$blockedAdd) {fwrite(STDERR,"FAIL: Store API add item not blocked".PHP_EOL);exit(1);}
+          $updated = $GLOBALS["hooks"]["woocommerce_store_api_cart_item_quantity_validation"](true);
+          if (!($updated instanceof WP_Error) || !$updated->has_errors()) {fwrite(STDERR,"FAIL: Store API quantity update not blocked".PHP_EOL);exit(1);}
+          $cartErrors = new WP_Error();
+          $GLOBALS["hooks"]["woocommerce_store_api_cart_errors"]($cartErrors);
+          if (!$cartErrors->has_errors()) {fwrite(STDERR,"FAIL: stale Store API cart not rejected".PHP_EOL);exit(1);}
           $GLOBALS["hooks"]["woocommerce_checkout_process"]();
           if (empty($GLOBALS["notices"])) {fwrite(STDERR,"FAIL: no checkout block notice".PHP_EOL);exit(1);}
           $blocked = false;

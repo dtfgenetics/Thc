@@ -44,6 +44,30 @@ add_action('woocommerce_checkout_process', static function (): void {
     }
 }, PHP_INT_MAX);
 
+// The Store API add-item path uses its own validation action. Throwing rejects
+// the request before an item is added, regardless of legacy notice handling.
+add_action('woocommerce_store_api_validate_add_to_cart', static function (): void {
+    if (dtf_seed_sales_hold_active()) {
+        throw new \Exception('Seed sales are temporarily on hold. Purchasing is unavailable.');
+    }
+}, PHP_INT_MAX);
+
+// WooCommerce 11.2+ has a separate update-quantity filter (including topping
+// up existing items). Returning false is ignored; the API requires WP_Error.
+add_filter('woocommerce_store_api_cart_item_quantity_validation', static function ($valid) {
+    if (dtf_seed_sales_hold_active()) {
+        return new \WP_Error('dtf_sales_hold', 'Seed sales are temporarily on hold. Cart updates are unavailable.');
+    }
+    return $valid;
+}, PHP_INT_MAX, 1);
+
+// Reject cart validation for pre-existing guest sessions in Cart/Checkout blocks.
+add_action('woocommerce_store_api_cart_errors', static function ($errors): void {
+    if (dtf_seed_sales_hold_active() && is_object($errors) && method_exists($errors, 'add')) {
+        $errors->add('dtf_sales_hold', 'Seed sales are temporarily on hold. Checkout is unavailable.');
+    }
+}, PHP_INT_MAX, 1);
+
 // The Store API uses a different validation path from classic checkout.
 add_action('woocommerce_store_api_checkout_update_order_from_request', static function () {
     if (dtf_seed_sales_hold_active()) {
