@@ -124,7 +124,7 @@ function band(v){const r=targetRange();if(r)return v<r.lo?'low':v<=r.hi?'mod':v<
 function currentLeaf(air,u){
  const mode=leafMode?.value||'offset';
  if(mode==='same')return air;
- if(mode==='measured'){const raw=Number(leafMeasured.value);return Number.isFinite(raw)?toC(raw,u):NaN}
+ if(mode==='measured'){const raw=leafMeasured.value.trim()===''?NaN:Number(leafMeasured.value);return Number.isFinite(raw)&&raw>=Number(leafMeasured.min)&&raw<=Number(leafMeasured.max)?toC(raw,u):NaN}
  return air+deltaC(Number(offset.value),u);
 }
 function solveAirForTarget(target,rhValue,offsetC){
@@ -141,8 +141,8 @@ function syncLeafFields(){
 }
 function render(){
  syncLeafFields();
- const rawT=Number(temp.value),h=Number(rh.value),rawO=Number(offset.value),u=unit.value;
- if(!Number.isFinite(rawT)||!Number.isFinite(h)||h<=0||h>100||(leafMode.value==='offset'&&!Number.isFinite(rawO))){vout.innerHTML='<strong>Enter valid conditions.</strong>';scenario.innerHTML='';return}
+ const rawT=temp.value.trim()===''?NaN:Number(temp.value),h=rh.value.trim()===''?NaN:Number(rh.value),rawO=offset.value.trim()===''?NaN:Number(offset.value),u=unit.value;
+ if(!Number.isFinite(rawT)||rawT<Number(temp.min)||rawT>Number(temp.max)||!Number.isFinite(h)||h<1||h>100||(leafMode.value==='offset'&&(!Number.isFinite(rawO)||Math.abs(deltaC(rawO,u))>20))){vout.innerHTML='<strong>Enter valid conditions.</strong>';scenario.innerHTML='';return}
  const air=toC(rawT,u),leaf=currentLeaf(air,u);
  if(!Number.isFinite(leaf)){vout.innerHTML='<strong>Enter a valid measured leaf temperature.</strong>';scenario.innerHTML='';return}
  const o=leaf-air,rawV=rawCalc(air,h,leaf),v=Math.max(0,rawV),av=airVpd(air,h),dp=dewPoint(air,h),dewMargin=leaf-dp,condensation=rawV<=0||dewMargin<=0,range=targetRange();
@@ -167,7 +167,7 @@ function render(){
 function readVpdProfiles(){const x=THC.load(VPD_PROFILE_KEY,[]);return Array.isArray(x)?x:[]}
 function writeVpdProfiles(items){return THC.save(VPD_PROFILE_KEY,Array.isArray(items)?items:[])}
 const escapeVpd=THC.esc;
-function refreshVpdProfiles(selected=''){const items=readVpdProfiles(),prev=selected||vpdProfiles.value;vpdProfiles.innerHTML='<option value="">No saved profile selected</option>'+items.map(x=>'<option value="'+x.id+'">'+escapeVpd(x.name||x.savedAt)+'</option>').join('');if(prev&&items.some(x=>x.id===prev))vpdProfiles.value=prev}
+function refreshVpdProfiles(selected=''){const items=readVpdProfiles(),prev=selected||vpdProfiles.value;vpdProfiles.innerHTML='<option value="">No saved profile selected</option>'+items.map(x=>'<option value="'+escapeVpd(x.id)+'">'+escapeVpd(x.name||x.savedAt)+'</option>').join('');if(prev&&items.some(x=>x.id===prev))vpdProfiles.value=prev}
 function currentVpdProfile(){return{name:vpdProfileName.value.trim(),unit:unit.value,temp:temp.value,rh:rh.value,leafMode:leafMode.value,leafMeasured:leafMeasured.value,offset:offset.value,targetLow:vpdTargetLow.value,targetHigh:vpdTargetHigh.value,sustain:vpdSustainSamples.value,clearMargin:vpdClearMargin.value}}
 function normalizeVpdProfile(x){
  if(!x||typeof x!=='object')return null;
@@ -211,12 +211,12 @@ function parseTrendCsv(text){
   const ok=find(['leaf_offset','leaf_temp_offset','leaf_temperature_offset']);
   if(!ak||!hk)throw new Error('CSV needs temperature and humidity columns.');
   return parsed.data.map((row,index)=>{
-   const rawAir=Number(row[ak]),rawRh=Number(row[hk]);
+   const rawAir=String(row[ak]??'').trim()===''?NaN:Number(row[ak]),rawRh=String(row[hk]??'').trim()===''?NaN:Number(row[hk]);
    if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<=0||rawRh>100)return null;
    const air=toC(rawAir,trendUnit.value);
    let leaf;
-   if(lk&&Number.isFinite(Number(row[lk])))leaf=toC(Number(row[lk]),trendUnit.value);
-   else if(ok&&Number.isFinite(Number(row[ok])))leaf=air+deltaC(Number(row[ok]),trendUnit.value);
+   if(lk&&String(row[lk]??'').trim()!==''&&Number.isFinite(Number(row[lk])))leaf=toC(Number(row[lk]),trendUnit.value);
+   else if(ok&&String(row[ok]??'').trim()!==''&&Number.isFinite(Number(row[ok])))leaf=air+deltaC(Number(row[ok]),trendUnit.value);
    else leaf=air+defaultOffset;
    const rawVpd=rawCalc(air,rawRh,leaf);return{label:tk&&row[tk]?row[tk]:String(index+1),air,rawRh,leaf,vpd:Math.max(0,rawVpd),dew:rawVpd<=0||leaf<=dewPoint(air,rawRh)}
   }).filter(Boolean)
@@ -227,7 +227,7 @@ function parseTrendCsv(text){
  const find=(names)=>headers.findIndex(h=>names.includes(h));
  const ti=find(['timestamp','time','date','datetime','date_time']),ai=find(['temperature','temp','air_temp','air_temperature','temperature_c','temperature_f']),hi=find(['humidity','rh','relative_humidity','humidity_percent']),li=find(['leaf_temp','leaf_temperature','leaf_temperature_c','leaf_temperature_f']),oi=find(['leaf_offset','leaf_temp_offset','leaf_temperature_offset']);
  if(ai<0||hi<0)throw new Error('CSV needs temperature and humidity columns.');
- return lines.slice(1).map((line,index)=>{const cols=splitCsvLine(line),rawAir=Number(cols[ai]),rawRh=Number(cols[hi]);if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<=0||rawRh>100)return null;const air=toC(rawAir,trendUnit.value);let leaf;if(li>=0&&Number.isFinite(Number(cols[li])))leaf=toC(Number(cols[li]),trendUnit.value);else if(oi>=0&&Number.isFinite(Number(cols[oi])))leaf=air+deltaC(Number(cols[oi]),trendUnit.value);else leaf=air+defaultOffset;const rawVpd=rawCalc(air,rawRh,leaf);return{label:ti>=0&&cols[ti]?cols[ti]:String(index+1),air,rawRh,leaf,vpd:Math.max(0,rawVpd),dew:rawVpd<=0||leaf<=dewPoint(air,rawRh)}}).filter(Boolean)
+ return lines.slice(1).map((line,index)=>{const cols=splitCsvLine(line),rawAir=String(cols[ai]??'').trim()===''?NaN:Number(cols[ai]),rawRh=String(cols[hi]??'').trim()===''?NaN:Number(cols[hi]);if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<=0||rawRh>100)return null;const air=toC(rawAir,trendUnit.value);let leaf;if(li>=0&&String(cols[li]??'').trim()!==''&&Number.isFinite(Number(cols[li])))leaf=toC(Number(cols[li]),trendUnit.value);else if(oi>=0&&String(cols[oi]??'').trim()!==''&&Number.isFinite(Number(cols[oi])))leaf=air+deltaC(Number(cols[oi]),trendUnit.value);else leaf=air+defaultOffset;const rawVpd=rawCalc(air,rawRh,leaf);return{label:ti>=0&&cols[ti]?cols[ti]:String(index+1),air,rawRh,leaf,vpd:Math.max(0,rawVpd),dew:rawVpd<=0||leaf<=dewPoint(air,rawRh)}}).filter(Boolean)
 }
 let lastTrendRows=[];
 function analyzeVpdBand(rows){const lo=Number(vpdTargetLow.value),hi=Number(vpdTargetHigh.value),sustain=Math.max(1,Math.min(60,Number(vpdSustainSamples.value)||3)),margin=Math.max(0,Math.min(1,Number(vpdClearMargin.value)||0));if(!Number.isFinite(lo)||!Number.isFinite(hi)||hi<=lo)return{valid:false,inBand:null,episodes:0};try{const result=evaluateBandSeries(rows.map(row=>row.vpd),{low:lo,high:hi,sustainSamples:sustain,clearMargin:margin});return{valid:true,inBand:result.inBandPercent,episodes:result.episodes}}catch{return{valid:false,inBand:null,episodes:0}}}
@@ -265,7 +265,7 @@ function drawTrend(rows){
 window.addEventListener('resize',()=>{if(trendPlotInstance&&trendCanvasWrap&&!trendCanvasWrap.hidden){trendPlotInstance.setSize({width:Math.max(320,Math.floor(trendCanvasWrap.clientWidth||900)),height:280})}});
 function renderTrend(rows){lastTrendRows=rows.slice();if(!rows.length){trendStatus.textContent='No valid rows found.';trendMetrics.hidden=true;trendCanvasWrap.hidden=true;trendTableWrap.hidden=true;return}const vals=rows.map(r=>r.vpd),avg=vals.reduce((a,b)=>a+b,0)/vals.length,bandAnalysis=analyzeVpdBand(rows),dewRows=rows.filter(r=>r.dew).length;document.getElementById('trendAvg').textContent=avg.toFixed(2)+' kPa';document.getElementById('trendMin').textContent=Math.min(...vals).toFixed(2)+' kPa';document.getElementById('trendMax').textContent=Math.max(...vals).toFixed(2)+' kPa';document.getElementById('trendCount').textContent=String(rows.length);document.getElementById('trendInBand').textContent=bandAnalysis.valid?bandAnalysis.inBand.toFixed(0)+'%':'fix band';document.getElementById('trendExcursions').textContent=bandAnalysis.valid?String(bandAnalysis.episodes):'—';document.getElementById('trendDewRows').textContent=String(dewRows);trendMetrics.hidden=false;trendCanvasWrap.hidden=false;trendTableWrap.hidden=false;trendStatus.textContent='Analyzed '+rows.length+' valid logger rows locally in this browser.';trendBody.innerHTML=rows.slice(0,500).map(r=>'<tr><td>'+THC.esc(r.label)+'</td><td>'+r.air.toFixed(1)+' °C</td><td>'+r.rawRh.toFixed(1)+'%</td><td>'+r.leaf.toFixed(1)+' °C</td><td>'+r.vpd.toFixed(2)+' kPa</td><td>'+(r.dew?'Yes':'No')+'</td></tr>').join('');drawTrend(rows)}
 trendFile?.addEventListener('change',async()=>{const file=trendFile.files?.[0];if(!file)return;try{renderTrend(parseTrendCsv(await file.text()))}catch(error){trendStatus.textContent=error?.message||'Could not parse this CSV.'}});
-document.getElementById('trendExample')?.addEventListener('click',()=>{const rows=[];for(let i=0;i<24;i++){const air=24+Math.sin(i/4)*2,rhValue=62-Math.sin(i/4)*8,leaf=air+deltaC(Number(trendOffset.value)||-1,trendUnit.value);const rawVpd=rawCalc(air,rhValue,leaf);rows.push({label:String(i).padStart(2,'0')+':00',air,rawRh:rhValue,leaf,vpd:Math.max(0,rawVpd),dew:rawVpd<=0||leaf<=dewPoint(air,rhValue)})}renderTrend(rows)});
+document.getElementById('trendExample')?.addEventListener('click',()=>{const rows=[];for(let i=0;i<24;i++){const air=24+Math.sin(i/4)*2,rhValue=62-Math.sin(i/4)*8,leaf=air+deltaC(trendOffset.value.trim()===''?-1:Number(trendOffset.value),trendUnit.value);const rawVpd=rawCalc(air,rhValue,leaf);rows.push({label:String(i).padStart(2,'0')+':00',air,rawRh:rhValue,leaf,vpd:Math.max(0,rawVpd),dew:rawVpd<=0||leaf<=dewPoint(air,rhValue)})}renderTrend(rows)});
 [vpdTargetLow,vpdTargetHigh].forEach(el=>el?.addEventListener('input',()=>{if(targetPreset)targetPreset.value='custom';render();if(lastTrendRows.length)renderTrend(lastTrendRows)}));[vpdSustainSamples,vpdClearMargin].forEach(el=>el?.addEventListener('input',()=>{render();if(lastTrendRows.length)renderTrend(lastTrendRows)}));
 refreshVpdProfiles();
 document.getElementById('trendClear')?.addEventListener('click',()=>{if(trendFile)trendFile.value='';trendStatus.textContent='No logger data loaded.';trendMetrics.hidden=true;trendCanvasWrap.hidden=true;trendTableWrap.hidden=true;if(trendBody)trendBody.innerHTML='';const ctx=trendCanvas?.getContext('2d');ctx?.clearRect(0,0,trendCanvas.width,trendCanvas.height)});
