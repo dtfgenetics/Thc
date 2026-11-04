@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="/assets/thc-tool-suite-v1.css">
 <style>
 :root{--deep:#07170f;--deep2:#113823;--gold:#d7b965;--cream:#f7f3e9;--paper:#fffdf8;--ink:#112b1c;--muted:#5b6d61;--line:#d8e2da;--leaf:#26784a}
-*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.6 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit}.shell{width:min(1220px,calc(100% - 32px));margin:auto}
+[hidden]{display:none!important}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.6 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit}.shell{width:min(1220px,calc(100% - 32px));margin:auto}
 .top{background:linear-gradient(135deg,var(--deep),var(--deep2));color:#fff}.topin{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{font-weight:950;text-decoration:none}.brand span{display:block;color:var(--gold);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase}.nav{display:flex;gap:5px;flex-wrap:wrap}.nav a{padding:9px 10px;border-radius:10px;text-decoration:none;font-weight:800;color:#e8f1eb}
 .hero{padding:44px 0 36px;background:radial-gradient(circle at 88% 12%,rgba(215,185,101,.21),transparent 28%),linear-gradient(145deg,#07170f,#123b26);color:#fff}.eyebrow{margin:0;color:var(--gold);font-size:.72rem;font-weight:950;letter-spacing:.14em;text-transform:uppercase}.hero h1{max-width:16ch;margin:.2rem 0 .8rem;font-size:clamp(2.45rem,5.2vw,4.5rem);line-height:.95;letter-spacing:-.045em;text-wrap:balance}.hero p{max-width:800px;margin:0;color:#d5e4da}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.tabs a{padding:9px 12px;border:1px solid rgba(255,255,255,.16);border-radius:11px;background:rgba(255,255,255,.06);text-decoration:none;font-weight:850}
 .workspace{display:grid;grid-template-columns:minmax(300px,.9fr) minmax(0,1.1fr);gap:18px;padding:28px 0}.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 14px 32px rgba(17,43,28,.06)}.panel h2{margin:0 0 16px;font-size:1.35rem}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-weight:850}.field input,.field select{min-height:48px;width:100%;padding:10px 12px;border:1px solid #bfcfc3;border-radius:12px;background:#fff;font:inherit}.result{margin-top:18px;padding:19px;border:1px solid #cadecf;border-radius:16px;background:#edf5ef}.result strong{font-size:1.55rem}.muted{color:var(--muted);font-size:.91rem}
@@ -198,7 +198,10 @@ unit.addEventListener('change',()=>{const current=Number(temp.value),off=Number(
 const norm=normalizeHeader;
 function splitCsvLine(line){const out=[];let cur='',quoted=false;for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){if(quoted&&line[i+1]==='"'){cur+='"';i++}else quoted=!quoted}else if(ch===','&&!quoted){out.push(cur);cur=''}else cur+=ch}out.push(cur);return out}
 function parseTrendCsv(text){
- const defaultOffset=deltaC(Number(trendOffset.value)||0,trendUnit.value);
+ const offsetValue=trendOffset.value.trim()===''?NaN:Number(trendOffset.value);
+ if(!Number.isFinite(offsetValue)||Math.abs(deltaC(offsetValue,trendUnit.value))>20)throw new Error('Enter a valid logger leaf offset within ±20 °C.');
+ const defaultOffset=deltaC(offsetValue,trendUnit.value);
+ if(String(text||'').length>2000000)throw new Error('Logger CSV exceeds the 2 MB browser-analysis limit. Split the file into smaller periods.');
  if(window.Papa?.parse){
   const parsed=window.Papa.parse(String(text||''),{header:true,skipEmptyLines:'greedy',transformHeader:norm});
   if(parsed.errors?.length&&(!parsed.data||parsed.data.length===0))throw new Error(parsed.errors[0].message||'Could not parse CSV.');
@@ -210,24 +213,27 @@ function parseTrendCsv(text){
   const lk=find(['leaf_temp','leaf_temperature','leaf_temperature_c','leaf_temperature_f']);
   const ok=find(['leaf_offset','leaf_temp_offset','leaf_temperature_offset']);
   if(!ak||!hk)throw new Error('CSV needs temperature and humidity columns.');
+  if(parsed.data.length>10000)throw new Error('Logger CSV exceeds 10,000 rows. Split the data into smaller periods.');
   return parsed.data.map((row,index)=>{
    const rawAir=String(row[ak]??'').trim()===''?NaN:Number(row[ak]),rawRh=String(row[hk]??'').trim()===''?NaN:Number(row[hk]);
-   if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<=0||rawRh>100)return null;
+   if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<1||rawRh>100)return null;
    const air=toC(rawAir,trendUnit.value);
    let leaf;
    if(lk&&String(row[lk]??'').trim()!==''&&Number.isFinite(Number(row[lk])))leaf=toC(Number(row[lk]),trendUnit.value);
    else if(ok&&String(row[ok]??'').trim()!==''&&Number.isFinite(Number(row[ok])))leaf=air+deltaC(Number(row[ok]),trendUnit.value);
    else leaf=air+defaultOffset;
-   const rawVpd=rawCalc(air,rawRh,leaf);return{label:tk&&row[tk]?row[tk]:String(index+1),air,rawRh,leaf,vpd:Math.max(0,rawVpd),dew:rawVpd<=0||leaf<=dewPoint(air,rawRh)}
+   if(!Number.isFinite(air)||!Number.isFinite(leaf)||air< -20||air>60||leaf< -20||leaf>65)return null;
+   const rawVpd=rawCalc(air,rawRh,leaf);if(!Number.isFinite(rawVpd))return null;return{label:tk&&row[tk]?row[tk]:String(index+1),air,rawRh,leaf,vpd:Math.max(0,rawVpd),dew:rawVpd<=0||leaf<=dewPoint(air,rawRh)}
   }).filter(Boolean)
  }
  const lines=String(text||'').replace(/\r/g,'').split('\n').filter(line=>line.trim());
  if(lines.length<2)return[];
+ if(lines.length>10001)throw new Error('Logger CSV exceeds 10,000 rows. Split the data into smaller periods.');
  const headers=splitCsvLine(lines[0]).map(norm);
  const find=(names)=>headers.findIndex(h=>names.includes(h));
  const ti=find(['timestamp','time','date','datetime','date_time']),ai=find(['temperature','temp','air_temp','air_temperature','temperature_c','temperature_f']),hi=find(['humidity','rh','relative_humidity','humidity_percent']),li=find(['leaf_temp','leaf_temperature','leaf_temperature_c','leaf_temperature_f']),oi=find(['leaf_offset','leaf_temp_offset','leaf_temperature_offset']);
  if(ai<0||hi<0)throw new Error('CSV needs temperature and humidity columns.');
- return lines.slice(1).map((line,index)=>{const cols=splitCsvLine(line),rawAir=String(cols[ai]??'').trim()===''?NaN:Number(cols[ai]),rawRh=String(cols[hi]??'').trim()===''?NaN:Number(cols[hi]);if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<=0||rawRh>100)return null;const air=toC(rawAir,trendUnit.value);let leaf;if(li>=0&&String(cols[li]??'').trim()!==''&&Number.isFinite(Number(cols[li])))leaf=toC(Number(cols[li]),trendUnit.value);else if(oi>=0&&String(cols[oi]??'').trim()!==''&&Number.isFinite(Number(cols[oi])))leaf=air+deltaC(Number(cols[oi]),trendUnit.value);else leaf=air+defaultOffset;const rawVpd=rawCalc(air,rawRh,leaf);return{label:ti>=0&&cols[ti]?cols[ti]:String(index+1),air,rawRh,leaf,vpd:Math.max(0,rawVpd),dew:rawVpd<=0||leaf<=dewPoint(air,rawRh)}}).filter(Boolean)
+ return lines.slice(1).map((line,index)=>{const cols=splitCsvLine(line),rawAir=String(cols[ai]??'').trim()===''?NaN:Number(cols[ai]),rawRh=String(cols[hi]??'').trim()===''?NaN:Number(cols[hi]);if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<1||rawRh>100)return null;const air=toC(rawAir,trendUnit.value);let leaf;if(li>=0&&String(cols[li]??'').trim()!==''&&Number.isFinite(Number(cols[li])))leaf=toC(Number(cols[li]),trendUnit.value);else if(oi>=0&&String(cols[oi]??'').trim()!==''&&Number.isFinite(Number(cols[oi])))leaf=air+deltaC(Number(cols[oi]),trendUnit.value);else leaf=air+defaultOffset;if(!Number.isFinite(air)||!Number.isFinite(leaf)||air< -20||air>60||leaf< -20||leaf>65)return null;const rawVpd=rawCalc(air,rawRh,leaf);if(!Number.isFinite(rawVpd))return null;return{label:ti>=0&&cols[ti]?cols[ti]:String(index+1),air,rawRh,leaf,vpd:Math.max(0,rawVpd),dew:rawVpd<=0||leaf<=dewPoint(air,rawRh)}}).filter(Boolean)
 }
 let lastTrendRows=[];
 function analyzeVpdBand(rows){const lo=Number(vpdTargetLow.value),hi=Number(vpdTargetHigh.value),sustain=Math.max(1,Math.min(60,Number(vpdSustainSamples.value)||3)),margin=Math.max(0,Math.min(1,Number(vpdClearMargin.value)||0));if(!Number.isFinite(lo)||!Number.isFinite(hi)||hi<=lo)return{valid:false,inBand:null,episodes:0};try{const result=evaluateBandSeries(rows.map(row=>row.vpd),{low:lo,high:hi,sustainSamples:sustain,clearMargin:margin});return{valid:true,inBand:result.inBandPercent,episodes:result.episodes}}catch{return{valid:false,inBand:null,episodes:0}}}
@@ -268,7 +274,7 @@ trendFile?.addEventListener('change',async()=>{const file=trendFile.files?.[0];i
 document.getElementById('trendExample')?.addEventListener('click',()=>{const rows=[];for(let i=0;i<24;i++){const air=24+Math.sin(i/4)*2,rhValue=62-Math.sin(i/4)*8,leaf=air+deltaC(trendOffset.value.trim()===''?-1:Number(trendOffset.value),trendUnit.value);const rawVpd=rawCalc(air,rhValue,leaf);rows.push({label:String(i).padStart(2,'0')+':00',air,rawRh:rhValue,leaf,vpd:Math.max(0,rawVpd),dew:rawVpd<=0||leaf<=dewPoint(air,rhValue)})}renderTrend(rows)});
 [vpdTargetLow,vpdTargetHigh].forEach(el=>el?.addEventListener('input',()=>{if(targetPreset)targetPreset.value='custom';render();if(lastTrendRows.length)renderTrend(lastTrendRows)}));[vpdSustainSamples,vpdClearMargin].forEach(el=>el?.addEventListener('input',()=>{render();if(lastTrendRows.length)renderTrend(lastTrendRows)}));
 refreshVpdProfiles();
-document.getElementById('trendClear')?.addEventListener('click',()=>{if(trendFile)trendFile.value='';trendStatus.textContent='No logger data loaded.';trendMetrics.hidden=true;trendCanvasWrap.hidden=true;trendTableWrap.hidden=true;if(trendBody)trendBody.innerHTML='';const ctx=trendCanvas?.getContext('2d');ctx?.clearRect(0,0,trendCanvas.width,trendCanvas.height)});
+document.getElementById('trendClear')?.addEventListener('click',()=>{lastTrendRows=[];if(trendPlotInstance){trendPlotInstance.destroy();trendPlotInstance=null}document.getElementById('trendPlot')?.replaceChildren();if(trendFile)trendFile.value='';trendStatus.textContent='No logger data loaded.';trendMetrics.hidden=true;trendCanvasWrap.hidden=true;trendTableWrap.hidden=true;if(trendBody)trendBody.innerHTML='';const ctx=trendCanvas?.getContext('2d');ctx?.clearRect(0,0,trendCanvas.width,trendCanvas.height)});
 </script>
 <footer><div class="shell">Teaching Healthy Cultivation · Educational environmental reference. For leaf-based VPD, use representative air temperature/RH and a reliable leaf-temperature measurement. VPD alone does not prove plant stress, diagnose a cause, or define one universal target.</div></footer>
 <script type="module">
