@@ -61,5 +61,59 @@ const invalid=spawnSync(process.execPath,[script,'--check'],{
 });
 assert.notEqual(invalid.status,0,'live verification must not be accepted after failed deployment');
 
+
+/*
+ * Issue #2513 regression: a commit touching only a source-level release test
+ * must select no production lane, and observability must reflect that plan.
+ * Use an isolated Git repository: no workflow dispatch, network or publishing.
+ */
+const fixtureRepo=fs.mkdtempSync(path.join(os.tmpdir(),'dtf-gateway-no-deploy-'));
+try {
+  const git=(args)=>execFileSync('git',args,{cwd:fixtureRepo,encoding:'utf8'}).trim();
+  git(['init','-b','main']);
+  git(['config','user.email','gateway-test@example.invalid']);
+  git(['config','user.name','Gateway Regression']);
+  fs.writeFileSync(path.join(fixtureRepo,'README.md'),'base\\n');
+  git(['add','.']);
+  git(['commit','-m','base']);
+  const base=git(['rev-parse','HEAD']);
+  fs.mkdirSync(path.join(fixtureRepo,'scripts'),{recursive:true});
+  fs.writeFileSync(path.join(fixtureRepo,'scripts/test-digital-products-release.mjs'),'// regression-only change\\n');
+  git(['add','.']);
+  git(['commit','-m','test-only change']);
+  const head=git(['rev-parse','HEAD']);
+  const plan=JSON.parse(execFileSync(process.execPath,[
+    path.resolve('scripts/plan-dtfseeds-release.mjs'),
+    '--mode=auto',`--base=${base}`,`--head=${head}`,
+    `--config=${path.resolve('site/deployment/release-lanes.json')}`
+  ],{cwd:fixtureRepo,encoding:'utf8'}));
+  assert.deepEqual(plan.changedFiles,['scripts/test-digital-products-release.mjs']);
+  assert.equal(plan.deploy,false,'test-only change must not deploy');
+  assert.equal(plan.forceFull,false,'test-only change must not force a full release');
+  assert.ok(Object.values(plan.lanes).every(value=>value===false),'test-only change must select no lanes');
+
+  const noDeployPath=path.join(temp,'planner-no-deploy.json');
+  execFileSync(process.execPath,[script,'--check',`--output=${noDeployPath}`],{
+    env:{
+      ...baseEnv,
+      RELEASE_MODE:'auto',
+      RELEASE_PLAN_JSON:JSON.stringify(plan),
+      RELEASE_ENFORCE_OUTCOME:'skipped',
+      RELEASE_CHECKPOINT_OUTCOME:'skipped',
+      ...Object.fromEntries([
+        'RELEASE_WANT_WORDPRESS','RELEASE_WANT_EDUCATION',
+        'RELEASE_WANT_HARVEST_OUTDOOR','RELEASE_WANT_PUBLIC'
+      ].map(key=>[key,'false']))
+    },stdio:'pipe'
+  });
+  const report=JSON.parse(fs.readFileSync(noDeployPath,'utf8'));
+  assert.equal(report.overallState,'no-production-lanes');
+  assert.equal(report.checkpoint.verified,false);
+  assert.ok(Object.values(report.lanes).every(lane=>!lane.selected&&lane.state==='not-selected'));
+  assert.deepEqual(report.releasePlan.changedFiles,plan.changedFiles);
+} finally {
+  fs.rmSync(fixtureRepo,{recursive:true,force:true});
+}
+
 fs.rmSync(temp,{recursive:true,force:true});
 console.log('Release observability self-test passed: checkpointed success, no-op, and impossible live-without-deploy states are distinguished.');

@@ -133,6 +133,16 @@ jobs:
           node - <<'NODE' "$RUNNER_TEMP/auto.json"
           const fs=require('fs');
           const plan=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
-          if(!plan.forceFull) throw new Error('gateway architecture changes must force a full reconciliation');
-          if(!Object.values(plan.lanes).every(Boolean)) throw new Error('forced reconciliation did not select all lanes');
+          const config=JSON.parse(fs.readFileSync('site/deployment/release-lanes.json','utf8'));
+          const touchesArchitecture=plan.changedFiles.some(file=>config.fullReleasePaths.includes(file));
+          if(touchesArchitecture){
+            if(!plan.forceFull) throw new Error('gateway architecture changes must force a full reconciliation');
+            if(!Object.values(plan.lanes).every(Boolean)) throw new Error('forced reconciliation did not select all lanes');
+          }else{
+            if(plan.forceFull) throw new Error('non-architecture changes must not force a full release');
+            if(plan.changedFiles.every(file=>file==='scripts/test-release-observability.mjs')){
+              if(plan.deploy || Object.values(plan.lanes).some(Boolean))
+                throw new Error('test-only observability change unexpectedly selected a production lane');
+            }
+          }
           NODE
