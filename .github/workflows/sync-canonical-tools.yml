@@ -181,7 +181,17 @@ jobs:
           git commit -m "Sync canonical cultivation tools from dtfgenetics/Tools"
           git fetch origin main
           if [ "$(git rev-parse origin/main)" != "$(git rev-parse HEAD^)" ]; then
-            echo "::notice::THC main advanced during canonical sync; rebasing and revalidating."
+            echo "::notice::THC main advanced during canonical sync; verifying preservation against the new main before rebasing."
+            # A normal guard run here would compare against the old checkout,
+            # not the newer integration main. Inspect that exact tree instead.
+            mirror_worktree="$(mktemp -d)"
+            git worktree add --detach "$mirror_worktree" origin/main
+            if ! DTF_ATLAS_MIRROR_DIR="$mirror_worktree/site/public-route-patch/atlas" node scripts/guard-atlas-preservation.mjs; then
+              git worktree remove --force "$mirror_worktree"
+              echo "::error::New THC main contains Atlas lessons the canonical sync would damage; refusing rebase and mirror push."
+              exit 1
+            fi
+            git worktree remove --force "$mirror_worktree"
             git rebase origin/main
           fi
           TOOLS_REPO_DIR=/tmp/tools npm run verify:cultivation-reference-tools
