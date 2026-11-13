@@ -17,6 +17,8 @@ on:
       - 'scripts/test-lighthouse-regressions.mjs'
       - 'scripts/diagnose-lighthouse-access.mjs'
       - 'scripts/test/lighthouse-access-diagnostics.test.mjs'
+      - 'scripts/diagnose-chrome-navigation.mjs'
+      - 'scripts/test/chrome-navigation-diagnostics.test.mjs'
       - '.github/workflows/web-quality.yml'
       - '.agents/skills/dtf-web-quality-gate/**'
   workflow_run:
@@ -146,6 +148,9 @@ jobs:
       - name: Test safe Lighthouse access diagnostics
         run: node --test scripts/test/lighthouse-access-diagnostics.test.mjs
 
+      - name: Test safe Chrome navigation diagnostics
+        run: node --test scripts/test/chrome-navigation-diagnostics.test.mjs
+
       - name: Run Lighthouse CI
         shell: bash
         run: |
@@ -156,6 +161,10 @@ jobs:
       - name: Collect sanitized access evidence when Lighthouse fails
         if: failure()
         run: node scripts/diagnose-lighthouse-access.mjs
+
+      - name: Collect sanitized Chrome navigation evidence on Lighthouse failure
+        if: failure()
+        run: node scripts/diagnose-chrome-navigation.mjs
 
 
       - name: Enforce measured Lighthouse and accessibility regressions
