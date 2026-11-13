@@ -15,6 +15,8 @@ on:
       - 'configuration/web-quality-regression-baseline.json'
       - 'scripts/validate-lighthouse-regressions.mjs'
       - 'scripts/test-lighthouse-regressions.mjs'
+      - 'scripts/diagnose-lighthouse-access.mjs'
+      - 'scripts/test/lighthouse-access-diagnostics.test.mjs'
       - '.github/workflows/web-quality.yml'
       - '.agents/skills/dtf-web-quality-gate/**'
   workflow_run:
@@ -141,12 +143,20 @@ jobs:
       - name: Validate Lighthouse regression checker
         run: node scripts/test-lighthouse-regressions.mjs
 
+      - name: Test safe Lighthouse access diagnostics
+        run: node --test scripts/test/lighthouse-access-diagnostics.test.mjs
+
       - name: Run Lighthouse CI
         shell: bash
         run: |
           mkdir -p "$WEB_QA_ARTIFACT_DIR"
           set -o pipefail
           npx lhci autorun --config=lighthouserc.cjs 2>&1 | tee "$WEB_QA_ARTIFACT_DIR/lhci.log"
+
+      - name: Collect sanitized access evidence when Lighthouse fails
+        if: failure()
+        run: node scripts/diagnose-lighthouse-access.mjs
+
 
       - name: Enforce measured Lighthouse and accessibility regressions
         if: always()
