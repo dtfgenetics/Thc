@@ -29,7 +29,11 @@ const canonicalPath=html=>{
   try {
    const url=new URL(href[1]||href[2]||href[3], 'https://dtfseeds.com');
    if(!['dtfseeds.com','www.dtfseeds.com'].includes(url.hostname.toLowerCase()))return null;
-   if(!['https:','http:'].includes(url.protocol)||url.port||url.username||url.password)return null;
+   // Require a literal canonical HTTPS URL, not a URL that the parser repairs.
+   // This rejects malformed `https:/...`, HTTP and noncanonical www variants.
+   const rawHref=href[1]||href[2]||href[3];
+   if(!rawHref.startsWith('https://dtfseeds.com/'))return null;
+   if(url.protocol!=='https:'||url.port||url.username||url.password)return null;
    if(found!==null)return null;
    found=url.pathname.replace(/\/+$/,'')||'/';
   }catch{return null;}
