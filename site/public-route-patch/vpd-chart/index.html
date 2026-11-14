@@ -237,8 +237,9 @@ function parseTrendCsv(text){
    if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<1||rawRh>100)return null;
    const air=toC(rawAir,trendUnit.value);
    let leaf;
-   if(lk&&String(row[lk]??'').trim()!==''&&Number.isFinite(Number(row[lk])))leaf=toC(Number(row[lk]),trendUnit.value);
-   else if(ok&&String(row[ok]??'').trim()!==''&&Number.isFinite(Number(row[ok])))leaf=air+deltaC(Number(row[ok]),trendUnit.value);
+   const measured=lk?String(row[lk]??'').trim():'',specifiedOffset=ok?String(row[ok]??'').trim():'';
+   if(measured!==''){if(!Number.isFinite(Number(measured)))return null;leaf=toC(Number(measured),trendUnit.value)}
+   else if(specifiedOffset!==''){if(!Number.isFinite(Number(specifiedOffset))||Math.abs(deltaC(Number(specifiedOffset),trendUnit.value))>20)return null;leaf=air+deltaC(Number(specifiedOffset),trendUnit.value)}
    else leaf=air+defaultOffset;
    if(!Number.isFinite(air)||!Number.isFinite(leaf)||air< -20||air>60||leaf< -20||leaf>65)return null;
    const rawVpd=rawCalc(air,rawRh,leaf);if(!Number.isFinite(rawVpd))return null;return{label:tk&&row[tk]?row[tk]:String(index+1),air,rawRh,leaf,vpd:Math.max(0,rawVpd),dew:rawVpd<=0||leaf<=dewPoint(air,rawRh)}
@@ -251,7 +252,7 @@ function parseTrendCsv(text){
  const find=(names)=>headers.findIndex(h=>names.includes(h));
  const ti=find(['timestamp','time','date','datetime','date_time']),ai=find(['temperature','temp','air_temp','air_temperature','temperature_c','temperature_f']),hi=find(['humidity','rh','relative_humidity','humidity_percent']),li=find(['leaf_temp','leaf_temperature','leaf_temperature_c','leaf_temperature_f']),oi=find(['leaf_offset','leaf_temp_offset','leaf_temperature_offset']);
  if(ai<0||hi<0)throw new Error('CSV needs temperature and humidity columns.');
- return lines.slice(1).map((line,index)=>{const cols=splitCsvLine(line),rawAir=String(cols[ai]??'').trim()===''?NaN:Number(cols[ai]),rawRh=String(cols[hi]??'').trim()===''?NaN:Number(cols[hi]);if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<1||rawRh>100)return null;const air=toC(rawAir,trendUnit.value);let leaf;if(li>=0&&String(cols[li]??'').trim()!==''&&Number.isFinite(Number(cols[li])))leaf=toC(Number(cols[li]),trendUnit.value);else if(oi>=0&&String(cols[oi]??'').trim()!==''&&Number.isFinite(Number(cols[oi])))leaf=air+deltaC(Number(cols[oi]),trendUnit.value);else leaf=air+defaultOffset;if(!Number.isFinite(air)||!Number.isFinite(leaf)||air< -20||air>60||leaf< -20||leaf>65)return null;const rawVpd=rawCalc(air,rawRh,leaf);if(!Number.isFinite(rawVpd))return null;return{label:ti>=0&&cols[ti]?cols[ti]:String(index+1),air,rawRh,leaf,vpd:Math.max(0,rawVpd),dew:rawVpd<=0||leaf<=dewPoint(air,rawRh)}}).filter(Boolean)
+ return lines.slice(1).map((line,index)=>{const cols=splitCsvLine(line),rawAir=String(cols[ai]??'').trim()===''?NaN:Number(cols[ai]),rawRh=String(cols[hi]??'').trim()===''?NaN:Number(cols[hi]);if(!Number.isFinite(rawAir)||!Number.isFinite(rawRh)||rawRh<1||rawRh>100)return null;const air=toC(rawAir,trendUnit.value);let leaf;const measured=li>=0?String(cols[li]??'').trim():'',specifiedOffset=oi>=0?String(cols[oi]??'').trim():'';if(measured!==''){if(!Number.isFinite(Number(measured)))return null;leaf=toC(Number(measured),trendUnit.value)}else if(specifiedOffset!==''){if(!Number.isFinite(Number(specifiedOffset))||Math.abs(deltaC(Number(specifiedOffset),trendUnit.value))>20)return null;leaf=air+deltaC(Number(specifiedOffset),trendUnit.value)}else leaf=air+defaultOffset;if(!Number.isFinite(air)||!Number.isFinite(leaf)||air< -20||air>60||leaf< -20||leaf>65)return null;const rawVpd=rawCalc(air,rawRh,leaf);if(!Number.isFinite(rawVpd))return null;return{label:ti>=0&&cols[ti]?cols[ti]:String(index+1),air,rawRh,leaf,vpd:Math.max(0,rawVpd),dew:rawVpd<=0||leaf<=dewPoint(air,rawRh)}}).filter(Boolean)
 }
 let lastTrendRows=[];
 const trendExport=document.getElementById("trendExport");

@@ -7,10 +7,13 @@ export function calculateStableLight({ppfd,hours,targetDli=null}){
 }
 
 export function calculateVariableLight(blocks){
- const segments=(Array.isArray(blocks)?blocks:[]).map(block=>({ppfd:Number(block.ppfd),hours:Number(block.hours)})).filter(block=>Number.isFinite(block.ppfd)&&block.ppfd>=0&&block.ppfd<=3000&&Number.isFinite(block.hours)&&block.hours>=0&&block.hours<=24);
+ const source=Array.isArray(blocks)?blocks:[];
+ const isEntered=value=>value!==null&&value!==undefined&&String(value).trim()!=='';
+ const invalidSegments=source.filter(block=>!block||!isEntered(block.ppfd)||!isEntered(block.hours)||!Number.isFinite(Number(block.ppfd))||Number(block.ppfd)<0||Number(block.ppfd)>3000||!Number.isFinite(Number(block.hours))||Number(block.hours)<0||Number(block.hours)>24).length;
+ const segments=source.filter(block=>block&&isEntered(block.ppfd)&&isEntered(block.hours)&&Number.isFinite(Number(block.ppfd))&&Number(block.ppfd)>=0&&Number(block.ppfd)<=3000&&Number.isFinite(Number(block.hours))&&Number(block.hours)>=0&&Number(block.hours)<=24).map(block=>({ppfd:Number(block.ppfd),hours:Number(block.hours)}));
  const hours=segments.reduce((sum,block)=>sum+block.hours,0);
- const validDay=hours<=24;
- return {dli:segments.length&&validDay?integrateDli(segments):null,hours,segments,validDay};
+ const validDay=invalidSegments===0&&hours<=24;
+ return {dli:segments.length&&validDay?integrateDli(segments):null,hours,segments,validDay,invalidSegments};
 }
 
 export function dliRangeForMap(values,hours){
