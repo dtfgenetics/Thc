@@ -39,7 +39,12 @@ const canonicalPath=html=>{
 // An incoming mirror must not silently drop existing lesson illustrations.
 // Count rendered image elements rather than comparing src URLs, since approved
 // asset replacements may change paths without reducing the illustration count.
-const instructionalImageCount=html=>(html.match(/<img\b[^>]*>/gi)||[]).length;
+const instructionalImageCount=html=>{
+ const markup=html
+  .replace(/<!--[\s\S]*?-->/g,'')
+  .replace(/<(script|style|template)\b[^>]*>[\s\S]*?<\/\1>/gi,'');
+ return (markup.match(/<img\b[^>]*>/gi)||[]).length;
+};
 const instructionalSvgCount=html=>(html.match(/<svg\b[^>]*>/gi)||[])
  .filter(tag=>/\brole\s*=\s*(?:"img"|'img')/i.test(tag)).length;
 
