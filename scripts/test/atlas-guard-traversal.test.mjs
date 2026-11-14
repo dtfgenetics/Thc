@@ -78,3 +78,16 @@ test('actual image still counts when a comment contains an image example',()=>{
  const result=fixture(current,incoming);
  assert.equal(result.status,0,result.stderr);
 });
+
+test('malformed or insecure incoming canonical URLs fail closed',()=>{
+ for(const canonicalHref of [
+  'https:/dtfseeds.com/atlas/leaf-module/example/',
+  'http://dtfseeds.com/atlas/leaf-module/example/',
+  'https://www.dtfseeds.com/atlas/leaf-module/example/',
+ ]){
+  const incoming='<link rel="canonical" href="'+canonicalHref+'"><main>'+body+'</main>';
+  const result=fixture(html(body),incoming);
+  assert.notEqual(result.status,0,canonicalHref);
+  assert.match(result.stderr,/canonical route/);
+ }
+});
