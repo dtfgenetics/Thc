@@ -40,10 +40,14 @@ const canonicalPath=html=>{
 // Count rendered image elements rather than comparing src URLs, since approved
 // asset replacements may change paths without reducing the illustration count.
 const instructionalImageCount=html=>{
- const markup=html
-  .replace(/<!--[\s\S]*?-->/g,'')
-  .replace(/<(script|style|template)\b[^>]*>[\s\S]*?<\/\1>/gi,'');
- return (markup.match(/<img\b[^>]*>/gi)||[]).length;
+ // Scan tokens without rewriting HTML. Image-looking text in comments and
+ // non-rendered script/style/template blocks must not count as lesson art.
+ const tokens=/<!--[\s\S]*?-->|<(script|style|template)\b[^>]*>[\s\S]*?<\/\1\s*>|<img\b[^>]*>/gi;
+ let count=0;
+ for(const token of html.matchAll(tokens)){
+  if(/^<img\b/i.test(token[0])) count++;
+ }
+ return count;
 };
 const instructionalSvgCount=html=>(html.match(/<svg\b[^>]*>/gi)||[])
  .filter(tag=>/\brole\s*=\s*(?:"img"|'img')/i.test(tag)).length;
