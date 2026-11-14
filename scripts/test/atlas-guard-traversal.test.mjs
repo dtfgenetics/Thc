@@ -60,3 +60,21 @@ test('replacing an illustration without removing it is allowed',()=>{
  const result=fixture(html(body+oldArt),html(body+newArt));
  assert.equal(result.status,0,result.stderr);
 });
+
+test('commented or scripted image text does not disguise removal',()=>{
+ const art='<img src="/assets/education/observation.svg" alt="Comparison diagram">';
+ const commented=fixture(html(body+art),html(body+'<!-- '+art+' -->'));
+ assert.notEqual(commented.status,0);
+ assert.match(commented.stderr,/instructional image count 1 -> 0/);
+ const scripted=fixture(html(body+art),html(body+'<script>const sample = '+JSON.stringify(art)+';</script>'));
+ assert.notEqual(scripted.status,0);
+ assert.match(scripted.stderr,/instructional image count 1 -> 0/);
+});
+
+test('actual image still counts when a comment contains an image example',()=>{
+ const art='<img src="/assets/education/observation.svg" alt="Comparison diagram">';
+ const current=html(body+art+'<!-- '+art+' -->');
+ const incoming=html(body+art);
+ const result=fixture(current,incoming);
+ assert.equal(result.status,0,result.stderr);
+});
