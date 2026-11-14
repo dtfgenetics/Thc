@@ -36,6 +36,10 @@ const canonicalPath=html=>{
  }
  return found;
 };
+// An incoming mirror must not silently drop existing lesson illustrations.
+// Count rendered image elements rather than comparing src URLs, since approved
+// asset replacements may change paths without reducing the illustration count.
+const instructionalImageCount=html=>(html.match(/<img\b[^>]*>/gi)||[]).length;
 const instructionalSvgCount=html=>(html.match(/<svg\b[^>]*>/gi)||[])
  .filter(tag=>/\brole\s*=\s*(?:"img"|'img')/i.test(tag)).length;
 
@@ -58,6 +62,8 @@ for(const relative of pages(mirror)){
  if(oldRoute&&oldRoute!==newRoute)losses.push(relative+': canonical route '+oldRoute+' -> '+(newRoute||'missing or off-site'));
  const oldVisuals=instructionalSvgCount(old),newVisuals=instructionalSvgCount(incoming);
  if(newVisuals<oldVisuals)losses.push(relative+': instructional SVG count '+oldVisuals+' -> '+newVisuals);
+ const oldImages=instructionalImageCount(old),newImages=instructionalImageCount(incoming);
+ if(newImages<oldImages)losses.push(relative+': instructional image count '+oldImages+' -> '+newImages);
 }
 if(!inspected)throw Error('No existing Atlas lesson pages were checked');
 if(losses.length)throw Error('Atlas preservation failed:\n'+losses.join('\n'));
