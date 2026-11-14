@@ -20,6 +20,10 @@ The generated sync changes these eight files only (before this documentation):
 
 The review branch does not overwrite `/learn/atlas/` or replace expanded Atlas lessons. The mirror guard must prove byte-for-byte parity against the pinned canonical commit.
 
+## Review lane and verification
+- Corrected protected review branch: `work/platform/canonical-tools-review/20261114` (PR #2566). The previous review PR #2565 had invalid three-segment project-lane naming; this is a branch-policy correction, not a relaxation.
+- Revalidate checks at the exact new head; the old `action_required` workflow conclusions and the invalid-lane run cannot authorize a release.
+
 ## Release decisions: fail closed
 - Existing auto-generated PR #2561 received GitHub workflow conclusions `action_required` for every check at its refreshed head. Those are **not** passing tests.
 - A previous tested mirror head passed source parity, CodeQL and package-building checks, but its **Web quality system failed** when real Chrome navigated to `https://dtfseeds.com/` and received HTTP **403**.
