@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/polish-wordpress-shop-storefront-v5.mjs'
+      - 'site/wordpress/templates/archive-product-sales-hold.html'
+      - 'scripts/test-shop-sales-hold-template.mjs'
       - 'site/wordpress/products/strain-card-images.json'
       - '.github/workflows/wordpress-shop-storefront-v5.yml'
       - '.github/workflows/shop-storefront-v5-ci.yml'
@@ -28,6 +30,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/polish-wordpress-shop-storefront-v5.mjs
+          node --test scripts/test-shop-sales-hold-template.mjs
           grep -Fq "slug || '').toLowerCase() === 'archive-product'" scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq 'refusing to rewrite the archive' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq 'data-dtf-shop-storefront-v5="true"' scripts/polish-wordpress-shop-storefront-v5.mjs

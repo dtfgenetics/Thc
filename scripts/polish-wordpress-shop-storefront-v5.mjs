@@ -9,6 +9,15 @@ const apply = String(process.env.APPLY_SHOP_STOREFRONT_V5 || '').toLowerCase() =
 const backupRoot = process.env.BACKUP_ROOT || '/tmp/dtf-shop-storefront-v5';
 const cardRegistryPath = process.env.DTF_STRAIN_CARD_REGISTRY || 'site/wordpress/products/strain-card-images.json';
 
+// Protect the temporary sales suspension even when invoked outside the
+// dedicated production workflow. Never restore product links while on hold.
+if (apply) {
+  const shopSource = await readFile('site/wordpress/pages/shop.html', 'utf8');
+  if (shopSource.includes('Seed sales are temporarily on hold')) {
+    throw new Error('Seed sales hold active: refusing to republish transactional Shop V5. Use the approved nontransactional archive instead.');
+  }
+}
+
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
