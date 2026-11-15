@@ -44,6 +44,11 @@ for(const [route,runs] of Object.entries(samples)){
 }
 const findings=[];
 const rows=[];
+// A successful regression report requires real Lighthouse measurements.
+// This is independent of per-route baseline coverage settings.
+if (Object.keys(current).length === 0) {
+  findings.push({type:'no-lighthouse-measurements'});
+}
 for(const [route,prior] of Object.entries(baseline.routes||{})){
   const now=current[route];
   if(!now){
