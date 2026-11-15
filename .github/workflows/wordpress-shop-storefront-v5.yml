@@ -59,6 +59,51 @@ jobs:
             echo 'active=false' >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Set up Node for protected Shop hold
+        if: steps.sales_hold.outputs.active == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Flush public Shop cache without enabling purchasing
+        if: steps.sales_hold.outputs.active == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          test -s site/wordpress/templates/archive-product-sales-hold.html
+          node --test scripts/test-shop-sales-hold-template.mjs
+          ok=0
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs; then ok=1; break; fi
+            sleep $((attempt * 4))
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'Unable to flush Shop cache while sales are suspended.' >&2; exit 1; }
+
+      - name: Verify public Shop archive shows hold rather than checkout
+        if: steps.sales_hold.outputs.active == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in 1 2 3 4 5 6; do
+            status="$(curl -4 -LsS --max-time 30 -H 'Cache-Control: no-cache' \
+              -w '%{http_code}' -o "$RUNNER_TEMP/shop-on-hold.html" \
+              "$WP_SITE_URL/shop/?dtf_hold_verify=${GITHUB_RUN_ID}-${attempt}" || true)"
+            if [[ "$status" == '200' ]] && \
+               grep -Fq 'Seed sales on hold. Explore the genetics.' "$RUNNER_TEMP/shop-on-hold.html" && \
+               grep -Fq 'Purchasing is unavailable' "$RUNNER_TEMP/shop-on-hold.html" && \
+               ! grep -Fq 'Shop the release. Read the breeding story.' "$RUNNER_TEMP/shop-on-hold.html" && \
+               ! grep -Fq 'View store listing' "$RUNNER_TEMP/shop-on-hold.html"; then
+              ok=1; break
+            fi
+            echo "::warning::Public Shop cache has not converged to the hold template (HTTP $status, attempt $attempt)."
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]] || { echo "::error::Public Shop archive still advertises sales or is unavailable after LiteSpeed purge."; exit 1; }
+          echo 'Public Shop archive verified: hold visible, no old listing links.'
+
       - name: Setup Node
         if: steps.sales_hold.outputs.active != 'true'
         uses: actions/setup-node@v4
