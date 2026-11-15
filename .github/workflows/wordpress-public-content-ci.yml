@@ -189,5 +189,11 @@ jobs:
           ! grep -Eq '/wp-json/wp/v2/(users/[0-9]+|media|plugins|themes|products|orders)' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'db export' scripts/apply-wordpress-public-content.sh
           grep -Fq 'Expected exactly one published page' scripts/apply-wordpress-public-content.sh
-          grep -Fq 'Expected at most one published WordPress page' scripts/apply-wordpress-public-content-rest.mjs
+          # Reject ambiguous owners while recognizing draft pages that already
+          # own the canonical slug; otherwise WordPress silently creates shop-N.
+          grep -Fq "status: 'any'" scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'selectCanonicalPage(body, slug)' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'await assertPublishedIdentity(body,slug)' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'Ambiguous canonical WordPress slug' scripts/lib/wordpress-canonical-page-identity.mjs
+          node --test scripts/test-wordpress-canonical-page-identity.mjs
           grep -Fq 'wordpress-rest-content-' scripts/apply-wordpress-public-content-rest.mjs
