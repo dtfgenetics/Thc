@@ -50,7 +50,7 @@ add_action('woocommerce_checkout_process', static function (): void {
 // Throwing stops first-time cart insertion before it can create a purchasable cart.
 add_action('woocommerce_store_api_validate_add_to_cart', static function (): void {
     if (dtf_seed_sales_hold_active()) {
-        throw new \\Exception('Seed sales are temporarily on hold. Purchasing is unavailable.');
+        throw new \Exception('Seed sales are temporarily on hold. Purchasing is unavailable.');
     }
 }, PHP_INT_MAX);
 
@@ -58,7 +58,7 @@ add_action('woocommerce_store_api_validate_add_to_cart', static function (): voi
 // WP_Error is required to reject changes and top-ups to existing cart items.
 add_filter('woocommerce_store_api_cart_item_quantity_validation', static function ($valid) {
     if (dtf_seed_sales_hold_active()) {
-        return new \\WP_Error('dtf_sales_hold', 'Seed sales are temporarily on hold. Cart updates are unavailable.');
+        return new \WP_Error('dtf_sales_hold', 'Seed sales are temporarily on hold. Cart updates are unavailable.');
     }
     return $valid;
 }, PHP_INT_MAX, 1);
