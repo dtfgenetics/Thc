@@ -21,3 +21,16 @@ test('attribute matching distinguishes src and srcset and rejects foreign assets
   const html='<img srcset="/only-responsive.webp 1x, /retina.webp 2x"><source src="https://outside.example/elsewhere.webp"><link rel="canonical" href="/not-an-asset/">';
   assert.deepEqual(new Set(firstPartyAssets(html,route,base)),new Set([base+'/only-responsive.webp',base+'/retina.webp']));
 });
+
+test('comments and non-rendered blocks do not invent network assets',()=>{
+  const html=[
+    '<!-- <img src="/missing-comment.png"> -->',
+    '<script>const example = \'<img src="/missing-script.png">\';</script>',
+    '<style>/* <img src="/missing-style.png"> */</style>',
+    '<template><img src="/missing-template.png"></template>',
+    '<img src="/real.webp">',
+    '<script src="/real-runtime.js">const example = \'<img src="/missing-external-script.png">\';</script>'
+  ].join('');
+  assert.deepEqual(new Set(firstPartyAssets(html,route,base)),
+    new Set([base+'/real.webp',base+'/real-runtime.js']));
+});
