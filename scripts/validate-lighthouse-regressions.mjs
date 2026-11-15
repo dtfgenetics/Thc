@@ -72,6 +72,12 @@ for(const [route,prior] of Object.entries(baseline.routes||{})){
   rows.push(row);
 }
 
+// A report containing measurements only for non-baseline URLs cannot
+// establish whether existing public pages have regressed.
+if (Object.keys(baseline.routes || {}).length > 0 && rows.length === 0 && Object.keys(current).length > 0) {
+  findings.push({type:'no-baseline-routes-measured'});
+}
+
 const report={
   schemaVersion:1,
   generatedAt:new Date().toISOString(),
