@@ -35,16 +35,27 @@ export function firstPartyAssets(html, route, baseOrigin) {
       if (url) add(url);
     }
   };
-  for (const tag of html.matchAll(/<(?:img|script|source)\b[^>]*>/gi)) {
-    add(attr(tag[0], 'src'));
-    if (/^<(?:img|source)\b/i.test(tag[0])) {
-      srcset(attr(tag[0], 'srcset'));
-      srcset(attr(tag[0], 'data-srcset'));
-      add(attr(tag[0], 'data-src'));
+  // Consume non-rendered blocks as one token so markup embedded in JS,
+  // comments, styles or templates is never mistaken for a browser request.
+  // External <script src> still counts as a real asset.
+  const tokens = /<!--[\s\S]*?-->|<(script|style|template)\b[^>]*>[\s\S]*?<\/\1\s*>|<(?:img|script|source|link)\b[^>]*>/gi;
+  for (const token of html.matchAll(tokens)) {
+    const full = token[0];
+    if (full.startsWith('<!--')) continue;
+    if (/^<(?:style|template)\b/i.test(full)) continue;
+    const tag = /^<script\b/i.test(full)
+      ? (full.match(/^<script\b[^>]*>/i)?.[0] || '')
+      : full;
+    if (/^<(?:img|script|source)\b/i.test(tag)) {
+      add(attr(tag, 'src'));
+      if (/^<(?:img|source)\b/i.test(tag)) {
+        srcset(attr(tag, 'srcset'));
+        srcset(attr(tag, 'data-srcset'));
+        add(attr(tag, 'data-src'));
+      }
+      continue;
     }
-  }
-  for (const match of html.matchAll(/<link\b[^>]*>/gi)) {
-    const tag = match[0];
+    if (!/^<link\b/i.test(tag)) continue;
     const rel = attr(tag, 'rel').toLowerCase();
     if (/(?:^|\s)(?:stylesheet|icon|preload|modulepreload)(?:\s|$)/.test(rel)) {
       add(attr(tag, 'href'));
