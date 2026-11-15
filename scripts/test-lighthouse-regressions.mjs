@@ -45,6 +45,14 @@ try {
   const missing=spawnSync(process.execPath,[script],{env,encoding:'utf8'});
   assert.equal(missing.status,1,'missing baseline route must fail when coverage required');
   assert(JSON.parse(fs.readFileSync(output,'utf8')).findings.some(f=>f.type==='missing-route-measurement'));
+  assert(JSON.parse(fs.readFileSync(output,'utf8')).findings.some(f=>f.type==='no-lighthouse-measurements'),'empty measurements must be reported');
+  // PR and manual runs may not require every baseline URL, but zero measured
+  // pages must still fail when the regression checker is enforced.
+  const zeroWithoutCoverage=spawnSync(process.execPath,[script],{env:{...env,WEB_QA_REQUIRE_BASELINE_COVERAGE:'0'},encoding:'utf8'});
+  assert.equal(zeroWithoutCoverage.status,1,'zero measured routes must fail even without baseline coverage');
+  const zeroReport=JSON.parse(fs.readFileSync(output,'utf8'));
+  assert.equal(zeroReport.measuredRoutes,0);
+  assert(zeroReport.findings.some(f=>f.type==='no-lighthouse-measurements'));
   console.log('Lighthouse regression validity tests passed');
 } finally {
   fs.rmSync(temp,{recursive:true,force:true});
