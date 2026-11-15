@@ -53,6 +53,15 @@ try {
   const zeroReport=JSON.parse(fs.readFileSync(output,'utf8'));
   assert.equal(zeroReport.measuredRoutes,0);
   assert(zeroReport.findings.some(f=>f.type==='no-lighthouse-measurements'));
+  // An unrelated measured route cannot stand in for a baseline page.
+  fs.writeFileSync(path.join(reports,'other.report.json'),JSON.stringify({finalUrl:'https://dtfseeds.com/unknown-tool/',categories:{performance:{score:1},accessibility:{score:1},'best-practices':{score:1},seo:{score:1}}}));
+  const unrelated=spawnSync(process.execPath,[script],{env:{...env,WEB_QA_REQUIRE_BASELINE_COVERAGE:'0'},encoding:'utf8'});
+  assert.equal(unrelated.status,1,'unrelated route measurements must not pass the regression gate');
+  const unrelatedReport=JSON.parse(fs.readFileSync(output,'utf8'));
+  assert.equal(unrelatedReport.measuredRoutes,1);
+  assert.equal(unrelatedReport.comparedRoutes,0);
+  assert(unrelatedReport.findings.some(f=>f.type==='no-baseline-routes-measured'));
+  fs.rmSync(path.join(reports,'other.report.json'));
   console.log('Lighthouse regression validity tests passed');
 } finally {
   fs.rmSync(temp,{recursive:true,force:true});
