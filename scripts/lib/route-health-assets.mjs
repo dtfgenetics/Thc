@@ -18,8 +18,20 @@ export function firstPartyAssets(html, route, baseOrigin) {
   const srcset = value => {
     // The common URL + density/width descriptor syntax; data: candidates are
     // intentionally excluded because they do not require HTTP requests.
+    let skipDataPayload = false;
     for (const candidate of value.split(',')) {
-      const url = candidate.trim().split(/\s+/)[0];
+      const trimmed = candidate.trim();
+      if (skipDataPayload) {
+        // The comma separates a data URL's metadata and payload, not
+        // two independently fetchable image candidates.
+        skipDataPayload = false;
+        continue;
+      }
+      if (/^data:/i.test(trimmed)) {
+        skipDataPayload = true;
+        continue;
+      }
+      const url = trimmed.split(/\s+/)[0];
       if (url) add(url);
     }
   };
