@@ -1,3 +1,4 @@
+import { firstPartyAssets } from './lib/route-health-assets.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {
@@ -25,38 +26,6 @@ function stripMarkup(html) {
     .replace(/&[a-z0-9#]+;/gi, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-}
-
-function normalizeFirstPartyUrl(raw, route) {
-  if (!raw || /^(data:|blob:|javascript:|mailto:|tel:)/i.test(raw)) return null;
-  try {
-    const url = new URL(raw, route);
-    if (url.origin !== baseOrigin) return null;
-    url.hash = '';
-    return url.toString();
-  } catch {
-    return null;
-  }
-}
-
-function firstPartyAssets(html, route) {
-  const assets = new Set();
-
-  for (const match of html.matchAll(/<(?:img|script|source)\b[^>]*\bsrc\s*=\s*["']([^"']+)["']/gi)) {
-    const normalized = normalizeFirstPartyUrl(match[1]?.trim(), route);
-    if (normalized) assets.add(normalized);
-  }
-
-  for (const tagMatch of html.matchAll(/<link\b[^>]*>/gi)) {
-    const tag = tagMatch[0];
-    const href = tag.match(/\bhref\s*=\s*["']([^"']+)["']/i)?.[1]?.trim();
-    const rel = tag.match(/\brel\s*=\s*["']([^"']+)["']/i)?.[1]?.toLowerCase() || '';
-    if (!/(?:^|\s)(?:stylesheet|icon|preload|modulepreload)(?:\s|$)/.test(rel)) continue;
-    const normalized = normalizeFirstPartyUrl(href, route);
-    if (normalized) assets.add(normalized);
-  }
-
-  return [...assets].slice(0, 100);
 }
 
 async function request(url, { method = 'GET', readBody = false } = {}) {
@@ -190,7 +159,7 @@ const results = await mapLimit(routes, ROUTE_CONCURRENCY, async (route) => {
       findings.push('semantics: no main landmark, role=main, or h1 in server HTML');
     }
 
-    for (const asset of firstPartyAssets(response.body, response.finalUrl || route)) {
+    for (const asset of firstPartyAssets(response.body, response.finalUrl || route, baseOrigin)) {
       const owners = assetOwners.get(asset) || new Set();
       owners.add(route);
       assetOwners.set(asset, owners);
