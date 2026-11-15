@@ -2,6 +2,7 @@ import dns from 'node:dns';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
+import {selectCanonicalPage,isCanonicalPageResponse} from './lib/wordpress-canonical-page-identity.mjs';
 
 dns.setDefaultResultOrder('ipv4first');
 
@@ -141,14 +142,23 @@ async function request(path, options = {}) {
   throw lastError || new Error(`WordPress request ${path} failed.`);
 }
 
-async function getPublishedPageBySlug(slug) {
-  const params = new URLSearchParams({ slug, context: 'edit', per_page: '100' });
+async function getCanonicalPageBySlug(slug) {
+  // Draft/pending/private pages still own their slugs. A publish-only lookup
+  // caused WordPress to silently allocate /shop-2/, /shop-3/, etc. on every run.
+  const params = new URLSearchParams({ slug, context: 'edit', status: 'any', per_page: '100' });
   const { body } = await request(`/wp-json/wp/v2/pages?${params}`);
-  if (!Array.isArray(body)) throw new Error(`Unexpected page response for ${slug}`);
-  if (body.length > 1) {
-    throw new Error(`Expected at most one published WordPress page for slug '${slug}'; found ${body.length}`);
+  return selectCanonicalPage(body, slug);
+}
+
+async function assertPublishedIdentity(page,slug){
+  if(isCanonicalPageResponse(page,slug))return;
+  // Never leave a newly generated slug-collision page published.
+  if(Number(page?.id)>0){
+    await request(`/wp-json/wp/v2/pages/${page.id}`,{
+      method:'POST',body:JSON.stringify({status:'draft'}),retryTransient:true
+    });
   }
-  return body[0] || null;
+  throw new Error(`WordPress refused exact canonical /${slug}/ publication (received ${page?.slug||'missing slug'}). Stopped to avoid another duplicate page.`);
 }
 
 async function createPage(slug, title, content) {
@@ -161,12 +171,12 @@ async function createPage(slug, title, content) {
         retryTransient: false
       });
       if (!body?.id) throw new Error(`WordPress did not return an ID while creating /${slug}/`);
-      if (body?.status !== 'publish') throw new Error(`WordPress did not publish newly created /${slug}/`);
+      await assertPublishedIdentity(body,slug);
       return body;
     } catch (error) {
       if (!isTransientError(error)) throw error;
       console.warn(`Create response for /${slug}/ was ambiguous: ${error.message}. Checking the canonical slug before any retry.`);
-      const observed = await getPublishedPageBySlug(slug);
+      const observed = await getCanonicalPageBySlug(slug);
       if (observed) {
         if (
           editableTitle(observed) !== normalizeText(title) ||
@@ -191,6 +201,7 @@ async function updatePage(page, title, content) {
     retryTransient: true
   });
   if (!body?.id || body.id !== page.id) throw new Error(`WordPress did not confirm page ${page.id}`);
+  await assertPublishedIdentity(body,page.slug);
   return body;
 }
 
@@ -250,7 +261,7 @@ for (const [slug, title] of pageDefinitions) {
     }
   }
 
-  const page = await getPublishedPageBySlug(slug);
+  const page = await getCanonicalPageBySlug(slug);
   const preserved = preservePageSlugs.has(slug);
   if (preserved && !page) {
     throw new Error(`Delegated WordPress /${slug}/ owner is missing; refusing to create it from the broad canonical lane`);
