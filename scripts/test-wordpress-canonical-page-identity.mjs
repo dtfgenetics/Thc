@@ -20,6 +20,10 @@ test('duplicate exact slug owners fail closed',()=>{
 test('live publication code requests all statuses and checks returned slug',()=>{
  const source=readFileSync(new URL('./apply-wordpress-public-content-rest.mjs',import.meta.url),'utf8');
  assert.match(source,/status: 'any'/);
+ assert.match(source,/const suspendedShopDraft = slug === 'shop' && page\?\.status === 'draft'/);
+ assert.match(source,/const preserved = preservePageSlugs\.has\(slug\) \|\| suspendedShopDraft/);
+ assert.match(source,/if \(slug === 'shop' && !page\)/);
+ assert.match(source,/!suspendedShopDraft/);
  assert.match(source,/return selectCanonicalPage\(body, slug\)/);
  assert.match(source,/await assertPublishedIdentity\(body,slug\)/);
  assert.match(source,/await assertPublishedIdentity\(body,page.slug\)/);
