@@ -14,5 +14,9 @@ assert.match(html,/<p><strong>Misconception:<\/strong> Plants never need oxygen<
 assert.match(html,/<p><strong>Correction:<\/strong> Roots need oxygen<\/p>/);
 assert.doesNotMatch(html,/<br\s*\/?\s*>/i);
 assert.match(html, /&lt;unsafe&gt;/);
-assert.equal((html.match(/<article>/g)||[]).length,2);
+assert.match(html, /^<ol class="thc-paired" aria-label="Misconceptions and scientific corrections">/);
+assert.equal((html.match(/<li>/g)||[]).length,2);
+assert.equal((html.match(/<\/li>/g)||[]).length,2);
+assert.match(html, /<\/ol>$/);
+assert.doesNotMatch(html, /<article>/);
 console.log('Encyclopedia misconception renderer: semantic, escaped, and paired checks passed');
