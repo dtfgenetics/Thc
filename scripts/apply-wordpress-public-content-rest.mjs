@@ -262,11 +262,17 @@ for (const [slug, title] of pageDefinitions) {
   }
 
   const page = await getCanonicalPageBySlug(slug);
-  const preserved = preservePageSlugs.has(slug);
+  // Seed sales are suspended. Keep the exact shop owner in draft when it is
+  // intentionally hidden; a broad content sync must never republish commerce.
+  if (slug === 'shop' && !page) {
+    throw new Error('Canonical /shop/ owner missing; refusing to generate a new Shop page during seed-sales hold');
+  }
+  const suspendedShopDraft = slug === 'shop' && page?.status === 'draft';
+  const preserved = preservePageSlugs.has(slug) || suspendedShopDraft;
   if (preserved && !page) {
     throw new Error(`Delegated WordPress /${slug}/ owner is missing; refusing to create it from the broad canonical lane`);
   }
-  if (preserved && page?.status !== 'publish') {
+  if (preserved && page?.status !== 'publish' && !suspendedShopDraft) {
     throw new Error(`Delegated WordPress /${slug}/ owner page ${page.id} is not published: ${page.status}`);
   }
   if (preserved && !editableContent(page)) {
