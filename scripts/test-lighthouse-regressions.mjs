@@ -33,6 +33,18 @@ try {
     assert.equal(check.result.status,1,'invalid Lighthouse category must fail enforced audit');
     assert(check.report.findings.some(f=>f.category==='accessibility'&&f.type==='invalid-score'));
   }
+  // A Lighthouse runtime failure may still carry plausible scores; fail closed.
+  fs.writeFileSync(path.join(reports,'home.report.json'),JSON.stringify({
+    finalUrl:'https://dtfseeds.com/',
+    runtimeError:{code:'ERRORED_DOCUMENT_REQUEST',message:'Navigation failed'},
+    categories:{performance:{score:1},accessibility:{score:1},'best-practices':{score:1},seo:{score:1}}
+  }));
+  const errored=spawnSync(process.execPath,[script],{env,encoding:'utf8'});
+  assert.equal(errored.status,1,'runtime-error Lighthouse report must fail regardless of scores');
+  const erroredReport=JSON.parse(fs.readFileSync(output,'utf8'));
+  assert(erroredReport.findings.some(f=>f.type==='lighthouse-runtime-error'&&f.route==='/'));
+  assert(erroredReport.findings.some(f=>f.type==='invalid-score'&&f.route==='/'));
+  fs.rmSync(path.join(reports,'home.report.json'));
   // Repeated Lighthouse runs must use the median, not filename ordering.
   fs.writeFileSync(path.join(reports,'a.report.json'),JSON.stringify({finalUrl:'https://dtfseeds.com/',categories:{performance:{score:0.1},accessibility:{score:0.9},'best-practices':{score:0.9},seo:{score:0.9}}}));
   fs.writeFileSync(path.join(reports,'z.report.json'),JSON.stringify({finalUrl:'https://dtfseeds.com/',categories:{performance:{score:0.9},accessibility:{score:0.9},'best-practices':{score:0.9},seo:{score:0.9}}}));
