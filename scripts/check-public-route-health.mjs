@@ -1,3 +1,4 @@
+import { isOnSiteFinalDocument } from './lib/route-health-origin.mjs';
 import { firstPartyAssets } from './lib/route-health-assets.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -144,6 +145,10 @@ const results = await mapLimit(routes, ROUTE_CONCURRENCY, async (route) => {
 
   if (!response.ok || response.status >= 400) {
     findings.push(`navigation: ${response.status || 'fetch-error'}${response.error ? ` ${response.error}` : ''}`);
+  }
+
+  if (response.ok && !isOnSiteFinalDocument(route, response.finalUrl, baseOrigin)) {
+    findings.push('navigation: final document redirected outside the canonical HTTPS origin');
   }
 
   const isHtml = /\btext\/html\b/i.test(response.contentType)
