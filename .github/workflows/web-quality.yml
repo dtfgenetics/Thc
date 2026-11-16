@@ -9,6 +9,8 @@ on:
       - 'site/**'
       - 'scripts/discover-public-routes.mjs'
       - 'scripts/check-public-route-health.mjs'
+      - 'scripts/lib/route-health-assets.mjs'
+      - 'scripts/test/route-health-assets.test.mjs'
       - 'scripts/audit-responsive-source.mjs'
       - 'web-qa.config.mjs'
       - 'lighthouserc.cjs'
@@ -80,6 +82,9 @@ jobs:
 
       - name: Discover public routes
         run: node scripts/discover-public-routes.mjs
+
+      - name: Test responsive asset discovery
+        run: node --test scripts/test/route-health-assets.test.mjs
 
       - name: Check public route health
         run: node scripts/check-public-route-health.mjs
