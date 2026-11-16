@@ -385,7 +385,7 @@
   input.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&input.value){input.value='';apply();event.preventDefault();return}
     if(event.key==='Enter'){
-      const query=input.value.trim().toLowerCase().replace(/\\s+/g,' ');
+      const query=input.value.trim().toLowerCase().replace(/\s+/g,' ');
       if(!query)return;
       const best=cards.map(item=>({...item,score:scoreCard(item,query)}))
         .filter(item=>item.score>0&&item.href.startsWith('/'))
