@@ -11,7 +11,12 @@ export function stripNonRenderedMarkup(html='') {
 // duplicate IDs. HTML also permits unquoted id values.
 export function duplicateHtmlIds(html='') {
   const counts=new Map();
-  const withoutComments=stripNonRenderedMarkup(String(html).replace(/<!--[\s\S]*?-->/g,''));
+  // Textarea and title are raw-text/RCDATA elements: markup-looking text
+  // inside them must not be parsed as real elements. Preserve their opening
+  // tags so an actual id on the element can still be checked.
+  const withoutComments=stripNonRenderedMarkup(String(html))
+    .replace(/(<textarea\b[^>]*>)[\s\S]*?(<\/textarea\s*>)/gi, '$1$2')
+    .replace(/(<title\b[^>]*>)[\s\S]*?(<\/title\s*>)/gi, '$1$2');
   // Each quoted segment is consumed whole, so > inside a quoted value cannot
   // prematurely terminate the opening tag.
   const openingTags=/<[a-z][\w:-]*(?=[\s/>])((?:"[^"]*"|'[^']*'|[^'">])*)>/gi;
