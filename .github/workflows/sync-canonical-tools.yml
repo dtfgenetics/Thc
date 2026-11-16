@@ -167,7 +167,10 @@ jobs:
 
       - name: Commit mirror update when changed
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          test -n "${GH_TOKEN:-}" || { echo '::error::GitHub CLI token unavailable for mirror PR'; exit 1; }
           set -euo pipefail
           git config user.name "dtf-tools-sync"
           git config user.email "actions@users.noreply.github.com"
