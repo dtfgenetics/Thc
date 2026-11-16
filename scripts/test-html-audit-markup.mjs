@@ -27,6 +27,10 @@ assert.deepEqual(duplicateHtmlIds('<div id="same"></div><span id="same"></span>'
 assert.deepEqual(duplicateHtmlIds('<!-- <div id="same"></div> --><main id="same"></main>'),[], 'commented-out ids are inert');
 assert.deepEqual(duplicateHtmlIds('<div data-id="same" id="same"></div><span id="same"></span>'),[{id:'same',count:2}], 'data-id must not hide a real duplicate');
 assert.deepEqual(duplicateHtmlIds(stripNonRenderedMarkup('<script><div id="same"></div></script><main id="same"></main>')),[], 'non-rendered scripts must not count');
+assert.deepEqual(duplicateHtmlIds('<textarea><div id="same"></div></textarea><main id="same"></main>'),[], 'textarea content is text, not an HTML element');
+assert.deepEqual(duplicateHtmlIds('<title><div id="same"></div></title><main id="same"></main>'),[], 'title markup-like content is text');
+assert.deepEqual(duplicateHtmlIds('<textarea id="same">not HTML</textarea><main id="same"></main>'),[{id:'same',count:2}], 'real textarea element IDs must still be checked');
+assert.deepEqual(duplicateHtmlIds('<title id="same">not HTML</title><main id="same"></main>'),[{id:'same',count:2}], 'real title element IDs must still be checked');
 assert.ok(visualAudit.includes('duplicateHtmlIds(rendered)'), 'sitewide auditor must use the tested ID parser');
 
 console.log('html audit markup tests passed');
