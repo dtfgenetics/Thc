@@ -875,7 +875,7 @@ jobs:
             grep -Fq '>Tools</a>' "$file"
             grep -Fq '>Games</a>' "$file"
             grep -Fq '>Community</a>' "$file"
-            grep -Fq '>Shop</a>' "$file"
+            ! grep -Fq '>Shop</a>' "$file"
             grep -Fq 'dtf-sitewide-header-v6-script' "$file"
           done
 
