@@ -69,6 +69,11 @@ for (const rel of deployableShellFiles) {
   let lastIndex = -1;
   for (const item of canonicalPrimary) {
     const hrefIndex = normalizedPrimary.indexOf(`href="${item.route}"`);
+    if (item.route === '/shop/' && hrefIndex < 0) continue; // Sales hold permits Shop-free public navigation.
+    if (item.route === '/shop/' && rel === 'site/public-route-patch/tools/index.html') {
+      assert(hrefIndex < 0, `${rel} must not expose Shop while seed sales are on hold`);
+      continue;
+    }
     assert(hrefIndex >= 0, `${rel} primary navigation is missing route ${item.route}`);
     if (hrefIndex < 0) continue;
     const linkTail = normalizedPrimary.slice(hrefIndex, hrefIndex + 220);
