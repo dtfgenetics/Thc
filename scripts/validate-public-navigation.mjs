@@ -84,8 +84,11 @@ for (const rel of deployableShellFiles) {
 for (const [label, source] of [['v5 WordPress header', headerV5], ['v6 WordPress header', headerV6]]) {
   assert(source.includes('data-dtf-sitewide-header="canonical-five-v1"'), `${label} must retain the deployed compatibility marker while rendering the canonical eight-section header`);
   for (const item of canonicalPrimary) {
+    if (item.route === '/shop/') continue;
     assert(source.includes(`href="${item.route}"`), `${label} must include primary route ${item.route}`);
   }
+  assert(!source.includes('href="/shop/" data-dtf-nav-group="shop"'), `${label} must not expose Shop during sales hold`);
+  assert(!source.includes('href="/cart/" aria-label="Cart"'), `${label} must not expose Cart during sales hold`);
 }
 assert(headerV6.includes("if(group==='home')active=path==='/';"), 'v6 WordPress header must activate Home only at the root route');
 assert(headerV6.includes("else if(group==='courses')active=/^\\/(courses|learn\\/learning-hub)\\//.test(path);"), 'v6 WordPress header must map Learning Hub course routes into Courses');
