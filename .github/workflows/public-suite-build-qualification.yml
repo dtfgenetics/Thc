@@ -51,6 +51,21 @@ jobs:
           }
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           echo "Dispatched branch public-suite build: $run_url"
+          # A just-dispatched run can return 404 briefly while GitHub indexes it.
+          # Only wait for API visibility; never turn a real build failure green.
+          visible=0
+          for attempt in {1..20}; do
+            if gh run view "$run_id" --repo "$GITHUB_REPOSITORY" --json status >/dev/null 2>&1; then
+              visible=1
+              break
+            fi
+            echo "Build run $run_id is not queryable yet (attempt $attempt/20)."
+            sleep 3
+          done
+          if [ "$visible" -ne 1 ]; then
+            echo "::error::Dispatched public-suite build $run_id never became queryable."
+            exit 1
+          fi
           gh run watch "$run_id" --repo "$GITHUB_REPOSITORY" --exit-status
 
       - name: Download qualified branch artifact
