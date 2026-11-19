@@ -10,6 +10,7 @@ test('detects WooCommerce direct add-to-cart anchors and button classes', () => 
     '<button class="single_add_to_cart_button">Add to cart</button>',
     '<form class="variations_form cart" action="/product/x/">Order</form>',
     '<input type="submit" name="add-to-cart" value="Buy">',
+    '<a aria-disabled="false" href="?add-to-cart=123">Still active</a>',
   ]) assert.equal(hasPublicPurchaseControl(html), true, html);
 });
 
