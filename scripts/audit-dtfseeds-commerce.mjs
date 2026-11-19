@@ -1,3 +1,4 @@
+import { productHttpStatusIssue } from './lib/commerce-audit-status.mjs';
 import { setDefaultResultOrder } from 'node:dns';
 import { writeFile } from 'node:fs/promises';
 
@@ -256,13 +257,9 @@ const results = productResponses.map((result) => {
   const issues = [];
   const text = stripHtml(result.html).toLowerCase();
   if (result.fetchError) issues.push("Fetch failed: " + result.fetchError);
-  // 404/410 are permitted for retired product pages. A 403/WAF block is
-  // inconclusive, not positive evidence that the visible sales hold is safe.
-  if (result.status === 403) {
-    issues.push("Product page returned HTTP 403; sale-hold visibility and purchase controls cannot be verified");
-  } else if (![200, 404, 410].includes(result.status)) {
-    issues.push("Unexpected HTTP status " + result.status);
-  }
+  // A 403/WAF page is not proof of purchasing restrictions.
+  const statusIssue = productHttpStatusIssue(result.status);
+  if (statusIssue) issues.push(statusIssue);
   if (result.status === 200 && new URL(result.finalUrl).origin !== new URL(BASE_URL).origin) {
     issues.push("Product request redirected off-site; cannot verify canonical storefront");
   }
