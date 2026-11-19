@@ -112,7 +112,7 @@ jobs:
                 grep -Fqi 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$output" && \
                 grep -Fqi 'Mango Bubbles F1 Regular DTF Genetics strain card' "$output" && \
                 ! grep -Fqi 'Approved educational replacements are still being rebuilt.' "$output" && \
-                grep -Fqi 'Explore plant science in the learning library.' "$output" && \
+                grep -Fqi 'Approved plant-science visuals.' "$output" && \
                 [[ "$images" -ge 4 ]]; then
                 if OUTPUT="$output" node <<'NODE'
           const fs = require('fs');
