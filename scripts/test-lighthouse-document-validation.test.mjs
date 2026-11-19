@@ -58,3 +58,15 @@ test('rejects same-origin looking URL on an untrusted host',()=>{
   assert.equal(run.status,1);
   assert.ok(report.findings.some(x=>x.type==='invalid-document'&&x.reason==='unexpected-origin'));
 });
+
+test('rejects HTTP 403 browser document even with perfect category scores',()=>{
+  const {run,report}=evaluate({finalUrl:'https://dtfseeds.com/',responseCode:403,categories:scores});
+  assert.equal(run.status,1);
+  assert.ok(report.findings.some(x=>x.type==='invalid-document'&&x.reason==='http-error'));
+});
+
+test('rejects HTTP 500 browser document even with perfect category scores',()=>{
+  const {run,report}=evaluate({finalUrl:'https://dtfseeds.com/',responseCode:500,categories:scores});
+  assert.equal(run.status,1);
+  assert.ok(report.findings.some(x=>x.type==='invalid-document'&&x.reason==='http-error'));
+});
