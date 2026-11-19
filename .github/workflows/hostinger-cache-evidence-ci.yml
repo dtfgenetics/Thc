@@ -1,0 +1,26 @@
+name: Hostinger cache release evidence regression
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/hostinger-mcp-cache-flush.yml'
+      - '.github/workflows/hostinger-cache-evidence-ci.yml'
+      - 'scripts/test/hostinger-cache-release-evidence.test.mjs'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hostinger-mcp-cache-flush.yml'
+      - '.github/workflows/hostinger-cache-evidence-ci.yml'
+      - 'scripts/test/hostinger-cache-release-evidence.test.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test scripts/test/hostinger-cache-release-evidence.test.mjs
