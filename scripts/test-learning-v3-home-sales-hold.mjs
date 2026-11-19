@@ -15,4 +15,8 @@ assert.match(home, /btn\('\/seeds\/', 'Read genetics context', true\)/, 'Retain 
 for (const route of ['/seeds/blue-mango/', '/seeds/blue-bubblegum/']) {
   assert(home.includes("href: '" + route + "'"), 'Breeding cards must link to informational genetics routes: ' + route);
 }
+assert.match(source, /const homeMarkup = buildHome\(\)/, 'Publisher must build once before checking its HTML');
+assert.match(source, /Seed-sales hold: refusing to republish purchasing links/, 'Publisher must reject purchasing links at runtime');
+assert.match(source, /Seed-sales hold: refusing to republish a homepage without the visible hold notice/, 'Publisher must require a visible hold notice');
+assert.match(source, /await updatePage\(home, homeMarkup,/, 'Publisher must publish exactly the checked homepage HTML');
 console.log('Learning V3 Home publisher sales-hold regression test passed.');
