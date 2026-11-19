@@ -76,9 +76,11 @@ if (!original) throw new Error('Home page content is empty');
 // Genetics release cards are informational while seed sales are suspended.
 const releaseLinks = cards.map((card) => card.canonicalName === 'Blue Bubblegum'
   ? '/seeds/blue-bubblegum/' : '/seeds/blue-mango/');
-const releaseGridMatch = original.match(/<div\s+class=["']release-grid["'][^>]*>([\s\S]*?)<\/div>/i);
-if (!releaseGridMatch) throw new Error('Homepage release grid not found');
-const releaseArticles = [...releaseGridMatch[1].matchAll(/<article\b[^>]*class=["'][^"']*\brelease\b[^"']*["'][^>]*>[\s\S]*?<\/article>/gi)];
+const releaseGridStart = original.search(/<div\s+class=["']release-grid["']/i);
+if (releaseGridStart < 0) throw new Error('Homepage release grid not found');
+const releaseSectionEnd = original.indexOf('</section>', releaseGridStart);
+if (releaseSectionEnd < 0) throw new Error('Homepage release section is incomplete');
+const releaseArticles = [...original.slice(releaseGridStart, releaseSectionEnd).matchAll(/<article\b[^>]*class=["'][^"']*\brelease\b[^"']*["'][^>]*>[\s\S]*?<\/article>/gi)];
 if (releaseArticles.length !== cards.length) throw new Error('Expected exactly three release articles');
 for (const [index, article] of releaseArticles.entries()) {
   if (!article[0].includes(`href="${releaseLinks[index]}"`) && !article[0].includes(`href='${releaseLinks[index]}'`)) {
@@ -115,9 +117,11 @@ function releaseImage(imageUrl, card) {
 }
 
 function replaceReleaseImage(content, card, imageUrl, index) {
-  const grid = content.match(/<div\s+class=["']release-grid["'][^>]*>([\s\S]*?)<\/div>/i);
-  if (!grid) throw new Error('Release grid missing');
-  const articles = [...grid[1].matchAll(/<article\b[^>]*class=["'][^"']*\brelease\b[^"']*["'][^>]*>[\s\S]*?<\/article>/gi)];
+  const gridStart = content.search(/<div\s+class=["']release-grid["']/i);
+  if (gridStart < 0) throw new Error('Release grid missing');
+  const sectionEnd = content.indexOf('</section>', gridStart);
+  if (sectionEnd < 0) throw new Error('Release section incomplete');
+  const articles = [...content.slice(gridStart, sectionEnd).matchAll(/<article\b[^>]*class=["'][^"']*\brelease\b[^"']*["'][^>]*>[\s\S]*?<\/article>/gi)];
   const article = articles[index]?.[0];
   if (!article) throw new Error(`Release article ${index + 1} missing`);
   const img = article.match(/<img\b[^>]*>/i)?.[0];
