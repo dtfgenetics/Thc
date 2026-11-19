@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { buildProductionQueue } from '../lib/encyclopedia-production-queue.mjs';
 const complete={id:'THC-ENC-001',number:1,part:1,title:'Complete',exists:true,individualCanonical:true,
   sourceCopyIssue:false,placeholderIssue:false,
-  objective:true,approvedVisual:true,rationaleComplete:true,visualBriefReady:true,
+  objective:true,approvedVisual:true,visualBriefReady:true,
   terms:3,coreScience:2,measurements:2,pairedMisconceptions:2,crossLinks:2,sources:2,complete:true};
 test('prioritizes missing source without declaring a pass',()=>{
  const missing={...complete,id:'THC-ENC-002',number:2,exists:false,approvedVisual:false,complete:false};
@@ -39,7 +39,7 @@ test('invalid encyclopedia identity fails early',()=>{
 });
 
 test('general lesson requires neither certification exam nor external approval',()=>{
- const q=buildProductionQueue({lessons:[{...complete,assessmentMaterialized:false,
+ const q=buildProductionQueue({lessons:[{...complete,assessmentMaterialized:false,rationaleComplete:false,
    independentApproval:false,publicationReviewConflict:true,publicationReviewPending:true}]});
  assert.equal(q.items[0].status,'audit_criteria_met');
  assert.equal(q.items[0].priorityScore,0);
