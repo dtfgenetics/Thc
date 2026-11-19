@@ -60,7 +60,9 @@ const routes = [
     key: 'community', path: '/community/', minimumText: 300,
     requiredText: ['Discord'], requiredLinks: ['https://discord.gg/xJbUeHFPMt']
   },
-  { key: 'gallery', path: '/gallery/', minimumText: 250 },
+  { key: 'gallery', path: '/gallery/', minimumText: 250,
+    requiredText: ['data-dtf-gallery-visual-v3="true"', 'data-dtf-gallery-media-policy="approved-only"', 'See the genetics first. Explore the science behind them.', 'Blue Mango F2 Regular DTF Genetics strain card'],
+    requiredLinks: ['/seeds/blue-mango/', '/seeds/blue-bubblegum/'] },
   { key: 'about', path: '/about/', minimumText: 300 },
   { key: 'contact', path: '/contact/', minimumText: 250, requiredText: ['Discord'] },
   {
