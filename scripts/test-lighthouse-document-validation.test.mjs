@@ -46,3 +46,15 @@ test('rejects missing document URL',()=>{
   assert.equal(run.status,1);
   assert.ok(report.findings.some(x=>x.type==='invalid-document'));
 });
+
+test('rejects navigation failure warning even with numeric scores',()=>{
+  const {run,report}=evaluate({finalUrl:'https://dtfseeds.com/',runWarnings:['ERRORED_DOCUMENT_REQUEST'],categories:scores});
+  assert.equal(run.status,1);
+  assert.ok(report.findings.some(x=>x.type==='invalid-document'&&x.reason==='navigation-warning'));
+});
+
+test('rejects same-origin looking URL on an untrusted host',()=>{
+  const {run,report}=evaluate({finalUrl:'https://dtfseeds.com.attacker.example/',categories:scores});
+  assert.equal(run.status,1);
+  assert.ok(report.findings.some(x=>x.type==='invalid-document'&&x.reason==='unexpected-origin'));
+});
