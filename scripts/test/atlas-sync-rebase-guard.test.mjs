@@ -12,7 +12,7 @@ test('new integration main is inspected before any sync rebase or push', () => {
   const worktree = section.indexOf('git worktree add --detach "$mirror_worktree" origin/main');
   const guard = section.indexOf('DTF_ATLAS_MIRROR_DIR="$mirror_worktree/site/public-route-patch/atlas" node scripts/guard-atlas-preservation.mjs');
   const rebase = section.indexOf('git rebase origin/main');
-  const push = section.indexOf('git push --force-with-lease');
+  const push = section.indexOf('git push "--force-with-lease=${remote_ref}:${expected_remote_sha}"');
   for (const [name, index] of Object.entries({fetch, worktree, guard, rebase, push})) {
     assert.ok(index >= 0, name + ' contract missing');
   }
@@ -29,5 +29,17 @@ test('failed post-fetch preservation cannot publish a synchronized mirror', () =
 test('post-rebase exact canonical mirror parity remains required', () => {
   assert.match(section, /TOOLS_REPO_DIR=\/tmp\/tools npm run verify:cultivation-reference-tools/);
   assert.match(section, /test "\$\{pinned_tools_sha\}" = "\$\{expected_tools_sha\}"/);
-  assert.match(section, /git push --force-with-lease/);
+  assert.match(section, /git push "--force-with-lease=\$\{remote_ref\}:\$\{expected_remote_sha\}"/);
+});
+
+test('sync branch lease uses explicitly observed compare-and-swap remote SHA', () => {
+  const remote = section.indexOf('expected_remote_sha="$(git ls-remote --heads origin');
+  const guard = section.indexOf('if [ -n "${expected_remote_sha}" ]');
+  const push = section.indexOf('git push "--force-with-lease=${remote_ref}:${expected_remote_sha}"');
+  const verify = section.indexOf('pushed_sha="$(git ls-remote --heads origin');
+  assert.ok(remote >= 0 && guard > remote && push > guard && verify > push,
+    'remote branch must be observed and leased before any mirror update');
+  assert.doesNotMatch(section, /git push --force-with-lease origin/,
+    'unobserved implicit remote tracking leases must be refused');
+  assert.match(section, /git fetch --no-tags origin "\$\{remote_ref\}"/);
 });
