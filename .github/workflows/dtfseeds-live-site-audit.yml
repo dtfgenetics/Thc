@@ -13,6 +13,8 @@ on:
       - scripts/audit-dtfseeds-commerce.mjs
       - scripts/lib/commerce-audit-status.mjs
       - scripts/lib/commerce-audit-status.test.mjs
+      - scripts/lib/commerce-purchase-controls.mjs
+      - scripts/lib/commerce-purchase-controls.test.mjs
       - .github/workflows/dtfseeds-live-site-audit.yml
   push:
     branches:
@@ -23,6 +25,8 @@ on:
       - scripts/audit-dtfseeds-commerce.mjs
       - scripts/lib/commerce-audit-status.mjs
       - scripts/lib/commerce-audit-status.test.mjs
+      - scripts/lib/commerce-purchase-controls.mjs
+      - scripts/lib/commerce-purchase-controls.test.mjs
       - .github/workflows/dtfseeds-live-site-audit.yml
 
 permissions:
@@ -46,7 +50,7 @@ jobs:
       - name: Validate commerce audit status policy
         run: |
           node --check scripts/audit-dtfseeds-commerce.mjs
-          node --test scripts/lib/commerce-audit-status.test.mjs
+          node --test scripts/lib/commerce-audit-status.test.mjs scripts/lib/commerce-purchase-controls.test.mjs
 
       - name: Audit core public routes and metadata
         id: core
