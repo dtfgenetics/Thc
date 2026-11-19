@@ -70,3 +70,10 @@ test('rejects HTTP 500 browser document even with perfect category scores',()=>{
   assert.equal(run.status,1);
   assert.ok(report.findings.some(x=>x.type==='invalid-document'&&x.reason==='http-error'));
 });
+
+test('fails enforced quality gate when no valid Lighthouse documents remain',()=>{
+  const {run,report}=evaluate({finalUrl:'https://other.example/',categories:scores});
+  assert.equal(run.status,1);
+  assert.equal(report.measuredRoutes,0);
+  assert.ok(report.findings.some(x=>x.type==='no-valid-lighthouse-measurements'));
+});
