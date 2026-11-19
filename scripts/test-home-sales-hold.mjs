@@ -8,6 +8,6 @@ assert.equal(purchaseLinks.length, 0, 'Homepage must not link directly to purcha
 assert.match(html, /Seed sales temporarily on hold/i, 'Homepage must explicitly communicate the sales hold');
 assert.match(html, /href="\/seeds\/"/, 'Genetics library must remain accessible');
 
-const geneticsLinks = [...html.matchAll(/href="\/seeds\/"[^>]*>Explore genetics/g)];
+const geneticsLinks = [...html.matchAll(/<a class="text-link" href="\/seeds\/">Explore genetics/g)];
 assert.equal(geneticsLinks.length, 3, 'All three strain-card CTAs must lead to informational genetics');
 console.log('Homepage sales-hold contract passed: no purchasing CTAs, three genetics links, visible hold notice.');
