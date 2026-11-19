@@ -5,7 +5,12 @@ const DEFAULT_BASE = 'https://dtfseeds.com';
 const ROUTES = [
   { path: '/', marker: 'Genetics first. Learn the plant behind the pack.', hold: true },
   { path: '/tools/', marker: 'Grow with records. Diagnose with evidence.' },
-  { path: '/vpd-chart/', marker: 'Leaf-VPD calculator' }
+  { path: '/vpd-chart/', marker: 'Leaf-VPD calculator' },
+  { path: '/learn/', marker: 'Learn the plant as one connected system.' },
+  { path: '/courses/', marker: 'Professional Cannabis Cultivation Education' },
+  { path: '/games/', marker: 'Pick what is playable. See what is coming next.' },
+  { path: '/learn/encyclopedia/thc-enc-001/', marker: 'How to Read Cannabis Plant Science Critically', referenceOnly: true },
+  { path: '/learn/encyclopedia/thc-enc-089/', marker: 'Canopy Microclimates and Dead Zones', referenceOnly: true }
 ];
 
 export function purchasingLinks(html, origin = DEFAULT_BASE) {
@@ -26,6 +31,9 @@ export function inspectHtml(html, route, origin = DEFAULT_BASE) {
   if (!body.includes(route.marker)) failures.push('expected page identity not found');
   if (route.hold && !/Seed sales temporarily on hold/i.test(body)) {
     failures.push('homepage sales-hold notice missing');
+  }
+  if (route.referenceOnly && /Check your reasoning|Answer rationale|<h2[^>]*id=["']reasoning["']/i.test(body)) {
+    failures.push('encyclopedia chapter still exposes non-certification assessment content');
   }
   const links = purchasingLinks(body, origin);
   if (links.length) failures.push('purchasing navigation still present: ' + [...new Set(links)].join(', '));
