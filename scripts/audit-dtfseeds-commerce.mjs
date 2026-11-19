@@ -1,3 +1,4 @@
+import { hasPublicPurchaseControl } from './lib/commerce-purchase-controls.mjs';
 import { productHttpStatusIssue } from './lib/commerce-audit-status.mjs';
 import { setDefaultResultOrder } from 'node:dns';
 import { writeFile } from 'node:fs/promises';
@@ -241,7 +242,7 @@ const shopResponse = await fetchProduct({ key: 'shop', path: '/shop/' });
 const shopText = stripHtml(shopResponse.html).toLowerCase();
 const holdNotice = /seed sales (?:are )?(?:temporarily )?on hold|seed purchasing is temporarily suspended/i.test(shopText);
 const purchasingUnavailable = /purchasing (?:is |currently )?unavailable|purchasing is currently unavailable/i.test(shopText);
-const purchaseForm = /<form\b[^>]*class=["'][^"']*cart\b|<button\b[^>]*name=["']add-to-cart["']|<input\b[^>]*name=["']add-to-cart["']/i;
+// Detect rendered cart forms, submit buttons and direct add-to-cart links.
 const shopIssues = [];
 if (shopResponse.fetchError) shopIssues.push("Shop fetch failed: " + shopResponse.fetchError);
 if (shopResponse.status !== 200) shopIssues.push("Shop must return HTTP 200");
@@ -250,7 +251,7 @@ if (!purchasingUnavailable) shopIssues.push("Shop does not tell visitors that pu
 if (shopResponse.status === 200 && new URL(shopResponse.finalUrl).origin !== new URL(BASE_URL).origin) {
   shopIssues.push("Shop request redirected off-site; cannot verify canonical storefront");
 }
-if (purchaseForm.test(shopResponse.html)) shopIssues.push("Shop contains an enabled-looking add-to-cart form or button");
+if (hasPublicPurchaseControl(shopResponse.html)) shopIssues.push("Shop contains an enabled-looking add-to-cart form or button");
 
 const productResponses = await Promise.all(products.map(fetchProduct));
 const results = productResponses.map((result) => {
@@ -266,7 +267,7 @@ const results = productResponses.map((result) => {
   if (result.status === 200) {
     const hasHold = /seed sales (?:are )?(?:temporarily )?on hold|purchasing (?:is |currently )?unavailable/i.test(text);
     if (!hasHold) issues.push("Accessible product page does not explain the sales hold");
-    if (purchaseForm.test(result.html)) issues.push("Accessible product page exposes an add-to-cart control");
+    if (hasPublicPurchaseControl(result.html)) issues.push("Accessible product page exposes an add-to-cart control");
   }
   return {
     key: result.product.key, requestedUrl: result.requestedUrl, finalUrl: result.finalUrl,
