@@ -13,7 +13,7 @@ export function hasPublicPurchaseControl(html = '') {
     const name = attrs.name || '';
     const className = attrs.class || '';
     const action = (attrs.action || '').replaceAll('&amp;', '&');
-    const isDisabled = /\bdisabled\b/i.test(tag) || attrs['aria-disabled'] === 'true';
+    const isDisabled = /\sdisabled(?:\s|=|>)/i.test(tag) || attrs['aria-disabled'] === 'true';
     if (isDisabled) return false;
     return name === 'add-to-cart' ||
       /(?:^|[?&])add-to-cart(?:=|&|$)/i.test(href) ||
