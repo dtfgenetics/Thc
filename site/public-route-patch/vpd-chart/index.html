@@ -102,6 +102,20 @@ footer{padding:28px 0 42px;color:var(--muted)}
 </figure>
 <p class="muted">Use the scenario solver as a mathematical comparison. It shows how temperature or RH would change the calculation while holding other assumptions constant; it does not by itself prescribe a climate-control action.</p></section>
 <section class="section"><div id="liveToolAdapter"></div></section>
+<section class="section" id="vpd-guided-chapter" aria-labelledby="vpdGuidedTitle">
+<div class="panel learn-panel">
+<p class="panel-kicker">Guided lesson · environmental measurement</p>
+<h2 id="vpdGuidedTitle">Work through a leaf-VPD result</h2>
+<p>Leaf VPD is the difference between saturation vapor pressure at the measured leaf temperature and actual vapor pressure in the nearby air. Air temperature and relative humidity determine the latter; measuring leaf temperature separately matters because a leaf is not necessarily at air temperature.</p>
+<div class="learn-grid">
+<article><h3>1. Record the inputs</h3><p>Example: canopy air <strong>25 °C</strong>, air relative humidity <strong>60%</strong>, measured leaf surface <strong>23 °C</strong>. Record where and when each reading was taken. The leaf example assumes the adjacent air shares the measured room vapor pressure.</p></article>
+<article><h3>2. Calculate both deficits</h3><p>Using the common approximation e<sub>s</sub>(T) = 0.6108 × exp[17.27T/(T + 237.3)] kPa: air saturation pressure is about <strong>3.17 kPa</strong>; actual air vapor pressure is 0.60 × 3.17 ≈ <strong>1.90 kPa</strong>. Air VPD ≈ <strong>1.27 kPa</strong>, while leaf VPD ≈ 2.81 − 1.90 = <strong>0.91 kPa</strong>.</p></article>
+<article><h3>3. Interpret with limits</h3><p>The lower leaf-VPD value does not prove that a crop is healthy, stressed, or in an optimal range. It reflects the cooler measured leaf in this example. Sensor accuracy, leaf sampling, stomatal regulation, boundary layers, water availability and plant response still matter.</p></article>
+</div>
+<details><summary><strong>Practice: what changes if the leaf reaches 25 °C?</strong></summary><p>With air remaining at 25 °C and 60% RH, leaf and air saturation pressures become equal. Calculated leaf VPD then equals air VPD, approximately <strong>1.27 kPa</strong>. This is a mathematical comparison, not a recommendation to increase leaf temperature.</p></details>
+<p>Use the calculator above to reproduce the example, then compare several actual canopy measurements. For the complete chapter, study <a href="/learn/environment-vpd/">Environment &amp; VPD</a>; for related light measurements use the <a href="/ppfd-chart/">PPFD &amp; DLI tool</a>.</p>
+</div>
+</section>
 </main>
 <script src="/assets/vendor/papaparse-5.7.0.min.js"></script>
 <script src="/assets/vendor/uplot-1.6.32.min.js"></script>
