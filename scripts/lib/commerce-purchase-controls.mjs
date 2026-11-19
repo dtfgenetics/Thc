@@ -13,8 +13,10 @@ export function hasPublicPurchaseControl(html = '') {
     const name = attrs.name || '';
     const className = attrs.class || '';
     const action = (attrs.action || '').replaceAll('&amp;', '&');
-    const isDisabled = /\sdisabled(?:\s|=|>)/i.test(tag) || attrs['aria-disabled'] === 'true';
-    if (isDisabled) return false;
+    // aria-disabled is advisory on links; an href still navigates and may add an item.
+    // Native disabled only prevents activation on controls that support the attribute.
+    const nativeDisabled = /^<(?:button|input)\b/i.test(tag) && /\sdisabled(?:\s|=|>)/i.test(tag);
+    if (nativeDisabled) return false;
     return name === 'add-to-cart' ||
       /(?:^|[?&])add-to-cart(?:=|&|$)/i.test(href) ||
       /\b(?:add_to_cart_button|single_add_to_cart_button|ajax_add_to_cart)\b/.test(className) ||
