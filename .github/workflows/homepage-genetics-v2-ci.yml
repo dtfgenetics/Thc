@@ -198,6 +198,7 @@ jobs:
           node scripts/test-reviewed-genetics-media.mjs
           node scripts/test-home-release-artwork.mjs
           node scripts/test-home-sales-hold.mjs
+          node scripts/test-learning-v3-home-sales-hold.mjs
 
       - name: Regression-test premium post-V3 matchers
         shell: bash
