@@ -35,8 +35,8 @@ if(fs.existsSync(reportDir)){
     const auditedUrl=report.finalUrl||report.requestedUrl;
     let auditedOrigin;
     try{auditedOrigin=new URL(auditedUrl).origin;}catch{auditedOrigin=null;}
-    if(report.runtimeError||report.runWarnings?.some(w=>/errored.document.request|navigation.failed/i.test(String(w)))||auditedOrigin!==new URL(origin).origin){
-      const reason=report.runtimeError?'runtime-error':auditedOrigin!==new URL(origin).origin?'unexpected-origin':'navigation-warning';
+    if(report.runtimeError||report.responseCode>=400||report.runWarnings?.some(w=>/errored.document.request|navigation.failed/i.test(String(w)))||auditedOrigin!==new URL(origin).origin){
+      const reason=report.runtimeError?'runtime-error':report.responseCode>=400?'http-error':auditedOrigin!==new URL(origin).origin?'unexpected-origin':'navigation-warning';
       invalidDocuments.push({file:name,type:'invalid-document',reason});
       console.error('WEB QUALITY INVALID DOCUMENT',JSON.stringify({file:name,reason}));
       continue;
