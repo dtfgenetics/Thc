@@ -39,5 +39,8 @@ for(const protocolVersion of ['2025-06-18','2025-03-26','2024-11-05']){
 
 try{await rpc({jsonrpc:'2.0',method:'notifications/initialized',params:{}})}catch{}
 const result=await rpc({jsonrpc:'2.0',id:2,method:'tools/call',params:{name:'hostinger-ai-assistant-litespeed-cache-flush',arguments:{}}});
-console.log('Hostinger LiteSpeed cache flush completed.');
+if (!result?.result || result.result.isError === true || result.result.error) {
+  throw new Error('Hostinger LiteSpeed cache flush returned a missing or failed tool result.');
+}
+console.log('Hostinger LiteSpeed cache flush tool returned without an error.');
 console.log(JSON.stringify({result:result?.result||null},null,2).slice(0,3000));
