@@ -1,0 +1,32 @@
+name: Validate THC Guided Tool Chapters
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/public-route-patch/vpd-chart/index.html'
+      - 'site/public-route-patch/ppfd-chart/index.html'
+      - 'scripts/test-guided-tool-chapters.mjs'
+      - '.github/workflows/validate-guided-tool-chapters.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/public-route-patch/vpd-chart/index.html'
+      - 'site/public-route-patch/ppfd-chart/index.html'
+      - 'scripts/test-guided-tool-chapters.mjs'
+      - '.github/workflows/validate-guided-tool-chapters.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  guided-learning:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify tool chapter examples and markup
+        run: node scripts/test-guided-tool-chapters.mjs
