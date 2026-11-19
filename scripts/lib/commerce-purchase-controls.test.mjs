@@ -11,6 +11,7 @@ test('detects WooCommerce direct add-to-cart anchors and button classes', () => 
     '<form class="variations_form cart" action="/product/x/">Order</form>',
     '<input type="submit" name="add-to-cart" value="Buy">',
     '<a aria-disabled="false" href="?add-to-cart=123">Still active</a>',
+    '<a aria-disabled="true" href="?add-to-cart=123">Still navigable despite ARIA</a>',
   ]) assert.equal(hasPublicPurchaseControl(html), true, html);
 });
 
@@ -21,7 +22,7 @@ test('does not mistake descriptions or nonrendered examples for active controls'
     '<script>const sample = \'<a href="?add-to-cart=123">\';</script>',
     '<template><a href="?add-to-cart=123">Example</a></template>',
     '<a href="/seeds/">View genetics</a>',
-    '<a aria-disabled="true" href="?add-to-cart=123">Unavailable</a>',
+    '<a aria-disabled="true" href="/seeds/">View genetics only</a>',
     '<button disabled name="add-to-cart">Unavailable</button>',
   ]) assert.equal(hasPublicPurchaseControl(html), false, html);
 });
