@@ -108,6 +108,7 @@ const copyDefectKinds=html=>{
   if(malformedPublicCopy.test(html)) kinds.push('malformed-source-copy');
   if(genericMisconceptionPlaceholder.test(html)) kinds.push('generic-misconception-placeholder');
   if(joinedClaimBoundary.test(decodeHtml(html))) kinds.push('joined-claim-boundary');
+  if(/<h2\b[^>]*\bid=["']reasoning["'][^>]*>/i.test(html) || /<h2\b[^>]*>\s*Check your reasoning\s*<\/h2>/i.test(html)) kinds.push('non-certification-assessment');
   return kinds;
 };
 const fingerprintDefectKinds=(raw,expectedFingerprint)=>{
