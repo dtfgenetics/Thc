@@ -5,7 +5,6 @@ const fields = [
   ['placeholderIssue', 'generic_placeholder', 75, true],
   ['objective', 'missing_objective', 35],
   ['approvedVisual', 'missing_approved_visual', 55],
-  ['rationaleComplete', 'missing_rationale', 45],
   ['visualBriefReady', 'missing_visual_brief', 25],
 ];
 export function buildProductionQueue(audit) {
