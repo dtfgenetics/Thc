@@ -48,7 +48,7 @@ const rows=registry.entries.map(entry=>{
   const exists=Boolean(l);
   const misconceptionCount=exists?misconceptionRows(l).length:0;
   const individualCanonical=Boolean(l?._file?.replaceAll('\\','/').includes('/lessons/'));
-  const publicationAuthorized=l?.reviewControl?.publicationAuthorized === true || l?.publicationAuthorized === true;
+  const publicationAuthorized=(l?.reviewControl?.publicationAuthorized ?? l?.publicationAuthorized) === true;
   const record={
     id:entry.id,number:entry.number,part:entry.part,title:entry.title,
     exists,sourceFile:l?._file||null,individualCanonical,publicationAuthorized,
