@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { verifyHomeReleaseArtwork } from './verify-home-release-artwork.mjs';
 
 const {cards} = JSON.parse(readFileSync('site/wordpress/products/strain-card-images.json','utf8'));
-const article = card => `<article class="release"><img class="dtf-img dtf-release-card-image" src="https://example.com/card.jpg" alt="${card.altText}" style="aspect-ratio:2/3;object-fit:contain"><a href="/product/${card.productSlug}/">Open</a></article>`;
+const article = card => `<article class="release"><img class="dtf-img dtf-release-card-image" src="https://example.com/card.jpg" alt="${card.altText}" style="aspect-ratio:2/3;object-fit:contain"><a href="${card.canonicalName === 'Blue Bubblegum' ? '/seeds/blue-bubblegum/' : '/seeds/blue-mango/'}">Explore genetics</a></article>`;
 const section = `<section><h2>Current releases, shown with the real strain cards.</h2><div class="release-grid">${cards.map(article).join('')}</div></section>`;
 // Reproduce live CSS text preceding the actual section and ending at header copy.
 const decoy = `<style>.shop:before{content:'Current releases'}.brand:after{content:'Teaching Healthy Cultivation'}</style><header>Teaching Healthy Cultivation</header>`;
@@ -19,7 +19,8 @@ for (const broken of [
   html.replace('aspect-ratio:2/3','aspect-ratio:1/1'),
   html.replace('Current releases, shown with the real strain cards.','Old heading'),
   html.replaceAll('class="dtf-img','data-class="dtf-img'),
-  html.replaceAll('href="/product/','data-href="/product/'),
+  html.replaceAll('href="/seeds/','data-href="/seeds/'),
+  html.replace('href="/seeds/blue-mango/"','href="/product/10-regular-f2-blue-mango-seeds/"'),
   html + section
 ]) assert.equal(verifyHomeReleaseArtwork(broken,cards).ok,false);
 const workflow = readFileSync('.github/workflows/wordpress-home-release-visuals.yml','utf8');
