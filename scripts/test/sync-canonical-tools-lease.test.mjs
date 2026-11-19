@@ -46,6 +46,10 @@ test('explicit compare-and-swap rejects another writer and works with no local t
     assert.notEqual(newer,initial);
     // Two competing sessions each saw the same old remote SHA.
     run(local,'push',`--force-with-lease=${ref}:${initial}`,'origin',`HEAD:${ref}`);
+    // A stale proposal must differ from the current remote tip. A no-op push
+    // of the already-published commit can succeed even with an expired lease.
+    fs.writeFileSync(path.join(local,'state.txt'),'competing-change');
+    run(local,'commit','-am','competing-change');
     const stale=spawnSync('git',['push',`--force-with-lease=${ref}:${initial}`,'origin',`HEAD:${ref}`],{cwd:local,encoding:'utf8'});
     assert.notEqual(stale.status,0,'stale remote lease must be rejected');
     assert.equal(run(local,'ls-remote','--heads','origin',ref).split(/\s+/)[0],newer);
