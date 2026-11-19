@@ -2,7 +2,6 @@ import { displaySourceNote } from './lib/encyclopedia-source-note-display.mjs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import { effectiveLessonAssessment, buildLessonAnswerRationalesV1 } from './lib/encyclopedia-assessment-v2.mjs';
 import { learnerFacingWorkedExampleFor } from './lib/encyclopedia-worked-examples.mjs';
 import { encyclopediaStructuredDataHtml } from './lib/encyclopedia-structured-data.mjs';
 import { loadEncyclopediaRegistry } from './lib/encyclopedia-registry.mjs';
@@ -140,17 +139,11 @@ const evidence=a=>Array.isArray(a)?a:[a].filter(Boolean);
 const sourceNotes=a=>Array.isArray(a)?a:[];
 const practicalResources=a=>(Array.isArray(a?.practicalResources)?a.practicalResources:[]).filter(x=>x&&x.status==='approved'&&x.publicRoute);
 const practicalResourcesHtml=a=>{const rows=practicalResources(a);return rows.length?`<section class="thc-practical"><h2>Practical resources</h2><div class="thc-tools">${rows.map(x=>`<a href="${esc(x.publicRoute)}">${esc(x.title||x.resourceId)}<span>→</span></a>`).join('')}</div></section>`:''};
-const assessment=a=>effectiveLessonAssessment(a);
-const answerRationales=a=>buildLessonAnswerRationalesV1(a);
-const rationaleHtml=a=>{
-  const pack=answerRationales(a);
-  return `<div class="thc-rationales">${pack.rationales.map((r,i)=>`<details class="thc-rationale"><summary><strong>Answer rationale ${i+1}:</strong> ${esc(r.title)}</summary><div class="thc-rationale-body">${list(r.points)}</div></details>`).join('')}</div>`;
-};
 const workedExample=a=>learnerFacingWorkedExampleFor(a.id);
 const workedExampleHtml=a=>{
   const ex=workedExample(a);
   if(!ex) return '';
-  return `<details class="thc-example"><summary><strong>Worked example:</strong> ${esc(ex.title)}</summary><div class="thc-example-body"><p><strong>Scenario:</strong> ${esc(ex.scenario)}</p><h3>Reasoning path</h3>${list(ex.reasoningPath||[])}<h3>Evidence to collect</h3>${list(ex.evidenceToCollect||[])}<h3>Common weak answers</h3>${list(ex.weakAnswerPatterns||[])}<p><strong>Verification:</strong> ${esc(ex.verification)}</p><p><strong>Applicability boundary:</strong> ${esc(ex.boundary)}</p></div></details>`;
+  return `<details class="thc-example"><summary><strong>Worked example:</strong> ${esc(ex.title)}</summary><div class="thc-example-body"><p><strong>Scenario:</strong> ${esc(ex.scenario)}</p><h3>Reasoning path</h3>${list(ex.reasoningPath||[])}<h3>Evidence to collect</h3>${list(ex.evidenceToCollect||[])}<h3>Interpretation pitfalls</h3>${list(ex.weakAnswerPatterns||[])}<p><strong>Verification:</strong> ${esc(ex.verification)}</p><p><strong>Applicability boundary:</strong> ${esc(ex.boundary)}</p></div></details>`;
 };
 
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -270,20 +263,18 @@ const css=`<style>
 </style>`;
 
 function articleHtml(a){
-  const checks=assessment(a);
   const toc=[
     ['core-science','Core science'],
     ['cultivation','Why this matters in cultivation'],
     ['measure','Measure and record'],
     ['misconceptions','Common misconceptions'],
     ['evidence-limits','Evidence limits'],
-    ['reasoning','Check your reasoning'],
     ['related','Related lessons'],
     ['sources','Sources and evidence'],
     ['downloads','Downloads']
   ];
   const tocHtml='<nav class="thc-toc" aria-label="On this page"><strong>On this page</strong><ol>'+toc.map(([id,label])=>`<li><a href="#${id}">${label}</a></li>`).join('')+'</ol></nav>';
-  return `${css}${encyclopediaStructuredDataHtml(a,{site})}<main class="thc-ency" data-thc-encyclopedia-id="${esc(a.id)}" data-thc-source-fingerprint="${fingerprintOf(a)}"><section class="thc-hero"><div class="thc-wrap"><nav class="thc-breadcrumbs" aria-label="Breadcrumb"><a href="/learn/">Learning Center</a> / <a href="/learn/encyclopedia/">Encyclopedia</a> / <span aria-current="page">${esc(a.id)}</span></nav><div class="thc-kicker">THC Plant Science Encyclopedia · ${esc(a.id)}</div><h1>${esc(a.title)}</h1><p>${esc(a.objective)}</p><div class="thc-nav"><a class="thc-btn" href="/learn/encyclopedia/">Browse Encyclopedia</a><a class="thc-btn alt" href="/learn/search/?q=${encodeURIComponent(a.title)}">Search related material</a></div></div></section><section class="thc-content"><div class="thc-wrap"><div class="thc-layout"><article class="thc-main"><div class="thc-note thc-objective"><strong>Overview</strong><p>${esc(a.objective)}</p></div>${reviewNoticeHtml(a)}${tocHtml}<!-- THC-ENC-VISUAL-ANCHOR --><h2 id="core-science">Core science</h2>${a.coreScience.map(p=>`<p>${esc(p)}</p>`).join('')}<h2 id="cultivation">Why this matters in cultivation</h2>${list(a.cultivationRelevance||[])}<h2 id="measure">Measure and record</h2>${records(a.measureAndRecord)}<h2 id="misconceptions">Common misconceptions</h2>${paired(misconceptionPairs(a.misconceptions))}<h2 id="evidence-limits">Evidence limits and uncertainty</h2>${evidence(a.evidenceLimits).map(p=>`<p>${esc(p)}</p>`).join('')}<h2 id="reasoning">Check your reasoning</h2>${list(checks.prompts)}<div class="thc-note"><strong>Try first, then compare your reasoning</strong><p>${esc(checks.scoringIntent)} Open the rationales after you have written or discussed your own answer.</p></div>${rationaleHtml(a)}${workedExampleHtml(a)}${practicalResourcesHtml(a)}<h2 id="related">Related lessons</h2>${relatedLessonsHtml(a)}<h2 id="sources">Sources and evidence</h2>${sourceNotesHtml(a.sourceNotes)}${downloadsHtml(a)}${lessonNav(a)}</article><aside class="thc-aside" aria-label="Lesson reference"><section class="thc-panel"><span class="thc-badge">Educational reference</span><h2>Key concepts · Terms to know</h2>${terms(a.terms||a.termDefinitions||a.termsToKnow||[])}<p><a href="/learn/glossary/">Open the full glossary →</a></p></section><section class="thc-panel"><h2>Related tools</h2><p>Use measurements and records from the lesson with the connected THC tools.</p>${toolLinksHtml(a)}</section><section class="thc-panel"><h2>Reading guidance</h2><p>Record method, units, plant stage, location, timing and cultivar when comparing observations or measurements. Do not treat a starting range or association as a universal optimum or diagnosis.</p></section></aside></div></div></section><section class="thc-footerbar"><div class="thc-wrap">Continue with the <a href="/learn/encyclopedia/">Encyclopedia</a>, <a href="/learn/infographics/">visual library</a>, or <a href="/learn/">THC Learning Center</a>.</div></section></main>`;
+  return `${css}${encyclopediaStructuredDataHtml(a,{site})}<main class="thc-ency" data-thc-encyclopedia-id="${esc(a.id)}" data-thc-source-fingerprint="${fingerprintOf(a)}"><section class="thc-hero"><div class="thc-wrap"><nav class="thc-breadcrumbs" aria-label="Breadcrumb"><a href="/learn/">Learning Center</a> / <a href="/learn/encyclopedia/">Encyclopedia</a> / <span aria-current="page">${esc(a.id)}</span></nav><div class="thc-kicker">THC Plant Science Encyclopedia · ${esc(a.id)}</div><h1>${esc(a.title)}</h1><p>${esc(a.objective)}</p><div class="thc-nav"><a class="thc-btn" href="/learn/encyclopedia/">Browse Encyclopedia</a><a class="thc-btn alt" href="/learn/search/?q=${encodeURIComponent(a.title)}">Search related material</a></div></div></section><section class="thc-content"><div class="thc-wrap"><div class="thc-layout"><article class="thc-main"><div class="thc-note thc-objective"><strong>Overview</strong><p>${esc(a.objective)}</p></div>${reviewNoticeHtml(a)}${tocHtml}<!-- THC-ENC-VISUAL-ANCHOR --><h2 id="core-science">Core science</h2>${a.coreScience.map(p=>`<p>${esc(p)}</p>`).join('')}<h2 id="cultivation">Why this matters in cultivation</h2>${list(a.cultivationRelevance||[])}<h2 id="measure">Measure and record</h2>${records(a.measureAndRecord)}<h2 id="misconceptions">Common misconceptions</h2>${paired(misconceptionPairs(a.misconceptions))}<h2 id="evidence-limits">Evidence limits and uncertainty</h2>${evidence(a.evidenceLimits).map(p=>`<p>${esc(p)}</p>`).join('')}${workedExampleHtml(a)}${practicalResourcesHtml(a)}<h2 id="related">Related lessons</h2>${relatedLessonsHtml(a)}<h2 id="sources">Sources and evidence</h2>${sourceNotesHtml(a.sourceNotes)}${downloadsHtml(a)}${lessonNav(a)}</article><aside class="thc-aside" aria-label="Lesson reference"><section class="thc-panel"><span class="thc-badge">Educational reference</span><h2>Key concepts · Terms to know</h2>${terms(a.terms||a.termDefinitions||a.termsToKnow||[])}<p><a href="/learn/glossary/">Open the full glossary →</a></p></section><section class="thc-panel"><h2>Related tools</h2><p>Use measurements and records from the lesson with the connected THC tools.</p>${toolLinksHtml(a)}</section><section class="thc-panel"><h2>Reading guidance</h2><p>Record method, units, plant stage, location, timing and cultivar when comparing observations or measurements. Do not treat a starting range or association as a universal optimum or diagnosis.</p></section></aside></div></div></section><section class="thc-footerbar"><div class="thc-wrap">Continue with the <a href="/learn/encyclopedia/">Encyclopedia</a>, <a href="/learn/infographics/">visual library</a>, or <a href="/learn/">THC Learning Center</a>.</div></section></main>`;
 }
 
 const now=new Date().toISOString().replace(/[:.]/g,'-');
