@@ -29,7 +29,16 @@ if(fs.existsSync(reportDir)){
   for(const name of fs.readdirSync(reportDir)){
     if(!name.endsWith('.report.json'))continue;
     const report=JSON.parse(fs.readFileSync(path.join(reportDir,name),'utf8'));
-    const route=normalizeRoute(report.finalUrl||report.requestedUrl||'/');
+    // A valid score must belong to the audited origin, not an off-site challenge,
+    // redirect or browser-error document. Treat these as missing measurements.
+    const auditedUrl=report.finalUrl||report.requestedUrl;
+    let auditedOrigin;
+    try{auditedOrigin=new URL(auditedUrl).origin;}catch{auditedOrigin=null;}
+    if(report.runtimeError||report.runWarnings?.some(w=>/errored.document.request|navigation.failed/i.test(String(w)))||auditedOrigin!==new URL(origin).origin){
+      console.error('WEB QUALITY INVALID DOCUMENT',JSON.stringify({file:name,reason:report.runtimeError?'runtime-error':auditedOrigin!==new URL(origin).origin?'unexpected-origin':'navigation-warning'}));
+      continue;
+    }
+    const route=normalizeRoute(auditedUrl);
     const scores={};
     for(const category of categories)scores[category]=scoreOf(report.categories?.[category]?.score);
     (samples[route]??=[]).push(scores);
