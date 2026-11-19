@@ -108,7 +108,14 @@ for (const phrase of forbiddenPublicClaims) {
 if (!seedsLower.includes('product page is the transaction source of truth')) {
   errors.push('Seeds page must state that the product page controls transaction data');
 }
-if (!shopLower.includes('product pages control current price, inventory, quantity, seed type')) {
+if (salesHold) {
+  if (!shopLower.includes('purchasing and checkout are unavailable')) {
+    errors.push('Shop page must explain that seed checkout is unavailable during sales hold');
+  }
+  for (const obsolete of ['commerce stays live', 'three active routes', 'the store handles the transaction', 'use only checkout links']) {
+    if (shopLower.includes(obsolete)) errors.push(`Shop page contains obsolete transactional claim while on hold: ${obsolete}`);
+  }
+} else if (!shopLower.includes('product pages control current price, inventory, quantity, seed type')) {
   errors.push('Shop page must keep dynamic transaction fields on product pages');
 }
 
