@@ -57,7 +57,7 @@ function footerCompliant(text) {
     lower.includes('dream the future') &&
     lower.includes('discord.gg/xjbuehfpmt') &&
     hasCurrentCopyright &&
-    !hasAny(value, ['email@email.com', '+123456789', '2025 dtf genetics']);
+    !hasAny(value, ['href="/shop/"', 'href="/cart/"', 'href="/checkout/"', 'email@email.com', '+123456789', '2025 dtf genetics']);
 }
 
 async function request(path, options = {}) {
