@@ -2,17 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildProductionQueue } from '../lib/encyclopedia-production-queue.mjs';
 const complete={id:'THC-ENC-001',number:1,part:1,title:'Complete',exists:true,individualCanonical:true,
-  publicationReviewConflict:false,publicationReviewPending:false,sourceCopyIssue:false,placeholderIssue:false,
-  objective:true,approvedVisual:true,assessmentMaterialized:true,rationaleComplete:true,visualBriefReady:true,
+  sourceCopyIssue:false,placeholderIssue:false,
+  objective:true,approvedVisual:true,rationaleComplete:true,visualBriefReady:true,
   terms:3,coreScience:2,measurements:2,pairedMisconceptions:2,crossLinks:2,sources:2,complete:true};
-test('flags review conflicts and prioritizes missing source without declaring a pass',()=>{
- const missing={...complete,id:'THC-ENC-002',number:2,exists:false,publicationReviewConflict:true,approvedVisual:false,complete:false};
+test('prioritizes missing source without declaring a pass',()=>{
+ const missing={...complete,id:'THC-ENC-002',number:2,exists:false,approvedVisual:false,complete:false};
  const q=buildProductionQueue({lessons:[complete,missing]});
  assert.equal(q.items[0].lessonId,'THC-ENC-002');
- assert.equal(q.items[0].publicationReviewConflict,true);
- assert.equal(q.items[0].gaps.includes('publication_review_conflict'),false);
  assert.ok(q.items[0].gaps.includes('missing_source'));
- assert.equal(q.summary.publicationReviewConflicts,1);
  assert.equal(q.summary.auditCriteriaMet,1);
 });
 test('identical priority sorts by canonical lesson number',()=>{
@@ -41,19 +38,12 @@ test('invalid encyclopedia identity fails early',()=>{
  assert.throws(()=>buildProductionQueue({lessons:[{...complete,id:'NOT-A-LESSON'}]}),/canonical/);
 });
 
-test('independent peer review is tracked as a later handoff, not a content-production gap',()=>{
- const q=buildProductionQueue({lessons:[{...complete,independentApproval:false,
-   publicationReviewConflict:true,publicationReviewPending:true}]});
+test('general lesson requires neither certification exam nor external approval',()=>{
+ const q=buildProductionQueue({lessons:[{...complete,assessmentMaterialized:false,
+   independentApproval:false,publicationReviewConflict:true,publicationReviewPending:true}]});
  assert.equal(q.items[0].status,'audit_criteria_met');
- assert.equal(q.items[0].peerReviewPending,true);
- assert.equal(q.items[0].gaps.includes('publication_review_pending'),false);
-});
-
-test('review-only hold remains visible without inflating production score',()=>{
- const q=buildProductionQueue({lessons:[{...complete,independentApproval:false,publicationReviewConflict:true,publicationReviewPending:true}]});
  assert.equal(q.items[0].priorityScore,0);
  assert.deepEqual(q.items[0].gaps,[]);
- assert.equal(q.summary.publicationReviewConflicts,1);
- assert.equal(q.summary.publicationReviewPending,1);
- assert.equal(q.summary.auditCriteriaMet,1);
+ assert.equal('peerReviewPending' in q.items[0],false);
+ assert.equal('publicationReviewPending' in q.summary,false);
 });
