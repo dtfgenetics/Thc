@@ -45,3 +45,18 @@ test('fails closed on 403 and cross-domain redirects', async () => {
   }));
   assert.deepEqual(redirected.failures, ['unexpected cross-domain redirect']);
 });
+
+test('rejects encyclopedia assessments on reference-only chapters', () => {
+  const reference = { path: '/learn/encyclopedia/thc-enc-001/', marker: 'How to Read Cannabis Plant Science Critically', referenceOnly: true };
+  assert.deepEqual(inspectHtml('<h1>How to Read Cannabis Plant Science Critically</h1><h2>Worked example</h2>', reference), []);
+  for (const bad of ['<h2 id="reasoning">Check your reasoning</h2>', '<h2>Check your reasoning</h2>', '<summary>Answer rationale 1:</summary>']) {
+    assert.match(inspectHtml('<h1>How to Read Cannabis Plant Science Critically</h1>' + bad, reference).join(';'), /assessment content/);
+  }
+});
+
+test('rejects Shop navigation on courses and games as well as tools', () => {
+  for (const path of ['/courses/', '/games/']) {
+    const route = { path, marker: 'Reference hub' };
+    assert.match(inspectHtml('<h1>Reference hub</h1><a href="/shop/">Shop</a>', route).join(';'), /purchasing navigation/);
+  }
+});
