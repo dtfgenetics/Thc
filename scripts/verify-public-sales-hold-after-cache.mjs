@@ -32,7 +32,7 @@ export function inspectHtml(html, route, origin = DEFAULT_BASE) {
   if (route.hold && !/Seed sales temporarily on hold/i.test(body)) {
     failures.push('homepage sales-hold notice missing');
   }
-  if (route.referenceOnly && /<h2\\b[^>]*>\\s*Check your reasoning\\s*<\\/h2>|<h2\\b[^>]*\\bid=["']reasoning["']|Answer rationale [123]:/i.test(body)) {
+  if (route.referenceOnly && /Check your reasoning|Answer rationale|<h2[^>]*id=["']reasoning["']/i.test(body)) {
     failures.push('encyclopedia chapter still exposes non-certification assessment content');
   }
   const links = purchasingLinks(body, origin);
