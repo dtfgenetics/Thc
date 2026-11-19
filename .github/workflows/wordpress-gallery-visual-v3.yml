@@ -6,11 +6,14 @@ on:
     branches: [main]
     paths:
       - 'scripts/finalize-wordpress-gallery-visual-v3.mjs'
+      - 'scripts/apply-wordpress-public-content-owned-routes.mjs'
+      - 'site/wordpress/pages/gallery.html'
       - 'site/wordpress/visual-quality-policy.json'
       - '.github/workflows/wordpress-gallery-visual-v3.yml'
   workflow_run:
     workflows:
       - 'Deploy DTFSeeds WordPress Pages'
+      - 'Publish DTFSeeds WordPress Production'
       - 'Publish DTF Genetics Library'
     types: [completed]
 
