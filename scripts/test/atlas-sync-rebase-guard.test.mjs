@@ -31,3 +31,16 @@ test('post-rebase exact canonical mirror parity remains required', () => {
   assert.match(section, /test "\$\{pinned_tools_sha\}" = "\$\{expected_tools_sha\}"/);
   assert.match(section, /git push --force-with-lease/);
 });
+
+test('sync branch lease uses a freshly observed remote SHA, not stale checkout tracking', () => {
+  const remote = section.indexOf('git ls-remote --heads origin');
+  const refresh = section.indexOf('git fetch origin "+refs/heads/${sync_branch}:refs/remotes/origin/${sync_branch}"');
+  const guard = section.indexOf('if [ "${fetched_sync_sha}" != "${remote_sync_sha}" ]; then');
+  const leasedPush = section.indexOf('git push --force-with-lease="refs/heads/${sync_branch}:${remote_sync_sha}"');
+  assert.ok(remote >= 0 && refresh > remote && guard > refresh && leasedPush > guard,
+    'the mirror branch must be fetched and its exact remote SHA leased before a history rewrite');
+  assert.match(section, /git push origin "HEAD:refs\/heads\/\$\{sync_branch\}"/,
+    'initial sync must create the remote branch without force');
+  assert.doesNotMatch(section, /git push --force-with-lease origin/,
+    'implicit/stale remote-tracking leases must not be used');
+});
