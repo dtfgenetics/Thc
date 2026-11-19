@@ -461,7 +461,14 @@ async function publicCheck(path, marker) {
 
 const home = await ensurePage('home', 'DTF Genetics | Dream the Future');
 const learn = await ensurePage('learn', 'Teaching Healthy Cultivation');
-await updatePage(home, buildHome(), 'DTF Genetics | Dream the Future');
+const homeMarkup = buildHome();
+if (/href\s*=\s*["']\/(?:shop|product|cart|checkout)(?:\/|\?|["'])/i.test(homeMarkup)) {
+  throw new Error('Seed-sales hold: refusing to republish purchasing links in the WordPress homepage');
+}
+if (!homeMarkup.includes('Seed sales temporarily on hold')) {
+  throw new Error('Seed-sales hold: refusing to republish a homepage without the visible hold notice');
+}
+await updatePage(home, homeMarkup, 'DTF Genetics | Dream the Future');
 await updatePage(learn, buildLearn(), 'Teaching Healthy Cultivation');
 
 const topicResults = [];
