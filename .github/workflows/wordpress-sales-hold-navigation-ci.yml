@@ -1,0 +1,29 @@
+name: WordPress sales-hold navigation regression
+on:
+  pull_request:
+    paths:
+      - 'scripts/reconcile-wordpress-presentation-rest.mjs'
+      - 'scripts/repair-wordpress-presentation-rest.mjs'
+      - 'scripts/test/wordpress-sales-hold-navigation.test.mjs'
+      - '.github/workflows/wordpress-sales-hold-navigation-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/reconcile-wordpress-presentation-rest.mjs'
+      - 'scripts/repair-wordpress-presentation-rest.mjs'
+      - 'scripts/test/wordpress-sales-hold-navigation.test.mjs'
+      - '.github/workflows/wordpress-sales-hold-navigation-ci.yml'
+permissions:
+  contents: read
+jobs:
+  nav-regression:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test scripts/test/wordpress-sales-hold-navigation.test.mjs
+      - run: node --check scripts/reconcile-wordpress-presentation-rest.mjs
+      - run: node --check scripts/repair-wordpress-presentation-rest.mjs
