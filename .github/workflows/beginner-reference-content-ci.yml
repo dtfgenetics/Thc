@@ -1,0 +1,27 @@
+name: Beginner reference content acceptance
+on:
+  pull_request:
+    paths:
+      - 'scripts/publish-wordpress-beginner-course-v5.mjs'
+      - 'scripts/test/beginner-reference-no-assessments.test.mjs'
+      - '.github/workflows/beginner-reference-content-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-wordpress-beginner-course-v5.mjs'
+      - 'scripts/test/beginner-reference-no-assessments.test.mjs'
+      - '.github/workflows/beginner-reference-content-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  reference-content:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check scripts/publish-wordpress-beginner-course-v5.mjs
+      - run: node --test scripts/test/beginner-reference-no-assessments.test.mjs
