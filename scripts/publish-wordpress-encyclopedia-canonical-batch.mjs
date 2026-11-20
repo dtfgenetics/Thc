@@ -123,9 +123,11 @@ const relatedLessonsHtml=a=>{
   return '<div class="thc-related-grid">'+ids.map(id=>`<a class="thc-related-card" href="/learn/encyclopedia/${id.toLowerCase()}/"><span>${esc(id)}</span><strong>${esc(registryTitleById.get(id)||id)}</strong></a>`).join('')+'</div>';
 };
 const reviewNoticeHtml=a=>{
-  const independent=a?.reviewControl?.independentApproval===true;
-  if(independent) return '<div class="thc-review-note"><strong>Evidence status:</strong> independently reviewed for this release.</div>';
-  return '<div class="thc-review-note" role="note"><strong>Evidence status:</strong> publication authorized, with independent specialist review still recorded separately. Treat ranges and causal claims as context-dependent unless the cited evidence establishes otherwise.</div>';
+  const sources=sourceNotes(a?.sourceNotes);
+  const summary=sources.length
+    ? 'This lesson includes source notes and evidence limitations. Check cited methods, populations, and conditions before applying quantitative ranges or causal claims.'
+    : 'Source notes are not attached to this release. Quantitative ranges and causal claims should not be treated as verified without supporting evidence.';
+  return `<div class="thc-review-note" role="note"><strong>Evidence and limitations:</strong> ${esc(summary)}</div>`;
 };
 const downloadsHtml=a=>{
   const approved=(Array.isArray(a?.downloads)?a.downloads:[]).filter(x=>x&&x.status==='approved'&&x.publicRoute);
