@@ -16,7 +16,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: dtfseeds-beginner-course-v5
@@ -100,6 +99,10 @@ jobs:
           m=re.search(r'<main class="dtf-beginner-v5"[\s\S]*?</main>',html,re.I)
           assert m, f'{slug}: controlled beginner wrapper missing'
           assert len(re.findall(r'<h1\b',m.group(0),re.I))==1, f'{slug}: controlled course must contain exactly one H1'
+          forbidden=('Self-check','Fast self-check','Can you explain the reasoning?')
+          assert all(token.lower() not in m.group(0).lower() for token in forbidden), f'{slug}: general reference page contains assessment prompts'
+          required='Why measurements and observations need context.' if slug=='start-here' else 'Four observations before interpreting a deficiency.'
+          assert required in m.group(0), f'{slug}: updated reference notes not live'
           assert 'display:none!important' in html and '.entry-title' in html, f'{slug}: theme title suppression missing'
           PY
           done
@@ -123,23 +126,21 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report beginner course V5 result
+      - name: Report beginner publication status
         if: always()
-        uses: actions/github-script@v7
+        shell: bash
         env:
-          STATUS: ${{ job.status }}
+          JOB_STATUS: ${{ job.status }}
           VALIDATE: ${{ steps.validate.outcome }}
           PUBLISH: ${{ steps.publish.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
-        with:
-          script: |
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
-              '## THC beginner course V5','',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Result: **${process.env.STATUS}**`,
-              `Publisher validation: **${process.env.VALIDATE || 'not-run'}**`,
-              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
-              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,'',
-              'Start Here is now an eight-module evidence-first beginner course. Beginner Guides is the practical companion with milestones, session records, common mistakes, self-checks, and direct routes into the V4 subject system, Encyclopedia, GrowLens, and Grow Doc.',
-              'The workflow is intentionally final after the older Learning Center deployment so legacy generated pages cannot flatten these two beginner routes. Verification counts the controlled visible course H1 rather than the theme-generated title that is intentionally hidden by page-scoped CSS.'
-            ].join('\n')});
+        run: |
+          {
+            echo '## THC beginner learning pages — protected production publication'
+            echo "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo "Result: ${JOB_STATUS}"
+            echo "Publisher validation: ${VALIDATE:-not-run}"
+            echo "WordPress publication: ${PUBLISH:-not-run}"
+            echo "Visitor-facing content verification: ${VERIFY:-not-run}"
+            echo 'Reference material must remain free of non-certification quizzes.'
+          } >> "${GITHUB_STEP_SUMMARY}"
