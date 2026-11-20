@@ -19,3 +19,11 @@ test('WordPress publication acceptance expects updated scientific explanatory co
   assert.match(source, /expected one H1/);
   assert.match(source, /data-dtf-beginner-v5=/);
 });
+
+test('protected WordPress publisher checks live pages for reference copy without prompts',()=>{
+ const workflow=readFileSync('.github/workflows/wordpress-beginner-course-v5.yml','utf8');
+ assert.match(workflow,/forbidden=\('Self-check','Fast self-check','Can you explain the reasoning\?'\)/);
+ assert.match(workflow,/updated reference notes not live/);
+ assert.match(workflow,/GITHUB_STEP_SUMMARY/);
+ assert.doesNotMatch(workflow,/issue_number:46|issues:\s*write/);
+});
