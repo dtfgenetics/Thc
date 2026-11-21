@@ -17,6 +17,7 @@ on:
       - 'configuration/web-quality-regression-baseline.json'
       - 'scripts/validate-lighthouse-regressions.mjs'
       - 'scripts/test-lighthouse-regressions.mjs'
+      - 'scripts/test-lighthouse-document-validation.test.mjs'
       - 'scripts/diagnose-lighthouse-access.mjs'
       - 'scripts/test/lighthouse-access-diagnostics.test.mjs'
       - 'scripts/diagnose-chrome-navigation.mjs'
@@ -149,6 +150,9 @@ jobs:
 
       - name: Validate Lighthouse regression checker
         run: node scripts/test-lighthouse-regressions.mjs
+
+      - name: Test Lighthouse document origin and error rejection
+        run: node --test scripts/test-lighthouse-document-validation.test.mjs
 
       - name: Test safe Lighthouse access diagnostics
         run: node --test scripts/test/lighthouse-access-diagnostics.test.mjs
