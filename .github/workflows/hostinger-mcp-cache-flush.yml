@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - scripts/flush-hostinger-litespeed-mcp.mjs
+      - site/wordpress/seo/genetics-page-meta.json
       - scripts/verify-public-sales-hold-after-cache.mjs
       - scripts/verify-public-sales-hold-after-cache.test.mjs
       - .github/workflows/hostinger-mcp-cache-flush.yml
