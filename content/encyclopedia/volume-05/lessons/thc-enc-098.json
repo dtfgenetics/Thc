@@ -77,5 +77,76 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "overview": "Carbon dioxide is a substrate for C3 photosynthesis, but room concentration is the result of plant uptake, incoming air, outgoing air and any supplemental supply. A crop controller setpoint does not establish worker safety or guarantee uniform canopy delivery.",
+  "mechanisms": [
+    {
+      "heading": "Canopy carbon balance",
+      "body": "Plants assimilate CO2 in the light when photosynthetic capacity and other resources permit. Dark respiration, substrate respiration and outside-air exchange can add or remove CO2 from room air. The net response depends on the whole canopy, not one leaf."
+    },
+    {
+      "heading": "Room mixing and ventilation",
+      "body": "In a simplified well-mixed room, CO2 accumulation equals supplemental input plus exchange with incoming air minus exhaust losses and net biological uptake. Real rooms have spatial gradients, so sensors near injectors or vents may misrepresent the canopy."
+    },
+    {
+      "heading": "Limits and safety",
+      "body": "Light, temperature, water, nutrients, acclimation and sink demand limit the benefit of elevated CO2. CO2 is an occupational exposure hazard; production controllers are not substitutes for independent monitoring, alarms, ventilation and applicable safety standards."
+    }
+  ],
+  "practicalInterpretation": [
+    "Measure incoming-air and canopy CO2 at multiple positions with lights and ventilation states recorded; check sensor calibration and placement.",
+    "Compare changes in growth and resource consumption with a stable baseline rather than assuming higher ppm always improves yield.",
+    "Document supply and ventilation interlocks, independent safety monitoring and qualified facility design; never interpret a crop target as a safe human exposure limit."
+  ],
+  "limitationsAndUncertainty": [
+    "The schematic depicts a conceptual well-mixed control volume, not a validated room model or flow-rate specification.",
+    "Concentration in ppm (approximately µmol/mol for dry air) is not the same as a CO2 injection rate; accurate mass balance requires airflow, volume and consistent units.",
+    "Published leaf-level cannabis responses cannot establish whole-crop yield or product-quality gains under every production environment."
+  ],
+  "relatedLessons": [
+    "THC-ENC-062",
+    "THC-ENC-063",
+    "THC-ENC-064",
+    "THC-ENC-065",
+    "THC-ENC-088",
+    "THC-ENC-089",
+    "THC-ENC-096",
+    "THC-ENC-099",
+    "THC-ENC-100"
+  ],
+  "references": [
+    {
+      "title": "NIOSH Pocket Guide to Chemical Hazards: Carbon Dioxide",
+      "publisher": "National Institute for Occupational Safety and Health",
+      "url": "https://www.cdc.gov/niosh/npg/npgd0103.html"
+    },
+    {
+      "title": "Photosynthetic Response of Cannabis sativa L., an Important Medicinal Plant, to Elevated Levels of CO2",
+      "authors": "Chandra S et al.",
+      "year": 2011,
+      "journal": "Physiology and Molecular Biology of Plants",
+      "volume": "17",
+      "pages": "291–295"
+    },
+    {
+      "title": "Physicochemical and Environmental Plant Physiology",
+      "authors": "Nobel PS",
+      "year": 2009,
+      "edition": "4th",
+      "publisher": "Academic Press"
+    }
+  ],
+  "visuals": [
+    {
+      "type": "diagram",
+      "src": "/assets/education/encyclopedia/thc-enc-098/co2-room-mass-balance.svg",
+      "sourcePath": "site/public-route-patch/assets/education/encyclopedia/thc-enc-098/co2-room-mass-balance.svg",
+      "alt": "Conceptual room CO2 mass balance showing outdoor air and supplemental CO2 entering, ventilation exhaust leaving, and net plant uptake reducing CO2 during photosynthesis.",
+      "caption": "Room CO2 concentration reflects supply, air exchange and biological uptake. Conceptual diagram; arrow widths are not measured flow rates and no crop setpoint is recommended.",
+      "width": 1200,
+      "height": 720,
+      "license": "CC BY 4.0",
+      "author": "THC Educational Content Production"
+    }
+  ]
 }
