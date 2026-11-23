@@ -77,5 +77,80 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "overview": "Daily light integral (DLI) is the time integral of photosynthetic photon flux density at a specified wavelength band. PPFD is an instantaneous rate (µmol m⁻² s⁻¹); DLI is a daily photon dose (mol m⁻² d⁻¹). A daily total does not describe intensity peaks, spectrum or timing.",
+  "mechanisms": [
+    {
+      "heading": "Constant light",
+      "body": "DLI = PPFD × hours × 3600 / 1,000,000 = PPFD × hours × 0.0036. For an illustrative constant 500 µmol m⁻² s⁻¹ over 18 h, DLI = 32.4 mol m⁻² d⁻¹."
+    },
+    {
+      "heading": "Changing light",
+      "body": "For samples representing successive intervals, DLI ≈ Σ(PPFDᵢ × Δtᵢ) / 1,000,000, with Δtᵢ in seconds. Averages must be time-weighted when intervals differ; gaps should be flagged rather than silently treated as zero."
+    },
+    {
+      "heading": "Band consistency",
+      "body": "PAR-based PPFD usually counts 400–700 nm photons; ePPFD uses an extended 400–750 nm range. Keep band and sensor response with every DLI result; unlike units or bands cannot be directly compared."
+    }
+  ],
+  "practicalInterpretation": [
+    "Use a logged canopy-level sensor or a representative sensor map when light varies over time and space.",
+    "Verify timestamp boundaries, sampling interval, missing samples, daylight-saving transitions, and whether the integration covers one complete local day.",
+    "Keep photoperiod, light distribution, spectrum and crop conditions alongside DLI; equal daily totals do not imply identical physiological responses."
+  ],
+  "limitationsAndUncertainty": [
+    "The illustrative constant-light calculation is arithmetic, not a recommended target for cannabis.",
+    "A single sensor may miss spatial gradients, while a spot measurement may miss temporal variation.",
+    "Numerical integration approximates a continuous signal; logging frequency, instrument calibration and interpolation assumptions influence accuracy."
+  ],
+  "relatedLessons": [
+    "THC-ENC-101",
+    "THC-ENC-102",
+    "THC-ENC-104",
+    "THC-ENC-105",
+    "THC-ENC-106",
+    "THC-ENC-109",
+    "THC-ENC-110",
+    "THC-ENC-111",
+    "THC-ENC-120"
+  ],
+  "references": [
+    {
+      "title": "Cannabis Yield, Potency, and Leaf Photosynthesis Respond Differently to Increasing Light Levels in an Indoor Environment",
+      "authors": "Rodriguez-Morrison V, Llewellyn D, Zheng Y",
+      "year": 2021,
+      "journal": "Frontiers in Plant Science",
+      "volume": "12",
+      "article": "646020",
+      "doi": "10.3389/fpls.2021.646020",
+      "url": "https://doi.org/10.3389/fpls.2021.646020"
+    },
+    {
+      "title": "Supplemental Greenhouse Lighting Increased the Water Use Efficiency, Growth, and Cutting Production of Cannabis Stock Plants",
+      "authors": "Collado CE et al.",
+      "year": 2024,
+      "journal": "Frontiers in Plant Science",
+      "volume": "15",
+      "article": "1371702"
+    },
+    {
+      "title": "The New 400–750 nm ePAR Range Explained",
+      "authors": "Apogee Instruments",
+      "year": 2021,
+      "publisher": "Apogee Instruments"
+    }
+  ],
+  "visuals": [
+    {
+      "type": "diagram",
+      "src": "/assets/education/encyclopedia/thc-enc-103/dli-time-integration.svg",
+      "sourcePath": "site/public-route-patch/assets/education/encyclopedia/thc-enc-103/dli-time-integration.svg",
+      "alt": "Two illustrative photon-flux timelines: constant PPFD and variable PPFD; the shaded area under each curve represents daily light integral. Formula uses micromoles per square metre per second and seconds to obtain moles per square metre per day.",
+      "caption": "DLI is the area under the PPFD-versus-time curve. The constant-light arithmetic example is illustrative; the variable-light profile is schematic, not experimental data.",
+      "width": 1200,
+      "height": 720,
+      "author": "THC Educational Content Production",
+      "license": "CC BY 4.0"
+    }
+  ]
 }
