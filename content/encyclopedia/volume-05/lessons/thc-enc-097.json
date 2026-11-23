@@ -76,5 +76,84 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "overview": "Chilling injury is physiological disruption at low temperatures without ice formation; freezing injury is a different process involving ice. A cool room reading alone does not diagnose either condition: tissue temperature, exposure duration, light, root-zone conditions and genotype matter.",
+  "mechanisms": [
+    {
+      "heading": "Temperature and membranes",
+      "body": "Cooling changes membrane fluidity and slows enzyme-catalyzed processes. Sensitive tissues may lose transport efficiency and exhibit delayed injury after rewarming. Chilling and freezing are not interchangeable diagnoses."
+    },
+    {
+      "heading": "Light during cold",
+      "body": "Photochemical energy absorption may continue when carbon fixation and photosystem repair slow, increasing photoinhibition risk. Light intensity, exposure time and acclimation modify the outcome."
+    },
+    {
+      "heading": "Roots and water",
+      "body": "Cool root zones can reduce hydraulic conductance, root metabolism and nutrient uptake, producing wilting or nutrient-like symptoms despite moisture being present."
+    },
+    {
+      "heading": "Dew-point interactions",
+      "body": "A leaf or surface near or below ambient dew point may collect condensation. Condensation is a separate moisture and disease-risk mechanism, not proof of chilling injury."
+    }
+  ],
+  "practicalInterpretation": [
+    "Record minimum leaf, air and root-zone temperatures with duration and sensor position; daily means can conceal damaging excursions.",
+    "Compare cold-affected and unaffected canopy zones and equipment events before assigning causation. Rule out irrigation, nutrient, pest and pathogen problems.",
+    "During recovery, correct the temperature source, avoid sudden high-light exposure to impaired tissues, and follow new growth rather than expecting old necrotic tissue to reverse."
+  ],
+  "limitationsAndUncertainty": [
+    "No single cannabis-specific chilling threshold applies to all cultivars, organs or developmental stages.",
+    "Visible purpling, droop or chlorosis cannot distinguish cold stress from nutritional, water or genetic causes without contextual measurements.",
+    "The schematic is a qualitative mechanism map, not experimental temperature-response data or a temperature recommendation."
+  ],
+  "relatedLessons": [
+    "THC-ENC-065",
+    "THC-ENC-066",
+    "THC-ENC-067",
+    "THC-ENC-068",
+    "THC-ENC-083",
+    "THC-ENC-090",
+    "THC-ENC-096",
+    "THC-ENC-100"
+  ],
+  "references": [
+    {
+      "title": "Physicochemical and Environmental Plant Physiology",
+      "authors": "Nobel PS",
+      "year": 2009,
+      "edition": "4th",
+      "publisher": "Academic Press"
+    },
+    {
+      "title": "Chilling and Freezing Injury",
+      "authors": "Levitt J",
+      "year": 1980,
+      "book": "Responses of Plants to Environmental Stresses",
+      "edition": "2nd",
+      "publisher": "Academic Press"
+    },
+    {
+      "title": "Photoinhibition of Photosynthesis in Nature",
+      "authors": "Long SP, Humphries S, Falkowski PG",
+      "year": 1994,
+      "journal": "Annual Review of Plant Physiology and Plant Molecular Biology",
+      "volume": "45",
+      "pages": "633–662",
+      "doi": "10.1146/annurev.pp.45.060194.003221",
+      "url": "https://doi.org/10.1146/annurev.pp.45.060194.003221"
+    }
+  ],
+  "visuals": [
+    {
+      "type": "diagram",
+      "src": "/assets/education/encyclopedia/thc-enc-097/chilling-risk-pathways.svg",
+      "sourcePath": "site/public-route-patch/assets/education/encyclopedia/thc-enc-097/chilling-risk-pathways.svg",
+      "alt": "Mechanism map: cold leaf temperature can slow metabolism and photosystem repair under light, while cold roots restrict water and nutrient transport; a separate dew-point branch indicates condensation risk.",
+      "caption": "Chilling risk involves interacting leaf, light and root-zone processes; condensation is a separate moisture pathway. Qualitative mechanism diagram, not measured data.",
+      "width": 1200,
+      "height": 720,
+      "license": "CC BY 4.0",
+      "author": "THC Educational Content Production"
+    }
+  ]
 }
