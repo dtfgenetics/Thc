@@ -77,5 +77,84 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "overview": "An environmental setpoint is a controller request, not a direct measurement of leaf, flower or root-zone conditions. Stage-aware control requires an evidence-informed operating envelope, mapped sensor locations, verified equipment capacity, crop-response observations and a documented process for changes.",
+  "mechanisms": [
+    {
+      "heading": "Coupled physical variables",
+      "body": "Air temperature changes saturation vapor pressure; relative humidity and leaf temperature jointly influence estimated leaf-to-air vapor pressure difference. Lighting, air movement and transpiration alter leaf energy balance. One controller adjustment can shift several plant-relevant conditions."
+    },
+    {
+      "heading": "Control dynamics",
+      "body": "Deadbands, sensor lag, equipment minimum-run times and capacity limits influence stability. An excessively narrow band may cause cycling without improving crop conditions."
+    },
+    {
+      "heading": "Microclimate and growth stage",
+      "body": "Canopy density, root development, transpiration and enclosed flower structures change spatial gradients and risk through development. Stage labels alone do not establish a universal numerical target."
+    },
+    {
+      "heading": "Feedback and risk",
+      "body": "Compare logged conditions against the envelope and observed crop response. Escalate sustained excursions through warning, corrective-action and safety pathways. Worker safety limits are independent of crop optimization targets."
+    }
+  ],
+  "practicalInterpretation": [
+    "For each variable, record the control sensor, verification sensors, normal operating band, persistence time, warning/action threshold and safe equipment response.",
+    "Map leaf and air temperatures, RH, dew-point margin, light and root-zone measurements during lights-on, lights-off and peak-load conditions.",
+    "Change one primary variable at a time when feasible; retain a versioned previous recipe, document effects and roll back if defined stop criteria occur.",
+    "Treat any illustrative band or diagram as a workflow example, not a published cannabis-specific temperature, humidity or CO2 prescription."
+  ],
+  "limitationsAndUncertainty": [
+    "The diagram shows decision flow rather than quantitative control thresholds. Site-specific bands require facility qualification.",
+    "A single room sensor may miss leaf, flower and root-zone gradients; sensor calibration and placement errors can exceed apparent improvements.",
+    "Published greenhouse response studies do not justify one universal cannabis setpoint chart across cultivars and developmental stages."
+  ],
+  "relatedLessons": [
+    "THC-ENC-083",
+    "THC-ENC-085",
+    "THC-ENC-086",
+    "THC-ENC-088",
+    "THC-ENC-089",
+    "THC-ENC-094",
+    "THC-ENC-096",
+    "THC-ENC-097",
+    "THC-ENC-098",
+    "THC-ENC-099"
+  ],
+  "references": [
+    {
+      "title": "Review of optimum temperature, humidity and vapour pressure deficit for greenhouse microclimate evaluation and control",
+      "authors": "Shamshiri RR et al.",
+      "year": 2018,
+      "journal": "International Agrophysics",
+      "volume": "32",
+      "pages": "287–302"
+    },
+    {
+      "title": "Physicochemical and Environmental Plant Physiology",
+      "authors": "Nobel PS",
+      "year": 2009,
+      "publisher": "Academic Press",
+      "edition": "4th"
+    },
+    {
+      "title": "Guide to the Expression of Uncertainty in Measurement",
+      "authors": "JCGM",
+      "year": 2008,
+      "identifier": "JCGM 100:2008",
+      "url": "https://www.bipm.org/en/committees/jc/jcgm/publications"
+    }
+  ],
+  "visuals": [
+    {
+      "type": "diagram",
+      "src": "/assets/education/encyclopedia/thc-enc-100/control-envelope-feedback.svg",
+      "sourcePath": "site/public-route-patch/assets/education/encyclopedia/thc-enc-100/control-envelope-feedback.svg",
+      "alt": "Flow diagram from crop stage and facility capacity through proposed environmental control envelope, spatial measurement, crop response, risk review and documented revision.",
+      "caption": "Stage-aware environmental control is an iterative measurement and risk-review process, not a universal setpoint chart. Original qualitative schematic.",
+      "width": 1200,
+      "height": 720,
+      "license": "CC BY 4.0",
+      "author": "THC Educational Content Production"
+    }
+  ]
 }
