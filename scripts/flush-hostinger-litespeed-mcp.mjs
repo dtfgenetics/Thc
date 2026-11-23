@@ -45,10 +45,9 @@ const advertised=listed?.result?.tools;
 if(!Array.isArray(advertised)) throw new Error('Hostinger MCP did not return a tool inventory. Cache has NOT been purged.');
 const candidates=advertised.filter(tool=>{
   const name=String(tool?.name||'').toLowerCase();
-  const description=String(tool?.description||'').toLowerCase();
   return name.includes('hostinger')
     && /(cache|litespeed)/.test(name)
-    && /(purge|flush|clear)/.test(name+' '+description)
+    && /(purge|flush|clear)/.test(name)
     && !/(disable|delete|reset|uninstall)/.test(name);
 });
 if(candidates.length!==1) {
