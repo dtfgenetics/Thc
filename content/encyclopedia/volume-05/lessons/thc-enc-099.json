@@ -76,5 +76,77 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "overview": "Environmental sensors report conditions at the probe, not automatically the crop's entire microclimate. Reliable control requires deliberate placement, representative spatial mapping, traceable checks and separation of control sensors from independent safety devices.",
+  "mechanisms": [
+    {
+      "heading": "Radiative and airflow bias",
+      "body": "Unshielded temperature probes can absorb fixture radiation; supply jets, humidifier plumes and cold boundaries create local microclimates. A sensor's exposure and response time determine whether its reading represents nearby leaves."
+    },
+    {
+      "heading": "Spatial sampling",
+      "body": "A canopy map records position, height and operating state. Repeat readings across lights-on, lights-off and transitions; a single mean can conceal important hotspots and humidity gradients."
+    },
+    {
+      "heading": "Calibration and verification",
+      "body": "Verification compares an instrument against an appropriate reference and acceptance criterion. Calibration establishes a measurement relationship and uncertainty; adjustment is a separate action. Preserve as-found results, reference identity and as-left results when adjusted."
+    },
+    {
+      "heading": "Independent safety measurements",
+      "body": "A horticultural CO₂ control sensor cannot substitute for a properly specified, located and maintained occupational safety alarm. Failure modes, setpoints and purpose differ."
+    }
+  ],
+  "practicalInterpretation": [
+    "Document sensor IDs, exact heights and locations, shielding, model specifications, data channels and calibration records before interpreting trends.",
+    "Perform side-by-side comparisons after stabilization, investigate disagreements and map multiple canopy zones under representative operating conditions.",
+    "Keep original data, clock synchronization and change history when moving probes or applying corrections. Confirm changes with a repeat map."
+  ],
+  "limitationsAndUncertainty": [
+    "The diagram is an illustrative placement comparison, not a measured temperature or humidity map.",
+    "Appropriate tolerances and calibration procedures are technology- and use-specific; manufacturer instructions and relevant standards govern.",
+    "Co-located agreement does not establish spatial representativeness or absolute accuracy unless reference uncertainty and exposure are controlled."
+  ],
+  "relatedLessons": [
+    "THC-ENC-083",
+    "THC-ENC-084",
+    "THC-ENC-085",
+    "THC-ENC-086",
+    "THC-ENC-096",
+    "THC-ENC-098",
+    "THC-ENC-100"
+  ],
+  "references": [
+    {
+      "title": "Evaluation of measurement data — Guide to the expression of uncertainty in measurement",
+      "authors": "JCGM",
+      "year": 2008,
+      "identifier": "JCGM 100:2008",
+      "url": "https://www.bipm.org/en/committees/jc/jcgm/publications"
+    },
+    {
+      "title": "International Vocabulary of Metrology (VIM)",
+      "authors": "JCGM",
+      "year": 2012,
+      "identifier": "JCGM 200:2012",
+      "url": "https://www.bipm.org/en/committees/jc/jcgm/publications"
+    },
+    {
+      "title": "Managing Light, Temperature, and Relative Humidity in Greenhouses",
+      "authors": "University of Massachusetts Extension",
+      "year": 2016
+    }
+  ],
+  "visuals": [
+    {
+      "type": "diagram",
+      "src": "/assets/education/encyclopedia/thc-enc-099/sensor-placement-bias.svg",
+      "sourcePath": "site/public-route-patch/assets/education/encyclopedia/thc-enc-099/sensor-placement-bias.svg",
+      "alt": "Two greenhouse canopy sections comparing an unshielded sensor near a lamp and supply-air jet with a shielded representative control probe, plus multiple mapping points across the crop.",
+      "caption": "Sensor placement changes what is measured. Representative control sensing and spatial mapping answer different questions. Conceptual illustration, not measured field data.",
+      "width": 1200,
+      "height": 720,
+      "license": "CC BY 4.0",
+      "author": "THC Educational Content Production"
+    }
+  ]
 }
