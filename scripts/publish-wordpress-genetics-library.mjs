@@ -189,8 +189,7 @@ function traitsHtml(line){
   return items?`<ul>${items}</ul>`:'';
 }
 function storeButtons(line){
-  if(!Array.isArray(line.storeRoutes)||!line.storeRoutes.length) return `<p style="color:#5c6c61"><strong>Store status:</strong> No current WooCommerce route is claimed from this catalog page.</p>`;
-  return `<p>${line.storeRoutes.map((r,i)=>button(r.path,r.label,i===0)).join('')}</p>`;
+  return `<p role="status" style="color:#355743"><strong>Seed sales temporarily on hold.</strong> This strain profile is maintained for breeding reference and education. Purchasing is unavailable.</p>`;
 }
 function releaseGallery(line,mediaList){
   return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px">${line.releaseCards.map((c,i)=>cardPanel(`${image(mediaList[i],c.altText,{eager:i===0})}<p style="margin:14px 0 4px">${badge(`${c.generation} · ${c.seedType}`)}</p><h3 style="font-size:1.25rem;margin:8px 0 0">${esc(line.name)}</h3>`)).join('')}</div>`;
@@ -209,7 +208,7 @@ function linePageHtml(line,mediaList){
   <div><h2 style="font-size:1.5rem;margin:0 0 12px;color:#fff">Selection / packaging direction</h2>${traitsHtml(line)}<p style="color:#cfe0d3;line-height:1.7">These are breeding goals, packaging observations, or planning ranges—not guarantees that every seed will express identical traits.</p></div>
 </div></section>
 <section style="max-width:1180px;margin:auto;padding:54px 22px">
-  <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);margin:0 0 12px">Availability</h2>
+  <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);margin:0 0 12px">Line status</h2>
   ${storeButtons(line)}
   <p>${button('/seeds/','Back to Seeds / Genetics',false)}${button('/learn/genetics-breeding/','Learn genetics & breeding',false)}</p>
 </section>
@@ -262,16 +261,10 @@ const grid=prepared.map(({line,media})=>{
   return cardPanel(`<a href="/seeds/${esc(line.slug)}/" style="color:inherit;text-decoration:none">${img}<p style="margin:14px 0 8px">${badge(releases)}</p><h2 style="font-size:1.55rem;margin:0 0 8px">${esc(line.name)}</h2><p style="font-weight:800;color:#2a5838">${lineage}</p><p style="line-height:1.7;color:#506357">${esc(line.summary)}</p><span style="font-weight:850;color:#215d36">Open line profile →</span></a>`);
 }).join('');
 
-const currentStoreRoutes=[
-  {label:'Blue Mango F2 Regular',path:'/product/10-regular-f2-blue-mango-seeds/'},
-  {label:'Blue Mango F2 Feminized',path:'/product/10-feminized-f2-blue-mango-x/'},
-  {label:'Blue Bubblegum F1 Regular',path:'/product/10-reg-f1-blueberry-bubblegum/'}
-];
-
 const blueMango=prepared.find(x=>x.line.id==='blue-mango');
 const seedsHtml=`<div data-dtf-genetics-library="2026" style="background:#f4f8f4;color:#173522">
 <section style="max-width:1240px;margin:auto;padding:58px 22px 38px;display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:38px;align-items:center">
-  <div><p style="margin:0 0 10px;color:#2d7d48;font-size:.82rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase">DTF Genetics · documented breeding library</p><h2 style="font-size:clamp(2.6rem,6vw,5rem);line-height:.98;letter-spacing:-.045em;margin:0 0 20px">From breeding notes to current releases.</h2><p style="font-size:1.13rem;line-height:1.8;color:#46604e;max-width:760px">Browse DTF Genetics by line. Every profile has a title, reviewed strain-card artwork, generation and seed-type context, description, verified lineage where available, and direct store routes only when a WooCommerce listing actually exists.</p><p>${button('#genetics-library','Browse the genetics library',true)}${button('/shop/','Shop current releases',false)}${button('/learn/genetics-breeding/','Learn genetics & breeding',false)}</p></div>
+  <div><p style="margin:0 0 10px;color:#2d7d48;font-size:.82rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase">DTF Genetics · documented breeding library</p><h2 style="font-size:clamp(2.6rem,6vw,5rem);line-height:.98;letter-spacing:-.045em;margin:0 0 20px">Explore documented genetic lines.</h2><p style="font-size:1.13rem;line-height:1.8;color:#46604e;max-width:760px">Browse DTF Genetics by line. Every profile has a title, reviewed strain-card artwork, generation and seed-type context, description, verified lineage where available, and educational breeding records. Seed purchasing is temporarily unavailable.</p><p>${button('#genetics-library','Browse the genetics library',true)}${button('/learn/','Explore THC education',false)}${button('/learn/genetics-breeding/','Learn genetics & breeding',false)}</p></div>
   <div>${image(blueMango?.media?.[0],blueMango?.line?.releaseCards?.[0]?.altText||'Blue Mango DTF Genetics strain card',{eager:true})}</div>
 </section>
 <section id="genetics-library" style="max-width:1240px;margin:auto;padding:12px 22px 62px">
@@ -279,7 +272,7 @@ const seedsHtml=`<div data-dtf-genetics-library="2026" style="background:#f4f8f4
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px">${grid}</div>
 </section>
 <section style="background:#12341f;color:#fff"><div style="max-width:1240px;margin:auto;padding:58px 22px">
-  <p style="margin:0 0 8px;color:#8ed1a1;font-weight:900;text-transform:uppercase;letter-spacing:.12em">Current WooCommerce routes</p><h2 style="font-size:clamp(2rem,4vw,3rem);margin:0 0 14px;color:#fff">Shop only what is actually listed.</h2><p style="max-width:780px;line-height:1.8;color:#cee0d2">Product pages control current price, inventory, quantity, seed type, fulfillment information and policies. The genetics library never invents availability.</p><p>${currentStoreRoutes.map((r,i)=>button(r.path,r.label,i===0)).join('')}</p>
+  <p style="margin:0 0 8px;color:#8ed1a1;font-weight:900;text-transform:uppercase;letter-spacing:.12em">Sales hold</p><h2 style="font-size:clamp(2rem,4vw,3rem);margin:0 0 14px;color:#fff">Genetic lines remain documented.</h2><p role="status" style="max-width:780px;line-height:1.8;color:#cee0d2">Seed sales are temporarily on hold. This library remains available for educational and breeding-reference purposes. Purchasing is unavailable; no product or checkout links are offered.</p>
 </div></section>
 <section style="max-width:1240px;margin:auto;padding:58px 22px">
   <h2 style="font-size:clamp(1.9rem,4vw,3rem);margin:0 0 14px">How to read the catalog</h2>
