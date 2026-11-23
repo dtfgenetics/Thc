@@ -35,7 +35,7 @@ export function inspectHtml(html, route, origin = DEFAULT_BASE) {
     failures.push('homepage sales-hold notice missing');
   }
   if (route.noCurrentRelease && /Current release projects/i.test(body)) failures.push('stale current-release promotion remains');
-  if (route.noAvailabilitySection && /<h2[^>]*>\\s*Availability\\s*<\\/h2>/i.test(body)) failures.push('stale sales availability section remains');
+  if (route.noAvailabilitySection && body.includes('<h2>Availability</h2>')) failures.push('stale sales availability section remains');
   if (route.referenceOnly && /Check your reasoning|Answer rationale|<h2[^>]*id=["']reasoning["']/i.test(body)) {
     failures.push('encyclopedia chapter still exposes non-certification assessment content');
   }
