@@ -76,5 +76,79 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "overview": "Heat stress is a loss of physiological function caused by tissue temperature and exposure duration, not simply a warm air reading. Leaf temperature reflects absorbed radiation, convective heat exchange and latent cooling from transpiration. Root and reproductive tissues may experience different temperatures and risks.",
+  "mechanisms": [
+    {
+      "heading": "Leaf energy balance",
+      "body": "At approximate steady state, net radiation (Rn) is balanced by sensible heat exchange (H), latent heat exchange from transpiration (λE), and smaller storage/other terms: Rn ≈ H + λE. Sign conventions depend on the measurement system. Higher radiation can warm leaves; transpiration can dissipate energy if water supply and stomatal conductance permit."
+    },
+    {
+      "heading": "Physiological injury",
+      "body": "Temperature affects enzyme rates and respiration before visible injury. Sustained or severe heat can disrupt membranes, protein folding, photosystem function and reproductive development. Heat-shock proteins participate in protection and repair, but induction does not prove full recovery."
+    },
+    {
+      "heading": "Interacting controls",
+      "body": "VPD, stomatal behavior, root hydraulic capacity, airflow and leaf orientation influence temperature and cooling. Air temperature, leaf temperature and root-zone temperature should be measured separately."
+    }
+  ],
+  "practicalInterpretation": [
+    "Map leaf temperatures at multiple canopy heights and positions, and compare them with nearby air temperature, RH, PPFD and irrigation status.",
+    "Document exposure duration and timing, including night temperatures; avoid interpreting a single peak reading as a universal injury threshold.",
+    "Evaluate recovery by new growth, injury progression, water use and photosynthetic performance where measured; restored leaf posture alone is not proof of recovery."
+  ],
+  "limitationsAndUncertainty": [
+    "The energy-balance diagram is qualitative; arrow size is not a measured energy flux. The simplified equation omits storage and other minor terms.",
+    "Leaf infrared readings depend on emissivity, viewing geometry and background reflection. Canopy averages can hide local hotspots.",
+    "Evidence from one cultivar, developmental stage or exposure duration does not establish a universal cannabis heat-stress threshold."
+  ],
+  "relatedLessons": [
+    "THC-ENC-066",
+    "THC-ENC-082",
+    "THC-ENC-085",
+    "THC-ENC-086",
+    "THC-ENC-087",
+    "THC-ENC-088",
+    "THC-ENC-089",
+    "THC-ENC-094",
+    "THC-ENC-097"
+  ],
+  "references": [
+    {
+      "title": "Physicochemical and Environmental Plant Physiology",
+      "authors": "Nobel PS",
+      "year": 2009,
+      "publisher": "Academic Press",
+      "edition": "4th"
+    },
+    {
+      "title": "Plant Responses to Rising Vapor Pressure Deficit",
+      "authors": "Grossiord C et al.",
+      "year": 2020,
+      "journal": "New Phytologist",
+      "doi": "10.1111/nph.16485",
+      "url": "https://doi.org/10.1111/nph.16485"
+    },
+    {
+      "title": "Photosynthetic Response of Cannabis sativa L. to Variations in Photosynthetic Photon Flux Densities, Temperature and CO2 Conditions",
+      "authors": "Chandra S et al.",
+      "year": 2008,
+      "journal": "Physiology and Molecular Biology of Plants",
+      "volume": "14",
+      "pages": "299–306"
+    }
+  ],
+  "visuals": [
+    {
+      "type": "diagram",
+      "src": "/assets/education/encyclopedia/thc-enc-096/leaf-energy-balance.svg",
+      "sourcePath": "site/public-route-patch/assets/education/encyclopedia/thc-enc-096/leaf-energy-balance.svg",
+      "alt": "Leaf energy balance schematic showing incoming net radiation, sensible heat exchange with moving air and latent heat loss by transpiration; arrows are qualitative.",
+      "caption": "Leaf temperature depends on the balance of absorbed radiation, convection and evaporative cooling. Conceptual diagram, not measured fluxes.",
+      "width": 1200,
+      "height": 720,
+      "license": "CC BY 4.0",
+      "author": "THC Educational Content Production"
+    }
+  ]
 }
