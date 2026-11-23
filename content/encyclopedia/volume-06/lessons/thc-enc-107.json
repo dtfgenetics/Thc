@@ -76,5 +76,91 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "overview": "Inverse-square scaling is a useful limiting model for a distant point source, not a universal rule for canopy PPFD below extended horticultural fixtures. Actual photon distribution depends on source size, angular emission, overlap, reflections and sensor geometry.",
+  "mechanisms": [
+    {
+      "heading": "Point-source limiting case",
+      "body": "For an ideal isotropic point source in unobstructed space, irradiance on a surface perpendicular to the incoming rays is proportional to 1/r². At fixed source strength, E(2r)/E(r)=1/4. For a tilted receiver, the incidence-angle cosine must also be considered."
+    },
+    {
+      "heading": "Extended and directional emitters",
+      "body": "A bar or panel comprises many emitting locations with different distances and angles to a measurement point. Optics shape angular intensity; near-field PPFD is therefore a spatial sum, not a single 1/r² prediction."
+    },
+    {
+      "heading": "Room and canopy effects",
+      "body": "Multiple fixtures overlap. Walls, foliage and reflectors absorb or redirect photons, while obstructions produce shadows. Raising or lowering a fixture can change mean PPFD and uniformity in different directions."
+    }
+  ],
+  "practicalInterpretation": [
+    "Record fixture dimensions, manufacturer mounting limits, optical distribution, dimming, measurement-plane height and canopy coordinates.",
+    "Compare maps at multiple heights using the same calibrated quantum sensor, spectral definition, orientation, stabilization period and sampling grid.",
+    "Inspect center, edges, fixture seams and corners; use actual readings to assess hotspots and low-light areas. Do not use the point-source ratio as a fixture-height prescription."
+  ],
+  "limitationsAndUncertainty": [
+    "The point-source quarter-intensity example assumes identical source output, unobstructed geometry, constant incidence angle and far-field conditions; it is not a prediction for a real LED array.",
+    "Quantitative prediction of an installed array requires source angular distributions, room reflectance and geometry, or measured canopy maps.",
+    "PPFD measurements depend on spectral and cosine response, sensor level and sampling density; avoid claiming uniformity from a single center reading."
+  ],
+  "definitions": [
+    {
+      "term": "Irradiance",
+      "definition": "Radiant power incident per unit area (W/m²); differs from photon-flux density."
+    },
+    {
+      "term": "PPFD",
+      "definition": "Photosynthetic photon flux density, typically µmol photons m⁻² s⁻¹ within the declared wavelength interval."
+    },
+    {
+      "term": "Near field",
+      "definition": "Distances at which source size and spatial arrangement materially affect the illumination pattern."
+    },
+    {
+      "term": "Cosine response",
+      "definition": "A sensor's angular response to oblique incident radiation relative to ideal projected-area weighting."
+    }
+  ],
+  "relatedLessons": [
+    "THC-ENC-101",
+    "THC-ENC-102",
+    "THC-ENC-103",
+    "THC-ENC-105",
+    "THC-ENC-106",
+    "THC-ENC-111",
+    "THC-ENC-119",
+    "THC-ENC-120"
+  ],
+  "references": [
+    {
+      "title": "IES Lighting Handbook",
+      "organization": "Illuminating Engineering Society",
+      "edition": "10th",
+      "year": 2011,
+      "topic": "Inverse-square and cosine laws of illumination"
+    },
+    {
+      "title": "Light Measurement in Horticulture",
+      "authors": "Runkle E, Bugbee B",
+      "publisher": "Michigan State University Extension",
+      "topic": "Photon flux density and horticultural light measurement"
+    },
+    {
+      "title": "LED Lighting for Cannabis Cultivation and Controlled Environment Agriculture: Best Practices Guide",
+      "organization": "Resource Innovation Institute",
+      "year": 2021
+    }
+  ],
+  "visuals": [
+    {
+      "type": "diagram",
+      "src": "/assets/education/encyclopedia/thc-enc-107/point-vs-extended-source.svg",
+      "sourcePath": "site/public-route-patch/assets/education/encyclopedia/thc-enc-107/point-vs-extended-source.svg",
+      "alt": "Two panels compare an ideal point source with distance r and 2r and an extended three-bar fixture with overlapping rays and a canopy sampling grid. The point-source panel labels a one-quarter irradiance ratio under ideal assumptions; the fixture panel warns that real PPFD must be mapped.",
+      "caption": "Idealized inverse-square scaling versus extended-fixture geometry. The one-quarter ratio applies only to the point-source model; arrows and grid are schematic, not measured photon data.",
+      "width": 1200,
+      "height": 720,
+      "author": "THC Educational Content Production",
+      "license": "CC BY 4.0"
+    }
+  ]
 }
