@@ -58,11 +58,12 @@
     "Brown roots prove Pythium: Abiotic injury, staining, age, and multiple pathogens can look similar."
   ],
   "evidenceLimits": [
-    "Root-zone oxygen thresholds and visual symptoms are system-specific. Confirm pathogens with appropriate diagnostics and treat pesticides or biological products only under current labels and law."
+    "Root-zone oxygen thresholds and visual symptoms are system-specific. Confirm pathogens with appropriate diagnostics and treat pesticides or biological products only under current labels and law.",
+    "Dissolved oxygen readings from a reservoir do not directly measure oxygen at the root surface in a solid substrate; sensor placement, temperature and substrate heterogeneity matter."
   ],
   "crossLinks": "THC-ENC-047-060, THC-ENC-090-094, THC-ENC-205-220, and root-disease diagnostics.",
   "sourceNotes": [
-    "Drew M.C. (1997). Oxygen Deficiency and Root Metabolism: Injury and Acclimation Under Hypoxia and Anoxia. Annual Review of Plant Physiology and Plant Molecular Biology 48:223-250.",
+    "Drew M.C. (1997). Oxygen Deficiency and Root Metabolism: Injury and Acclimation Under Hypoxia and Anoxia. Annual Review of Plant Physiology and Plant Molecular Biology 48:223-250. doi:10.1146/annurev.arplant.48.1.223.",
     "Striker G.G. (2023). An Overview of Oxygen Transport in Plants: Diffusion and Convection. Plant Biology 25:842-847.",
     "Punja Z.K. (2021). Emerging Diseases of Cannabis sativa and Sustainable Management. Pest Management Science 77:3857-3870.",
     "Nobel P.S. (2009). Physicochemical and Environmental Plant Physiology, 4th ed. Academic Press."
@@ -77,5 +78,29 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "overview": "Waterlogging is an oxygen-supply problem, not simply a large irrigation volume. When pore spaces remain water-filled, oxygen reaches respiring roots too slowly; root function can decline while the container still feels wet.",
+  "mechanismSteps": [
+    "Irrigation saturates pores; drainage and substrate structure determine how quickly air-filled porosity returns.",
+    "Oxygen diffuses far more slowly through water than air; roots and microbes continue consuming dissolved oxygen.",
+    "Reduced aerobic respiration limits ATP-dependent ion transport and maintenance, impairing nutrient uptake and root growth.",
+    "Prolonged stress can damage fine roots and increase susceptibility to opportunistic pathogens, but hypoxia alone does not identify a pathogen."
+  ],
+  "practicalInterpretation": [
+    "Compare irrigation volume and timing against container-mass or VWC trends and time to drainage; inspect whether runoff is trapped beneath the pot.",
+    "Check drain openings, substrate compaction and perched saturation before attributing wilt to under-watering.",
+    "If plants wilt in wet media, compare roots, EC, temperature, and irrigation history before changing fertilizer or diagnosing disease.",
+    "Record changes and monitor new root growth and water use over subsequent days; a temporary improvement in leaf posture does not establish root recovery."
+  ],
+  "visuals": [
+    {
+      "type": "svg",
+      "src": "/assets/education/encyclopedia/thc-enc-095/root-zone-oxygen-pathways.svg",
+      "alt": "Cross-section comparing a drained substrate with connected air pores and a saturated substrate where oxygen must travel through water to reach roots.",
+      "caption": "Conceptual root-zone oxygen transport under drained versus saturated pore conditions; arrows show pathways, not measured fluxes.",
+      "license": "CC BY 4.0",
+      "author": "THC — Teaching Healthy Cultivation",
+      "sourceFile": "site/public-route-patch/assets/education/encyclopedia/thc-enc-095/root-zone-oxygen-pathways.svg"
+    }
+  ]
 }
