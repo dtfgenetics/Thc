@@ -345,11 +345,19 @@
   const cards=groups.flatMap(group=>[...group.querySelectorAll('.measure-panel article')].map((card,order)=>{
     const link=card.querySelector('a[href]'),href=link?.getAttribute('href')||'',title=(card.querySelector('strong')?.textContent||'').trim();
     return {group,card,order,href,title,titleLower:normalizeSearch(title),text:normalizeSearch(card.textContent),aliases:normalizeSearch(searchAliases[href]||''),searchHref:normalizeSearch(href)};
-  }));
+  })).filter(item=>{
+    const safe=isSafeToolHref(item.href);
+    if(!safe)item.card.classList.add('tool-hidden');
+    return safe;
+  });
   function normalizeSearch(value){
     return String(value).toLowerCase().replace(/[₂]/g,'2').replace(/[µμ]/g,'u').replace(/[^a-z0-9]+/g,' ').trim().replace(/\s+/g,' ');
   }
+  function isSafeToolHref(href){
+    return href.startsWith('/')&&!href.startsWith('//')&&!href.includes('\\')&&!href.includes('%')&&!href.includes('?')&&!href.includes('#')&&!/[\u0000-\u0020\u007f]/.test(href)&&!/(?:^|\/)\.{1,2}(?:\/|[?#]|$)/.test(href)&&!/^\/(?:shop|cart|checkout|my-account)(?:\/|[?#]|$)/i.test(href);
+  }
   function scoreCard(item,query){
+    if(!isSafeToolHref(item.href))return 0;
     if(!query)return 1;
     const tokens=query.split(/\s+/).filter(Boolean);
     let score=0;
@@ -371,8 +379,8 @@
   function apply(){
     const q=normalizeSearch(input.value);
     const scored=cards.map(item=>({...item,score:scoreCard(item,q)}));
-    const visible=scored.filter(item=>!q||item.score>0);
-    for(const item of scored)item.card.classList.toggle('tool-hidden',q&&item.score<=0);
+    const visible=scored.filter(item=>item.score>0);
+    for(const item of scored)item.card.classList.toggle('tool-hidden',item.score<=0);
     for(const group of groups){
       const groupItems=scored.filter(item=>item.group===group);
       const panel=group.querySelector('.measure-panel');
@@ -381,7 +389,7 @@
       }else if(panel){
         groupItems.slice().sort((a,b)=>a.order-b.order).forEach(item=>panel.appendChild(item.card));
       }
-      const hasVisible=groupItems.some(item=>!q||item.score>0);
+      const hasVisible=groupItems.some(item=>item.score>0);
       group.classList.toggle('tool-hidden',!hasVisible);
       if(q&&hasVisible)group.open=true;
     }
@@ -398,10 +406,13 @@
   input.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&input.value){input.value='';apply();event.preventDefault();return}
     if(event.key==='Enter'){
+      // Search is navigation-only: never submit a parent form or reload the hub.
+      // In particular, zero-result queries must remain on this page.
+      event.preventDefault();
       const query=normalizeSearch(input.value);
       if(!query)return;
       const best=cards.map(item=>({...item,score:scoreCard(item,query)}))
-        .filter(item=>item.score>0&&item.href.startsWith('/'))
+        .filter(item=>item.score>0&&isSafeToolHref(item.href))
         .sort((a,b)=>b.score-a.score||a.order-b.order)[0];
       if(best){event.preventDefault();window.location.assign(best.href)}
     }
