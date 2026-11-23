@@ -10,7 +10,7 @@
   "lifecycleCount": 420,
   "missingIds": [],
   "duplicateIds": [],
-  "knownActionableGapFixed": "THC-ENC-106 lacked an integrated original worked uniformity diagram on main; added diagram and worked calculation in this PR",
+  "knownActionableGapFixed": "THC-ENC-106 source diagram and worked uniformity calculation committed in draft PR #2631",
   "limitations": [
     "Individual source citation quality and visual rendering were not crawled for all 420 lessons",
     "PR/merge state and public search visibility require fresh per-ID checks",
@@ -1811,13 +1811,14 @@
       "sourceRepresentation": "present_in_archived_registry_and_lifecycle",
       "draftStatus": "in_review",
       "publicationAuthorization": "authorized",
-      "prStatus": "draft_pr_pending_creation",
-      "mergeStatus": "not_individually_checked",
-      "deploymentStatus": "not_individually_checked",
-      "citationsStatus": "not_individually_checked",
-      "visualIntegrationStatus": "source_visual_added_on_this_branch_not_deployed",
+      "prStatus": "draft_open_2631",
+      "mergeStatus": "open_unmerged_at_creation",
+      "deploymentStatus": "not_verified",
+      "citationsStatus": "source_notes_and_references_present_not_independently_verified",
+      "visualIntegrationStatus": "source_svg_and_lesson_reference_committed_public_rendering_unverified",
       "publicSearchVisibility": "not_individually_checked",
-      "canonicalRoute": "/learn/encyclopedia/thc-enc-106/"
+      "canonicalRoute": "/learn/encyclopedia/thc-enc-106/",
+      "prUrl": "https://github.com/dtfgenetics/Thc/pull/2631"
     },
     {
       "id": "THC-ENC-107",
