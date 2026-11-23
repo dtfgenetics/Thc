@@ -60,3 +60,15 @@ test('rejects Shop navigation on courses and games as well as tools', () => {
     assert.match(inspectHtml('<h1>Reference hub</h1><a href="/shop/">Shop</a>', route).join(';'), /purchasing navigation/);
   }
 });
+
+test('requires nontransactional Seeds and Blue Mango pages after cache purge', () => {
+  const seeds = { path: '/seeds/', marker: 'Featured breeding projects', hold: true, noCurrentRelease: true };
+  const blueMango = { path: '/seeds/blue-mango/', marker: 'Line status', hold: true, noAvailabilitySection: true };
+  const current = '<h2>Featured breeding projects</h2><p>Seed sales are temporarily on hold.</p>';
+  const profile = '<h2>Line status</h2><p>Seed sales are temporarily on hold.</p>';
+  assert.deepEqual(inspectHtml(current, seeds), []);
+  assert.deepEqual(inspectHtml(profile, blueMango), []);
+  assert.match(inspectHtml(current + '<a>Current release projects</a>', seeds).join(','), /stale current-release/);
+  assert.match(inspectHtml(profile + '<h2>Availability</h2>', blueMango).join(','), /stale sales availability/);
+  assert.match(inspectHtml(profile + '<a href="/product/f2/">Buy</a>', blueMango).join(','), /purchasing navigation/);
+});
