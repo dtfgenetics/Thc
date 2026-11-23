@@ -77,5 +77,74 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "overview": "Daily light integral (DLI) describes photons received per square metre per day, whereas photoperiod and scotoperiod describe the timing of light and darkness. Equal DLI schedules can differ in instantaneous PPFD, dark duration, phytochrome signaling and developmental effects. A dose calculation cannot replace flowering-response observations.",
+  "mechanisms": [
+    {
+      "heading": "Photon dose versus timing",
+      "body": "For constant canopy PPFD, DLI (mol m−2 d−1) = PPFD (µmol m−2 s−1) × hours of illumination × 0.0036. For variable light, integrate PPFD over the actual 24-hour period and convert µmol to mol."
+    },
+    {
+      "heading": "Photoperiodic perception",
+      "body": "Phytochrome-mediated light signaling interacts with circadian timing and the duration of the uninterrupted dark interval. Flowering responses vary by genotype and environment; an equal photon dose does not imply equal developmental signaling."
+    },
+    {
+      "heading": "Dark interruptions and twilight",
+      "body": "Stray illumination, light ramps, greenhouse twilight and spectral composition may change effective biological nights. A logger's threshold and sensor spectral response must be recorded; absence of a timer command is not proof of darkness."
+    }
+  ],
+  "practicalInterpretation": [
+    "Compare two hypothetical constant-light schedules with equal DLI: 500 µmol m−2 s−1 for 18 hours and 750 µmol m−2 s−1 for 12 hours both produce 32.4 mol m−2 d−1, but have different 6-hour and 12-hour dark intervals respectively. These are arithmetic illustrations, not recommended targets.",
+    "Log fixture transitions and measured canopy photon flux, including possible leakage during dark periods; record cultivar and first floral signs.",
+    "Use photoperiod history alongside DLI and canopy observations when investigating flowering delays; do not assign a universal cannabis critical night length."
+  ],
+  "limitationsAndUncertainty": [
+    "Illustrated constant PPFD values are synthetic calculation examples, not measured cultivar responses.",
+    "Phytochrome response depends on spectral quality, intensity, timing and prior conditions; a PAR-only sensor may not capture all biologically relevant nighttime signals.",
+    "Published hemp photoperiod results should not be transferred without qualification to untested drug-type or day-neutral germplasm."
+  ],
+  "relatedLessons": [
+    "THC-ENC-101",
+    "THC-ENC-102",
+    "THC-ENC-103",
+    "THC-ENC-112",
+    "THC-ENC-117",
+    "THC-ENC-118",
+    "THC-ENC-157",
+    "THC-ENC-158"
+  ],
+  "references": [
+    {
+      "title": "Photoperiodic Flowering Response of Essential Oil, Grain, and Fiber Hemp Cultivars",
+      "authors": "Zhang M et al.",
+      "year": 2021,
+      "journal": "Frontiers in Plant Science",
+      "volume": "12",
+      "article": "694153",
+      "doi": "10.3389/fpls.2021.694153",
+      "url": "https://doi.org/10.3389/fpls.2021.694153"
+    },
+    {
+      "title": "Optimizing Photoperiod Switch to Maximize Floral Biomass and Cannabinoid Yield: A Meta-Analytic Quantile Regression Approach",
+      "authors": "Dang M, Muthu Arachchige N, Campbell LG",
+      "year": 2022,
+      "journal": "Frontiers in Plant Science",
+      "article": "797425",
+      "doi": "10.3389/fpls.2021.797425",
+      "url": "https://doi.org/10.3389/fpls.2021.797425"
+    }
+  ],
+  "visuals": [
+    {
+      "type": "diagram",
+      "src": "/assets/education/encyclopedia/thc-enc-104/equal-dli-different-photoperiod.svg",
+      "sourcePath": "site/public-route-patch/assets/education/encyclopedia/thc-enc-104/equal-dli-different-photoperiod.svg",
+      "alt": "Two hypothetical 24-hour lighting schedules have equal daily photon dose: 18 hours at 500 micromoles per square metre per second versus 12 hours at 750; their dark intervals differ.",
+      "caption": "Equal DLI does not imply equal photoperiod. Hypothetical constant-light arithmetic examples, not cultivation setpoints or experimental measurements.",
+      "width": 1200,
+      "height": 720,
+      "license": "CC BY 4.0",
+      "author": "THC Educational Content Production"
+    }
+  ]
 }
