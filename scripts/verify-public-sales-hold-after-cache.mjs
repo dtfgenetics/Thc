@@ -4,6 +4,8 @@ import { resolve } from 'node:path';
 const DEFAULT_BASE = 'https://dtfseeds.com';
 const ROUTES = [
   { path: '/', marker: 'Genetics first. Learn the plant behind the pack.', hold: true },
+  { path: '/seeds/', marker: 'Featured breeding projects', hold: true, noCurrentRelease: true },
+  { path: '/seeds/blue-mango/', marker: 'Line status', hold: true, noAvailabilitySection: true },
   { path: '/tools/', marker: 'Grow with records. Diagnose with evidence.' },
   { path: '/vpd-chart/', marker: 'Leaf-VPD calculator' },
   { path: '/learn/', marker: 'Learn the plant as one connected system.' },
@@ -29,9 +31,11 @@ export function inspectHtml(html, route, origin = DEFAULT_BASE) {
   const failures = [];
   const body = String(html || '');
   if (!body.includes(route.marker)) failures.push('expected page identity not found');
-  if (route.hold && !/Seed sales temporarily on hold/i.test(body)) {
+  if (route.hold && !/Seed sales (?:are )?temporarily on hold/i.test(body)) {
     failures.push('homepage sales-hold notice missing');
   }
+  if (route.noCurrentRelease && /Current release projects/i.test(body)) failures.push('stale current-release promotion remains');
+  if (route.noAvailabilitySection && body.includes('<h2>Availability</h2>')) failures.push('stale sales availability section remains');
   if (route.referenceOnly && /Check your reasoning|Answer rationale|<h2[^>]*id=["']reasoning["']/i.test(body)) {
     failures.push('encyclopedia chapter still exposes non-certification assessment content');
   }
