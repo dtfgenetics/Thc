@@ -1,0 +1,39 @@
+name: Codespaces Playwright Local Smoke
+on:
+  pull_request:
+    paths:
+      - '.devcontainer/**'
+      - 'apps/high-land-web/**'
+      - 'scripts/qa/local-playwright-smoke.mjs'
+      - '.github/workflows/codespaces-playwright-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  local-browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm install --no-save --package-lock=false playwright@1.58.2
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact-checkout High Land preview
+        run: |
+          npm run dev:high-land -- --host 127.0.0.1 > /tmp/thc-preview.log 2>&1 &
+          echo $! > /tmp/thc-preview.pid
+          for i in $(seq 1 40); do
+            if curl --fail --silent http://127.0.0.1:5173/ > /dev/null; then exit 0; fi
+            sleep 2
+          done
+          cat /tmp/thc-preview.log
+          exit 1
+      - name: Playwright desktop and mobile smoke
+        run: node scripts/qa/local-playwright-smoke.mjs
+      - name: Preview diagnostics
+        if: failure()
+        run: cat /tmp/thc-preview.log || true
