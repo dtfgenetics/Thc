@@ -92,6 +92,16 @@ jobs:
           echo "Verified candidate artifact revision: $actual_sha"
           echo "SUITE_ROOT=$suite_root" >> "$GITHUB_ENV"
 
+      - name: Verify packaged VPD runtime dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          for asset in assets/vendor/uplot-1.6.32.min.css assets/thc-tool-suite-v1.css assets/vendor/papaparse-5.7.0.min.js assets/vendor/uplot-1.6.32.min.js assets/thc-tool-suite-v1.js; do
+            test -s "$SUITE_ROOT/$asset" || { echo "::error::Missing VPD runtime asset: $asset"; exit 1; }
+          done
+          grep -Fq 'id="vpd-guided-chapter"' "$SUITE_ROOT/vpd-chart/index.html"
+          echo "Packaged VPD guided lesson and five runtime dependencies present."
+
       - name: Verify Grow Doc pinned source and reviewed-media payload
         shell: bash
         run: |
