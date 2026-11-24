@@ -201,7 +201,10 @@ jobs:
               }
               check(filename==='thc-vpd-analyzed.csv' && exported instanceof Blob,'CSV download');
               const csv=await exported.text();
-              check(csv.includes('00:00') && csv.includes('01:00') && csv.includes('0.91'),'CSV export contents');
+              const rows=csv.trim().split(String.fromCharCode(10)).map(line=>line.trim().split(','));
+              check(rows.length===3 && rows[0][4]==='leaf_vpd_kpa','CSV export schema');
+              check(rows[1][0]==='00:00' && rows[2][0]==='01:00','CSV export timestamps');
+              check(Math.abs(Number(rows[1][4])-0.91)<0.01 && Number(rows[2][4])===0 && rows[2][5]==='Yes','CSV export numerical accuracy');
               get('trendClear').click();
               check(get('trendBody').rows.length===0,'CSV clear');
               document.body.dataset.vpdQa='passed';
