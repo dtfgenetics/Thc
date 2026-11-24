@@ -10,6 +10,17 @@ const hub = fs.readFileSync(path.join(root, 'site/public-route-patch/games/index
 const projectsHub = fs.readFileSync(path.join(root, 'site/public-route-patch/projects/index.html'), 'utf8');
 const headerV5 = fs.readFileSync(path.join(root, 'scripts/lib/sitewide-header-template.mjs'), 'utf8');
 const headerV6 = fs.readFileSync(path.join(root, 'scripts/lib/sitewide-header-template-v6.mjs'), 'utf8');
+const liveV6Verifier = fs.readFileSync(path.join(root, 'scripts/verify-sitewide-header-v6-live.mjs'), 'utf8');
+const liveSitewideAuditor = fs.readFileSync(path.join(root, 'scripts/audit-sitewide-header-live.mjs'), 'utf8');
+
+// Release scripts must enforce the same sales-hold header as the deployable V6 template.
+for (const [name, source] of [['V6 live verifier', liveV6Verifier], ['sitewide live auditor', liveSitewideAuditor]]) {
+  assert(!source.includes("['/shop/','Shop']") && !source.includes("['/shop/', 'Shop']"), `${name} must not require Shop in primary navigation during seed sales hold`);
+  assert(source.includes('sales-hold header') && source.includes('Cart'), `${name} must reject stale commerce navigation`);
+}
+assert(!liveV6Verifier.includes("['Search DTF Genetics','Account','Cart']"), 'V6 verification must not require Cart during the sales hold');
+assert(liveV6Verifier.includes("['Search DTF Genetics','Account']"), 'V6 verification must still require Search and Account utility controls');
+
 
 const deployableShellFiles = [
   'site/public-route-patch/projects/index.html',
