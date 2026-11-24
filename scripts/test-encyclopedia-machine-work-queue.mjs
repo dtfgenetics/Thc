@@ -39,12 +39,14 @@ for (const row of machine) {
 
 const machineIds = new Set(machine.map(x => x.lessonId));
 for (const row of review) {
+  if (row.actions?.includes('independent_assessment_rationale_review')) fail(row.lessonId + ': informational assessment review must not be a required queue action');
   if (machineIds.has(row.lessonId) && row.machineWorkComplete === true) {
     fail(row.lessonId + ': review row marked machineWorkComplete but also present in machine queue');
   }
 }
 
 for (const row of blocked) {
+  if (row.gates?.some(gate => ['independent_science_review', 'assessment_rationale_review'].includes(gate))) fail((row.lessonId || 'row') + ': non-applicable informational release gate');
   if (!Array.isArray(row.gates) || row.gates.length === 0) fail((row.lessonId || 'row') + ': external-human row missing gates');
 }
 
