@@ -55,7 +55,7 @@ jobs:
           # Only wait for API visibility; never turn a real build failure green.
           visible=0
           for attempt in {1..20}; do
-            if gh run view "$run_id" --repo "$GITHUB_REPOSITORY" --json status >/dev/null 2>&1; then
+            if gh run view "$run_id" --repo "$GITHUB_REPOSITORY" --json status >/dev/null 2>&1 && gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id/jobs?per_page=1" >/dev/null 2>&1; then
               visible=1
               break
             fi
@@ -80,7 +80,197 @@ jobs:
           build_json="$(find "$RUNNER_TEMP/suite-download" -type f -name dtf-build.json -print -quit)"
           test -n "$build_json"
           suite_root="$(dirname "$build_json")"
+          # A branch may advance between checkout and workflow dispatch.
+          # Reject artifacts that do not identify the exact reviewed candidate.
+          expected_sha="$(git rev-parse HEAD)"
+          actual_sha="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["master"])' "$build_json")"
+          if [ "$actual_sha" != "$expected_sha" ]; then
+            echo "::error::Candidate artifact revision mismatch: expected $expected_sha, got $actual_sha"
+            exit 1
+          fi
+          test -s "$suite_root/vpd-chart/index.html"
+          echo "Verified candidate artifact revision: $actual_sha"
           echo "SUITE_ROOT=$suite_root" >> "$GITHUB_ENV"
+
+      - name: Verify packaged VPD runtime dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          for asset in assets/vendor/uplot-1.6.32.min.css assets/thc-tool-suite-v1.css assets/vendor/papaparse-5.7.0.min.js assets/vendor/uplot-1.6.32.min.js assets/thc-tool-suite-v1.js assets/thc-cultivation-data-ui-v1.mjs assets/thc-cultivation-math-v1.mjs assets/thc-measurement-core-v1.mjs assets/thc-live-tool-adapter-v1.mjs; do
+            test -s "$SUITE_ROOT/$asset" || { echo "::error::Missing VPD runtime asset: $asset"; exit 1; }
+          done
+          grep -Fq 'id="vpd-guided-chapter"' "$SUITE_ROOT/vpd-chart/index.html"
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {pathToFileURL} from 'node:url';
+          import path from 'node:path';
+          const {airVpd,leafVpd,dewPoint} = await import(pathToFileURL(path.join(process.env.SUITE_ROOT,'assets/thc-cultivation-math-v1.mjs')).href);
+          assert.ok(Math.abs(airVpd(25,60)-1.27)<0.01);
+          assert.ok(Math.abs(leafVpd(25,60,23)-0.91)<0.01);
+          assert.ok(Math.abs(airVpd(25,100))<1e-10);
+          assert.ok(leafVpd(25,100,23)<0);
+          assert.ok(Math.abs(dewPoint(25,60)-16.7)<0.2);
+          assert.throws(()=>airVpd(25,101),RangeError);
+          console.log('Packaged VPD math: six assertions passed.');
+          JS
+          echo "Packaged VPD guided lesson and nine direct runtime dependencies present."
+
+      - name: Install Chrome for candidate VPD smoke
+        id: candidate-chrome
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
+          install-dependencies: true
+
+      - name: Execute packaged VPD calculator in Chrome
+        shell: bash
+        env:
+          CHROME_PATH: ${{ steps.candidate-chrome.outputs.chrome-path }}
+        run: |
+          set -euo pipefail
+          python -m http.server 8765 --bind 127.0.0.1 --directory "$SUITE_ROOT" >"$RUNNER_TEMP/vpd-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8765/vpd-chart/ >/dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:8765/vpd-chart/ >/dev/null
+          # Test-only copy: run real input handlers without modifying the release artifact.
+          fixture="$SUITE_ROOT/vpd-chart/qa-interaction.html"
+          trap 'rm -f "$fixture"; kill "$server_pid" 2>/dev/null || true' EXIT
+          python - "$SUITE_ROOT/vpd-chart/index.html" "$fixture" <<'PY'
+          import sys
+          from pathlib import Path
+          source = Path(sys.argv[1]).read_text()
+          script = """<script type="module">
+          window.addEventListener('load', async () => {
+            const get = id => document.getElementById(id);
+            const set = (id,value,event='input') => {
+              get(id).value=value;
+              get(id).dispatchEvent(new Event(event,{bubbles:true}));
+            };
+            const check = (condition,label) => {if(!condition) throw Error(label)};
+            try {
+              set('temp','25'); set('rh','60');
+              set('leafMode','measured','change'); set('leafMeasured','23');
+              check(get('vout').querySelector('.vpd-main strong').textContent==='0.91 kPa','leaf VPD');
+              check(get('vout').textContent.includes('1.27 kPa'),'air VPD');
+              set('unit','f','change');
+              check(get('vout').querySelector('.vpd-main strong').textContent==='0.91 kPa','unit conversion');
+              set('unit','c','change');
+              set('rh','100');
+              check(get('vout').textContent.includes('Condensation / dew risk'),'dew warning');
+              set('rh','101');
+              check(get('vout').textContent.includes('Enter valid conditions'),'invalid RH');
+              set('rh','60');
+              const cell=get('chart').querySelector('td[data-air][data-rh]');
+              check(!!cell,'heatmap cell');
+              cell.click();
+              check(Number(get('temp').value)===Number(cell.dataset.air),'heatmap selection');
+              get('trendExample').click();
+              check(get('trendBody').rows.length===24,'example trend');
+              set('vpdProfileName','QA reference');
+              set('temp','25'); set('rh','60');
+              get('saveVpdProfile').click();
+              check(get('vpdProfileStatus').textContent.includes('Saved'),'profile save');
+              set('temp','30');
+              get('loadVpdProfile').click();
+              check(Number(get('temp').value)===25,'profile restore');
+              get('deleteVpdProfile').click();
+              check(get('vpdProfileStatus').textContent.includes('deleted'),'profile delete');
+              set('trendUnit','c','change');
+              const transfer=new DataTransfer();
+              transfer.items.add(new File([['time,temperature,humidity,leaf_temperature','00:00,25,60,23','01:00,25,100,23'].join(String.fromCharCode(10))], 'qa.csv',{type:'text/csv'}));
+              get('trendFile').files=transfer.files;
+              get('trendFile').dispatchEvent(new Event('change',{bubbles:true}));
+              const deadline=Date.now()+5000;
+              while(get('trendBody').rows.length!==2 && Date.now()<deadline) await new Promise(resolve=>setTimeout(resolve,50));
+              check(get('trendBody').rows.length===2,'CSV import: '+get('trendStatus').textContent);
+              check(get('trendBody').textContent.includes('0.91'),'CSV VPD');
+              check(!get('trendExport').disabled,'CSV export available');
+              let exported, filename;
+              const originalCreate=URL.createObjectURL, originalClick=HTMLAnchorElement.prototype.click;
+              try {
+                URL.createObjectURL=blob=>{exported=blob;return originalCreate.call(URL,blob)};
+                HTMLAnchorElement.prototype.click=function(){filename=this.download};
+                get('trendExport').click();
+              } finally {
+                URL.createObjectURL=originalCreate;
+                HTMLAnchorElement.prototype.click=originalClick;
+              }
+              check(filename==='thc-vpd-analyzed.csv' && exported instanceof Blob,'CSV download');
+              const csv=await exported.text();
+              const rows=csv.trim().split(String.fromCharCode(10)).map(line=>line.trim().split(','));
+              check(rows.length===3 && rows[0][4]==='leaf_vpd_kpa','CSV export schema');
+              check(rows[1][0]==='00:00' && rows[2][0]==='01:00','CSV export timestamps');
+              check(Math.abs(Number(rows[1][4])-0.91)<0.01 && Number(rows[2][4])===0 && rows[2][5]==='Yes','CSV export numerical accuracy');
+              get('trendClear').click();
+              check(get('trendBody').rows.length===0,'CSV clear');
+              document.body.dataset.vpdQa='passed';
+            } catch(error) {document.body.dataset.vpdQa='failed: '+error.message}
+          },{once:true});
+          </script>"""
+          assert '</body>' in source
+          Path(sys.argv[2]).write_text(source.replace('</body>',script+'</body>',1))
+          PY
+          timeout 45s "$CHROME_PATH" --headless --no-sandbox --disable-dev-shm-usage --virtual-time-budget=8000 --dump-dom http://127.0.0.1:8765/vpd-chart/qa-interaction.html >"$RUNNER_TEMP/vpd-interaction.html"
+          grep -Fq 'data-vpd-qa="passed"' "$RUNNER_TEMP/vpd-interaction.html" || { grep -o 'data-vpd-qa="[^"]*"' "$RUNNER_TEMP/vpd-interaction.html" || true; echo "::error::VPD interaction fixture failed"; exit 1; }
+          rm -f "$fixture"
+          for viewport in 1280,800 390,844; do
+            dom="$RUNNER_TEMP/vpd-${viewport}.html"
+            timeout 45s "$CHROME_PATH" --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --window-size="$viewport" --virtual-time-budget=8000 --dump-dom http://127.0.0.1:8765/vpd-chart/ >"$dom"
+            python - "$dom" <<'PY'
+          import sys
+          from html.parser import HTMLParser
+          class Result(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.cells = 0
+                  self.results = 0
+              def handle_starttag(self, tag, attrs):
+                  a = dict(attrs)
+                  if tag == 'td' and 'data-air' in a and 'data-rh' in a:
+                      self.cells += 1
+                  if 'vpd-main' in a.get('class','').split():
+                      self.results += 1
+          parser = Result()
+          parser.feed(open(sys.argv[1], encoding='utf-8').read())
+          assert parser.results > 0, 'Calculator did not render a result'
+          assert parser.cells > 0, 'Interactive heatmap did not render'
+          print(f'Chrome rendered calculator and {parser.cells} heatmap cells')
+          PY
+          done
+
+      - name: Measure candidate VPD Lighthouse quality
+        shell: bash
+        env:
+          CHROME_PATH: ${{ steps.candidate-chrome.outputs.chrome-path }}
+        run: |
+          set -euo pipefail
+          npm install --prefix "$RUNNER_TEMP/candidate-lhci" --no-save --package-lock=false @lhci/cli@0.15.1
+          python -m http.server 8765 --bind 127.0.0.1 --directory "$SUITE_ROOT" >"$RUNNER_TEMP/candidate-lh-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8765/vpd-chart/ >/dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:8765/vpd-chart/ >/dev/null
+          export WEB_QA_BASE_URL=http://127.0.0.1:8765/vpd-chart/
+          export WEB_QA_ROUTE_FILE="$RUNNER_TEMP/candidate-lh-routes.json"
+          export WEB_QA_ARTIFACT_DIR="$RUNNER_TEMP/candidate-lighthouse"
+          export WEB_QA_ENFORCE=1
+          printf '{"routes":["%s"]}\n' "$WEB_QA_BASE_URL" > "$WEB_QA_ROUTE_FILE"
+          "$RUNNER_TEMP/candidate-lhci/node_modules/.bin/lhci" autorun --config=lighthouserc.cjs
+
+      - name: Preserve candidate Lighthouse evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-vpd-lighthouse
+          path: ${{ runner.temp }}/candidate-lighthouse
+          if-no-files-found: warn
 
       - name: Verify Grow Doc pinned source and reviewed-media payload
         shell: bash
