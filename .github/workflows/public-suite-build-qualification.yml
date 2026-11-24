@@ -170,6 +170,15 @@ jobs:
               check(Number(get('temp').value)===Number(cell.dataset.air),'heatmap selection');
               get('trendExample').click();
               check(get('trendBody').rows.length===24,'example trend');
+              set('vpdProfileName','QA reference');
+              set('temp','25'); set('rh','60');
+              get('saveVpdProfile').click();
+              check(get('vpdProfileStatus').textContent.includes('Saved'),'profile save');
+              set('temp','30');
+              get('loadVpdProfile').click();
+              check(Number(get('temp').value)===25,'profile restore');
+              get('deleteVpdProfile').click();
+              check(get('vpdProfileStatus').textContent.includes('deleted'),'profile delete');
               document.body.dataset.vpdQa='passed';
             } catch(error) {document.body.dataset.vpdQa='failed: '+error.message}
           },{once:true});
