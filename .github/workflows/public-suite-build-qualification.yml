@@ -115,6 +115,52 @@ jobs:
           JS
           echo "Packaged VPD guided lesson and nine direct runtime dependencies present."
 
+      - name: Install Chrome for candidate VPD smoke
+        id: candidate-chrome
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
+          install-dependencies: true
+
+      - name: Execute packaged VPD calculator in Chrome
+        shell: bash
+        env:
+          CHROME_PATH: ${{ steps.candidate-chrome.outputs.chrome-path }}
+        run: |
+          set -euo pipefail
+          python -m http.server 8765 --bind 127.0.0.1 --directory "$SUITE_ROOT" >"$RUNNER_TEMP/vpd-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8765/vpd-chart/ >/dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:8765/vpd-chart/ >/dev/null
+          for viewport in 1280,800 390,844; do
+            dom="$RUNNER_TEMP/vpd-${viewport}.html"
+            timeout 45s "$CHROME_PATH" --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --window-size="$viewport" --virtual-time-budget=8000 --dump-dom http://127.0.0.1:8765/vpd-chart/ >"$dom"
+            python - "$dom" <<'PY'
+          import sys
+          from html.parser import HTMLParser
+          class Result(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.cells = 0
+                  self.results = 0
+              def handle_starttag(self, tag, attrs):
+                  a = dict(attrs)
+                  if tag == 'td' and 'data-air' in a and 'data-rh' in a:
+                      self.cells += 1
+                  if 'vpd-main' in a.get('class','').split():
+                      self.results += 1
+          parser = Result()
+          parser.feed(open(sys.argv[1], encoding='utf-8').read())
+          assert parser.results > 0, 'Calculator did not render a result'
+          assert parser.cells > 0, 'Interactive heatmap did not render'
+          print(f'Chrome rendered calculator and {parser.cells} heatmap cells')
+          PY
+          done
+
       - name: Verify Grow Doc pinned source and reviewed-media payload
         shell: bash
         run: |
