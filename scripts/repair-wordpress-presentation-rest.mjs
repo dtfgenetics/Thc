@@ -49,8 +49,7 @@ const canonicalNavigation = [
   ['Courses', '/courses/'],
   ['Tools', '/tools/'],
   ['Games', '/games/'],
-  ['Community', '/community/'],
-  ['Shop', '/shop/']
+  ['Community', '/community/']
 ];
 const obsoletePrimaryLabels = ['Genetics', 'Tools'];
 
