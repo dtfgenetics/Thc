@@ -32,11 +32,18 @@ if(fs.existsSync(reportDir)){
     const report=JSON.parse(fs.readFileSync(path.join(reportDir,name),'utf8'));
     // A valid score must belong to the audited origin, not an off-site challenge,
     // redirect or browser-error document. Treat these as missing measurements.
-    const auditedUrl=report.finalUrl||report.requestedUrl;
+    const auditedUrl=report.finalDisplayedUrl||report.finalUrl;
     let auditedOrigin;
     try{auditedOrigin=new URL(auditedUrl).origin;}catch{auditedOrigin=null;}
-    if(report.runtimeError||report.responseCode>=400||report.runWarnings?.some(w=>/errored.document.request|navigation.failed/i.test(String(w)))||auditedOrigin!==new URL(origin).origin){
-      const reason=report.runtimeError?'runtime-error':report.responseCode>=400?'http-error':auditedOrigin!==new URL(origin).origin?'unexpected-origin':'navigation-warning';
+    const documentRequests=report.audits?.['network-requests']?.details?.items;
+    const documentError=Array.isArray(documentRequests)&&documentRequests.some(item=>{
+      if(item.resourceType!=='Document'||Number(item.statusCode)<400||!Number.isFinite(Number(item.statusCode)))return false;
+      try{return new URL(item.url).href.split('#')[0]===new URL(auditedUrl).href.split('#')[0];}catch{return false;}
+    });
+    const httpError=Number(report.responseCode)>=400||documentError;
+    const navigationWarning=Array.isArray(report.runWarnings)&&report.runWarnings.some(w=>/errored.document.request|navigation.failed/i.test(String(w)));
+    if(report.runtimeError||httpError||navigationWarning||auditedOrigin!==new URL(origin).origin){
+      const reason=report.runtimeError?'runtime-error':httpError?'http-error':auditedOrigin!==new URL(origin).origin?'unexpected-origin':'navigation-warning';
       invalidDocuments.push({file:name,type:'invalid-document',reason});
       console.error('WEB QUALITY INVALID DOCUMENT',JSON.stringify({file:name,reason}));
       continue;
