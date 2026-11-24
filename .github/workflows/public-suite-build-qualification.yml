@@ -181,12 +181,12 @@ jobs:
               check(get('vpdProfileStatus').textContent.includes('deleted'),'profile delete');
               set('trendUnit','c','change');
               const transfer=new DataTransfer();
-              transfer.items.add(new File(['time,temperature,humidity,leaf_temperature\\\\n00:00,25,60,23\\\\n01:00,25,100,23\\\\n'], 'qa.csv',{type:'text/csv'}));
+              transfer.items.add(new File([['time,temperature,humidity,leaf_temperature','00:00,25,60,23','01:00,25,100,23'].join(String.fromCharCode(10))], 'qa.csv',{type:'text/csv'}));
               get('trendFile').files=transfer.files;
               get('trendFile').dispatchEvent(new Event('change',{bubbles:true}));
               const deadline=Date.now()+5000;
               while(get('trendBody').rows.length!==2 && Date.now()<deadline) await new Promise(resolve=>setTimeout(resolve,50));
-              check(get('trendBody').rows.length===2,'CSV import');
+              check(get('trendBody').rows.length===2,'CSV import: '+get('trendStatus').textContent);
               check(get('trendBody').textContent.includes('0.91'),'CSV VPD');
               check(!get('trendExport').disabled,'CSV export available');
               let exported, filename;
