@@ -11,7 +11,7 @@ permissions:
   contents: read
 jobs:
   local-browser-smoke:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -20,8 +20,9 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
-      - run: npm install --no-save --package-lock=false playwright@1.58.2
-      - run: npx playwright install --with-deps chromium
+      - run: npm install --prefix /tmp/thc-browser-qa --no-save --package-lock=false playwright@1.58.2
+      - run: ln -s /tmp/thc-browser-qa/node_modules/playwright node_modules/playwright
+      - run: /tmp/thc-browser-qa/node_modules/.bin/playwright install --with-deps chromium
       - name: Start exact-checkout High Land preview
         run: |
           npm run dev:high-land -- --host 127.0.0.1 > /tmp/thc-preview.log 2>&1 &
