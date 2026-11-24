@@ -79,12 +79,12 @@ for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
         raise SystemExit(f'{relative} has unexpected primary navigation: {labels!r}')
     # Fail closed if a stale commerce link survives template normalization.
     header = re.search(
-        r'<header\\b[^>]*data-dtf-shell=["\\']header-v6["\\'][^>]*>[\\s\\S]*?</header>',
+        r'<header\b[^>]*data-dtf-shell=["\']header-v6["\'][^>]*>[\s\S]*?</header>',
         html, re.IGNORECASE,
     )
-    if not header or re.search(r'<a\\b[^>]*href\\s*=\\s*["\\']/(?:shop|cart)/["\\']', header.group(), re.IGNORECASE):
+    if not header or re.search(r'<a\b[^>]*href\s*=\s*["\']/(?:shop|cart)/["\']', header.group(), re.IGNORECASE):
         raise SystemExit(f'{relative} exposes forbidden sales-hold Shop/Cart header links')
-    if re.search(r'aria-label\\s*=\\s*["\\']Cart["\\']', header.group(), re.IGNORECASE):
+    if re.search(r'aria-label\s*=\s*["\']Cart["\']', header.group(), re.IGNORECASE):
         raise SystemExit(f'{relative} exposes forbidden Cart utility during sales hold')
 
 with tempfile.TemporaryDirectory(prefix='dtf-suite-package-resource-aware-') as temp:
