@@ -1,7 +1,7 @@
 {
   "name": "THC Development and Browser QA",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
-  "postCreateCommand": "npm ci && npx playwright install chromium",
+  "postCreateCommand": "npm ci && npm install --no-save --package-lock=false playwright@1.58.2 && npx playwright install chromium",
   "forwardPorts": [
     4173,
     5173
