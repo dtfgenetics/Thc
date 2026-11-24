@@ -96,11 +96,24 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for asset in assets/vendor/uplot-1.6.32.min.css assets/thc-tool-suite-v1.css assets/vendor/papaparse-5.7.0.min.js assets/vendor/uplot-1.6.32.min.js assets/thc-tool-suite-v1.js; do
+          for asset in assets/vendor/uplot-1.6.32.min.css assets/thc-tool-suite-v1.css assets/vendor/papaparse-5.7.0.min.js assets/vendor/uplot-1.6.32.min.js assets/thc-tool-suite-v1.js assets/thc-cultivation-data-ui-v1.mjs assets/thc-cultivation-math-v1.mjs assets/thc-measurement-core-v1.mjs assets/thc-live-tool-adapter-v1.mjs; do
             test -s "$SUITE_ROOT/$asset" || { echo "::error::Missing VPD runtime asset: $asset"; exit 1; }
           done
           grep -Fq 'id="vpd-guided-chapter"' "$SUITE_ROOT/vpd-chart/index.html"
-          echo "Packaged VPD guided lesson and five runtime dependencies present."
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {pathToFileURL} from 'node:url';
+          import path from 'node:path';
+          const {airVpd,leafVpd,dewPoint} = await import(pathToFileURL(path.join(process.env.SUITE_ROOT,'assets/thc-cultivation-math-v1.mjs')).href);
+          assert.ok(Math.abs(airVpd(25,60)-1.27)<0.01);
+          assert.ok(Math.abs(leafVpd(25,60,23)-0.91)<0.01);
+          assert.ok(Math.abs(airVpd(25,100))<1e-10);
+          assert.ok(leafVpd(25,100,23)<0);
+          assert.ok(Math.abs(dewPoint(25,60)-16.7)<0.2);
+          assert.throws(()=>airVpd(25,101),RangeError);
+          console.log('Packaged VPD math: six assertions passed.');
+          JS
+          echo "Packaged VPD guided lesson and nine direct runtime dependencies present."
 
       - name: Verify Grow Doc pinned source and reviewed-media payload
         shell: bash
