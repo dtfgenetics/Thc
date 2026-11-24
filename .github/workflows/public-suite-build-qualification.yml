@@ -242,6 +242,36 @@ jobs:
           PY
           done
 
+      - name: Measure candidate VPD Lighthouse quality
+        shell: bash
+        env:
+          CHROME_PATH: ${{ steps.candidate-chrome.outputs.chrome-path }}
+        run: |
+          set -euo pipefail
+          npm install --prefix "$RUNNER_TEMP/candidate-lhci" --no-save --package-lock=false @lhci/cli@0.15.1
+          python -m http.server 8765 --bind 127.0.0.1 --directory "$SUITE_ROOT" >"$RUNNER_TEMP/candidate-lh-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8765/vpd-chart/ >/dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:8765/vpd-chart/ >/dev/null
+          export WEB_QA_BASE_URL=http://127.0.0.1:8765/vpd-chart/
+          export WEB_QA_ROUTE_FILE="$RUNNER_TEMP/candidate-lh-routes.json"
+          export WEB_QA_ARTIFACT_DIR="$RUNNER_TEMP/candidate-lighthouse"
+          export WEB_QA_ENFORCE=1
+          printf '{"routes":["%s"]}\n' "$WEB_QA_BASE_URL" > "$WEB_QA_ROUTE_FILE"
+          "$RUNNER_TEMP/candidate-lhci/node_modules/.bin/lhci" autorun --config=lighthouserc.cjs
+
+      - name: Preserve candidate Lighthouse evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-vpd-lighthouse
+          path: ${{ runner.temp }}/candidate-lighthouse
+          if-no-files-found: warn
+
       - name: Verify Grow Doc pinned source and reviewed-media payload
         shell: bash
         run: |
