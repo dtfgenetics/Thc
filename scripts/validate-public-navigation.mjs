@@ -45,7 +45,8 @@ assert(wordpressHeaderPublisher.includes('const expected=' + sevenLinkSalesHoldN
 assert(suiteHubNormalizer.includes("const expected = ['Home', 'Seeds', 'Learn', 'Courses', 'Tools', 'Games', 'Community'];"), 'suite hub normalizer must require sales-hold navigation');
 assert(suiteResourcePackager.includes("expected_labels = ['Home', 'Seeds', 'Learn', 'Courses', 'Tools', 'Games', 'Community']"), 'public suite packager must require sales-hold navigation');
 assert(!wordpressNavigationRepair.includes("['Shop', '/shop/']"), 'WordPress presentation repair must not reinsert Shop in primary nav');
-for (const [name, source] of [['WordPress production publisher', wordpressHeaderPublisher], ['Public Suite normalizer', suiteHubNormalizer], ['Public Suite package gate', suiteResourcePackager]]) {
+assert(wordpressHeaderPublisher.includes('Commerce navigation in V6 header') && wordpressHeaderPublisher.includes('Cart utility in V6 header'), 'WordPress production publisher must reject Shop/Cart in deployed headers');
+for (const [name, source] of [['Public Suite normalizer', suiteHubNormalizer], ['Public Suite package gate', suiteResourcePackager]]) {
   assert(source.includes('sales-hold') && source.includes('Cart'), `${name} must reject Shop/Cart in deployed headers`);
 }
 
