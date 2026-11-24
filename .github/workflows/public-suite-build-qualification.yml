@@ -55,7 +55,7 @@ jobs:
           # Only wait for API visibility; never turn a real build failure green.
           visible=0
           for attempt in {1..20}; do
-            if gh run view "$run_id" --repo "$GITHUB_REPOSITORY" --json status >/dev/null 2>&1; then
+            if gh run view "$run_id" --repo "$GITHUB_REPOSITORY" --json status >/dev/null 2>&1 && gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id/jobs?per_page=1" >/dev/null 2>&1; then
               visible=1
               break
             fi
