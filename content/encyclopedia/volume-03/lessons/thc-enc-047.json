@@ -24,11 +24,16 @@
   "coreScience": [
     "Root-associated communities contain bacteria, fungi, archaea, protists, viruses, and other organisms. Their functions can include decomposition, nutrient transformations, hormone-like signaling, competition, induced defense, disease, or no detectable effect. Taxonomic presence does not prove a particular function.",
     "A controlled commercial study of three cannabis chemotypes found microbiome differences by compartment, crop age, and cultivar. This demonstrates structure and variation; it does not establish that every detected taxon improves growth or chemistry. Sequencing also measures relative DNA signatures, not automatically live activity or causation.",
-    "Inoculant performance depends on viable organism identity, dose, formulation, storage, application, compatibility with fertilizers and pesticides, temperature, pH, moisture, resident community, genotype, and endpoint. A product can fail to establish, establish without benefit, or alter outcomes only under specific conditions."
+    "Inoculant performance depends on viable organism identity, dose, formulation, storage, application, compatibility with fertilizers and pesticides, temperature, pH, moisture, resident community, genotype, and endpoint. A product can fail to establish, establish without benefit, or alter outcomes only under specific conditions.",
+    "The 2020 commercial cannabis study by Comeau and colleagues used marker-gene sequencing of bacterial 16S and fungal ITS regions across root-associated and aerial compartments and different sampling times. These data describe differences in detected community composition. Predicted metabolic pathways derived from taxonomic profiles remain predictions, not direct transcript, protein or metabolite measurements.",
+    "Sequence-read proportions are compositional: when one detected group becomes relatively more abundant, another may appear to decrease even if its absolute cell abundance is unchanged. Extraction bias, primer affinity, reference databases, sequencing depth and background contamination can affect apparent community composition. Sterile sampling controls, standardized tissue compartment definitions and an independent absolute-abundance method can help interpretation.",
+    "A defensible microbial-input claim requires at least three separate questions: did the applied organism survive and establish in the intended compartment; did it change a specified biological process; and did the treated crop perform differently relative to suitable controls? Presence of a named strain, colonization, and improved outcomes are separate endpoints. Randomized replication and independent trials reduce but do not eliminate confounding."
   ],
   "cultivationRelevance": [
     "Treat microbials like testable production inputs. Preserve the label and lot, verify storage, apply to a defined group, and compare against an appropriate control under the same base fertility.",
-    "Do not combine several new biological products in one trial. The result becomes uninterpretable and contamination risk increases."
+    "Do not combine several new biological products in one trial. The result becomes uninterpretable and contamination risk increases.",
+    "Example claim evaluation: a biological product report shows a shift in 16S relative abundance after application, but no untreated control, absolute cell count, colonization assay or yield endpoint. The observation can describe a changed sequencing profile. It cannot establish that the product caused more nutrient uptake or improved plant health.",
+    "Keep microbial-product efficacy separate from microbial safety and production hygiene. An organism may be nonpathogenic in one context yet introduce contamination or interfere with system sanitation elsewhere; use validated identification and facility-specific safety practices."
   ],
   "measureAndRecord": [
     {
@@ -50,21 +55,28 @@
     {
       "field": "Outcome",
       "requirement": "Rooting, biomass, nutrient status, disease, yield, chemistry, and economics."
+    },
+    {
+      "field": "Microbial evidence quality",
+      "requirement": "Record biological replicate count, randomization unit, untreated and carrier controls, sampled compartment and time point, extraction blanks, assay targets, sequencing method, read-depth/normalization, absolute-abundance verification if available, and crop endpoint."
     }
   ],
   "misconceptions": [
     "More diversity is always better: Community composition and function matter; diversity alone is not a performance guarantee.",
     "A detected microbe caused the observed trait: Association is not causation.",
-    "Beneficial microbes cannot become contamination: Misidentified, contaminated, or misplaced organisms can create risk."
+    "Beneficial microbes cannot become contamination: Misidentified, contaminated, or misplaced organisms can create risk.",
+    "A predicted functional pathway from marker-gene data proves that microorganisms actually performed the biochemical process: pathway predictions do not measure functional activity."
   ],
   "evidenceLimits": [
-    "Cannabis microbiome research is expanding but remains small relative to model crops. Many commercial formulations lack independently replicated cannabis trials."
+    "Cannabis microbiome research is expanding but remains small relative to model crops. Many commercial formulations lack independently replicated cannabis trials.",
+    "The cannabis microbiome study provides cultivar- and compartment-associated observations, not proof of efficacy for a specific commercial inoculant. DNA detection, predicted pathway potential, live microbial abundance and measured function must not be treated as equivalent."
   ],
   "crossLinks": "THC-ENC-046, THC-ENC-048–049, THC-ENC-056, and IPM/plant-health lessons.",
   "sourceNotes": [
     "Comeau D, et al. Spatio-Temporal and Cultivar-Dependent Variations in the Cannabis Microbiome. Frontiers in Microbiology. 2020;11:491. doi:10.3389/fmicb.2020.00491. Open source",
     "Ahmed B, Hijri M. Potential impacts of soil microbiota manipulation on secondary metabolites production in cannabis. Journal of Cannabis Research. 2021;3:25. doi:10.1186/s42238-021-00082-0. Open source",
-    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1.  Project source packet supplied by the publisher."
+    "THC - Teaching Healthy Cultivation. Cannabis Plant Science Source Packet, version 1.  Project source packet supplied by the publisher.",
+    "Comeau D, Novinscak A, Joly DL, Filion M. Spatio-Temporal and Cultivar-Dependent Variations in the Cannabis Microbiome. Frontiers in Microbiology. 2020;11:491. DOI: 10.3389/fmicb.2020.00491. Primary cannabis marker-gene observational study across chemotypes, compartments and time."
   ],
   "slug": "rhizosphere-microbes-functions-and-limits-of-claims",
   "route": "/learn/encyclopedia/thc-enc-047/",
