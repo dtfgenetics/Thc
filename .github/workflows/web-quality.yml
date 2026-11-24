@@ -130,7 +130,7 @@ jobs:
         run: npm ci
 
       - name: Install pinned Lighthouse CI runtime
-        run: npm install --no-save --package-lock=false @lhci/cli@0.15.1
+        run: npm install --prefix "$RUNNER_TEMP/production-lhci" --no-save --package-lock=false @lhci/cli@0.15.1
 
       - name: Install Chrome for Lighthouse
         id: setup-chrome
@@ -165,7 +165,7 @@ jobs:
         run: |
           mkdir -p "$WEB_QA_ARTIFACT_DIR"
           set -o pipefail
-          npx lhci autorun --config=lighthouserc.cjs 2>&1 | tee "$WEB_QA_ARTIFACT_DIR/lhci.log"
+          "$RUNNER_TEMP/production-lhci/node_modules/.bin/lhci" autorun --config=lighthouserc.cjs 2>&1 | tee "$WEB_QA_ARTIFACT_DIR/lhci.log"
 
       - name: Collect sanitized access evidence when Lighthouse fails
         if: failure()
