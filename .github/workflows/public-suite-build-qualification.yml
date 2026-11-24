@@ -136,6 +136,50 @@ jobs:
             sleep 1
           done
           curl --fail --silent http://127.0.0.1:8765/vpd-chart/ >/dev/null
+          # Test-only copy: run real input handlers without modifying the release artifact.
+          fixture="$SUITE_ROOT/vpd-chart/qa-interaction.html"
+          trap 'rm -f "$fixture"; kill "$server_pid" 2>/dev/null || true' EXIT
+          python - "$SUITE_ROOT/vpd-chart/index.html" "$fixture" <<'PY'
+          import sys
+          from pathlib import Path
+          source = Path(sys.argv[1]).read_text()
+          script = """<script type="module">
+          window.addEventListener('load', () => {
+            const get = id => document.getElementById(id);
+            const set = (id,value,event='input') => {
+              get(id).value=value;
+              get(id).dispatchEvent(new Event(event,{bubbles:true}));
+            };
+            const check = (condition,label) => {if(!condition) throw Error(label)};
+            try {
+              set('temp','25'); set('rh','60');
+              set('leafMode','measured','change'); set('leafMeasured','23');
+              check(get('vout').querySelector('.vpd-main strong').textContent==='0.91 kPa','leaf VPD');
+              check(get('vout').textContent.includes('1.27 kPa'),'air VPD');
+              set('unit','f','change');
+              check(get('vout').querySelector('.vpd-main strong').textContent==='0.91 kPa','unit conversion');
+              set('unit','c','change');
+              set('rh','100');
+              check(get('vout').textContent.includes('Condensation / dew risk'),'dew warning');
+              set('rh','101');
+              check(get('vout').textContent.includes('Enter valid conditions'),'invalid RH');
+              set('rh','60');
+              const cell=get('chart').querySelector('td[data-air][data-rh]');
+              check(!!cell,'heatmap cell');
+              cell.click();
+              check(Number(get('temp').value)===Number(cell.dataset.air),'heatmap selection');
+              get('trendExample').click();
+              check(get('trendBody').rows.length===24,'example trend');
+              document.body.dataset.vpdQa='passed';
+            } catch(error) {document.body.dataset.vpdQa='failed: '+error.message}
+          },{once:true});
+          </script>"""
+          assert '</body>' in source
+          Path(sys.argv[2]).write_text(source.replace('</body>',script+'</body>',1))
+          PY
+          timeout 45s "$CHROME_PATH" --headless --no-sandbox --disable-dev-shm-usage --virtual-time-budget=8000 --dump-dom http://127.0.0.1:8765/vpd-chart/qa-interaction.html >"$RUNNER_TEMP/vpd-interaction.html"
+          grep -Fq 'data-vpd-qa="passed"' "$RUNNER_TEMP/vpd-interaction.html" || { echo "::error::VPD interaction fixture failed"; exit 1; }
+          rm -f "$fixture"
           for viewport in 1280,800 390,844; do
             dom="$RUNNER_TEMP/vpd-${viewport}.html"
             timeout 45s "$CHROME_PATH" --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --window-size="$viewport" --virtual-time-budget=8000 --dump-dom http://127.0.0.1:8765/vpd-chart/ >"$dom"
