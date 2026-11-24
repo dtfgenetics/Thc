@@ -26,7 +26,15 @@ function walk(dir, visitor) {
 walk(workflowRoot, (file) => {
   if (!/\.ya?ml$/i.test(file)) return;
   const content = fs.readFileSync(file, 'utf8');
-  if (forbidden.test(content)) violations.push(path.relative(root, file));
+  const rel = path.relative(root, file).split(path.sep).join('/');
+  // Owner-directed local browser QA pilot: only this workflow is approved.
+  // Retired browser paths and application dependency wiring remain prohibited.
+  if (rel === '.github/workflows/codespaces-playwright-smoke.yml') {
+    const approved = content.replace(/^\s*- run: \/tmp\/thc-browser-qa\/node_modules\/\.bin\/playwright install --with-deps chromium\s*$/m, '');
+    if (forbidden.test(approved)) violations.push(rel);
+    return;
+  }
+  if (forbidden.test(content)) violations.push(rel);
 });
 
 walk(root, (file) => {
@@ -54,4 +62,4 @@ if (violations.length) {
   process.exit(1);
 }
 
-console.log('Browser-tool policy passed: no Playwright execution, dependency wiring, or retired High Land browser-test paths found.');
+console.log('Browser-tool policy passed: only approved local browser QA execution; no prohibited dependency wiring or retired High Land paths found.');
