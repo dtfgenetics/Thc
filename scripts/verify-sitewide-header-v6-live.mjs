@@ -46,9 +46,9 @@ function inspect(html,route){
     if(forbiddenLabels.has(item.label)) throw new Error(`${route}: obsolete primary label remains: ${item.label}`);
   }
   // Commerce is suspended. A compliant V6 header must not advertise shopping.
-  if(/<a\\b[^>]*href\\s*=\\s*["']\\/(?:shop|cart)\\/["']/i.test(header))
+  if(/<a\b[^>]*href\s*=\s*["']\/(?:shop|cart)\/["']/i.test(header))
     throw new Error(`${route}: sales-hold header exposes Shop or Cart link`);
-  if(/aria-label\\s*=\\s*["']Cart["']/i.test(header))
+  if(/aria-label\s*=\s*["']Cart["']/i.test(header))
     throw new Error(`${route}: sales-hold header exposes Cart utility`);
   for(const utility of ['Search DTF Genetics','Account']){
     if(!header.includes(`aria-label="${utility}"`)&&!header.includes(`aria-label='${utility}'`)) throw new Error(`${route}: missing utility control ${utility}`);
