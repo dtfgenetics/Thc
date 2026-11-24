@@ -77,3 +77,24 @@ test('fails enforced quality gate when no valid Lighthouse documents remain',()=
   assert.equal(report.measuredRoutes,0);
   assert.ok(report.findings.some(x=>x.type==='no-valid-lighthouse-measurements'));
 });
+
+test('rejects a requested URL without a final document',()=>{
+  const {run,report}=evaluate({requestedUrl:'https://dtfseeds.com/',categories:scores});
+  assert.equal(run.status,1);
+  assert.equal(report.measuredRoutes,0);
+});
+test('rejects off-origin final displayed document',()=>{
+  const {run,report}=evaluate({finalUrl:'https://dtfseeds.com/',finalDisplayedUrl:'https://other.example/',categories:scores});
+  assert.equal(run.status,1);
+  assert.ok(report.findings.some(x=>x.reason==='unexpected-origin'));
+});
+test('rejects HTTP error in final document network record',()=>{
+  const {run,report}=evaluate({finalUrl:'https://dtfseeds.com/',categories:scores,audits:{'network-requests':{details:{items:[{url:'https://dtfseeds.com/',resourceType:'Document',statusCode:403}]}}}});
+  assert.equal(run.status,1);
+  assert.ok(report.findings.some(x=>x.reason==='http-error'));
+});
+test('does not mistake a failed image for a failed main document',()=>{
+  const {run,report}=evaluate({finalUrl:'https://dtfseeds.com/',categories:scores,audits:{'network-requests':{details:{items:[{url:'https://dtfseeds.com/image.png',resourceType:'Image',statusCode:404}]}}}});
+  assert.equal(run.status,0,run.stderr);
+  assert.equal(report.measuredRoutes,1);
+});
