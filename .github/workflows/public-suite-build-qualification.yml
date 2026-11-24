@@ -189,6 +189,19 @@ jobs:
               check(get('trendBody').rows.length===2,'CSV import');
               check(get('trendBody').textContent.includes('0.91'),'CSV VPD');
               check(!get('trendExport').disabled,'CSV export available');
+              let exported, filename;
+              const originalCreate=URL.createObjectURL, originalClick=HTMLAnchorElement.prototype.click;
+              try {
+                URL.createObjectURL=blob=>{exported=blob;return originalCreate.call(URL,blob)};
+                HTMLAnchorElement.prototype.click=function(){filename=this.download};
+                get('trendExport').click();
+              } finally {
+                URL.createObjectURL=originalCreate;
+                HTMLAnchorElement.prototype.click=originalClick;
+              }
+              check(filename==='thc-vpd-analyzed.csv' && exported instanceof Blob,'CSV download');
+              const csv=await exported.text();
+              check(csv.includes('00:00') && csv.includes('01:00') && csv.includes('0.91'),'CSV export contents');
               get('trendClear').click();
               check(get('trendBody').rows.length===0,'CSV clear');
               document.body.dataset.vpdQa='passed';
@@ -199,7 +212,7 @@ jobs:
           Path(sys.argv[2]).write_text(source.replace('</body>',script+'</body>',1))
           PY
           timeout 45s "$CHROME_PATH" --headless --no-sandbox --disable-dev-shm-usage --virtual-time-budget=8000 --dump-dom http://127.0.0.1:8765/vpd-chart/qa-interaction.html >"$RUNNER_TEMP/vpd-interaction.html"
-          grep -Fq 'data-vpd-qa="passed"' "$RUNNER_TEMP/vpd-interaction.html" || { echo "::error::VPD interaction fixture failed"; exit 1; }
+          grep -Fq 'data-vpd-qa="passed"' "$RUNNER_TEMP/vpd-interaction.html" || { grep -o 'data-vpd-qa="[^"]*"' "$RUNNER_TEMP/vpd-interaction.html" || true; echo "::error::VPD interaction fixture failed"; exit 1; }
           rm -f "$fixture"
           for viewport in 1280,800 390,844; do
             dom="$RUNNER_TEMP/vpd-${viewport}.html"
