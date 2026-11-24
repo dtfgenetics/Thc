@@ -80,6 +80,16 @@ jobs:
           build_json="$(find "$RUNNER_TEMP/suite-download" -type f -name dtf-build.json -print -quit)"
           test -n "$build_json"
           suite_root="$(dirname "$build_json")"
+          # A branch may advance between checkout and workflow dispatch.
+          # Reject artifacts that do not identify the exact reviewed candidate.
+          expected_sha="$(git rev-parse HEAD)"
+          actual_sha="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["master"])' "$build_json")"
+          if [ "$actual_sha" != "$expected_sha" ]; then
+            echo "::error::Candidate artifact revision mismatch: expected $expected_sha, got $actual_sha"
+            exit 1
+          fi
+          test -s "$suite_root/vpd-chart/index.html"
+          echo "Verified candidate artifact revision: $actual_sha"
           echo "SUITE_ROOT=$suite_root" >> "$GITHUB_ENV"
 
       - name: Verify Grow Doc pinned source and reviewed-media payload
