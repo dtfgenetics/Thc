@@ -24,11 +24,14 @@
   "coreScience": [
     "Technology names do not specify crop performance. Compare measured photon output and distribution, spectral photon distribution, electrical draw, controllability, depreciation, reliability, serviceability, capital cost, and actual crop response. Product quality varies within every technology family.",
     "All input electrical energy eventually becomes heat within or outside the controlled space. LEDs usually transfer more heat through fixture surfaces and drivers and less as direct infrared toward the canopy than many HID systems, but the facility still must reject nearly all electrical input. Location of drivers and exhaust paths changes HVAC load distribution.",
-    "Sunlight is broad, dynamic, and free at the point of capture but not controllable. Glazing, structure, curtains, condensation, season, latitude, and cloud cover alter delivery. Supplemental fixtures should be controlled from measured solar contribution and crop DLI rather than a fixed assumption."
+    "Sunlight is broad, dynamic, and free at the point of capture but not controllable. Glazing, structure, curtains, condensation, season, latitude, and cloud cover alter delivery. Supplemental fixtures should be controlled from measured solar contribution and crop DLI rather than a fixed assumption.",
+    "LED fixtures use electroluminescent semiconductor junctions and drivers; HID lamps produce light through electrical discharge and require ballasts; fluorescent lamps use discharge-generated UV and phosphors; sunlight is direct and diffuse solar radiation filtered by atmosphere and greenhouse glazing.",
+    "Photon output (PPF, µmol/s) describes emitted photons within a stated waveband. Canopy PPFD (µmol/m²/s) describes incident photon flux density at the measurement plane. Installed uniformity, spectral distribution, fixture spacing and reflectance determine crop delivery; electrical efficacy (µmol/J) is not itself canopy uniformity."
   ],
   "cultivationRelevance": [
     "A source comparison is a system decision involving crop area, power capacity, HVAC, ceiling height, controls, worker access, local climate, and production goals.",
-    "Retrofitting fixtures without remapping and recalculating heat and electrical loads can change morphology, irrigation demand, leaf temperature, and room balance."
+    "Retrofitting fixtures without remapping and recalculating heat and electrical loads can change morphology, irrigation demand, leaf temperature, and room balance.",
+    "A retrofit can preserve the canopy average while shifting light from the edges toward the center. Compare the spatial distribution before and after installation, since a higher mean can conceal weak delivery at the perimeter. Use the same grid and measurement plane in both surveys."
   ],
   "measureAndRecord": [
     {
@@ -37,7 +40,7 @@
     },
     {
       "field": "Photon performance",
-      "requirement": "Band, PPF, efficacy, installed PPFD map, DLI, depreciation, and cleaning history."
+      "requirement": "Band, PPF, efficacy, installed PPFD map, DLI, depreciation, and cleaning history. Record sensor model, measurement height and grid spacing. Compare minimum and mean PPFD on the same grid. For sunlight, use a time series to integrate daily photon dose."
     },
     {
       "field": "Energy and heat",
@@ -58,13 +61,18 @@
     "Sunlight has a fixed PPFD: Solar delivery changes continuously with time, weather, season, glazing, and shading."
   ],
   "evidenceLimits": [
-    "Technology develops quickly and product specifications change. Use current independent data and installed measurements rather than broad claims about an entire source family."
+    "Technology develops quickly and product specifications change. Use current independent data and installed measurements rather than broad claims about an entire source family.",
+    "Published performance depends on fixture model, age, dimming, thermal conditions, spectrum and test protocol; technology-wide rankings are not universal.",
+    "PAR (400–700 nm) and ePAR (400–750 nm) measurements differ; do not compare photon metrics without the waveband and sensor response.",
+    "Illustrated source-to-canopy pathways are qualitative and do not encode measured efficiency, spectral fractions, heat flux or crop response."
   ],
-  "crossLinks": "THC-ENC-101-107, THC-ENC-115-116, THC-ENC-120, and THC-GROW-011.",
+  "crossLinks": "THC-ENC-101, THC-ENC-102, THC-ENC-103, THC-ENC-104, THC-ENC-105, THC-ENC-106, THC-ENC-107, THC-ENC-115, THC-ENC-116, THC-ENC-120, THC-GROW-011.",
   "sourceNotes": [
-    "Resource Innovation Institute (2021). LED Lighting for Cannabis Cultivation and Controlled Environment Agriculture: Best Practices Guide.",
+    "ANSI/ASABE S640 (2017, reaffirmed 2022). Quantities and Units of Electromagnetic Radiation for Plants (Photosynthetic Organisms).",
+    "ANSI/ASABE S642 (2018). Recommended Methods for Measurement and Testing of LED Products for Plant Growth and Development.",
+    "Zhen S. and Bugbee B. (2020). Far-red photons have equivalent efficiency to traditional photosynthetic photons: implications for redefining photosynthetically active radiation. Plant, Cell & Environment 43:1259–1272. https://doi.org/10.1111/pce.13730",
     "Collado C.E. et al. (2024). Supplemental Greenhouse Lighting Increased the Water Use Efficiency, Growth, and Cutting Production of Cannabis Stock Plants. Frontiers in Plant Science 15:1371702.",
-    "THC Cultivation SOP Source Materials Packet v1.0 (project source, May 2026)."
+    "Resource Innovation Institute (2021). LED Lighting for Cannabis Cultivation and Controlled Environment Agriculture: Best Practices Guide."
   ],
   "slug": "led-hid-fluorescent-and-sunlight-comparisons",
   "route": "/learn/encyclopedia/thc-enc-108/",
@@ -76,5 +84,26 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "overview": "LED, HID, fluorescent lamps, and sunlight differ in spectrum, optics, control, maintenance, and how heat reaches plants. Compare systems at the crop plane using measured photon delivery and energy demand, not technology labels or lumens alone.",
+  "practicalInterpretation": [
+    "Record technology and fixture model, spectrum/band, operating wattage, fixture age, height and spacing; use an appropriate calibrated quantum sensor to map canopy PPFD at repeatable grid points.",
+    "Compare the same crop area, photoperiod, target measurement plane, spectral band, and operating condition. Calculate DLI from time-resolved PPFD; do not infer DLI from a single noon sunlight reading.",
+    "Evaluate electrical service, HVAC response, maintenance, startup/restrike behavior, glare and UV safety, replacement parts, disposal requirements, and life-cycle cost before changing technologies.",
+    "Use paired before/after canopy maps and crop observations to evaluate a retrofit; a fixture datasheet alone cannot verify crop-plane delivery."
+  ],
+  "visuals": [
+    {
+      "type": "diagram",
+      "src": "/assets/education/encyclopedia/thc-enc-108/light-source-comparison.svg",
+      "alt": "Four labeled light-source pathways: LED diode and driver, HID arc and ballast, fluorescent discharge and phosphor, and sunlight through glazing. All lead to a canopy measurement plane; source and heat pathways differ.",
+      "caption": "Light-source mechanisms and installed measurement: conceptual comparison, not a performance ranking or measured spectrum.",
+      "width": 1200,
+      "height": 720,
+      "license": "CC BY 4.0",
+      "author": "THC Educational Content Production",
+      "provenance": "Original vector schematic authored for THC-ENC-108, 2026-11-23",
+      "dataStatus": "conceptual; no empirical values"
+    }
+  ]
 }
