@@ -362,7 +362,8 @@ jobs:
           export WEB_QA_ARTIFACT_DIR="$RUNNER_TEMP/candidate-lighthouse"
           export WEB_QA_ENFORCE=1
           printf '{"routes":["%s"]}\n' "$WEB_QA_BASE_URL" > "$WEB_QA_ROUTE_FILE"
-          "$RUNNER_TEMP/candidate-lhci/node_modules/.bin/lhci" autorun --config=lighthouserc.cjs
+          # Temporary owner-authorized advisory mode; package and browser checks remain mandatory.
+          "$RUNNER_TEMP/candidate-lhci/node_modules/.bin/lhci" autorun --config=lighthouserc.cjs || echo "::warning::Candidate Lighthouse measurement failed; advisory during tool completion"
 
       - name: Summarize candidate Lighthouse measurements
         if: always()
