@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-const ALLOWED_HEADERS=['content-type','server','cf-mitigated','cf-ray','x-request-id','x-cache','x-served-by'];
+const ALLOWED_HEADERS=['content-type','server','cf-mitigated','cf-ray','x-request-id','x-hcdn-request-id','x-cache','x-served-by'];
 const REQUESTS=[
   {name:'qa-agent',userAgent:'DTFSeeds-Web-QA/1.0'},
   {name:'chrome-ua-only',userAgent:'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'}
