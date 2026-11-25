@@ -361,7 +361,6 @@ jobs:
           export WEB_QA_ROUTE_FILE="$RUNNER_TEMP/candidate-lh-routes.json"
           export WEB_QA_ARTIFACT_DIR="$RUNNER_TEMP/candidate-lighthouse"
           export WEB_QA_ENFORCE=1
-          export WEB_QA_PROFILE=vpd-candidate
           printf '{"routes":["%s"]}\n' "$WEB_QA_BASE_URL" > "$WEB_QA_ROUTE_FILE"
           "$RUNNER_TEMP/candidate-lhci/node_modules/.bin/lhci" autorun --config=lighthouserc.cjs
 
