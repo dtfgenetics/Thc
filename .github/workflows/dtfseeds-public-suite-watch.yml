@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - scripts/audit-dtfseeds-public-suite.mjs
+      - scripts/test/public-suite-watch-contract.test.mjs
       - .github/workflows/dtfseeds-public-route-repair.yml
       - .github/workflows/dtfseeds-public-suite-watch.yml
   schedule:
@@ -40,19 +41,47 @@ jobs:
         with:
           node-version: 22
 
+      - name: Validate watchdog failure propagation
+        run: node --test scripts/test/public-suite-watch-contract.test.mjs
+
+      - name: Read pinned canonical Tools revision
+        id: tools_pin
+        shell: bash
+        run: |
+          set -euo pipefail
+          tools_sha="$(sed -n 's/^commit=//p' site/public-route-patch/assets/release-source-revisions/tools.txt)"
+          [[ "$tools_sha" =~ ^[0-9a-f]{40}$ ]] || { echo "Invalid pinned Tools SHA" >&2; exit 1; }
+          echo "sha=$tools_sha" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout pinned canonical Tools verifier
+        uses: actions/checkout@v4
+        with:
+          repository: dtfgenetics/Tools
+          ref: ${{ steps.tools_pin.outputs.sha }}
+          path: .qa-tools
+          persist-credentials: false
+
       - name: Audit live public application suite
         id: audit
         shell: bash
         run: |
           set +e
           node scripts/audit-dtfseeds-public-suite.mjs
-          status=$?
+          suite_status=$?
+          node .qa-tools/scripts/verify-cultivation-reference-tools-live.mjs
+          tools_status=$?
           set -e
+          status=0
+          if [[ "$suite_status" -ne 0 || "$tools_status" -ne 0 ]]; then
+            status=1
+          fi
           echo "status=$status" >> "$GITHUB_OUTPUT"
+          echo "suite_status=$suite_status" >> "$GITHUB_OUTPUT"
+          echo "tools_status=$tools_status" >> "$GITHUB_OUTPUT"
           if [[ "$status" -eq 0 ]]; then
-            echo "Live public suite passes the permanent audit."
+            echo "Live public suite and pinned canonical Tools pass their audits."
           else
-            echo "Live public suite requires reconciliation."
+            echo "Live public suite or pinned canonical Tools requires reconciliation."
           fi
 
       - name: Check protected Hostinger filesystem access
@@ -179,12 +208,12 @@ jobs:
               repo: context.repo.repo,
               issue_number: 63,
               body: [
-                '## Public-suite watchdog verified production',
+                '## Public-suite and canonical Tools live audits passed',
                 '',
                 `Watch run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Event: **${context.eventName}**`,
                 '',
-                'The live public application suite passed the permanent audit; no repair deployment was required.',
+                'The public-suite route audit and the pinned canonical Tools route/resource verification passed; no repair deployment was required. These checks do not certify every interactive workflow.',
                 `SSH user configured: **${process.env.USER_PRESENT}**`,
                 `SSH private key configured: **${process.env.KEY_PRESENT}**`,
                 `Host override configured: **${process.env.HOST_PRESENT}**`,
@@ -193,3 +222,10 @@ jobs:
                 'No credential values are exposed.'
               ].join('\n')
             });
+
+      - name: Fail when live audits require reconciliation
+        if: always() && (steps.audit.outcome != 'success' || steps.audit.outputs.status != '0')
+        shell: bash
+        run: |
+          echo "Live public-suite/Tools verification did not pass. A repair dispatch is not live acceptance." >&2
+          exit 1
