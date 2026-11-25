@@ -27,6 +27,9 @@ for(const resource of resources){
   if(!resource.path) errors.push(`${resource.resourceId||'unknown'} is missing path.`);
   if(!arr(resource.lessonIds).length) errors.push(`${resource.resourceId||'unknown'} has no lessonIds.`);
   if(resource.publicationAuthorized===true && resource.status!=='approved') errors.push(`${resource.resourceId}: publicationAuthorized=true requires status=approved.`);
+  if(resource.status==='approved' && resource.publicationAuthorized!==true) errors.push(`${resource.resourceId}: approved resource requires publicationAuthorized=true.`);
+  if(resource.status==='approved' && (!/^\/(?!\/)[^?#\s]*\/$/.test(resource.publicRoute||'') || String(resource.publicRoute).includes('..'))) errors.push(`${resource.resourceId}: approved resource requires a safe canonical publicRoute.`);
+  if(resource.status!=='approved' && resource.publicRoute) errors.push(`${resource.resourceId}: draft resource must not advertise a publicRoute.`);
   else {
     const file=path.join(root,resource.path);
     if(!fs.existsSync(file)) errors.push(`${resource.resourceId}: missing file ${resource.path}`);

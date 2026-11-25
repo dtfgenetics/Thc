@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.0.0",
+  "resourceId": "THC-DL-BOTANY-001",
+  "title": "Repeatable Plant Phenotyping Field Workbook",
+  "status": "draft_for_review",
+  "purpose": "Teach repeatable botanical measurement and distinguish raw observations from causal interpretation.",
+  "lessonIds": [
+    "THC-ENC-020"
+  ],
+  "sections": [
+    {
+      "id": "measurement-protocol",
+      "supportsLesson": "THC-ENC-020",
+      "title": "Operational Measurement Definitions",
+      "fields": [
+        "Stable plant ID",
+        "Observer ID",
+        "Date/time and time zone",
+        "Stage and stage criteria",
+        "Instrument and graduation",
+        "Substrate-to-natural-apex height (cm)",
+        "Canopy axis A and orientation (cm)",
+        "Perpendicular canopy axis B (cm)",
+        "Internode branch and node pair (mm)",
+        "Reading 1",
+        "Reading 2",
+        "Sample conditions",
+        "Missing-data reason"
+      ],
+      "qualityRules": [
+        "Define landmarks and position before measuring.",
+        "Preserve each repeated reading, not only the arithmetic mean.",
+        "Do not report precision beyond calibration and positioning uncertainty."
+      ],
+      "decisionPrompt": "Could another observer reproduce each measurement using the recorded protocol?"
+    },
+    {
+      "id": "photo-provenance",
+      "supportsLesson": "THC-ENC-020",
+      "title": "Image and Context Metadata",
+      "fields": [
+        "Plant ID",
+        "Image ID",
+        "Capture timestamp",
+        "Photographer",
+        "Camera and lens",
+        "View and sample position",
+        "Scale reference in subject plane",
+        "Illumination",
+        "Original file reference",
+        "Editing and cropping history",
+        "Environmental context"
+      ],
+      "decisionPrompt": "Could another reviewer reconstruct how this photograph was produced?"
+    },
+    {
+      "id": "inference-review",
+      "supportsLesson": "THC-ENC-020",
+      "title": "Evidence and Interpretation",
+      "fields": [
+        "Raw observations",
+        "Derived statistics and rounding rule",
+        "Repeat reading discrepancy",
+        "Possible confounders",
+        "Interpretation",
+        "Alternative explanation",
+        "Replication requirement",
+        "Review notes"
+      ],
+      "qualityRules": [
+        "Repeated readings from one plant are technical repeats, not independent biological replicates.",
+        "Photographic appearance cannot establish chemical concentration.",
+        "Correlation does not establish a causal treatment effect."
+      ],
+      "decisionPrompt": "Is the conclusion limited to what the sampling and measurement design can support?"
+    }
+  ],
+  "qualityRules": [
+    "Use missing/not applicable/not measurable rather than replacing missing values with zero.",
+    "Never overwrite raw data when correcting interpretation.",
+    "Retain original photographs and record operational definitions.",
+    "The companion markdown workbook is editorial draft only; it does not imply scientific approval."
+  ],
+  "reviewControl": {
+    "scientificReview": "pending",
+    "accessibilityReview": "pending",
+    "publicationAuthorized": false,
+    "deployed": false,
+    "live": false
+  }
+}
