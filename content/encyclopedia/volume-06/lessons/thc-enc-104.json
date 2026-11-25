@@ -24,11 +24,16 @@
   "coreScience": [
     "Total daily photons are the integral of photon flux over time, but photoperiod also organizes development. A 12-hour and an 18-hour schedule can be set to the same DLI by changing PPFD; they are not biologically identical because photon rate, dark duration, phytochrome state, circadian timing, temperature cycle, transpiration, and carbohydrate use differ.",
     "Photoperiod cannabis generally behaves as a facultative short-day crop, while day-neutral or autoflowering germplasm is less dependent on the same inductive night signal. Critical responses vary among cultivars. Research across hemp cultivars found meaningful differences in flowering response, including sensitivity to small photoperiod changes and biologically effective twilight.",
-    "Timers must control actual light at the plant, not merely commanded fixture hours. Sunrise and sunset ramps, greenhouse sunlight, indicator lamps, door openings, controller failures, and spectral channels can alter the effective schedule. A photon threshold used to define 'lights on' must be documented rather than assumed."
+    "Timers must control actual light at the plant, not merely commanded fixture hours. Sunrise and sunset ramps, greenhouse sunlight, indicator lamps, door openings, controller failures, and spectral channels can alter the effective schedule. A photon threshold used to define 'lights on' must be documented rather than assumed.",
+    "Photon dose versus timing. For constant canopy PPFD, DLI (mol m−2 d−1) = PPFD (µmol m−2 s−1) × hours of illumination × 0.0036. For variable light, integrate PPFD over the actual 24-hour period and convert µmol to mol.",
+    "Photoperiodic perception. Phytochrome-mediated light signaling interacts with circadian timing and the duration of the uninterrupted dark interval. Flowering responses vary by genotype and environment; an equal photon dose does not imply equal developmental signaling.",
+    "Dark interruptions and twilight. Stray illumination, light ramps, greenhouse twilight and spectral composition may change effective biological nights. A logger's threshold and sensor spectral response must be recorded; absence of a timer command is not proof of darkness."
   ],
   "cultivationRelevance": [
     "Vegetative duration, transition timing, plant size, and crop scheduling depend on both photon supply and developmental signaling.",
-    "Environmental and irrigation programs should align with the real light transition, while dark-period protection requires monitoring independent of the primary lighting command."
+    "Environmental and irrigation programs should align with the real light transition, while dark-period protection requires monitoring independent of the primary lighting command.",
+    "Compare two hypothetical constant-light schedules with equal DLI: 500 µmol m−2 s−1 for 18 hours and 750 µmol m−2 s−1 for 12 hours both produce 32.4 mol m−2 d−1, but have different 6-hour and 12-hour dark intervals respectively. These are arithmetic illustrations, not recommended targets.",
+    "Use photoperiod history alongside DLI and canopy observations when investigating flowering delays; do not assign a universal cannabis critical night length."
   ],
   "measureAndRecord": [
     {
@@ -50,6 +55,10 @@
     {
       "field": "Environment",
       "requirement": "Day/night temperature, humidity, carbon dioxide, irrigation timing, and deviations."
+    },
+    {
+      "field": "Light and dark transitions",
+      "requirement": "Log fixture transitions and measured canopy photon flux, including possible leakage during dark periods; record cultivar and first floral signs. Record the sensor waveband, logging interval and detection threshold to make repeated measurements comparable."
     }
   ],
   "misconceptions": [
@@ -58,7 +67,10 @@
     "Autoflowers ignore light schedules: Flower induction is less photoperiod-dependent, but photon dose, circadian rhythms, and stress responses still matter."
   ],
   "evidenceLimits": [
-    "Critical photoperiod and night-interruption sensitivity are genotype- and condition-specific. Published hemp responses should not be assigned automatically to untested drug-type or day-neutral cultivars."
+    "Critical photoperiod and night-interruption sensitivity are genotype- and condition-specific. Published hemp responses should not be assigned automatically to untested drug-type or day-neutral cultivars.",
+    "Illustrated constant PPFD values are synthetic calculation examples, not measured cultivar responses.",
+    "Phytochrome response depends on spectral quality, intensity, timing and prior conditions; a PAR-only sensor may not capture all biologically relevant nighttime signals.",
+    "Published hemp photoperiod results should not be transferred without qualification to untested drug-type or day-neutral germplasm."
   ],
   "crossLinks": "THC-ENC-103, THC-ENC-112, THC-ENC-117-118, THC-ENC-157-160, and THC-GROW-120.",
   "sourceNotes": [
@@ -79,30 +91,6 @@
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
   },
   "overview": "Daily light integral (DLI) describes photons received per square metre per day, whereas photoperiod and scotoperiod describe the timing of light and darkness. Equal DLI schedules can differ in instantaneous PPFD, dark duration, phytochrome signaling and developmental effects. A dose calculation cannot replace flowering-response observations.",
-  "mechanisms": [
-    {
-      "heading": "Photon dose versus timing",
-      "body": "For constant canopy PPFD, DLI (mol m−2 d−1) = PPFD (µmol m−2 s−1) × hours of illumination × 0.0036. For variable light, integrate PPFD over the actual 24-hour period and convert µmol to mol."
-    },
-    {
-      "heading": "Photoperiodic perception",
-      "body": "Phytochrome-mediated light signaling interacts with circadian timing and the duration of the uninterrupted dark interval. Flowering responses vary by genotype and environment; an equal photon dose does not imply equal developmental signaling."
-    },
-    {
-      "heading": "Dark interruptions and twilight",
-      "body": "Stray illumination, light ramps, greenhouse twilight and spectral composition may change effective biological nights. A logger's threshold and sensor spectral response must be recorded; absence of a timer command is not proof of darkness."
-    }
-  ],
-  "practicalInterpretation": [
-    "Compare two hypothetical constant-light schedules with equal DLI: 500 µmol m−2 s−1 for 18 hours and 750 µmol m−2 s−1 for 12 hours both produce 32.4 mol m−2 d−1, but have different 6-hour and 12-hour dark intervals respectively. These are arithmetic illustrations, not recommended targets.",
-    "Log fixture transitions and measured canopy photon flux, including possible leakage during dark periods; record cultivar and first floral signs.",
-    "Use photoperiod history alongside DLI and canopy observations when investigating flowering delays; do not assign a universal cannabis critical night length."
-  ],
-  "limitationsAndUncertainty": [
-    "Illustrated constant PPFD values are synthetic calculation examples, not measured cultivar responses.",
-    "Phytochrome response depends on spectral quality, intensity, timing and prior conditions; a PAR-only sensor may not capture all biologically relevant nighttime signals.",
-    "Published hemp photoperiod results should not be transferred without qualification to untested drug-type or day-neutral germplasm."
-  ],
   "relatedLessons": [
     "THC-ENC-101",
     "THC-ENC-102",
