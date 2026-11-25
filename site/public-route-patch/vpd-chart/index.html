@@ -35,7 +35,7 @@ footer{padding:28px 0 42px;color:var(--muted)}
 <main class="shell">
 <div class="workspace">
 <section class="panel" id="quick"><p class="panel-kicker">Quick mode</p><h2>Leaf-VPD calculator</h2><p class="muted">Start with the measurements you actually have. Measured leaf temperature is preferred; offset mode is an estimate.</p><div class="fields"><div class="field range-control"><label for="temp">Air temperature</label><div class="range-row"><input id="tempRange" type="range" min="5" max="45" step="0.1" value="26" aria-label="Air temperature slider"><input id="temp" type="number" min="5" max="45" step="0.1" value="26" inputmode="decimal"></div></div><div class="field"><label for="unit">Temperature unit</label><select id="unit"><option value="c">°C</option><option value="f">°F</option></select></div><div class="field range-control"><label for="rh">Relative humidity (%)</label><div class="range-row"><input id="rhRange" type="range" min="1" max="100" step="1" value="60" aria-label="Relative humidity slider"><input id="rh" type="number" min="1" max="100" step="1" value="60" inputmode="numeric"></div></div><div class="field"><label for="leafMode">Leaf temperature method</label><select id="leafMode"><option value="offset">Estimate with offset</option><option value="same">Same as air</option><option value="measured">Measured leaf temperature</option></select></div><div class="field" id="offsetField"><label for="offset">Leaf offset</label><input id="offset" type="number" step="0.1" value="-1" inputmode="decimal"><small class="muted">Example: −1 °C means the leaf is estimated 1 °C cooler than room air.</small></div><div class="field" id="leafMeasuredField" hidden><label for="leafMeasured">Measured leaf temperature</label><input id="leafMeasured" type="number" min="0" max="55" step="0.1" value="25" inputmode="decimal"><small class="muted">Use a representative canopy measurement, not one unusually hot or cold leaf.</small></div></div><div class="target-preset"><label for="targetPreset">Teaching reference preset<select id="targetPreset"><option value="custom">Custom operating band</option><option value="low">Low-demand reference · 0.4–0.8 kPa</option><option value="moderate" selected>Moderate reference · 0.8–1.2 kPa</option><option value="higher">Higher-demand reference · 1.2–1.5 kPa</option></select></label><small>These are broad operating examples, not crop-stage prescriptions. Your measured conditions and saved target low/high values remain the source of truth.</small></div><div class="result result-pro" id="vout" aria-live="polite"></div><div class="scenario" id="scenario" aria-live="polite"></div><div class="bandline"><div class="low"><strong>&lt;0.8</strong>Low demand</div><div class="mod"><strong>0.8–1.2</strong>Moderate</div><div class="higher"><strong>1.2–1.6</strong>Higher</div><div class="very"><strong>&gt;1.6</strong>Very high</div></div><p class="muted">Broad teaching bands only. Cultivar, root water supply, light, airflow, CO₂, leaf temperature, canopy density, and acclimation all affect plant response.</p></section>
-<section class="panel" id="chart-panel"><p class="panel-kicker">Interactive map</p><h2>Nearby condition heatmap</h2><p class="muted">The map recalculates around your current reading. Offset and same-as-air modes keep that relationship as air temperature changes; measured-leaf mode holds the entered leaf measurement fixed for comparison.</p><div class="chart-wrap" tabindex="0" aria-describedby="chartScrollHint chartDewLegend"><table class="chart" id="chart"></table></div><p class="chart-scroll-hint" id="chartScrollHint">Swipe horizontally to explore the temperature × RH map. Tap any cell (or press Enter while focused) to use that combination in the calculator.</p><p class="muted" id="chartDewLegend"><strong>DEW</strong> marks conditions where the calculated leaf surface is at or below the surrounding-air dew boundary; interpret those cells as condensation risk, not ordinary low VPD.</p></section>
+<section class="panel" id="chart-panel"><p class="panel-kicker">Interactive map</p><h2>Nearby condition heatmap</h2><p class="muted">The map recalculates around your current reading. Offset and same-as-air modes keep that relationship as air temperature changes; measured-leaf mode holds the entered leaf measurement fixed for comparison.</p><div class="chart-wrap" tabindex="0" aria-describedby="chartScrollHint chartDewLegend"><table class="chart" id="chart"></table></div><p class="chart-scroll-hint" id="chartScrollHint">Swipe horizontally to explore the temperature × RH map. Tap any cell to use that combination. With a cell focused, use the arrow keys to move and Enter or Space to select.</p><p class="muted" id="chartDewLegend"><strong>DEW</strong> marks conditions where the calculated leaf surface is at or below the surrounding-air dew boundary; interpret those cells as condensation risk, not ordinary low VPD.</p></section>
 </div>
 <section class="panel trend-panel" id="logger" aria-labelledby="profile-heading">
   <h2 id="profile-heading">Environmental profile</h2>
@@ -192,12 +192,23 @@ function chooseHeatmapCell(cell){
  chart.querySelector('td.active')?.focus({preventScroll:true});
 }
 chart.addEventListener('click',event=>chooseHeatmapCell(event.target.closest('td[data-air][data-rh]')));
+const heatmapSteps = {ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]};
 chart.addEventListener('keydown',event=>{
- if(event.key!=='Enter'&&event.key!==' ')return;
  const cell=event.target.closest('td[data-air][data-rh]');
  if(!cell)return;
+ if(event.key==='Enter'||event.key===' '){
+  event.preventDefault();
+  chooseHeatmapCell(cell);
+  return;
+ }
+ if(!Object.hasOwn(heatmapSteps,event.key))return;
  event.preventDefault();
- chooseHeatmapCell(cell);
+ const [rowStep,colStep]=heatmapSteps[event.key];
+ const next=chart.rows[cell.parentElement.rowIndex+rowStep]?.cells[cell.cellIndex+colStep];
+ if(!next?.matches('td[data-air][data-rh]'))return;
+ cell.tabIndex=-1;
+ next.tabIndex=0;
+ next.focus();
 });
 function readVpdProfiles(){const x=THC.load(VPD_PROFILE_KEY,[]);return Array.isArray(x)?x:[]}
 function writeVpdProfiles(items){return THC.save(VPD_PROFILE_KEY,Array.isArray(items)?items:[])}
