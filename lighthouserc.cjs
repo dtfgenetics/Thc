@@ -6,8 +6,8 @@ const artifactDir = process.env.WEB_QA_ARTIFACT_DIR || '.artifacts/web-qa';
 const baseUrl = process.env.WEB_QA_BASE_URL || 'https://dtfseeds.com';
 const enforce = process.env.WEB_QA_ENFORCE === '1';
 const level = enforce ? 'error' : 'warn';
-// The packaged VPD candidate uses a good-performance floor instead of a perfect score.
-const performanceFloor = process.env.WEB_QA_PROFILE === 'vpd-candidate' ? 0.90 : 1;
+// Apply the same release performance floor to packaged and production measurements.
+const performanceFloor = 1;
 let urls = [baseUrl];
 
 if (fs.existsSync(routeFile)) {
