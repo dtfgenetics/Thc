@@ -24,11 +24,16 @@
   "coreScience": [
     "The inverse-square law is exact for an ideal point source radiating into open space. Horticultural bars, panels, reflectors, lenses, multiple fixtures, walls, and nearby canopies violate that simplified geometry. At distances comparable with fixture dimensions, different parts of an extended source are at different distances and angles from the sensor.",
     "Lowering a fixture generally increases local intensity and reduces the footprint, often worsening hotspots unless overlap and dimming are adjusted. Raising it can improve overlap but increases spill and interception by non-crop surfaces. Reflective boundaries return some photons, while dust, ageing, and dark surfaces change the result.",
-    "Geometry should be solved with photometric or ray-tracing information when available and verified by a measured grid. The inverse-square relationship is useful for direction and hazard awareness, but a ratio calculation is not a substitute for an installed map."
+    "Geometry should be solved with photometric or ray-tracing information when available and verified by a measured grid. The inverse-square relationship is useful for direction and hazard awareness, but a ratio calculation is not a substitute for an installed map.",
+    "Point-source limiting case. For an ideal isotropic point source in unobstructed space, irradiance on a surface perpendicular to the incoming rays is proportional to 1/r². At fixed source strength, E(2r)/E(r)=1/4. For a tilted receiver, the incidence-angle cosine must also be considered.",
+    "Extended and directional emitters. A bar or panel comprises many emitting locations with different distances and angles to a measurement point. Optics shape angular intensity; near-field PPFD is therefore a spatial sum, not a single 1/r² prediction.",
+    "Room and canopy effects. Multiple fixtures overlap. Walls, foliage and reflectors absorb or redirect photons, while obstructions produce shadows. Raising or lowering a fixture can change mean PPFD and uniformity in different directions."
   ],
   "cultivationRelevance": [
     "Fixture height decisions affect intensity, uniformity, access, headroom, heat distribution, worker exposure, and the rate at which a growing canopy approaches the source.",
-    "Canopy training changes the optical target; the same room may require remapping after stretch, trellis fill, or fixture repositioning."
+    "Canopy training changes the optical target; the same room may require remapping after stretch, trellis fill, or fixture repositioning.",
+    "Compare maps at multiple heights using the same calibrated quantum sensor, spectral definition, orientation, stabilization period and sampling grid.",
+    "Inspect center, edges, fixture seams and corners; use actual readings to assess hotspots and low-light areas. Do not use the point-source ratio as a fixture-height prescription."
   ],
   "measureAndRecord": [
     {
@@ -50,6 +55,10 @@
     {
       "field": "Constraint review",
       "requirement": "Clearance, electrical listing, manufacturer limits, maintenance access, and safety controls."
+    },
+    {
+      "field": "Repeatable field measurements",
+      "requirement": "Record fixture dimensions, manufacturer mounting limits, optical distribution, dimming, measurement-plane height and canopy coordinates. Compare maps at multiple heights using the same calibrated quantum sensor, spectral definition, orientation, stabilization period and sampling grid."
     }
   ],
   "misconceptions": [
@@ -58,7 +67,10 @@
     "Reflective walls make photons free: Returned light has losses and a changed angular distribution; it must be measured."
   ],
   "evidenceLimits": [
-    "Exact prediction requires the fixture distribution, room optical properties, and crop geometry. Installed maps remain the acceptance surface."
+    "Exact prediction requires the fixture distribution, room optical properties, and crop geometry. Installed maps remain the acceptance surface.",
+    "The point-source quarter-intensity example assumes identical source output, unobstructed geometry, constant incidence angle and far-field conditions; it is not a prediction for a real LED array.",
+    "Quantitative prediction of an installed array requires source angular distributions, room reflectance and geometry, or measured canopy maps.",
+    "PPFD measurements depend on spectral and cosine response, sensor level and sampling density; avoid claiming uniformity from a single center reading."
   ],
   "crossLinks": "THC-ENC-102, THC-ENC-105-106, THC-ENC-111, THC-ENC-119-120, and THC-GROW-011.",
   "sourceNotes": [
@@ -78,30 +90,6 @@
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
   },
   "overview": "Inverse-square scaling is a useful limiting model for a distant point source, not a universal rule for canopy PPFD below extended horticultural fixtures. Actual photon distribution depends on source size, angular emission, overlap, reflections and sensor geometry.",
-  "mechanisms": [
-    {
-      "heading": "Point-source limiting case",
-      "body": "For an ideal isotropic point source in unobstructed space, irradiance on a surface perpendicular to the incoming rays is proportional to 1/r². At fixed source strength, E(2r)/E(r)=1/4. For a tilted receiver, the incidence-angle cosine must also be considered."
-    },
-    {
-      "heading": "Extended and directional emitters",
-      "body": "A bar or panel comprises many emitting locations with different distances and angles to a measurement point. Optics shape angular intensity; near-field PPFD is therefore a spatial sum, not a single 1/r² prediction."
-    },
-    {
-      "heading": "Room and canopy effects",
-      "body": "Multiple fixtures overlap. Walls, foliage and reflectors absorb or redirect photons, while obstructions produce shadows. Raising or lowering a fixture can change mean PPFD and uniformity in different directions."
-    }
-  ],
-  "practicalInterpretation": [
-    "Record fixture dimensions, manufacturer mounting limits, optical distribution, dimming, measurement-plane height and canopy coordinates.",
-    "Compare maps at multiple heights using the same calibrated quantum sensor, spectral definition, orientation, stabilization period and sampling grid.",
-    "Inspect center, edges, fixture seams and corners; use actual readings to assess hotspots and low-light areas. Do not use the point-source ratio as a fixture-height prescription."
-  ],
-  "limitationsAndUncertainty": [
-    "The point-source quarter-intensity example assumes identical source output, unobstructed geometry, constant incidence angle and far-field conditions; it is not a prediction for a real LED array.",
-    "Quantitative prediction of an installed array requires source angular distributions, room reflectance and geometry, or measured canopy maps.",
-    "PPFD measurements depend on spectral and cosine response, sensor level and sampling density; avoid claiming uniformity from a single center reading."
-  ],
   "definitions": [
     {
       "term": "Irradiance",
