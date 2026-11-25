@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import vm from 'node:vm';
 
 const workflow = fs.readFileSync(new URL('../../.github/workflows/dtfseeds-public-suite-watch.yml', import.meta.url), 'utf8');
 const block = workflow.split('      - name: Audit live public application suite\n')[1]
@@ -42,4 +43,28 @@ test('repair attempts cannot turn a failed audit into a green workflow', () => {
   assert.match(workflow, /name: Fail when live audits require reconciliation\n        if: always\(\) && \(steps.audit.outcome != 'success' \|\| steps.audit.outputs.status != '0'\)/);
   assert.match(workflow, /A repair dispatch is not live acceptance\." >&2\n          exit 1/);
   assert.doesNotMatch(workflow, /continue-on-error: true/);
+});
+
+test('all watchdog reports persist in run summaries without issue API calls', async () => {
+  assert.doesNotMatch(workflow, /issues: write|issues\.createComment|issue_number: 63/);
+  const reports = workflow.split('          script: |\n').slice(1);
+  assert.equal(reports.length, 3);
+  for (const report of reports) {
+    const source = report.split('\n      - name:')[0].split('\n')
+      .map(line => line.replace(/^            /, '')).join('\n');
+    let text = '';
+    let writes = 0;
+    const summary = { addRaw(value) { text += value; return this; }, async write() { writes++; } };
+    const context = vm.createContext({
+      core: { summary },
+      context: { serverUrl: 'https://github.com', repo: { owner: 'fixture', repo: 'fixture' },
+        runId: 123, sha: 'fixture-sha', eventName: 'schedule' },
+      process: { env: { USER_PRESENT: 'false', KEY_PRESENT: 'false', HOST_PRESENT: 'false', PORT_PRESENT: 'false' } }
+    });
+    await vm.runInContext('(async () => {' + source + '\n})()', context);
+    assert.equal(writes, 1);
+    assert.match(text, /https:\/\/github.com\/fixture\/fixture\/actions\/runs\/123/);
+    assert.match(text, /Public-suite|Public-suite and canonical Tools/i);
+  }
+  assert.doesNotMatch(workflow, /if: github.event_name != 'schedule'/);
 });
