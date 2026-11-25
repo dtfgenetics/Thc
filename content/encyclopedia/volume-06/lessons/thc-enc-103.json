@@ -24,11 +24,17 @@
   "coreScience": [
     "For a constant PPFD, DLI = PPFD x photoperiod hours x 0.0036. The factor converts micromoles per second and hours to moles per day. For example, 500 micromoles m-2 s-1 for 18 hours equals 32.4 mol m-2 d-1. The calculation must retain whether the input is PPFD or ePPFD.",
     "When light changes with clouds, curtains, sunrise, dimming, or control events, DLI must be integrated from logged readings: sum(PFD_i x interval seconds) / 1,000,000. A midday spot reading multiplied by day length can substantially overstate or understate the true integral.",
-    "DLI compresses time into a daily total. Equal DLI can come from different intensities and photoperiods, but plants may respond differently because photosynthesis is nonlinear, signaling depends on timing, heat and water loads differ, and dark-period biology is not preserved by the arithmetic."
+    "DLI compresses time into a daily total. Equal DLI can come from different intensities and photoperiods, but plants may respond differently because photosynthesis is nonlinear, signaling depends on timing, heat and water loads differ, and dark-period biology is not preserved by the arithmetic.",
+    "Constant light. DLI = PPFD × hours × 3600 / 1,000,000 = PPFD × hours × 0.0036. For an illustrative constant 500 µmol m⁻² s⁻¹ over 18 h, DLI = 32.4 mol m⁻² d⁻¹.",
+    "Changing light. For samples representing successive intervals, DLI ≈ Σ(PPFDᵢ × Δtᵢ) / 1,000,000, with Δtᵢ in seconds. Averages must be time-weighted when intervals differ; gaps should be flagged rather than silently treated as zero.",
+    "Band consistency. PAR-based PPFD usually counts 400–700 nm photons; ePPFD uses an extended 400–750 nm range. Keep band and sensor response with every DLI result; unlike units or bands cannot be directly compared."
   ],
   "cultivationRelevance": [
     "DLI is useful for comparing delivered photon dose across days and for coordinating greenhouse supplemental lighting with sunlight.",
-    "A stage plan should record DLI together with photoperiod, PPFD distribution, spectrum, temperature, carbon dioxide, irrigation, and plant response rather than treating DLI as a standalone recipe."
+    "A stage plan should record DLI together with photoperiod, PPFD distribution, spectrum, temperature, carbon dioxide, irrigation, and plant response rather than treating DLI as a standalone recipe.",
+    "Use a logged canopy-level sensor or a representative sensor map when light varies over time and space.",
+    "Verify timestamp boundaries, sampling interval, missing samples, daylight-saving transitions, and whether the integration covers one complete local day.",
+    "Keep photoperiod, light distribution, spectrum and crop conditions alongside DLI; equal daily totals do not imply identical physiological responses."
   ],
   "measureAndRecord": [
     {
@@ -50,6 +56,10 @@
     {
       "field": "Crop context",
       "requirement": "Stage, cultivar, photoperiod, PPFD map, environment, irrigation, and observed response."
+    },
+    {
+      "field": "Measurement procedure",
+      "requirement": "Use a logged canopy-level sensor or a representative sensor map when light varies over time and space. Verify timestamp boundaries, sampling interval, missing samples, daylight-saving transitions, and whether the integration covers one complete local day."
     }
   ],
   "misconceptions": [
@@ -58,7 +68,10 @@
     "One spot reading gives outdoor DLI: Variable natural light requires time integration with an appropriately placed sensor."
   ],
   "evidenceLimits": [
-    "Published DLI responses depend on genotype, stage, environment, canopy, and measurement band. A DLI value alone cannot establish a universal cannabis optimum or safety limit."
+    "Published DLI responses depend on genotype, stage, environment, canopy, and measurement band. A DLI value alone cannot establish a universal cannabis optimum or safety limit.",
+    "The illustrative constant-light calculation is arithmetic, not a recommended target for cannabis.",
+    "A single sensor may miss spatial gradients, while a spot measurement may miss temporal variation.",
+    "Numerical integration approximates a continuous signal; logging frequency, instrument calibration and interpolation assumptions influence accuracy."
   ],
   "crossLinks": "THC-ENC-101-102, THC-ENC-104-106, THC-ENC-109-111, and THC-ENC-120.",
   "sourceNotes": [
@@ -79,30 +92,6 @@
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
   },
   "overview": "Daily light integral (DLI) is the time integral of photosynthetic photon flux density at a specified wavelength band. PPFD is an instantaneous rate (µmol m⁻² s⁻¹); DLI is a daily photon dose (mol m⁻² d⁻¹). A daily total does not describe intensity peaks, spectrum or timing.",
-  "mechanisms": [
-    {
-      "heading": "Constant light",
-      "body": "DLI = PPFD × hours × 3600 / 1,000,000 = PPFD × hours × 0.0036. For an illustrative constant 500 µmol m⁻² s⁻¹ over 18 h, DLI = 32.4 mol m⁻² d⁻¹."
-    },
-    {
-      "heading": "Changing light",
-      "body": "For samples representing successive intervals, DLI ≈ Σ(PPFDᵢ × Δtᵢ) / 1,000,000, with Δtᵢ in seconds. Averages must be time-weighted when intervals differ; gaps should be flagged rather than silently treated as zero."
-    },
-    {
-      "heading": "Band consistency",
-      "body": "PAR-based PPFD usually counts 400–700 nm photons; ePPFD uses an extended 400–750 nm range. Keep band and sensor response with every DLI result; unlike units or bands cannot be directly compared."
-    }
-  ],
-  "practicalInterpretation": [
-    "Use a logged canopy-level sensor or a representative sensor map when light varies over time and space.",
-    "Verify timestamp boundaries, sampling interval, missing samples, daylight-saving transitions, and whether the integration covers one complete local day.",
-    "Keep photoperiod, light distribution, spectrum and crop conditions alongside DLI; equal daily totals do not imply identical physiological responses."
-  ],
-  "limitationsAndUncertainty": [
-    "The illustrative constant-light calculation is arithmetic, not a recommended target for cannabis.",
-    "A single sensor may miss spatial gradients, while a spot measurement may miss temporal variation.",
-    "Numerical integration approximates a continuous signal; logging frequency, instrument calibration and interpolation assumptions influence accuracy."
-  ],
   "relatedLessons": [
     "THC-ENC-101",
     "THC-ENC-102",
