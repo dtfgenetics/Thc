@@ -12,6 +12,7 @@ test('real Chrome document response keeps status and safe headers only',()=>{
        'Content-Type':'text/html',
        'Server':'hcdn',
        'X-Request-ID':'request-123',
+       'X-Hcdn-Request-ID':'hostinger-trace-456',
        'Set-Cookie':'secret-session',
        'Location':'https://other.example/?token=secret',
        'Authorization':'secret-token'
@@ -20,7 +21,7 @@ test('real Chrome document response keeps status and safe headers only',()=>{
  }});
  assert.deepEqual(result,{
    path:'/atlas/anatomy-explorer/',status:403,
-   headers:{'content-type':'text/html',server:'hcdn','x-request-id':'request-123'}
+   headers:{'content-type':'text/html',server:'hcdn','x-request-id':'request-123','x-hcdn-request-id':'hostinger-trace-456'}
  });
  assert.ok(!JSON.stringify(result).includes('SECRET'));
  assert.ok(!JSON.stringify(result).includes('secret'));
