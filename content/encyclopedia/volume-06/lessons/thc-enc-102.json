@@ -24,11 +24,17 @@
   "coreScience": [
     "PPF describes total photon output from a source; PPFD describes spatial density at a receiving surface. A high-PPF fixture can still produce poor canopy PPFD if mounted too high, aimed badly, blocked, used without suitable overlap, or placed in a reflective geometry different from its test condition.",
     "Photon efficacy is an equipment conversion metric, not crop productivity. It does not include fixture placement, room interception, spectrum-dependent response, canopy architecture, photoperiod, dimming losses, heat-removal energy, or yield quality. Wall-plug power must be measured under the actual operating state when energy calculations matter.",
-    "A fixture specification is only comparable when test method, input voltage, thermal state, spectrum, dimming level, and measurement uncertainty are known. Crop design must use a measured canopy map after installation; manufacturer PPF and distribution files are inputs to design, not proof of delivered photons."
+    "A fixture specification is only comparable when test method, input voltage, thermal state, spectrum, dimming level, and measurement uncertainty are known. Crop design must use a measured canopy map after installation; manufacturer PPF and distribution files are inputs to design, not proof of delivered photons.",
+    "Source output versus receiving area. PPF is a photon rate over the stated spectral band, typically 400–700 nm. PPFD is local photon flux density at a measurement plane. For a uniform hypothetical distribution across area A, mean PPFD equals delivered PPF/A; actual fixtures create nonuniform distributions and not all emitted photons arrive at the crop.",
+    "Photon conversion. Photosynthetic photon efficacy (µmol/J) equals fixture PPF (µmol/s) divided by electrical input (J/s = W). This describes fixture photon production, not crop yield, photosynthetic efficiency or intercepted fraction.",
+    "Mapping the installed canopy. Measurement height, grid spacing, reflective boundaries, fixture overlap, sensor spectral response and shadowing change observed PPFD. A spatial grid captures minimum, mean and maximum better than one center reading."
   ],
   "cultivationRelevance": [
     "PPF and efficacy help screen equipment, whereas PPFD maps and DLI verify crop exposure. Keeping these roles separate prevents purchasing metrics from becoming unsupported crop targets.",
-    "A useful lighting audit follows energy from electrical input to fixture photon output, then to canopy distribution, intercepted photons, plant response, and saleable output."
+    "A useful lighting audit follows energy from electrical input to fixture photon output, then to canopy distribution, intercepted photons, plant response, and saleable output.",
+    "Use PPF and photon efficacy for equipment comparison only when spectrum, test conditions and electrical input basis match.",
+    "Measure PPFD on a documented grid at the actual canopy height, fixture power and room configuration; record meter calibration and spectral band.",
+    "Calculate DLI only from time-integrated PPFD, not from fixture PPF alone; distinguish PAR (400–700 nm) from ePAR (400–750 nm)."
   ],
   "measureAndRecord": [
     {
@@ -50,6 +56,10 @@
     {
       "field": "Performance",
       "requirement": "Kilowatt-hours, crop area, photoperiod, intercepted-light proxy, biomass, quality, and rejected product."
+    },
+    {
+      "field": "Measurement procedure",
+      "requirement": "Use PPF and photon efficacy for equipment comparison only when spectrum, test conditions and electrical input basis match. Measure PPFD on a documented grid at the actual canopy height, fixture power and room configuration; record meter calibration and spectral band."
     }
   ],
   "misconceptions": [
@@ -58,7 +68,10 @@
     "Rated wattage equals draw: Actual electrical input can change with voltage, dimming, drivers, temperature, and measurement method."
   ],
   "evidenceLimits": [
-    "Fixture test reports may use different laboratories, bands, tolerances, and thermal conditions. Independent installed measurements are required before comparing crop delivery or energy performance."
+    "Fixture test reports may use different laboratories, bands, tolerances, and thermal conditions. Independent installed measurements are required before comparing crop delivery or energy performance.",
+    "The illustrative equation assumes uniform delivery and excludes intercepted losses; it is not a fixture performance prediction.",
+    "PPFD measured on a horizontal plane does not equal the photon flux intercepted by every leaf surface in a three-dimensional canopy.",
+    "Manufacturer output specifications and sensor readings may differ because of spectrum, temperature, dimming, calibration and uncertainty."
   ],
   "crossLinks": "THC-ENC-101, THC-ENC-103, THC-ENC-105-108, THC-ENC-120, and THC-GROW-060.",
   "sourceNotes": [
@@ -76,5 +89,49 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "overview": "PPF describes total photosynthetic photon emission from a fixture per second (µmol/s); PPFD describes photon arrival per unit area per second (µmol/m²/s). They answer different questions. Installation geometry, losses and canopy variation mean that fixture PPF alone cannot establish crop exposure.",
+  "relatedLessons": [
+    "THC-ENC-101",
+    "THC-ENC-103",
+    "THC-ENC-105",
+    "THC-ENC-106",
+    "THC-ENC-107",
+    "THC-ENC-108",
+    "THC-ENC-120"
+  ],
+  "references": [
+    {
+      "title": "ANSI/ASABE S640: Quantities and Units of Electromagnetic Radiation for Plants (Photosynthetic Organisms)",
+      "publisher": "ASABE",
+      "type": "standard",
+      "year": 2017
+    },
+    {
+      "title": "Plant Lighting Efficiency and Efficacy: μmol/J and PPFD measurement context",
+      "publisher": "Resource Innovation Institute",
+      "year": 2021,
+      "context": "LED Lighting for Cannabis Cultivation and Controlled Environment Agriculture: Best Practices Guide"
+    },
+    {
+      "title": "Physicochemical and Environmental Plant Physiology",
+      "authors": "Nobel PS",
+      "year": 2009,
+      "edition": "4th",
+      "publisher": "Academic Press"
+    }
+  ],
+  "visuals": [
+    {
+      "type": "diagram",
+      "src": "/assets/education/encyclopedia/thc-enc-102/ppf-ppfd-photon-flow.svg",
+      "sourcePath": "site/public-route-patch/assets/education/encyclopedia/thc-enc-102/ppf-ppfd-photon-flow.svg",
+      "alt": "Fixture emitting total photosynthetic photon flux PPF in micromoles per second toward a canopy measurement grid, where PPFD is recorded in micromoles per square meter per second. Some photons miss the canopy.",
+      "caption": "PPF is total fixture photon output; PPFD is local delivery per area. The schematic is conceptual, with no measured distribution or recommended target.",
+      "width": 1200,
+      "height": 720,
+      "license": "CC BY 4.0",
+      "author": "THC Educational Content Production"
+    }
+  ]
 }
