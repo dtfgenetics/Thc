@@ -2,9 +2,12 @@ import { test, expect } from '@playwright/test';
 const route='http://127.0.0.1:8765/science-labs/';
 test.beforeEach(async ({page})=>{await page.goto(route);await expect(page.locator('#title')).toHaveText('Plant anatomy')});
 test('all ten laboratories navigate and preserve one panel per type',async ({page})=>{
- for(const topic of ['Living rhizosphere','Diagnostic reasoning','VPD & transpiration','Trichomes & terpenes','Developmental timeline','Genetics & breeding','Light laboratory','Nutrient & water transport','Knowledge-check academy','Plant anatomy']){
+ for(const topic of ['Living rhizosphere','Diagnostic reasoning','VPD & transpiration','Trichomes & terpenes','Developmental timeline','Genetics & breeding','Light laboratory','Nutrient & water transport','Evidence interpretation','Plant anatomy']){
    await page.locator('#navigation button', {hasText:topic}).click();
    await expect(page.locator('#title')).toHaveText(topic);
+   await expect(page.getByRole('heading',{name:'Scientific interpretation',exact:true})).toBeVisible();
+   await expect(page.locator('.quiz')).toHaveCount(0);
+   await expect(page.getByRole('heading',{name:'Check your understanding',exact:true})).toHaveCount(0);
    const scientific=await page.locator('#interactive svg[aria-label^="Conceptual sequence"]').count();
    expect(scientific).toBeLessThanOrEqual(1);
  }

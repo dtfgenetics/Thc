@@ -6,7 +6,6 @@
 <meta name="description" content="Interactive leaf-VPD workbench with measured leaf temperature, dew-point margin, condensation-risk context, target references, heatmap and logger trend analysis.">
 <link rel="canonical" href="https://dtfseeds.com/vpd-chart/">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22%2307170f%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2239%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-weight%3D%22bold%22%20font-size%3D%2222%22%20fill%3D%22%23d7b965%22%3EDTF%3C%2Ftext%3E%3C%2Fsvg%3E">
-<link rel="stylesheet" href="/assets/vendor/uplot-1.6.32.min.css">
 <link rel="stylesheet" href="/assets/thc-tool-suite-v1.css">
 <style>
 :root{--deep:#07170f;--deep2:#113823;--gold:#d7b965;--cream:#f7f3e9;--paper:#fffdf8;--ink:#112b1c;--muted:#5b6d61;--line:#d8e2da;--leaf:#26784a}
@@ -36,7 +35,7 @@ footer{padding:28px 0 42px;color:var(--muted)}
 <main class="shell">
 <div class="workspace">
 <section class="panel" id="quick"><p class="panel-kicker">Quick mode</p><h2>Leaf-VPD calculator</h2><p class="muted">Start with the measurements you actually have. Measured leaf temperature is preferred; offset mode is an estimate.</p><div class="fields"><div class="field range-control"><label for="temp">Air temperature</label><div class="range-row"><input id="tempRange" type="range" min="5" max="45" step="0.1" value="26" aria-label="Air temperature slider"><input id="temp" type="number" min="5" max="45" step="0.1" value="26" inputmode="decimal"></div></div><div class="field"><label for="unit">Temperature unit</label><select id="unit"><option value="c">°C</option><option value="f">°F</option></select></div><div class="field range-control"><label for="rh">Relative humidity (%)</label><div class="range-row"><input id="rhRange" type="range" min="1" max="100" step="1" value="60" aria-label="Relative humidity slider"><input id="rh" type="number" min="1" max="100" step="1" value="60" inputmode="numeric"></div></div><div class="field"><label for="leafMode">Leaf temperature method</label><select id="leafMode"><option value="offset">Estimate with offset</option><option value="same">Same as air</option><option value="measured">Measured leaf temperature</option></select></div><div class="field" id="offsetField"><label for="offset">Leaf offset</label><input id="offset" type="number" step="0.1" value="-1" inputmode="decimal"><small class="muted">Example: −1 °C means the leaf is estimated 1 °C cooler than room air.</small></div><div class="field" id="leafMeasuredField" hidden><label for="leafMeasured">Measured leaf temperature</label><input id="leafMeasured" type="number" min="0" max="55" step="0.1" value="25" inputmode="decimal"><small class="muted">Use a representative canopy measurement, not one unusually hot or cold leaf.</small></div></div><div class="target-preset"><label for="targetPreset">Teaching reference preset<select id="targetPreset"><option value="custom">Custom operating band</option><option value="low">Low-demand reference · 0.4–0.8 kPa</option><option value="moderate" selected>Moderate reference · 0.8–1.2 kPa</option><option value="higher">Higher-demand reference · 1.2–1.5 kPa</option></select></label><small>These are broad operating examples, not crop-stage prescriptions. Your measured conditions and saved target low/high values remain the source of truth.</small></div><div class="result result-pro" id="vout" aria-live="polite"></div><div class="scenario" id="scenario" aria-live="polite"></div><div class="bandline"><div class="low"><strong>&lt;0.8</strong>Low demand</div><div class="mod"><strong>0.8–1.2</strong>Moderate</div><div class="higher"><strong>1.2–1.6</strong>Higher</div><div class="very"><strong>&gt;1.6</strong>Very high</div></div><p class="muted">Broad teaching bands only. Cultivar, root water supply, light, airflow, CO₂, leaf temperature, canopy density, and acclimation all affect plant response.</p></section>
-<section class="panel" id="chart-panel"><p class="panel-kicker">Interactive map</p><h2>Nearby condition heatmap</h2><p class="muted">The map recalculates around your current reading. Offset and same-as-air modes keep that relationship as air temperature changes; measured-leaf mode holds the entered leaf measurement fixed for comparison.</p><div class="chart-wrap" tabindex="0" aria-describedby="chartScrollHint chartDewLegend"><table class="chart" id="chart"></table></div><p class="chart-scroll-hint" id="chartScrollHint">Swipe horizontally to explore the temperature × RH map. Tap any cell (or press Enter while focused) to use that combination in the calculator.</p><p class="muted" id="chartDewLegend"><strong>DEW</strong> marks conditions where the calculated leaf surface is at or below the surrounding-air dew boundary; interpret those cells as condensation risk, not ordinary low VPD.</p></section>
+<section class="panel" id="chart-panel"><p class="panel-kicker">Interactive map</p><h2>Nearby condition heatmap</h2><p class="muted">The map recalculates around your current reading. Offset and same-as-air modes keep that relationship as air temperature changes; measured-leaf mode holds the entered leaf measurement fixed for comparison.</p><div class="chart-wrap" tabindex="0" aria-describedby="chartScrollHint chartDewLegend"><table class="chart" id="chart"></table></div><p class="chart-scroll-hint" id="chartScrollHint">Swipe horizontally to explore the temperature × RH map. Tap any cell to use that combination. With a cell focused, use the arrow keys to move and Enter or Space to select.</p><p class="muted" id="chartDewLegend"><strong>DEW</strong> marks conditions where the calculated leaf surface is at or below the surrounding-air dew boundary; interpret those cells as condensation risk, not ordinary low VPD.</p></section>
 </div>
 <section class="panel trend-panel" id="logger" aria-labelledby="profile-heading">
   <h2 id="profile-heading">Environmental profile</h2>
@@ -119,7 +118,6 @@ footer{padding:28px 0 42px;color:var(--muted)}
 </section>
 </main>
 <script defer src="/assets/vendor/papaparse-5.7.0.min.js"></script>
-<script defer src="/assets/vendor/uplot-1.6.32.min.js"></script>
 <script defer src="/assets/thc-tool-suite-v1.js"></script>
 <script type="module">
 import {collectManualCultivationMeasurement} from '/assets/thc-cultivation-data-ui-v1.mjs';
@@ -180,9 +178,9 @@ function render(){
   }else cards+='<div class="scenario-card"><strong>Temperature scenario withheld</strong><span class="muted">With measured leaf temperature, changing room temperature would likely change leaf temperature too; re-measure instead of assuming it stays fixed.</span></div>';
   scenario.innerHTML=cards;
  }else scenario.innerHTML='';
- const temps=Array.from({length:9},(_,i)=>air-4+i),rhs=Array.from({length:9},(_,i)=>Math.max(5,Math.min(95,h-20+i*5)));
+ const temps=[...new Set(Array.from({length:9},(_,i)=>Math.max(5,Math.min(45,air-4+i))))],rhs=[...new Set(Array.from({length:9},(_,i)=>Math.max(1,Math.min(100,h-20+i*5))))];
  let html='<thead><tr><th>Temp / RH</th>'+rhs.map(x=>'<th>'+Math.round(x)+'%</th>').join('')+'</tr></thead><tbody>';
- temps.forEach((tt,ti)=>{html+='<tr><th>'+fromC(tt,u).toFixed(1)+unitSymbol+'</th>';rhs.forEach((hh,hi)=>{const mapLeaf=leafMode.value==='measured'?leaf:tt+o,rawZ=rawCalc(tt,hh,mapLeaf),isDew=rawZ<=0,z=Math.max(0,rawZ),active=ti===4&&hi===4?' active':'',crosshair=(ti===4?' current-row':'')+(hi===4?' current-column':''),target=!isDew&&range&&z>=range.lo&&z<=range.hi?' target':'',dewClass=isDew?' dew':'';html+='<td role="button" tabindex="'+(active?'0':'-1')+'" data-air="'+tt.toFixed(2)+'" data-rh="'+hh.toFixed(1)+'" aria-label="Use '+fromC(tt,u).toFixed(1)+unitSymbol+' air, '+Math.round(hh)+'% RH; '+(isDew?'dew risk':z.toFixed(2)+' kPa')+'" class="'+band(z)+active+crosshair+target+dewClass+'" title="Tap to use: '+fromC(tt,u).toFixed(1)+unitSymbol+' · '+Math.round(hh)+'% RH · '+(isDew?'dew / condensation boundary':z.toFixed(2)+' kPa')+'">'+(isDew?'DEW':z.toFixed(2))+'</td>'});html+='</tr>'});chart.innerHTML=html+'</tbody>';
+ temps.forEach((tt,ti)=>{html+='<tr><th>'+fromC(tt,u).toFixed(1)+unitSymbol+'</th>';rhs.forEach((hh,hi)=>{const mapLeaf=leafMode.value==='measured'?leaf:tt+o,rawZ=rawCalc(tt,hh,mapLeaf),isDew=rawZ<=0,z=Math.max(0,rawZ),active=tt===air&&hh===h?' active':'',crosshair=(tt===air?' current-row':'')+(hh===h?' current-column':''),target=!isDew&&range&&z>=range.lo&&z<=range.hi?' target':'',dewClass=isDew?' dew':'';html+='<td role="button" tabindex="'+(active?'0':'-1')+'" data-air="'+tt.toFixed(2)+'" data-rh="'+hh.toFixed(1)+'" aria-label="Use '+fromC(tt,u).toFixed(1)+unitSymbol+' air, '+Math.round(hh)+'% RH; '+(isDew?'dew risk':z.toFixed(2)+' kPa')+'" class="'+band(z)+active+crosshair+target+dewClass+'" title="Tap to use: '+fromC(tt,u).toFixed(1)+unitSymbol+' · '+Math.round(hh)+'% RH · '+(isDew?'dew / condensation boundary':z.toFixed(2)+' kPa')+'">'+(isDew?'DEW':z.toFixed(2))+'</td>'});html+='</tr>'});chart.innerHTML=html+'</tbody>';
 }
 function chooseHeatmapCell(cell){
  if(!cell||!Number.isFinite(Number(cell.dataset.air))||!Number.isFinite(Number(cell.dataset.rh)))return;
@@ -194,12 +192,23 @@ function chooseHeatmapCell(cell){
  chart.querySelector('td.active')?.focus({preventScroll:true});
 }
 chart.addEventListener('click',event=>chooseHeatmapCell(event.target.closest('td[data-air][data-rh]')));
+const heatmapSteps = {ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]};
 chart.addEventListener('keydown',event=>{
- if(event.key!=='Enter'&&event.key!==' ')return;
  const cell=event.target.closest('td[data-air][data-rh]');
  if(!cell)return;
+ if(event.key==='Enter'||event.key===' '){
+  event.preventDefault();
+  chooseHeatmapCell(cell);
+  return;
+ }
+ if(!Object.hasOwn(heatmapSteps,event.key))return;
  event.preventDefault();
- chooseHeatmapCell(cell);
+ const [rowStep,colStep]=heatmapSteps[event.key];
+ const next=chart.rows[cell.parentElement.rowIndex+rowStep]?.cells[cell.cellIndex+colStep];
+ if(!next?.matches('td[data-air][data-rh]'))return;
+ cell.tabIndex=-1;
+ next.tabIndex=0;
+ next.focus();
 });
 function readVpdProfiles(){const x=THC.load(VPD_PROFILE_KEY,[]);return Array.isArray(x)?x:[]}
 function writeVpdProfiles(items){return THC.save(VPD_PROFILE_KEY,Array.isArray(items)?items:[])}
@@ -331,10 +340,37 @@ trendExport?.addEventListener("click",()=>{
 });
 function analyzeVpdBand(rows){const range=targetRange(),sustain=Math.max(1,Math.min(60,Number(vpdSustainSamples.value)||3)),margin=Math.max(0,Math.min(1,Number(vpdClearMargin.value)||0));if(!range)return{valid:false,inBand:null,episodes:0};try{const result=evaluateBandSeries(rows.map(row=>row.vpd),{low:range.lo,high:range.hi,sustainSamples:sustain,clearMargin:margin});return{valid:true,inBand:result.inBandPercent,episodes:result.episodes}}catch{return{valid:false,inBand:null,episodes:0}}}
 let trendPlotInstance=null;
+let trendChartLoad;
+let trendChartReady=false;
+function loadTrendChart(){
+ if (!trendChartLoad) {
+  const css=document.createElement('link');
+  css.rel='stylesheet';
+  css.href='/assets/vendor/uplot-1.6.32.min.css';
+  const script=document.createElement('script');
+  script.src='/assets/vendor/uplot-1.6.32.min.js';
+  const loaded=node=>new Promise((resolve,reject)=>{
+   node.addEventListener('load',resolve,{once:true});
+   node.addEventListener('error',reject,{once:true});
+   document.head.append(node);
+  });
+  trendChartLoad=Promise.all([loaded(css),loaded(script)]).then(()=>{
+   trendChartReady=typeof window.uPlot==='function';
+   return trendChartReady;
+  }).catch(()=>false);
+ }
+ return trendChartLoad;
+}
 function drawTrend(rows){
  const host=document.getElementById('trendPlot'),fallback=trendCanvas;
  if(!rows.length)return;
- if(window.uPlot&&host){
+ if(host&&!trendChartReady){
+  const requestedRows=lastTrendRows;
+  loadTrendChart().then(ready=>{
+   if(ready&&lastTrendRows===requestedRows&&requestedRows.length)drawTrend(requestedRows);
+  });
+ }
+ if(trendChartReady&&host){
   if(trendPlotInstance){trendPlotInstance.destroy();trendPlotInstance=null}
   host.replaceChildren();
   host.hidden=false;

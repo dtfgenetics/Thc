@@ -11,6 +11,9 @@ on:
       - data/public-navigation.json
       - .github/workflows/build-dtfseeds-public-suite.yml
       - .github/workflows/public-suite-build-qualification.yml
+      - lighthouserc.cjs
+      - scripts/summarize-candidate-lighthouse.mjs
+      - scripts/test/candidate-lighthouse-summary.test.mjs
 
 permissions:
   actions: write
@@ -34,6 +37,9 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
+
+      - name: Test candidate Lighthouse diagnostics
+        run: node --test scripts/test/candidate-lighthouse-summary.test.mjs
 
       - name: Dispatch branch build and require success
         id: build
@@ -242,35 +248,52 @@ jobs:
           PY
           done
 
-      - name: Measure candidate VPD Lighthouse quality
+      - name: Verify packaged Science Labs in Chrome
         shell: bash
         env:
           CHROME_PATH: ${{ steps.candidate-chrome.outputs.chrome-path }}
         run: |
           set -euo pipefail
-          npm install --prefix "$RUNNER_TEMP/candidate-lhci" --no-save --package-lock=false @lhci/cli@0.15.1
-          python -m http.server 8765 --bind 127.0.0.1 --directory "$SUITE_ROOT" >"$RUNNER_TEMP/candidate-lh-http.log" 2>&1 &
+          python -m http.server 8765 --bind 127.0.0.1 --directory "$SUITE_ROOT" >"$RUNNER_TEMP/science-labs-http.log" 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           for attempt in {1..30}; do
-            if curl --fail --silent http://127.0.0.1:8765/vpd-chart/ >/dev/null; then break; fi
+            if curl --fail --silent http://127.0.0.1:8765/science-labs/ >/dev/null; then break; fi
             sleep 1
           done
-          curl --fail --silent http://127.0.0.1:8765/vpd-chart/ >/dev/null
-          export WEB_QA_BASE_URL=http://127.0.0.1:8765/vpd-chart/
-          export WEB_QA_ROUTE_FILE="$RUNNER_TEMP/candidate-lh-routes.json"
-          export WEB_QA_ARTIFACT_DIR="$RUNNER_TEMP/candidate-lighthouse"
-          export WEB_QA_ENFORCE=1
-          printf '{"routes":["%s"]}\n' "$WEB_QA_BASE_URL" > "$WEB_QA_ROUTE_FILE"
-          "$RUNNER_TEMP/candidate-lhci/node_modules/.bin/lhci" autorun --config=lighthouserc.cjs
+          curl --fail --silent http://127.0.0.1:8765/science-labs/ >/dev/null
+          for viewport in 1280,800 390,844; do
+            dom="$RUNNER_TEMP/science-labs-${viewport}.html"
+            timeout 45s "$CHROME_PATH" --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --window-size="$viewport" --virtual-time-budget=8000 --dump-dom http://127.0.0.1:8765/science-labs/ >"$dom"
+            python - "$dom" <<'PY'
+          import sys
+          from html.parser import HTMLParser
+          from pathlib import Path
 
-      - name: Preserve candidate Lighthouse evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: candidate-vpd-lighthouse
-          path: ${{ runner.temp }}/candidate-lighthouse
-          if-no-files-found: warn
+          class LabPage(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.heading = False
+                  self.headings = []
+                  self.quiz_panels = 0
+              def handle_starttag(self, tag, attrs):
+                  self.heading = tag in {'h1', 'h2', 'h3', 'h4'} or self.heading
+                  self.quiz_panels += 'quiz' in dict(attrs).get('class', '').split()
+              def handle_endtag(self, tag):
+                  if tag in {'h1', 'h2', 'h3', 'h4'}:
+                      self.heading = False
+              def handle_data(self, data):
+                  if self.heading:
+                      self.headings.append(data.strip())
+
+          page = LabPage()
+          page.feed(Path(sys.argv[1]).read_text(encoding='utf-8'))
+          assert 'Plant anatomy' in page.headings, 'Initial lab did not render'
+          assert 'Scientific interpretation' in page.headings, 'Interpretation panel did not render'
+          assert 'Check your understanding' not in page.headings and not page.quiz_panels, 'General-learning assessment rendered'
+          print('Packaged Science Labs rendered the interpretation panel without an assessment')
+          PY
+          done
 
       - name: Verify Grow Doc pinned source and reviewed-media payload
         shell: bash
@@ -318,6 +341,40 @@ jobs:
           if size > limit:
               raise SystemExit(f'Production archive {size} bytes exceeds protected 64 MiB limit {limit}')
           PY
+
+      - name: Measure candidate VPD Lighthouse quality
+        shell: bash
+        env:
+          CHROME_PATH: ${{ steps.candidate-chrome.outputs.chrome-path }}
+        run: |
+          set -euo pipefail
+          npm install --prefix "$RUNNER_TEMP/candidate-lhci" --no-save --package-lock=false @lhci/cli@0.15.1
+          python -m http.server 8765 --bind 127.0.0.1 --directory "$SUITE_ROOT" >"$RUNNER_TEMP/candidate-lh-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8765/vpd-chart/ >/dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:8765/vpd-chart/ >/dev/null
+          export WEB_QA_BASE_URL=http://127.0.0.1:8765/vpd-chart/
+          export WEB_QA_ROUTE_FILE="$RUNNER_TEMP/candidate-lh-routes.json"
+          export WEB_QA_ARTIFACT_DIR="$RUNNER_TEMP/candidate-lighthouse"
+          export WEB_QA_ENFORCE=1
+          printf '{"routes":["%s"]}\n' "$WEB_QA_BASE_URL" > "$WEB_QA_ROUTE_FILE"
+          "$RUNNER_TEMP/candidate-lhci/node_modules/.bin/lhci" autorun --config=lighthouserc.cjs
+
+      - name: Summarize candidate Lighthouse measurements
+        if: always()
+        run: node scripts/summarize-candidate-lighthouse.mjs "$RUNNER_TEMP/candidate-lighthouse"
+
+      - name: Preserve candidate Lighthouse evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-vpd-lighthouse
+          path: ${{ runner.temp }}/candidate-lighthouse
+          if-no-files-found: warn
 
       - name: Report production package qualification
         if: success()
