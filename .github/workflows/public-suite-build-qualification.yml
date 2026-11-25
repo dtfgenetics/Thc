@@ -248,6 +248,53 @@ jobs:
           PY
           done
 
+      - name: Verify packaged Science Labs in Chrome
+        shell: bash
+        env:
+          CHROME_PATH: ${{ steps.candidate-chrome.outputs.chrome-path }}
+        run: |
+          set -euo pipefail
+          python -m http.server 8765 --bind 127.0.0.1 --directory "$SUITE_ROOT" >"$RUNNER_TEMP/science-labs-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8765/science-labs/ >/dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:8765/science-labs/ >/dev/null
+          for viewport in 1280,800 390,844; do
+            dom="$RUNNER_TEMP/science-labs-${viewport}.html"
+            timeout 45s "$CHROME_PATH" --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --window-size="$viewport" --virtual-time-budget=8000 --dump-dom http://127.0.0.1:8765/science-labs/ >"$dom"
+            python - "$dom" <<'PY'
+          import sys
+          from html.parser import HTMLParser
+          from pathlib import Path
+
+          class LabPage(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.heading = False
+                  self.headings = []
+                  self.quiz_panels = 0
+              def handle_starttag(self, tag, attrs):
+                  self.heading = tag in {'h1', 'h2', 'h3', 'h4'} or self.heading
+                  self.quiz_panels += 'quiz' in dict(attrs).get('class', '').split()
+              def handle_endtag(self, tag):
+                  if tag in {'h1', 'h2', 'h3', 'h4'}:
+                      self.heading = False
+              def handle_data(self, data):
+                  if self.heading:
+                      self.headings.append(data.strip())
+
+          page = LabPage()
+          page.feed(Path(sys.argv[1]).read_text(encoding='utf-8'))
+          assert 'Plant anatomy' in page.headings, 'Initial lab did not render'
+          assert 'Scientific interpretation' in page.headings, 'Interpretation panel did not render'
+          assert 'Check your understanding' not in page.headings and not page.quiz_panels, 'General-learning assessment rendered'
+          print('Packaged Science Labs rendered the interpretation panel without an assessment')
+          PY
+          done
+
       - name: Verify Grow Doc pinned source and reviewed-media payload
         shell: bash
         run: |
