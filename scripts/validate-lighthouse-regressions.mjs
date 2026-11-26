@@ -62,7 +62,7 @@ for(const [route,runs] of Object.entries(samples)){
   }));
 }
 const findings=[...invalidDocuments];
-if(enforce&&Object.keys(samples).length===0){
+if(Object.keys(samples).length===0){
   findings.push({type:'no-valid-lighthouse-measurements'});
 }
 const rows=[];
@@ -87,6 +87,10 @@ for(const [route,prior] of Object.entries(baseline.routes||{})){
     }
   }
   rows.push(row);
+}
+
+if(Object.keys(baseline.routes||{}).length>0 && rows.length===0 && Object.keys(current).length>0){
+  findings.push({type:'no-baseline-routes-measured'});
 }
 
 const report={

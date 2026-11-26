@@ -45,6 +45,22 @@ try {
   const missing=spawnSync(process.execPath,[script],{env,encoding:'utf8'});
   assert.equal(missing.status,1,'missing baseline route must fail when coverage required');
   assert(JSON.parse(fs.readFileSync(output,'utf8')).findings.some(f=>f.type==='missing-route-measurement'));
+  const findings=()=>JSON.parse(fs.readFileSync(output,'utf8')).findings;
+  const runWith=(overrides={})=>spawnSync(process.execPath,[script],{env:{...env,...overrides},encoding:'utf8'});
+  assert.equal(runWith({WEB_QA_REQUIRE_BASELINE_COVERAGE:'0'}).status,1);
+  assert(findings().some(f=>f.type==='no-valid-lighthouse-measurements'));
+  assert.equal(runWith({WEB_QA_REGRESSION_ENFORCE:'0',WEB_QA_REQUIRE_BASELINE_COVERAGE:'0'}).status,0);
+  assert(findings().some(f=>f.type==='no-valid-lighthouse-measurements'),'advisory runs must record missing measurements');
+  const categories=Object.fromEntries(['performance','accessibility','best-practices','seo'].map(key=>[key,{score:1}]));
+  const fixture=path.join(reports,'other.report.json');
+  fs.writeFileSync(fixture,JSON.stringify({finalUrl:'https://dtfseeds.com/unknown-tool/',categories}));
+  assert.equal(runWith({WEB_QA_REQUIRE_BASELINE_COVERAGE:'0'}).status,1);
+  assert(findings().some(f=>f.type==='no-baseline-routes-measured'));
+  fs.writeFileSync(fixture,JSON.stringify({finalUrl:'https://dtfseeds.com/',categories,runtimeError:{code:'ERRORED_DOCUMENT_REQUEST'}}));
+  assert.equal(runWith({WEB_QA_REQUIRE_BASELINE_COVERAGE:'0'}).status,1);
+  assert(findings().some(f=>f.type==='invalid-document'&&f.reason==='runtime-error'));
+  assert.equal(JSON.parse(fs.readFileSync(output,'utf8')).measuredRoutes,0);
+  fs.rmSync(fixture);
   console.log('Lighthouse regression validity tests passed');
 } finally {
   fs.rmSync(temp,{recursive:true,force:true});
