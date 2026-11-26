@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import vm from 'node:vm';
 
 const files={
   page:'site/public-route-patch/learn/search/index.html',
@@ -39,6 +40,21 @@ if(!errors.length){
  const staticRecords=JSON.parse(fs.readFileSync(files.staticRecords,'utf8'));
  if(!page.includes('Search THC Education')||!page.includes('data-search-input')||!page.includes('search-v1.mjs')) errors.push('search page missing primary UI/runtime contract');
  if(!runtime.includes("Fuse from '/assets/vendor/fuse-7.1.0.min.mjs'")||!runtime.includes('threshold:.34')||!runtime.includes('includeScore:true')) errors.push('search runtime missing pinned fuzzy-search contract');
+ // Execute the actual selection function with ranked results that crowd out a category.
+ const selection=runtime.match(/function visibleDocs\(\)\{[\s\S]*?\n\}/)?.[0];
+ if(!selection) errors.push('search selection function missing');
+ else {
+   try {
+     const rows=[...Array.from({length:90},(_,i)=>({id:'lesson-'+i,type:'Encyclopedia'})),{id:'tool-1',type:'Tool'}];
+     const ctx={input:{value:'light'},activeType:'Tool',documents:rows,normalize:v=>String(v).toLowerCase(),fuse:{search:(_q,options)=>rows.slice(0,options?.limit??rows.length).map(item=>({item}))}};
+     const result=vm.runInNewContext(selection+';visibleDocs()',ctx);
+     if(result.length!==1||result[0].id!=='tool-1') errors.push('resource filter must precede ranked result cap');
+     ctx.activeType='all';
+     if(vm.runInNewContext(selection+';visibleDocs()',ctx).length!==80) errors.push('global query display cap must remain 80');
+     ctx.input.value='';
+     if(vm.runInNewContext(selection+';visibleDocs()',ctx).length!==91) errors.push('unfiltered directory must remain complete');
+   } catch(error){errors.push('search selection regression: '+error.message);}
+ }
  if(!runtime.includes("../encyclopedia/encyclopedia-index.json")) errors.push('global education search must merge the complete encyclopedia index');
  if(!runtime.includes("name:'aliases'")||!runtime.includes('history.replaceState')) errors.push('global search missing alias/deep-link contract');
  if(!Array.isArray(index.documents)||index.documents.length<20) errors.push('search index must contain at least 20 canonical resources');
