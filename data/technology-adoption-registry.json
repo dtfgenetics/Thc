@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "updated": "2026-10-26",
+  "description": "Candidate external technologies. This registry does not authorize installation, code copying, or deployment.",
+  "status_values": [
+    "discovered",
+    "evaluated",
+    "approved",
+    "integrated",
+    "production-verified"
+  ],
+  "candidates": [
+    {
+      "id": "wordpress-playground",
+      "name": "WordPress Playground",
+      "source": "https://github.com/WordPress/wordpress-playground",
+      "category": "wordpress-testing",
+      "target_repo": "dtfgenetics/Thc",
+      "target_area": "education and publishing QA",
+      "status": "discovered",
+      "license": "unverified",
+      "evaluation": "Sandbox WordPress tests without affecting live pages."
+    },
+    {
+      "id": "chrome-devtools-mcp",
+      "name": "Chrome DevTools MCP",
+      "source": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+      "category": "browser-qa",
+      "target_repo": "dtfgenetics/Thc",
+      "target_area": "live route inspection",
+      "status": "discovered",
+      "license": "unverified",
+      "evaluation": "Browser console, network and performance evidence."
+    },
+    {
+      "id": "h5p",
+      "name": "H5P",
+      "source": "https://github.com/h5p",
+      "category": "education",
+      "target_repo": "dtfgenetics/Thc",
+      "target_area": "academy interactive lessons",
+      "status": "discovered",
+      "license": "unverified",
+      "evaluation": "Evaluate WordPress-compatible interactive teaching formats."
+    },
+    {
+      "id": "react-three-fiber",
+      "name": "React Three Fiber",
+      "source": "https://github.com/pmndrs/react-three-fiber",
+      "category": "3d",
+      "target_repo": "dtfgenetics/Tools",
+      "target_area": "plant atlas",
+      "status": "discovered",
+      "license": "unverified",
+      "evaluation": "Check semantic plant-model interaction and mobile weight."
+    },
+    {
+      "id": "plantcv",
+      "name": "PlantCV",
+      "source": "https://github.com/danforthcenter/plantcv",
+      "category": "computer-vision",
+      "target_repo": "dtfgenetics/Thc",
+      "target_area": "growlens evaluation",
+      "status": "discovered",
+      "license": "unverified",
+      "evaluation": "Measure observations; not a validated cannabis diagnosis engine."
+    },
+    {
+      "id": "promptfoo",
+      "name": "Promptfoo",
+      "source": "https://github.com/promptfoo/promptfoo",
+      "category": "ai-evaluation",
+      "target_repo": "dtfgenetics/Thc-dataset",
+      "target_area": "grow doc evaluation",
+      "status": "discovered",
+      "license": "unverified",
+      "evaluation": "Reproducible evidence and hallucination regression evaluations."
+    },
+    {
+      "id": "openseadragon",
+      "name": "OpenSeadragon",
+      "source": "https://github.com/openseadragon/openseadragon",
+      "category": "scientific-visual",
+      "target_repo": "dtfgenetics/Thc",
+      "target_area": "encyclopedia microscopy",
+      "status": "discovered",
+      "license": "unverified",
+      "evaluation": "Deep-zoom imagery with provenance and accessibility."
+    },
+    {
+      "id": "skill-scan",
+      "name": "Agent skill security scanning",
+      "source": "https://labs.snyk.io/experiments/skill-scan/",
+      "category": "security",
+      "target_repo": "dtfgenetics/Thc",
+      "target_area": "third-party skill admission",
+      "status": "discovered",
+      "license": "unverified",
+      "evaluation": "Check prompt injection and risky scripts before enabling plugins."
+    }
+  ]
+}

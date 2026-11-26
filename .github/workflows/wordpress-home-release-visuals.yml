@@ -87,23 +87,7 @@ jobs:
               --header 'User-Agent: DTFSeeds-Release-Visual-Verify/1.2' \
               "$WP_SITE_URL/?dtf_release_visuals=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" \
               --output "$body"; then
-              if node - "$body" "$attempt" > "$result" <<'NODE'
-          const fs = require('node:fs');
-          const html = fs.readFileSync(process.argv[2], 'utf8');
-          const attempt = Number(process.argv[3]);
-          const registry = JSON.parse(fs.readFileSync('site/wordpress/products/strain-card-images.json', 'utf8'));
-          const start = html.indexOf('Current releases');
-          const end = html.indexOf('Teaching Healthy Cultivation', start + 1);
-          const section = start >= 0 && end > start ? html.slice(start, end) : '';
-          const classCount = (section.match(/dtf-release-card-image/g) || []).length;
-          const routesOk = registry.cards.every((card) => section.includes(`/product/${card.productSlug}/`));
-          const altOk = registry.cards.every((card) => section.includes(card.altText));
-          const portraitOk = section.includes('aspect-ratio:2/3') && section.includes('object-fit:contain');
-          const headingOk = section.includes('Current releases, shown with the real strain cards.');
-          const result = { attempt, bytes: html.length, sectionBytes: section.length, classCount, routesOk, altOk, portraitOk, headingOk };
-          console.log(JSON.stringify(result));
-          if (!(classCount === registry.cards.length && routesOk && altOk && portraitOk && headingOk)) process.exit(1);
-          NODE
+              if node scripts/verify-home-release-artwork.mjs "$body" "$attempt" > "$result"
               then
                 cat "$result"
                 ok=1

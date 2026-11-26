@@ -1,0 +1,30 @@
+name: THC social release audit tests
+on:
+  push:
+    paths:
+      - 'scripts/thc_social_release_audit.py'
+      - 'tests/test_thc_social_release_audit.py'
+      - '.github/workflows/thc-social-audit.yml'
+  pull_request:
+    paths:
+      - 'scripts/thc_social_release_audit.py'
+      - 'tests/test_thc_social_release_audit.py'
+      - '.github/workflows/thc-social-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-social-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile audit code
+        run: python -m py_compile scripts/thc_social_release_audit.py tests/test_thc_social_release_audit.py
+      - name: Run safety regression tests
+        run: python -m unittest discover -s tests -p 'test_thc_social_release_audit.py' -v

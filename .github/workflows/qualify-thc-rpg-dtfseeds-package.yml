@@ -158,7 +158,8 @@ jobs:
           grep -Fq 'href="/tools/" data-dtf-nav-group="tools">Tools<' package/games/thc-rpg/index.html
           grep -Fq 'href="/games/">Games<' package/games/thc-rpg/index.html
           grep -Fq 'href="/community/" data-dtf-nav-group="community">Community<' package/games/thc-rpg/index.html
-          grep -Fq 'href="/shop/" data-dtf-nav-group="shop">Shop<' package/games/thc-rpg/index.html
+          ! grep -Fq 'href="/shop/" data-dtf-nav-group="shop">Shop<' package/games/thc-rpg/index.html
+          ! grep -Fq 'href="/cart/" aria-label="Cart"' package/games/thc-rpg/index.html
           grep -Fq 'Teaching' package/games/thc-rpg/index.html
           grep -Fq 'Healthy Cultivation' package/games/thc-rpg/index.html
           grep -Fq 'route=/games/thc-rpg/' package/games/thc-rpg/source-revision.txt

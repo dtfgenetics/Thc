@@ -1,3 +1,5 @@
+import { hasPublicPurchaseControl } from './lib/commerce-purchase-controls.mjs';
+import { productHttpStatusIssue } from './lib/commerce-audit-status.mjs';
 import { setDefaultResultOrder } from 'node:dns';
 import { writeFile } from 'node:fs/promises';
 
@@ -6,6 +8,9 @@ setDefaultResultOrder('ipv4first');
 const BASE_URL = 'https://dtfseeds.com';
 const JSON_REPORT = 'commerce-audit.json';
 const MARKDOWN_REPORT = 'commerce-audit.md';
+// Read-only public checks cannot establish that a WordPress MU plugin is installed
+// or that WooCommerce rejects POST cart/checkout mutations.
+const SERVER_TRANSACTION_GUARD = 'UNVERIFIED';
 
 const products = [
   {
@@ -198,13 +203,14 @@ function evaluate(result) {
 
 function renderMarkdown(report) {
   const lines = [
-    '# DTFSeeds Commerce Audit',
+    '# DTFSeeds Sales-Hold Commerce Audit',
     '',
     `Generated: ${report.generatedAt}`,
     '',
-    `Overall: **${report.passed ? 'PASS' : 'FAIL'}**`,
+    `Public catalog checks: **${report.passed ? 'PASS' : 'FAIL'}**`,
+    `Server-side cart/checkout denial: **${report.serverTransactionGuard}** (requires authenticated deployment evidence or authorized isolated transaction-guard verification)`,
     '',
-    `Products passing: **${report.summary.passed}/${report.summary.total}**`,
+    `Sales-hold checks passing: **${report.summary.passed}/${report.summary.total}**`,
     '',
     '| Product route | HTTP | Time | Result |',
     '|---|---:|---:|---|'
@@ -230,26 +236,69 @@ function renderMarkdown(report) {
   return `${lines.join('\n')}\n`;
 }
 
-const fetched = await Promise.all(products.map(fetchProduct));
-const results = fetched.map(evaluate);
+// Seed sales are suspended: verify public nontransactional behavior instead
+// of requiring legacy product detail pages to remain purchasable.
+const shopResponse = await fetchProduct({ key: 'shop', path: '/shop/' });
+const shopText = stripHtml(shopResponse.html).toLowerCase();
+const holdNotice = /seed sales (?:are )?(?:temporarily )?on hold|seed purchasing is temporarily suspended/i.test(shopText);
+const purchasingUnavailable = /purchasing (?:is |currently )?unavailable|purchasing is currently unavailable/i.test(shopText);
+// Detect rendered cart forms, submit buttons and direct add-to-cart links.
+const shopIssues = [];
+if (shopResponse.fetchError) shopIssues.push("Shop fetch failed: " + shopResponse.fetchError);
+if (shopResponse.status !== 200) shopIssues.push("Shop must return HTTP 200");
+if (!holdNotice) shopIssues.push("Shop does not show the required seed-sales hold notice");
+if (!purchasingUnavailable) shopIssues.push("Shop does not tell visitors that purchasing is unavailable");
+if (shopResponse.status === 200 && new URL(shopResponse.finalUrl).origin !== new URL(BASE_URL).origin) {
+  shopIssues.push("Shop request redirected off-site; cannot verify canonical storefront");
+}
+if (hasPublicPurchaseControl(shopResponse.html)) shopIssues.push("Shop contains an enabled-looking add-to-cart form or button");
+
+const productResponses = await Promise.all(products.map(fetchProduct));
+const results = productResponses.map((result) => {
+  const issues = [];
+  const text = stripHtml(result.html).toLowerCase();
+  if (result.fetchError) issues.push("Fetch failed: " + result.fetchError);
+  // A 403/WAF page is not proof of purchasing restrictions.
+  const statusIssue = productHttpStatusIssue(result.status);
+  if (statusIssue) issues.push(statusIssue);
+  if (result.status === 200 && new URL(result.finalUrl).origin !== new URL(BASE_URL).origin) {
+    issues.push("Product request redirected off-site; cannot verify canonical storefront");
+  }
+  if (result.status === 200) {
+    const hasHold = /seed sales (?:are )?(?:temporarily )?on hold|purchasing (?:is |currently )?unavailable/i.test(text);
+    if (!hasHold) issues.push("Accessible product page does not explain the sales hold");
+    if (hasPublicPurchaseControl(result.html)) issues.push("Accessible product page exposes an add-to-cart control");
+  }
+  return {
+    key: result.product.key, requestedUrl: result.requestedUrl, finalUrl: result.finalUrl,
+    status: result.status, durationMs: result.durationMs, title: extractTitle(result.html),
+    issues, warnings: [], passed: issues.length === 0
+  };
+});
+results.unshift({
+  key: 'shop-sales-hold', requestedUrl: shopResponse.requestedUrl, finalUrl: shopResponse.finalUrl,
+  status: shopResponse.status, durationMs: shopResponse.durationMs, title: extractTitle(shopResponse.html),
+  issues: shopIssues, warnings: [], passed: shopIssues.length === 0
+});
 
 const report = {
-  generatedAt: new Date().toISOString(),
-  baseUrl: BASE_URL,
+  generatedAt: new Date().toISOString(), baseUrl: BASE_URL,
+  mode: 'nontransactional-seed-sales-hold',
+  serverTransactionGuard: SERVER_TRANSACTION_GUARD,
+  liveCheckoutDenialVerified: false,
   passed: results.every((result) => result.passed),
   summary: {
     total: results.length,
     passed: results.filter((result) => result.passed).length,
     failed: results.filter((result) => !result.passed).length,
-    warnings: results.reduce((sum, result) => sum + result.warnings.length, 0)
+    warnings: 0
   },
   results
 };
-
 await Promise.all([
-  writeFile(JSON_REPORT, `${JSON.stringify(report, null, 2)}\n`, 'utf8'),
+  writeFile(JSON_REPORT, JSON.stringify(report, null, 2) + '\n', 'utf8'),
   writeFile(MARKDOWN_REPORT, renderMarkdown(report), 'utf8')
 ]);
-
 console.log(renderMarkdown(report));
+console.log('NOTICE: Passing GET/catalog checks NEVER establish that WooCommerce Store API cart/checkout POSTs are blocked or that the MU plugin is deployed.');
 if (!report.passed) process.exitCode = 1;

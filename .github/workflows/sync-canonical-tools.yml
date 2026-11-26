@@ -70,6 +70,13 @@ jobs:
             echo "::warning::Canonical Tools mirror is stale: pinned ${pinned_sha:-missing}, canonical ${canonical_sha}. Synchronization will repair it."
           fi
 
+      - name: Enforce Atlas instructional preservation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test scripts/test/atlas-guard-traversal.test.mjs
+          node scripts/guard-atlas-preservation.mjs
+
       - name: Prevent destructive Atlas lesson shortening
         shell: bash
         run: |
@@ -125,7 +132,20 @@ jobs:
           tools_sha="$(git -C /tmp/tools rev-parse HEAD)"
           test "${#tools_sha}" -eq 40
           mapfile -t slugs < <(node -e "const m=require('/tmp/tools/migration/manifest.json'); for (const s of m.canonicalToolSlugs) console.log(s)")
-          test "${#slugs[@]}" -ge 23
+          node - <<'NODE'
+          const manifest = require('/tmp/tools/migration/manifest.json');
+          const slugs = manifest.canonicalToolSlugs || [];
+          const publicRoutes = manifest.publicRoutes || [];
+          const expected = new Set(slugs.map(slug => '/' + slug + '/'));
+          if (!slugs.length || expected.size !== slugs.length ||
+              publicRoutes.length !== slugs.length ||
+              new Set(publicRoutes).size !== publicRoutes.length ||
+              publicRoutes.some(route => !expected.has(route))) {
+            console.error('::error::Canonical Tools manifest route inventory is inconsistent; refusing mirror publication.');
+            process.exit(1);
+          }
+          console.log('Validated ' + slugs.length + ' canonical tool routes before mirroring.');
+          NODE
           for d in "${slugs[@]}"; do
             test -d "/tmp/tools/site/public-route-patch/$d"
             rm -rf "site/public-route-patch/$d"
@@ -145,9 +165,15 @@ jobs:
       - name: Run deterministic tool validation
         run: TOOLS_REPO_DIR=/tmp/tools npm run verify:cultivation-reference-tools
 
+      - name: Validate canonical sync branch lease contract
+        run: node --test scripts/test/sync-canonical-tools-lease.test.mjs
+
       - name: Commit mirror update when changed
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          test -n "${GH_TOKEN:-}" || { echo '::error::GitHub CLI token unavailable for mirror PR'; exit 1; }
           set -euo pipefail
           git config user.name "dtf-tools-sync"
           git config user.email "actions@users.noreply.github.com"
@@ -161,7 +187,17 @@ jobs:
           git commit -m "Sync canonical cultivation tools from dtfgenetics/Tools"
           git fetch origin main
           if [ "$(git rev-parse origin/main)" != "$(git rev-parse HEAD^)" ]; then
-            echo "::notice::THC main advanced during canonical sync; rebasing and revalidating."
+            echo "::notice::THC main advanced during canonical sync; verifying preservation against the new main before rebasing."
+            # A normal guard run here would compare against the old checkout,
+            # not the newer integration main. Inspect that exact tree instead.
+            mirror_worktree="$(mktemp -d)"
+            git worktree add --detach "$mirror_worktree" origin/main
+            if ! DTF_ATLAS_MIRROR_DIR="$mirror_worktree/site/public-route-patch/atlas" node scripts/guard-atlas-preservation.mjs; then
+              git worktree remove --force "$mirror_worktree"
+              echo "::error::New THC main contains Atlas lessons the canonical sync would damage; refusing rebase and mirror push."
+              exit 1
+            fi
+            git worktree remove --force "$mirror_worktree"
             git rebase origin/main
           fi
           TOOLS_REPO_DIR=/tmp/tools npm run verify:cultivation-reference-tools
@@ -169,7 +205,21 @@ jobs:
           pinned_tools_sha="$(sed -n 's/^commit=//p' site/public-route-patch/assets/release-source-revisions/tools.txt)"
           test "${pinned_tools_sha}" = "${expected_tools_sha}"
           sync_branch="work/platform/canonical-tools-sync/automation"
-          git push --force origin "HEAD:refs/heads/${sync_branch}"
+          # Establish the exact remote branch value before any update. A fresh
+          # checkout does not have origin/<sync_branch>, so the implicit lease
+          # otherwise fails with "stale info" on every scheduled run.
+          remote_ref="refs/heads/${sync_branch}"
+          expected_remote_sha="$(git ls-remote --heads origin "${remote_ref}" | awk '{print $1}')"
+          if [ -n "${expected_remote_sha}" ] && ! [[ "${expected_remote_sha}" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Invalid remote sync branch SHA; refusing integration update."
+            exit 1
+          fi
+          # Explicit compare-and-swap: reject rather than overwrite an update
+          # that lands between remote inspection and our push.
+          if ! git push "--force-with-lease=${remote_ref}:${expected_remote_sha}" origin "HEAD:${remote_ref}"; then
+            echo "::error::Canonical Tools sync branch changed during the push; a subsequent scheduled run must recompute from main."
+            exit 1
+          fi
 
           pr_number="$(gh pr list --head "${sync_branch}" --base main --state open --json number --jq '.[0].number // empty' || true)"
           if [ -z "${pr_number}" ]; then
@@ -180,13 +230,22 @@ jobs:
               --body "Automated byte-for-byte deployment mirror refresh from canonical Tools at \`${expected_tools_sha}\`. This PR is generated by the canonical Tools synchronization workflow; merge only after the canonical mirror guard and cultivation reference validation pass.")"; then
               echo "Opened canonical Tools mirror PR: ${pr_url}"
             else
-              echo "::warning::Mirror branch ${sync_branch} was updated, but GitHub Actions could not open the PR automatically. Create a PR from that branch manually."
+              echo "::error::Canonical Tools mirror branch ${sync_branch} was updated, but GitHub Actions failed to create its review PR; release synchronization is incomplete."
+              exit 1
             fi
           else
             echo "Updated existing canonical Tools mirror PR #${pr_number} to ${expected_tools_sha}."
           fi
 
-          remote_tools_sha="$(git show "origin/${sync_branch}:site/public-route-patch/assets/release-source-revisions/tools.txt" | sed -n 's/^commit=//p')"
+          # Verify the actual remote commit and its pinned Tools revision, not
+          # a missing/stale origin/<sync_branch> tracking ref.
+          pushed_sha="$(git ls-remote --heads origin "${remote_ref}" | awk '{print $1}')"
+          if [ "${pushed_sha}" != "$(git rev-parse HEAD)" ]; then
+            echo "::error::Remote canonical Tools sync branch does not match the verified local commit."
+            exit 1
+          fi
+          git fetch --no-tags origin "${remote_ref}"
+          remote_tools_sha="$(git show "FETCH_HEAD:site/public-route-patch/assets/release-source-revisions/tools.txt" | sed -n 's/^commit=//p')"
           if [ "${remote_tools_sha}" != "${expected_tools_sha}" ]; then
             echo "::error::Canonical Tools mirror branch did not converge after push: expected ${expected_tools_sha}, found ${remote_tools_sha:-missing}."
             exit 1

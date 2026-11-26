@@ -87,7 +87,16 @@ const plan = {
 
 console.log(JSON.stringify(plan, null, 2));
 if (process.env.GITHUB_OUTPUT) {
+  // Detailed file inventories remain in stdout. Do not transport unbounded
+  // checkpoint diffs into job environments: Linux limits each env entry.
+  const transportPlan = {
+    ...plan,
+    resources: selected.map(({ changedFiles, ...resource }) => ({
+      ...resource,
+      changedFileCount: changedFiles.length
+    }))
+  };
   appendFileSync(process.env.GITHUB_OUTPUT, `deploy=${plan.deploy}\n`);
   appendFileSync(process.env.GITHUB_OUTPUT, `matrix=${JSON.stringify(matrix)}\n`);
-  appendFileSync(process.env.GITHUB_OUTPUT, `plan=${JSON.stringify(plan)}\n`);
+  appendFileSync(process.env.GITHUB_OUTPUT, `plan=${JSON.stringify(transportPlan)}\n`);
 }

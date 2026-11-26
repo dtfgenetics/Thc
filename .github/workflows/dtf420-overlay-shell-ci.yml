@@ -107,7 +107,7 @@ jobs:
             grep -Fq '>Learn</a>' "$file"
             grep -Fq '>Tools</a>' "$file"
             grep -Fq '>Games</a>' "$file"
-            grep -Fq '>Shop</a>' "$file"
+            ! grep -Fq '>Shop</a>' "$file"
             ! grep -Fq '>Genetics</a>' "$file"
           done
           node - "$root/overlay-manifest.json" <<'NODE'

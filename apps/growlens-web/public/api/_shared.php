@@ -54,11 +54,28 @@ function growlens_require_same_origin(): void
         return;
     }
 
-    $originHost = strtolower((string)(parse_url($origin, PHP_URL_HOST) ?? ''));
-    $requestHost = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
-    $requestHost = preg_replace('/:\d+$/', '', $requestHost) ?? $requestHost;
+    // Match scheme, hostname and effective port, not only the hostname.
+    $parsed = parse_url($origin);
+    $originScheme = is_array($parsed) ? strtolower((string)($parsed['scheme'] ?? '')) : '';
+    $originHost = is_array($parsed) ? strtolower((string)($parsed['host'] ?? '')) : '';
+    $originPort = is_array($parsed) ? ($parsed['port'] ?? null) : null;
+    $rawHost = strtolower(trim((string)($_SERVER['HTTP_HOST'] ?? '')));
+    $requestScheme = (!empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off') ? 'https' : 'http';
+    $requestHost = strtolower((string)(parse_url('http://' . $rawHost, PHP_URL_HOST) ?? ''));
+    $requestPort = parse_url('http://' . $rawHost, PHP_URL_PORT);
+    $effectiveOriginPort = $originPort ?? ($originScheme === 'https' ? 443 : 80);
+    $effectiveRequestPort = $requestPort ?? ($requestScheme === 'https' ? 443 : 80);
+    $invalidOrigin = !is_array($parsed)
+        || !in_array($originScheme, ['http', 'https'], true)
+        || $originHost === ''
+        || isset($parsed['user']) || isset($parsed['pass'])
+        || isset($parsed['path']) || isset($parsed['query']) || isset($parsed['fragment'])
+        || $requestHost === ''
+        || $originScheme !== $requestScheme
+        || $effectiveOriginPort !== $effectiveRequestPort
+        || !hash_equals($requestHost, $originHost);
 
-    if ($originHost === '' || !hash_equals($requestHost, $originHost)) {
+    if ($invalidOrigin) {
         growlens_send_json([
             'ok' => false,
             'error' => 'Origin rejected.'
@@ -423,10 +440,15 @@ function growlens_cookie_path(): string
     return $configured !== '' ? $configured : '/growlens/';
 }
 
+function growlens_cookie_is_secure(): bool
+{
+    return (!empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off')
+        || ((string)($_SERVER['SERVER_PORT'] ?? '') === '443');
+}
+
 function growlens_set_session_cookie(string $token, int $expiresAt): void
 {
-    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-        || ((string)($_SERVER['SERVER_PORT'] ?? '') === '443');
+    $secure = growlens_cookie_is_secure();
 
     setcookie(GROWLENS_SESSION_COOKIE, $token, [
         'expires' => $expiresAt,
@@ -442,7 +464,7 @@ function growlens_clear_session_cookie(): void
     setcookie(GROWLENS_SESSION_COOKIE, '', [
         'expires' => time() - 3600,
         'path' => growlens_cookie_path(),
-        'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+        'secure' => growlens_cookie_is_secure(),
         'httponly' => true,
         'samesite' => 'Strict'
     ]);

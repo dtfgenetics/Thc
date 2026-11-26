@@ -10,6 +10,7 @@ on:
       - 'package-lock.json'
       - '.github/workflows/growlens-ci.yml'
       - '.github/workflows/growlens-deploy-hostinger.yml'
+      - '.github/workflows/growlens-live-acceptance.yml'
   push:
     branches: [main]
     paths:
@@ -20,6 +21,7 @@ on:
       - 'package-lock.json'
       - '.github/workflows/growlens-ci.yml'
       - '.github/workflows/growlens-deploy-hostinger.yml'
+      - '.github/workflows/growlens-live-acceptance.yml'
   workflow_dispatch:
 
 permissions:
@@ -63,6 +65,9 @@ jobs:
 
       - name: Run GrowLens PHP backend smoke test
         run: php apps/growlens-web/tests/php-backend-smoke.php
+
+      - name: Test GrowLens Origin security boundary
+        run: php apps/growlens-web/tests/php-origin-security-smoke.php
 
       - name: Run GrowLens schema-v2 persistence smoke test
         run: php apps/growlens-web/tests/php-state-v2-smoke.php

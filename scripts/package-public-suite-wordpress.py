@@ -23,6 +23,7 @@ import subprocess
 import sys
 import tempfile
 import zipfile
+from wordpress_suite_registry_patch import registered_local_static_apps
 
 if len(sys.argv) != 3:
     raise SystemExit("usage: package-public-suite-wordpress.py RELEASE_DIR OUTPUT_ZIP")
@@ -478,6 +479,11 @@ required = [
     "dtf-content-overlay/seed-ascent.html",
     "dtf-content-overlay/seed-ascent/engine.js",
 ]
+for target in registered_local_static_apps(repo_root):
+    if target not in allowed:
+        allowed.append(target)
+    if f"{target}/index.html" not in required:
+        required.append(f"{target}/index.html")
 for target in registered_local_game_targets:
     index_path = f"{target}/index.html"
     if index_path not in required:

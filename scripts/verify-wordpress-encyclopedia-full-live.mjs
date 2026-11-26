@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
+import { effectiveLessonAssessment } from './lib/encyclopedia-assessment-v2.mjs';
 
 const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const manifestPath=process.env.ENCYCLOPEDIA_FULL_BATCH_FILE||'site/wordpress/education/encyclopedia/full-420-production-batch.generated.json';
@@ -27,6 +29,20 @@ const unexpected=[...actualIds].filter(id=>!expectedIds.includes(id));
 if(ids.length!==420||actualIds.size!==420||missing.length||unexpected.length){
   throw new Error(`Invalid 420-route manifest: entries=${ids.length}, unique=${actualIds.size}, missing=${missing.slice(0,15).join(',')||'none'}, unexpected=${unexpected.slice(0,15).join(',')||'none'}`);
 }
+// The 420-route acceptance must prove content revision parity, not only HTTP 200.
+// Match the fingerprint contract used by the canonical WordPress publisher.
+const fingerprintOf=a=>createHash('sha256').update(JSON.stringify({
+  id:a.id,title:a.title,objective:a.objective,terms:a.terms,
+  coreScience:a.coreScience,cultivationRelevance:a.cultivationRelevance,
+  measureAndRecord:a.measureAndRecord,misconceptions:a.misconceptions,
+  evidenceLimits:a.evidenceLimits,crossLinks:a.crossLinks,
+  sourceNotes:a.sourceNotes,assessment:effectiveLessonAssessment(a).prompts
+})).digest('hex').slice(0,24);
+const expectedFingerprints=new Map(manifest.lessonFiles.map(file=>{
+  const lesson=JSON.parse(fs.readFileSync(file,'utf8'));
+  if(!actualIds.has(lesson.id)) throw new Error(`Unexpected lesson identity in ${file}: ${lesson.id}`);
+  return [lesson.id,fingerprintOf(lesson)];
+}));
 const queue=[...ids], failures=[];
 const succeeded=[];
 const startedAt=new Date().toISOString();
@@ -44,6 +60,9 @@ async function verify(id){
       if(finalPath!==`/learn/encyclopedia/${slug}/`) throw new Error(`unexpected redirect target: ${finalPath}`);
       if(!html.includes(`data-thc-encyclopedia-id="${id}"`)) throw new Error('missing canonical lesson marker');
       if(!html.includes('Key concepts · Terms to know')) throw new Error('missing key concepts / terms section');
+      const observed=html.match(/data-thc-source-fingerprint=["']([0-9a-f]{24})["']/i)?.[1]||null;
+      if(observed!==expectedFingerprints.get(id)) throw new Error(`canonical source fingerprint mismatch: expected ${expectedFingerprints.get(id)}, observed ${observed||'missing'}`);
+      if(!html.includes('application/ld+json')||!html.includes('"identifier":"'+id+'"')) throw new Error('canonical structured-data identity missing');
       verified+=1; succeeded.push(id); return;
     }catch(error){last=String(error?.message||error); if(attempt<attempts) await sleep(1200*attempt);}
   }

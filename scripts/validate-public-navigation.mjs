@@ -10,6 +10,12 @@ const hub = fs.readFileSync(path.join(root, 'site/public-route-patch/games/index
 const projectsHub = fs.readFileSync(path.join(root, 'site/public-route-patch/projects/index.html'), 'utf8');
 const headerV5 = fs.readFileSync(path.join(root, 'scripts/lib/sitewide-header-template.mjs'), 'utf8');
 const headerV6 = fs.readFileSync(path.join(root, 'scripts/lib/sitewide-header-template-v6.mjs'), 'utf8');
+const liveV6Verifier = fs.readFileSync(path.join(root, 'scripts/verify-sitewide-header-v6-live.mjs'), 'utf8');
+const liveSitewideAuditor = fs.readFileSync(path.join(root, 'scripts/audit-sitewide-header-live.mjs'), 'utf8');
+const wordpressHeaderPublisher = fs.readFileSync(path.join(root, '.github/workflows/sitewide-header-v4-production.yml'), 'utf8');
+const suiteHubNormalizer = fs.readFileSync(path.join(root, 'scripts/normalize-public-suite-hub-shells.mjs'), 'utf8');
+const suiteResourcePackager = fs.readFileSync(path.join(root, 'scripts/package-public-suite-wordpress-resource-aware.py'), 'utf8');
+const wordpressNavigationRepair = fs.readFileSync(path.join(root, 'scripts/repair-wordpress-presentation-rest.mjs'), 'utf8');
 
 const deployableShellFiles = [
   'site/public-route-patch/projects/index.html',
@@ -26,6 +32,25 @@ function primaryNavMarkup(html) {
 }
 const errors = [];
 const assert = (condition, message) => { if (!condition) errors.push(message); };
+
+// Release scripts must enforce the same sales-hold header as the deployable V6 template.
+for (const [name, source] of [['V6 live verifier', liveV6Verifier], ['sitewide live auditor', liveSitewideAuditor]]) {
+  assert(!source.includes("['/shop/','Shop']") && !source.includes("['/shop/', 'Shop']"), `${name} must not require Shop in primary navigation during seed sales hold`);
+  assert(source.includes('sales-hold header') && source.includes('Cart'), `${name} must reject stale commerce navigation`);
+}
+assert(!liveV6Verifier.includes("['Search DTF Genetics','Account','Cart']"), 'V6 verification must not require Cart during the sales hold');
+assert(liveV6Verifier.includes("['Search DTF Genetics','Account']"), 'V6 verification must still require Search and Account utility controls');
+const sevenLinkSalesHoldNav = "['Home','Seeds','Learn','Courses','Tools','Games','Community']";
+assert(wordpressHeaderPublisher.includes('const expected=' + sevenLinkSalesHoldNav), 'WordPress production publisher must accept seven-link sales-hold V6 header');
+assert(suiteHubNormalizer.includes("const expected = ['Home', 'Seeds', 'Learn', 'Courses', 'Tools', 'Games', 'Community'];"), 'suite hub normalizer must require sales-hold navigation');
+assert(suiteResourcePackager.includes("expected_labels = ['Home', 'Seeds', 'Learn', 'Courses', 'Tools', 'Games', 'Community']"), 'public suite packager must require sales-hold navigation');
+assert(!wordpressNavigationRepair.includes("['Shop', '/shop/']"), 'WordPress presentation repair must not reinsert Shop in primary nav');
+assert(wordpressHeaderPublisher.includes('Commerce navigation in V6 header') && wordpressHeaderPublisher.includes('Cart utility in V6 header'), 'WordPress production publisher must reject Shop/Cart in deployed headers');
+for (const [name, source] of [['Public Suite normalizer', suiteHubNormalizer], ['Public Suite package gate', suiteResourcePackager]]) {
+  assert(source.includes('sales-hold') && source.includes('Cart'), `${name} must reject Shop/Cart in deployed headers`);
+}
+
+
 
 const canonicalPrimary = [
   { id: 'home', label: 'Home', route: '/' },
@@ -69,6 +94,11 @@ for (const rel of deployableShellFiles) {
   let lastIndex = -1;
   for (const item of canonicalPrimary) {
     const hrefIndex = normalizedPrimary.indexOf(`href="${item.route}"`);
+    if (item.route === '/shop/' && hrefIndex < 0) continue; // Sales hold permits Shop-free public navigation.
+    if (item.route === '/shop/' && rel === 'site/public-route-patch/tools/index.html') {
+      assert(hrefIndex < 0, `${rel} must not expose Shop while seed sales are on hold`);
+      continue;
+    }
     assert(hrefIndex >= 0, `${rel} primary navigation is missing route ${item.route}`);
     if (hrefIndex < 0) continue;
     const linkTail = normalizedPrimary.slice(hrefIndex, hrefIndex + 220);
@@ -84,8 +114,11 @@ for (const rel of deployableShellFiles) {
 for (const [label, source] of [['v5 WordPress header', headerV5], ['v6 WordPress header', headerV6]]) {
   assert(source.includes('data-dtf-sitewide-header="canonical-five-v1"'), `${label} must retain the deployed compatibility marker while rendering the canonical eight-section header`);
   for (const item of canonicalPrimary) {
+    if (item.route === '/shop/') continue;
     assert(source.includes(`href="${item.route}"`), `${label} must include primary route ${item.route}`);
   }
+  assert(!source.includes('href="/shop/" data-dtf-nav-group="shop"'), `${label} must not expose Shop during sales hold`);
+  assert(!source.includes('href="/cart/" aria-label="Cart"'), `${label} must not expose Cart during sales hold`);
 }
 assert(headerV6.includes("if(group==='home')active=path==='/';"), 'v6 WordPress header must activate Home only at the root route');
 assert(headerV6.includes("else if(group==='courses')active=/^\\/(courses|learn\\/learning-hub)\\//.test(path);"), 'v6 WordPress header must map Learning Hub course routes into Courses');

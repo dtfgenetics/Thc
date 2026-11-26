@@ -21,8 +21,9 @@ const bannedPublicPhrases = [
 const routes = [
   {
     key: 'home', path: '/', minimumText: 900,
-    requiredText: ['Genetics, cultivation education, and grow tools in one place.', 'Blue Mango', 'Blue Bubblegum', 'Teaching Healthy Cultivation'],
-    requiredLinks: ['/seeds/', '/learn/', '/tools/', '/games/', '/community/', '/shop/']
+    requiredText: ['Genetics first. Learn the plant behind the pack.', 'Blue Mango', 'Blue Bubblegum', 'Teaching Healthy Cultivation'],
+    requiredLinks: ['/seeds/', '/learn/', '/tools/', '/games/', '/community/', '/shop/'],
+    forbiddenLinks: ['/product/10-regular-f2-blue-mango-seeds/', '/product/10-feminized-f2-blue-mango-x/', '/product/10-reg-f1-blueberry-bubblegum/']
   },
   {
     key: 'seeds', path: '/seeds/', minimumText: 650,
@@ -41,8 +42,9 @@ const routes = [
   },
   {
     key: 'shop', path: '/shop/', minimumText: 250,
-    requiredText: ['10 Feminized F2 Blue Mango Seeds', '10 Regular F1 Blue Bubblegum Seeds', '10 Regular F2 Blue Mango Seeds'],
-    requiredLinks: ['/product/10-feminized-f2-blue-mango-x/', '/product/10-reg-f1-blueberry-bubblegum/', '/product/10-regular-f2-blue-mango-seeds/']
+    requiredText: ['Seed sales on hold', 'Purchasing is unavailable', 'Blue Mango', 'Blue Bubblegum'],
+    requiredLinks: ['/seeds/blue-mango/', '/seeds/blue-bubblegum/'],
+    forbiddenLinks: ['/product/10-regular-f2-blue-mango-seeds/', '/product/10-feminized-f2-blue-mango-x/', '/product/10-reg-f1-blueberry-bubblegum/']
   },
   {
     key: 'tools', path: '/tools/', minimumText: 600,
@@ -58,7 +60,9 @@ const routes = [
     key: 'community', path: '/community/', minimumText: 300,
     requiredText: ['Discord'], requiredLinks: ['https://discord.gg/xJbUeHFPMt']
   },
-  { key: 'gallery', path: '/gallery/', minimumText: 250 },
+  { key: 'gallery', path: '/gallery/', minimumText: 250,
+    requiredText: ['data-dtf-gallery-visual-v3="true"', 'data-dtf-gallery-media-policy="approved-only"', 'See the genetics first. Explore the science behind them.', 'Blue Mango F2 Regular DTF Genetics strain card'],
+    requiredLinks: ['/seeds/blue-mango/', '/seeds/blue-bubblegum/'] },
   { key: 'about', path: '/about/', minimumText: 300 },
   { key: 'contact', path: '/contact/', minimumText: 250, requiredText: ['Discord'] },
   {
@@ -210,6 +214,9 @@ async function auditRoute(route) {
     for (const required of route.requiredText || []) {
       const normalized = required.toLowerCase();
       if (!textLower.includes(normalized) && !htmlLower.includes(normalized)) issues.push(`Required current content missing: “${required}”`);
+    }
+    for (const forbidden of route.forbiddenLinks || []) {
+      if (html.includes(forbidden)) issues.push(`Suspended transactional route remains linked: “${forbidden}”`);
     }
     for (const required of route.requiredLinks || []) {
       if (!html.includes(required)) issues.push(`Required current route/link missing: “${required}”`);

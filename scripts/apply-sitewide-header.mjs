@@ -91,8 +91,10 @@ function verifyDocument(source, rel) {
     ['href="/tools/" data-dtf-nav-group="tools">Tools</a>', 'Tools'],
     ['href="/games/">Games</a>', 'Games'],
     ['href="/community/" data-dtf-nav-group="community">Community</a>', 'Community'],
-    ['href="/shop/" data-dtf-nav-group="shop">Shop</a>', 'Shop'],
   ];
+  if (SITEWIDE_HEADER_HTML.includes('href="/shop/"') || SITEWIDE_HEADER_HTML.includes('href="/cart/"')) {
+    report.failures.push(`${rel}: canonical header must not contain shopping navigation during sales hold`);
+  }
   for (const [needle, label] of canonicalNavTokens) {
     if (!source.includes(needle)) report.failures.push(`${rel}: canonical Header V6 navigation is missing ${label}`);
   }

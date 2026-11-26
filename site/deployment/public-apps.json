@@ -5,6 +5,17 @@
   "updated": "2026-10-09",
   "apps": [
     {
+      "id": "science-labs",
+      "title": "THC Science Labs",
+      "repository": "dtfgenetics/Tools",
+      "integrationRepository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/science-labs",
+      "route": "/science-labs/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node scripts/validate-canonical-tools-mirror.mjs && node --test site/public-route-patch/science-labs/tests/science-labs.test.mjs"
+    },
+    {
       "id": "high-land",
       "title": "High Land: The Sweet Escape",
       "repository": "dtfgenetics/Thc",

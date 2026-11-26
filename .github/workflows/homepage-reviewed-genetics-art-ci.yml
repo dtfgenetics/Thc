@@ -13,6 +13,9 @@ on:
       - '.github/workflows/homepage-genetics-v2-ci.yml'
       - 'scripts/finalize-wordpress-home-genetics-art.mjs'
       - 'scripts/fix-wordpress-home-release-visuals.mjs'
+      - 'scripts/verify-home-release-artwork.mjs'
+      - 'scripts/test-home-release-artwork.mjs'
+      - 'scripts/lib/html-audit-markup.mjs'
       - 'site/wordpress/products/strain-card-images.json'
 
 permissions:
@@ -106,10 +109,10 @@ jobs:
           grep -Fq '<div class="dtf-page">' "$source"
           grep -Fq 'class="dtf-hero-media"' "$source"
           grep -Fq 'dtf-image-card' "$source"
-          grep -Fq 'Shop the pack. Read the breeding context.' "$source"
-          grep -Fq '/product/10-regular-f2-blue-mango-seeds/' "$source"
-          grep -Fq '/product/10-feminized-f2-blue-mango-x/' "$source"
-          grep -Fq '/product/10-reg-f1-blueberry-bubblegum/' "$source"
+          grep -Fq 'Explore the genetics. Read the breeding context.' "$source"
+          grep -Fq "href: '/seeds/blue-mango/'" "$source"
+          grep -Fq "href: '/seeds/blue-bubblegum/'" "$source"
+          ! grep -Fq "href: '/product/" "$source"
           echo 'Current visual builder markup remains recognized by Home recovery tooling.'
 
       - name: Reject education media as release-card completion criteria
@@ -128,8 +131,7 @@ jobs:
           }
           console.log('Reviewed current-release registry is exact and portrait-oriented.');
           NODE
-          grep -Fq 'classCount === registry.cards.length' "$owner"
-          grep -Fq 'routesOk' "$owner"
-          grep -Fq 'altOk' "$owner"
-          grep -Fq 'portraitOk' "$owner"
+          grep -Fq 'node scripts/verify-home-release-artwork.mjs "$body" "$attempt"' "$owner"
+          node --check scripts/verify-home-release-artwork.mjs
+          node scripts/test-home-release-artwork.mjs
           echo 'Reviewed Homepage Genetics Art protection contract verified.'

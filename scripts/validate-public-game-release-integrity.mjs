@@ -295,10 +295,10 @@ async function fetchDirect(game, app) {
 }
 
 if (LIVE) {
-  const liveGames = publicGames.filter((game) => {
-    const app = apps.find((candidate) => candidate.id === game.id);
-    return app?.status === 'ready-to-package';
-  });
+  // Live integrity must test every visitor-visible game, not only apps whose
+  // deployment metadata says "ready-to-package". Otherwise a broken public
+  // route can silently escape verification when its status changes.
+  const liveGames = publicGames;
   for (const game of liveGames) {
     const app = apps.find((candidate) => candidate.id === game.id);
     await fetchDirect(game, app);

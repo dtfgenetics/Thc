@@ -38,6 +38,31 @@ for(const protocolVersion of ['2025-06-18','2025-03-26','2024-11-05']){
 }
 
 try{await rpc({jsonrpc:'2.0',method:'notifications/initialized',params:{}})}catch{}
-const result=await rpc({jsonrpc:'2.0',id:2,method:'tools/call',params:{name:'hostinger-ai-assistant-litespeed-cache-flush',arguments:{}}});
-console.log('Hostinger LiteSpeed cache flush completed.');
+// Discover the currently exposed Hostinger cache operation instead of assuming
+// that the plugin's MCP tool name is permanently stable.
+const listed=await rpc({jsonrpc:'2.0',id:2,method:'tools/list',params:{}});
+const advertised=listed?.result?.tools;
+if(!Array.isArray(advertised)) throw new Error('Hostinger MCP did not return a tool inventory. Cache has NOT been purged.');
+const candidates=advertised.filter(tool=>{
+  const name=String(tool?.name||'').toLowerCase();
+  return name.includes('hostinger')
+    && /(cache|litespeed)/.test(name)
+    && /(purge|flush|clear)/.test(name)
+    && !/(disable|delete|reset|uninstall)/.test(name);
+});
+if(candidates.length!==1) {
+  console.error(JSON.stringify({cacheToolCandidates:candidates.map(x=>x.name),advertisedToolCount:advertised.length}));
+  throw new Error('Expected exactly one authorized Hostinger cache purge tool; no cache mutation performed.');
+}
+const selected=candidates[0];
+const schema=selected.inputSchema||selected.input_schema||{};
+if(Array.isArray(schema.required)&&schema.required.length) {
+  throw new Error('Selected Hostinger cache tool requires explicit parameters; refusing an unverified request.');
+}
+console.log('Discovered authorized Hostinger cache purge operation: '+selected.name);
+const result=await rpc({jsonrpc:'2.0',id:3,method:'tools/call',params:{name:selected.name,arguments:{}}});
+if (!result?.result || result.result.isError === true || result.result.error) {
+  throw new Error('Hostinger LiteSpeed cache flush returned a missing or failed tool result.');
+}
+console.log('Hostinger LiteSpeed cache flush tool returned without an error.');
 console.log(JSON.stringify({result:result?.result||null},null,2).slice(0,3000));

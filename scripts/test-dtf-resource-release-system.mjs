@@ -2,6 +2,7 @@
 
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import './test-resource-plan-output-size.mjs';
 
 const config = JSON.parse(readFileSync('site/deployment/release-resources.json', 'utf8'));
 const resources = config.resources;

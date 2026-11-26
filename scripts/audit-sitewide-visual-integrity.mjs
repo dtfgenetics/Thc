@@ -1,6 +1,6 @@
 import { setDefaultResultOrder } from 'node:dns';
 import { readFile, writeFile } from 'node:fs/promises';
-import { stripNonRenderedMarkup } from './lib/html-audit-markup.mjs';
+import { stripNonRenderedMarkup, duplicateHtmlIds, getHtmlAttribute } from './lib/html-audit-markup.mjs';
 
 setDefaultResultOrder('ipv4first');
 
@@ -43,10 +43,7 @@ function normalizeInternal(raw,base){
   return path||'/';
 }
 
-function getAttr(tag,name){
-  const match=tag.match(new RegExp(`\\b${name}\\s*=\\s*(["'])(.*?)\\1`,'i'));
-  return match?.[2]??null;
-}
+const getAttr=getHtmlAttribute;
 
 function stripTags(value=''){
   return String(value).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim();
@@ -72,6 +69,14 @@ function extractLinks(html,base){
   return links;
 }
 
+// Audit browser-selected responsive candidates as well as fallback image URLs.
+function srcsetUrls(value,base){
+  if(!value) return [];
+  return value.split(',').map(candidate=>candidate.trim().split(/\s+/)[0]).filter(Boolean).flatMap(candidate=>{
+    try{return [new URL(candidate,base).href];}catch{return [];}
+  });
+}
+
 function extractImages(html,base){
   const images=[];
   for(const match of html.matchAll(/<img\b[^>]*>/gi)){
@@ -80,18 +85,15 @@ function extractImages(html,base){
     const alt=getAttr(tag,'alt');
     let absolute='';
     try{absolute=src?new URL(src,base).href:'';}catch{}
-    images.push({src,absolute,alt,tag:tag.slice(0,260)});
+    const variants=[...srcsetUrls(getAttr(tag,'srcset'),base),...srcsetUrls(getAttr(tag,'data-srcset'),base)];
+    images.push({src,absolute,variants,alt,tag:tag.slice(0,260)});
+  }
+  for(const match of html.matchAll(/<source\b[^>]*>/gi)){
+    const tag=match[0];
+    const variants=[...srcsetUrls(getAttr(tag,'srcset'),base),...srcsetUrls(getAttr(tag,'data-srcset'),base)];
+    if(variants.length) images.push({src:'',absolute:'',variants,alt:'',sourceOnly:true,tag:tag.slice(0,260)});
   }
   return images;
-}
-
-function duplicateIds(html){
-  const counts=new Map();
-  for(const tag of html.matchAll(/<[^>]+\bid\s*=\s*(["'])(.*?)\1[^>]*>/gi)){
-    const id=tag[2];
-    counts.set(id,(counts.get(id)||0)+1);
-  }
-  return [...counts.entries()].filter(([,count])=>count>1).map(([id,count])=>({id,count}));
 }
 
 function hasViewport(html){
@@ -156,13 +158,13 @@ function inspectPage(fetched,depth){
   if(h1===0) warnings.push('No H1 found');
   if(h1>1) issues.push(`Multiple H1 elements found (${h1}); production pages must expose one primary H1`);
 
-  const dups=duplicateIds(rendered);
+  const dups=duplicateHtmlIds(rendered);
   if(dups.length) issues.push(`Duplicate HTML ids: ${dups.slice(0,8).map(item=>`${item.id}×${item.count}`).join(', ')}${dups.length>8?'…':''}`);
 
   const images=extractImages(rendered,base);
-  const missingAlt=images.filter(image=>image.alt===null);
+  const missingAlt=images.filter(image=>!image.sourceOnly&&image.alt===null);
   if(missingAlt.length) issues.push(`${missingAlt.length} image(s) missing an alt attribute`);
-  const emptySrc=images.filter(image=>!image.src);
+  const emptySrc=images.filter(image=>!image.sourceOnly&&!image.src&&!image.variants.length);
   if(emptySrc.length) issues.push(`${emptySrc.length} image(s) have no usable src/data-src`);
 
   const links=extractLinks(rendered,base);
@@ -201,10 +203,13 @@ async function inspectImages(pages){
   const candidates=[];const seen=new Set();
   for(const page of pages){
     for(const image of page.images||[]){
-      if(!image.absolute||seen.has(image.absolute)) continue;
-      let url;try{url=new URL(image.absolute);}catch{continue;}
-      if(url.origin!==new URL(BASE_URL).origin) continue;
-      seen.add(image.absolute);candidates.push({url:image.absolute,page:page.path});
+      for(const candidate of [image.absolute,...image.variants]){
+        if(!candidate||seen.has(candidate)) continue;
+        let url;try{url=new URL(candidate);}catch{continue;}
+        if(url.origin!==new URL(BASE_URL).origin) continue;
+        seen.add(candidate);candidates.push({url:candidate,page:page.path});
+        if(candidates.length>=MAX_IMAGES) break;
+      }
       if(candidates.length>=MAX_IMAGES) break;
     }
     if(candidates.length>=MAX_IMAGES) break;

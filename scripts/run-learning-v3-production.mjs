@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
+import { reviewedGeneticsMedia } from './lib/reviewed-genetics-media.mjs';
 
 // Canonical owner-chain trigger: V3 base owners -> V4 guided learning -> subject V6 finalizers.
 const sourcePath = process.env.CANONICAL_TOPIC_LITERATURE_PATH || 'site/wordpress/education/topic-literature.json';
@@ -158,7 +159,7 @@ const originalMissingVisual = `function img(item, alt, { ratio = '4/3', eager = 
 }`;
 const brandedMissingVisual = `function img(item, alt, { ratio = '4/3', eager = false } = {}) {
   if (!item) return \`<div class="v3-image-placeholder" role="img" aria-label="\${esc(alt)}"><span>Teaching Healthy Cultivation</span><strong>\${esc(alt)}</strong></div>\`;
-  return \`<img src="\${esc(imageUrl(item))}" alt="\${esc(imageAlt(item, alt))}" \${eager ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'} decoding="async" style="aspect-ratio:\${esc(ratio)}">\`;
+  return \`<img src="\${esc(imageUrl(item))}" alt="\${esc(imageAlt(item, alt))}" \${eager ? 'loading="eager" fetchpriority="high" data-no-lazy="1"' : 'loading="lazy"'} decoding="async" style="aspect-ratio:\${esc(ratio)}">\`;
 }`;
 if (!publisher.includes(originalMissingVisual) && !publisher.includes(brandedMissingVisual)) {
   throw new Error('Could not locate the Learning V3 missing-visual renderer; refusing an unreviewed runtime patch.');
@@ -178,16 +179,30 @@ const originalReleaseImages = `const releaseImages = {
   mangoFem: chooseMedia(media, [['trichome'], ['flower']], used) || fallbackHero,
   bubblegum: chooseMedia(media, [['sex', 'expression'], ['genetics']], used) || fallbackHero
 };`;
-const reviewedReleaseImages = `const releaseImages = {
-  mangoRegular: chooseMedia(media, [['dtf-strain-card-blue-mango-f2-regular']], new Set()) || fallbackHero,
-  mangoFem: chooseMedia(media, [['dtf-strain-card-blue-mango-f2-feminized']], new Set()) || fallbackHero,
-  bubblegum: chooseMedia(media, [['dtf-strain-card-blue-bubblegum-f1-regular']], new Set()) || fallbackHero
+const strainCardRegistry = JSON.parse(await readFile('site/wordpress/products/strain-card-images.json', 'utf8'));
+if (!Array.isArray(strainCardRegistry.cards) || strainCardRegistry.cards.length !== 3) {
+  throw new Error('Expected the three reviewed homepage release cards');
+}
+const reviewedReleaseImages = `const reviewedStrainCards = ${JSON.stringify(strainCardRegistry.cards)};
+${reviewedGeneticsMedia.toString()}
+const releaseImages = {
+  mangoRegular: reviewedGeneticsMedia(reviewedStrainCards, media, 'dtf-strain-card-blue-mango-f2-regular'),
+  mangoFem: reviewedGeneticsMedia(reviewedStrainCards, media, 'dtf-strain-card-blue-mango-f2-feminized'),
+  bubblegum: reviewedGeneticsMedia(reviewedStrainCards, media, 'dtf-strain-card-blue-bubblegum-f1-regular')
 };
-const reviewedGeneticsHero = chooseMedia(media, [['dtf-strain-card-blue-mango-f2-regular']], new Set()) || releaseImages.mangoRegular || fallbackHero;`;
+const reviewedGeneticsHero = releaseImages.mangoRegular;`;
 if (!publisher.includes(originalReleaseImages) && !publisher.includes(reviewedReleaseImages)) {
   throw new Error('Could not locate the Learning V3 Home release-image selector; refusing to publish education art into genetics positions.');
 }
 publisher = publisher.replace(originalReleaseImages, reviewedReleaseImages);
+
+// The final Home owner verifies this copy after restoring the three real cards.
+// Its retired premium-art predecessor must not be required to set the heading.
+const releaseHeading = 'Current releases, shown with the real strain cards.';
+if (!publisher.includes('Current genetics stay simple and direct.') && !publisher.includes(releaseHeading)) {
+  throw new Error('Could not locate the Home release heading required by the final visual owner.');
+}
+publisher = publisher.replace('Current genetics stay simple and direct.', releaseHeading);
 
 const originalReleaseCss = `.v3 .release img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}`;
 const reviewedReleaseCss = `.v3 .release img{display:block;width:100%;aspect-ratio:2/3;object-fit:contain;background:#fff;padding:10px}.v3 .hero-media img{object-fit:contain!important;background:#fff!important;padding:10px}`;

@@ -1,4 +1,4 @@
-const finite=(value,label)=>{const n=Number(value);if(!Number.isFinite(n))throw new RangeError(`${label} must be a finite number`);return n};
+const finite=(value,label)=>{if(value==null||(typeof value==='string'&&value.trim()===''))throw new RangeError(`${label} must be a finite number`);const n=Number(value);if(!Number.isFinite(n))throw new RangeError(`${label} must be a finite number`);return n};
 const nonnegative=(value,label)=>{const n=finite(value,label);if(n<0)throw new RangeError(`${label} must be non-negative`);return n};
 const positive=(value,label)=>{const n=finite(value,label);if(n<=0)throw new RangeError(`${label} must be greater than zero`);return n};
 const humidity=(value)=>{const n=finite(value,'Relative humidity');if(n<=0||n>100)throw new RangeError('Relative humidity must be greater than 0 and no more than 100');return n};

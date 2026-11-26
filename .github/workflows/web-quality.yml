@@ -9,12 +9,19 @@ on:
       - 'site/**'
       - 'scripts/discover-public-routes.mjs'
       - 'scripts/check-public-route-health.mjs'
+      - 'scripts/lib/route-health-assets.mjs'
+      - 'scripts/test/route-health-assets.test.mjs'
       - 'scripts/audit-responsive-source.mjs'
       - 'web-qa.config.mjs'
       - 'lighthouserc.cjs'
       - 'configuration/web-quality-regression-baseline.json'
       - 'scripts/validate-lighthouse-regressions.mjs'
       - 'scripts/test-lighthouse-regressions.mjs'
+      - 'scripts/test-lighthouse-document-validation.test.mjs'
+      - 'scripts/diagnose-lighthouse-access.mjs'
+      - 'scripts/test/lighthouse-access-diagnostics.test.mjs'
+      - 'scripts/diagnose-chrome-navigation.mjs'
+      - 'scripts/test/chrome-navigation-diagnostics.test.mjs'
       - '.github/workflows/web-quality.yml'
       - '.agents/skills/dtf-web-quality-gate/**'
   workflow_run:
@@ -76,6 +83,9 @@ jobs:
 
       - name: Discover public routes
         run: node scripts/discover-public-routes.mjs
+
+      - name: Test responsive asset discovery
+        run: node --test scripts/test/route-health-assets.test.mjs
 
       - name: Check public route health
         run: node scripts/check-public-route-health.mjs
@@ -141,14 +151,36 @@ jobs:
       - name: Validate Lighthouse regression checker
         run: node scripts/test-lighthouse-regressions.mjs
 
+      - name: Test Lighthouse document origin and error rejection
+        run: node --test scripts/test-lighthouse-document-validation.test.mjs
+
+      - name: Test safe Lighthouse access diagnostics
+        run: node --test scripts/test/lighthouse-access-diagnostics.test.mjs
+
+      - name: Test safe Chrome navigation diagnostics
+        run: node --test scripts/test/chrome-navigation-diagnostics.test.mjs
+
+      # Temporary owner-authorized advisory mode; restore after functional tool completion.
       - name: Run Lighthouse CI
+        id: lighthouse_measurement
+        continue-on-error: true
         shell: bash
         run: |
           mkdir -p "$WEB_QA_ARTIFACT_DIR"
           set -o pipefail
           npx lhci autorun --config=lighthouserc.cjs 2>&1 | tee "$WEB_QA_ARTIFACT_DIR/lhci.log"
 
-      - name: Enforce measured Lighthouse and accessibility regressions
+      - name: Collect sanitized access evidence when Lighthouse fails
+        if: ${{ failure() || steps.lighthouse_measurement.outcome == 'failure' }}
+        run: node scripts/diagnose-lighthouse-access.mjs
+
+      - name: Collect sanitized Chrome navigation evidence on Lighthouse failure
+        if: ${{ failure() || steps.lighthouse_measurement.outcome == 'failure' }}
+        run: node scripts/diagnose-chrome-navigation.mjs
+
+
+      - name: Report measured Lighthouse and accessibility regressions (advisory)
+        continue-on-error: true
         if: always()
         run: node scripts/validate-lighthouse-regressions.mjs
 

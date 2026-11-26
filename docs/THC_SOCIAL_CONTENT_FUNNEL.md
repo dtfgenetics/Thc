@@ -206,3 +206,76 @@ Built and locally tested media ingestion checker (6/6 tests passed) which probes
 ## Media intake v6.1 — 2026-10-10
 
 Fixed `tools/thc_video_media_inventory.py` to classify still botanical images correctly (ffprobe reports them as video streams), reject symlink aliases BEFORE resolving them, and report invalid files individually without stopping entire batch. GitHub code commit `ecf540d2`. Added six repository media-intake regression tests (`0e8fba3`) and updated the GitHub Actions video QA workflow (`7d4bbf9`) to run those tests on code changes. Locally tested equivalent reference implementation: **6/6 passed**. Current latest GitHub workflow run is NOT verified yet; do not claim CI success. The deliverable `THC_Video_Academy_v6_1_Intake_QA.zip` contains the tested reference implementation, tests and README. This only validates technical media metadata: neither rights, real-human narration, true plant stage nor final editorial approval is established. All 12 old synthesized-narration Shorts/Reels remain disabled drafts.
+
+
+## Live production safety intervention — 2026-10-16
+
+Metricool brand 7320929, timezone America/Chicago. Read back nine previously auto-publishing, unapproved video posts scheduled October 17–24. All nine were changed to `draft=true`, `autoPublish=false` and independently re-read with those exact values. Original → replacement IDs: 394501734→398039772; 395125929→398039792; 395125955→398039814; 395125975→398039855; 395126002→398039874; 396059660→398039909; 396059684→398039921; 396059711→398039940; 396059737→398039975. Do not reactivate without documented full approval. Twelve earlier narrated drafts also remain under the hard-stop policy; this intervention does not constitute a complete re-audit of those twelve.
+
+**Hard release gate:** no robotic, synthetic, TTS or AI narration. Germination Master v2 remains internal QA FAIL: scene mismatch and missing authentic licensed evidence and human narration. Require correctly staged seed → imbibition → radicle → cotyledons → true leaves, source/license manifest, reviewed scientific diagrams, clean recorded human voice, captions, accessibility and brand signoff. No video release was performed.
+
+**Metricool live error:** October 16 scheduled Facebook post 392893664 and Instagram image post 394423410 showed `ERROR: You have reached your Metricool account limit.` Treat future PENDING posts as unverified until real platform permalinks are checked. Appropriate educational image/text entries were not altered in this intervention. Canonical invite: https://discord.gg/ZzYTUWKKW; adult education only, no sales or trades. Discord joins not independently measured.
+
+
+## Verified post-level analytics baseline — 2026-10-16
+
+Metricool brand 7320929; post dates October 11–15, 2026. Facebook posts connector: 15 published post permalinks, 246 summed post impressions, 59 summed per-post reach (not deduplicated audience), zero reported link clicks, zero comments, one share. Instagram posts connector: 6 published post permalinks, 336 summed post views, 198 summed per-post reach (not deduplicated audience), 25 organic interactions, 1 save. These are small platform-reported samples, not Discord join attribution, unique aggregate reach, or proof that links were never opened elsewhere. No claim of conversion or growth. Review the Metricool account-limit error before relying on future scheduled delivery. Improve content with authentic licensed imagery, explicit scientific references, relevant discussion prompts and verified community path; do not expand the video queue while release gate remains closed.
+
+
+## Publishing reliability and video QA operating procedure — 2026-10-16
+
+### Live queue verification
+
+Rechecked Metricool brand 7320929 across October 16–30, 2026 (America/Chicago). No non-draft MP4 entries were found in the inspected ranges; the nine video safety holds remain draft and autoPublish=false. The October 16 Facebook post 392893664 and Instagram post 394423410 still show the provider error `You have reached your Metricool account limit.` This is a provider-side failure requiring account/plan/usage review; it is not fixed by rescheduling or by toggling `autoPublish`. Other posts labeled PENDING are not counted as published. No additional posts or videos were created or published in this audit.
+
+### Required status machine
+
+`IDEA → RESEARCHED → SOURCED → MEDIA_LICENSED → SCIENCE_QA → EDITORIAL_QA → APPROVED → SCHEDULED → PUBLISHED_VERIFIED → PERFORMANCE_REVIEWED`.
+
+Any missing source, media license, approval, or human narration returns a video to `BLOCKED`. Metricool `ERROR` means `PUBLISH_FAILED`, not `PUBLISHED`; `PENDING` means `SCHEDULED_UNVERIFIED`. A real post permalink is required to advance to `PUBLISHED_VERIFIED`. A scheduled date in the past with PENDING is a reconciliation exception, not proof of publication.
+
+### Preflight checklist (hard gate)
+
+1. Confirm correct THC Facebook/Instagram/YouTube destination, adult-education context, no sales/trades, correct invitation `https://discord.gg/ZzYTUWKKW` and approved CTA.
+2. Verify each scientific claim with a source that actually supports it; preserve caveats about medium, cultivar, conditions, units, and evidence quality. Log exact URL/DOI and access date.
+3. Require documentary images/footage with rights record (creator, license, URL, permitted edits/attribution); distinguish actual plant evidence from illustrative diagrams. Never imply synthetic imagery is real microscopy or actual footage.
+4. Videos: human-recorded voice only, no TTS/AI narration; check waveform, intelligibility, noise, level consistency, captions and on-screen timing. Require visually correct biological stage for each spoken claim. Review full exported MP4, not just thumbnails.
+5. Inspect mobile-safe text, legibility, captions, alt text, color contrast, audio, branding and link destinations.
+6. Obtain explicit editorial signoff; preserve signed-off asset hashes and QA notes. Keep unapproved videos `draft=true`, `autoPublish=false`.
+7. Before release check Metricool account/plan capacity and platform connection. Do not schedule additional content when existing posts are failing from account limits. After publication retrieve permalink and analytics; verify Discord joins from actual invite-use logs rather than social impressions.
+
+### Account-limit incident response
+
+- In Metricool inspect account plan, posting quota, number of brands, usage limits, account connection, and any relevant notifications/support messages; document which limit is actually being reached rather than guessing.
+- Export/record failed post IDs and provider error text; preserve content and original media URLs. Do not repeatedly retry blindly or duplicate queue items.
+- Once capacity is confirmed restored, republish only approved image/text content intentionally, one test at a time; check public permalink before resuming a batch. Do not auto-enable any video draft.
+- Track incident timestamps, owner, provider response, confirmed resolution, failed-post reconciliation and post-publication verification.
+
+### Production scorecard fields
+
+`date,channel,post_id,topic,media_origin,license_url,source_url,qa_owner,approval,scheduled_at,provider_status,public_permalink,impressions,reach,interactions,link_clicks,invite_code,verified_invite_uses,verified_joins,seven_day_active_members`.
+
+Use `unknown` for unavailable measurements; never substitute zero for unknown. Post-level reach summed across posts is not deduplicated audience reach. No verified Discord conversions have been reported.
+
+
+## Verified October 22, 2026 — November publishing allocation
+
+Metricool brand 7320929, America/Chicago; live read of four date-scoped November windows on October 22:
+
+| Window | Active FB | Active IG | Active YouTube | Held drafts |
+|---|---:|---:|---:|---:|
+| Nov 1–7 | 5 | 0 | 0 | 4 |
+| Nov 8–14 | 5 | 0 | 0 | 2 |
+| Nov 15–21 | 3 | 2 | 0 | 4 |
+| Nov 22–30 | 5 | 0 | 0 | 0 |
+| **Total** | **18** | **2** | **0** | **10** |
+
+All 20 active entries were reported PENDING by the scheduled-post connector; this is **not** evidence of publication or remaining free-plan quota. Actual published network deliveries count separately per platform; cross-platform duplicate posts count once for each network delivered. November planned slots = 20; November actual publication count is not yet established from a planner counter. Keep the ten drafts held. No queue changes made in this audit.
+
+October 21 provider errors were reconfirmed for IDs 394504262 (Facebook), 394525010 (Instagram), and 396388959 (Facebook), all reporting `You have reached your Metricool account limit.` Do not blindly retry or increase the queue.
+
+### November candidate conversions, not approved or applied
+
+Replace, rather than add, six existing Facebook deliveries with Instagram versions only after authentic licensed visual assets and editorial signoff: Nov 2 leaf pigments (392894233), Nov 7 damping-off (393049890), Nov 10 trichomes (392928206), Nov 12 stomata (392928236), Nov 23 leaf temperature (392902747), Nov 30 leaf anatomy (392903398). This would yield 12 FB + 8 IG, preserving 20 total delivery slots. Each conversion requires source URL, creator/license/attribution, visual species-stage verification, alt text, mobile graphic review, platform-specific caption, approved community CTA and explicit approval. No auto-approval of synthetic visuals or AI/TTS narration.
+
+A recurring read-only daily THC publishing audit was scheduled for America/Chicago mornings beginning Oct 23. It reports results but does not independently resolve provider account limits or grant publication approval.

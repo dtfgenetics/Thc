@@ -11,6 +11,10 @@ on:
       - scripts/audit-dtfseeds-live.mjs
       - scripts/audit-dtfseeds-public-suite.mjs
       - scripts/audit-dtfseeds-commerce.mjs
+      - scripts/lib/commerce-audit-status.mjs
+      - scripts/lib/commerce-audit-status.test.mjs
+      - scripts/lib/commerce-purchase-controls.mjs
+      - scripts/lib/commerce-purchase-controls.test.mjs
       - .github/workflows/dtfseeds-live-site-audit.yml
   push:
     branches:
@@ -19,6 +23,10 @@ on:
       - scripts/audit-dtfseeds-live.mjs
       - scripts/audit-dtfseeds-public-suite.mjs
       - scripts/audit-dtfseeds-commerce.mjs
+      - scripts/lib/commerce-audit-status.mjs
+      - scripts/lib/commerce-audit-status.test.mjs
+      - scripts/lib/commerce-purchase-controls.mjs
+      - scripts/lib/commerce-purchase-controls.test.mjs
       - .github/workflows/dtfseeds-live-site-audit.yml
 
 permissions:
@@ -38,6 +46,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      - name: Validate commerce audit status policy
+        run: |
+          node --check scripts/audit-dtfseeds-commerce.mjs
+          node --test scripts/lib/commerce-audit-status.test.mjs scripts/lib/commerce-purchase-controls.test.mjs
 
       - name: Audit core public routes and metadata
         id: core
@@ -118,10 +131,11 @@ jobs:
               '## Final DTFSeeds production audit',
               '',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Overall: **${overall}**`,
+              `Public read-only audit: **${overall}** (not a checkout authorization test)`,
               `Core public routes and metadata: **${pass(process.env.CORE)}**`,
               `Expanded apps/tools suite: **${pass(process.env.SUITE)}**`,
               `WooCommerce genetics storefront: **${pass(process.env.COMMERCE)}**`,
+              'Live server-side WooCommerce cart/checkout denial: **UNVERIFIED** (requires authorized deployment/transaction evidence)',
               '',
               'Audit artifacts contain the machine-readable and human-readable route and commerce reports.'
             ].join('\n');

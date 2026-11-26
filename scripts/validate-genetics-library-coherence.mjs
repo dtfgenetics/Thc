@@ -124,7 +124,10 @@ for(const product of products.products||[]){
   if(!card) fail(`${product.id}: no reviewed ${product.generation} ${product.seedType} strain card exists on ${line.id}`);
   const route=(line.storeRoutes||[]).find(row=>row.path===product.productPath);
   if(!route) fail(`${product.id}: public library does not expose verified store route ${product.productPath}`);
-  if(!seedsHtml.includes(product.productPath)) fail(`${product.id}: canonical Seeds fallback is missing ${product.productPath}`);
+  const salesHold = seedsHtml.includes('Seed sales are temporarily on hold.');
+  if(salesHold){
+    if(seedsHtml.includes(product.productPath)) fail(`${product.id}: canonical Seeds fallback exposes purchase route during sales hold`);
+  } else if(!seedsHtml.includes(product.productPath)) fail(`${product.id}: canonical Seeds fallback is missing ${product.productPath}`);
 }
 
 for(const route of storePaths){

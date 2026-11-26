@@ -6,11 +6,14 @@ on:
     branches: [main]
     paths:
       - 'scripts/finalize-wordpress-gallery-visual-v3.mjs'
+      - 'scripts/apply-wordpress-public-content-owned-routes.mjs'
+      - 'site/wordpress/pages/gallery.html'
       - 'site/wordpress/visual-quality-policy.json'
       - '.github/workflows/wordpress-gallery-visual-v3.yml'
   workflow_run:
     workflows:
       - 'Deploy DTFSeeds WordPress Pages'
+      - 'Publish DTFSeeds WordPress Production'
       - 'Publish DTF Genetics Library'
     types: [completed]
 
@@ -111,6 +114,8 @@ jobs:
                 grep -Fqi 'Blue Mango F2 Feminized DTF Genetics strain card' "$output" && \
                 grep -Fqi 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$output" && \
                 grep -Fqi 'Mango Bubbles F1 Regular DTF Genetics strain card' "$output" && \
+                ! grep -Fqi 'Approved educational replacements are still being rebuilt.' "$output" && \
+                grep -Fqi 'Approved plant-science visuals.' "$output" && \
                 [[ "$images" -ge 4 ]]; then
                 if OUTPUT="$output" node <<'NODE'
           const fs = require('fs');

@@ -49,14 +49,14 @@ export function mountLiveToolAdapter({
     '<h2>'+title+'</h2>'+
     '<p class="muted">Use one manual JSON packet, a read-only HTTP endpoint, or a WebSocket feed. Incoming measurements update this form only when you apply them or enable auto-apply. Nothing is saved to tool history automatically.</p>'+
     '<div class="fields">'+
-    '<div class="field"><label>Source label</label><input data-live-source value="json-adapter" autocomplete="off"></div>'+
-    '<div class="field"><label>Device / sensor ID</label><input data-live-device value="sensor-1" autocomplete="off"></div>'+
-    '<div class="field"><label>Stale after (minutes)</label><input data-live-stale type="number" min="1" step="1" value="'+Math.max(1,Number(staleMinutes)||10)+'"></div>'+
-    '<div class="field"><label>Transport</label><select data-live-transport><option value="manual">Manual JSON</option><option value="http">HTTP polling · GET only</option><option value="ws">WebSocket</option></select></div>'+
-    '<div class="field" data-live-endpoint-wrap hidden><label>Read-only endpoint</label><input data-live-endpoint type="url" inputmode="url" autocomplete="off" placeholder="https://gateway.example/telemetry"></div>'+
-    '<div class="field" data-live-interval-wrap hidden><label>HTTP poll interval (seconds)</label><input data-live-interval type="number" min="1" step="1" value="10"></div>'+
+    '<div class="field"><label>Source label</label><input data-live-source aria-label="Source label" value="json-adapter" autocomplete="off"></div>'+
+    '<div class="field"><label>Device / sensor ID</label><input data-live-device aria-label="Device / sensor ID" value="sensor-1" autocomplete="off"></div>'+
+    '<div class="field"><label>Stale after (minutes)</label><input data-live-stale aria-label="Stale after (minutes)" type="number" min="1" step="1" value="'+Math.max(1,Number(staleMinutes)||10)+'"></div>'+
+    '<div class="field"><label>Transport</label><select data-live-transport aria-label="Transport"><option value="manual">Manual JSON</option><option value="http">HTTP polling · GET only</option><option value="ws">WebSocket</option></select></div>'+
+    '<div class="field" data-live-endpoint-wrap hidden><label>Read-only endpoint</label><input data-live-endpoint aria-label="Read-only endpoint" type="url" inputmode="url" autocomplete="off" placeholder="https://gateway.example/telemetry"></div>'+
+    '<div class="field" data-live-interval-wrap hidden><label>HTTP poll interval (seconds)</label><input data-live-interval aria-label="HTTP poll interval (seconds)" type="number" min="1" step="1" value="10"></div>'+
     '</div>'+
-    '<div class="field" data-live-json-wrap><label>Telemetry JSON</label><textarea data-live-json rows="6" spellcheck="false" placeholder=\'{"createdAt":"2026-09-28T19:00:00Z","temperatureC":25,"humidity":60}\'></textarea></div>'+
+    '<div class="field" data-live-json-wrap><label>Telemetry JSON</label><textarea data-live-json aria-label="Telemetry JSON" rows="6" spellcheck="false" placeholder=\'{"createdAt":"2026-09-28T19:00:00Z","temperatureC":25,"humidity":60}\'></textarea></div>'+
     '<div class="field"><label><input data-live-auto-apply type="checkbox"> Auto-apply incoming live packets to the form (never auto-save history)</label></div>'+
     '<div class="live-status-board" aria-label="Live telemetry connection status">'+
     '<div class="live-status-card"><span>Connection</span><strong data-live-state>Manual</strong></div>'+

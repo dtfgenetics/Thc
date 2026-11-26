@@ -24,11 +24,15 @@
   "coreScience": [
     "Roots release sugars, amino acids, organic acids, phenolics, ions, mucilage, enzymes, and many other compounds. Some release is passive; some is regulated transport; some material comes from border cells or damaged tissues. The mixture changes with plant age, nutrient status, light, stress, genotype, and root-zone conditions.",
     "These compounds alter pH and mineral availability, feed microorganisms, and create chemical signals. Microbes can move toward, consume, transform, or compete for exudates. Pathogens can also exploit root-derived resources. 'Feeding the soil food web' is therefore a partial description, not proof of a favorable outcome.",
-    "Exudation is difficult to measure without disturbing roots or changing the chemical environment. Hydroponic collection can simplify sampling but may not reproduce diffusion, sorption, and microbial consumption in soil or organic media."
+    "Exudation is difficult to measure without disturbing roots or changing the chemical environment. Hydroponic collection can simplify sampling but may not reproduce diffusion, sorption, and microbial consumption in soil or organic media.",
+    "Interpret a measured root-exudate profile as the net result of release from roots, possible re-uptake, microbial transformation, sorption to mineral or organic surfaces, dilution, and sampling conditions. A chemical detected in a collected solution may originate from living exudation, sloughed cells, injury during handling, additives, or microorganisms. Analytical detection by mass spectrometry establishes a compound signal in the sample; it does not alone identify the biological source or in situ flux.",
+    "Collection design changes the apparent chemistry. Washing a soil-grown root system can damage tissues and remove resident organisms; collecting into plain water or nutrient solutions alters gradients and background signals. Hydroponic collection improves accessibility but removes much of the sorption and microbial turnover present in soil. Sampling duration, solution volume, clock time, developmental stage, and handling controls need to be reported before profiles can be compared."
   ],
   "cultivationRelevance": [
     "Avoid diagnosing exudation from smell, foam, or biofilm alone. Those observations can arise from microbes, fertilizers, decaying roots, additives, or system contamination.",
-    "When evaluating inoculants or carbon additives, use treated and untreated groups, equal fertility, defined organisms, root-health observations, and a meaningful production endpoint."
+    "When evaluating inoculants or carbon additives, use treated and untreated groups, equal fertility, defined organisms, root-health observations, and a meaningful production endpoint.",
+    "Example comparison: an inoculant treatment is followed by extra biofilm near roots. The biofilm may reflect exudates, the carrier, background dissolved organics or microbes already in the system. Record base water and additives, root health, oxygen conditions and an untreated control; do not assign a beneficial signaling function based on appearance.",
+    "Treat statements that one product 'stimulates exudates' or 'feeds only beneficial bacteria' as testable hypotheses. To support the claim, compare replicated plants under equal baseline nutrition and use methods that can distinguish root release, inoculant establishment and a meaningful crop outcome."
   ],
   "measureAndRecord": [
     {
@@ -50,21 +54,29 @@
     {
       "field": "Outcome",
       "requirement": "Root mass, colonization, disease incidence, biomass, and chemistry with method."
+    },
+    {
+      "field": "Exudate sampling quality",
+      "requirement": "Record sampling matrix and duration, root age and cleaning protocol, collection volume, biological and blank controls, stress during collection, sample preservation, analytical method, detection limits, normalization basis and replicate count."
     }
   ],
   "misconceptions": [
     "All exudates are beneficial: They may support mutualists, neutral organisms, competitors, or pathogens.",
     "Sugar added to media is equivalent to natural exudation: Location, rate, chemistry, and regulation differ.",
-    "Visible biofilm proves productive signaling: Biofilm identity and effect require evidence."
+    "Visible biofilm proves productive signaling: Biofilm identity and effect require evidence.",
+    "An exudate concentration measured in collected water equals the natural rate of carbon release in soil: collection, microbial turnover, sorption, root re-uptake and normalization alter what is detected."
   ],
   "evidenceLimits": [
-    "Most mechanistic detail comes from non-cannabis plants. Cannabis root-exudate profiles and their production-scale consequences are still undercharacterized."
+    "Most mechanistic detail comes from non-cannabis plants. Cannabis root-exudate profiles and their production-scale consequences are still undercharacterized.",
+    "Detailed molecular exudation pathways and standardized collection protocols are drawn mainly from model plants and general plant-soil systems. Differences between soil and solution culture prevent uncritical transfer of concentration data to cannabis production."
   ],
   "crossLinks": "THC-ENC-045, THC-ENC-047–049, THC-ENC-056, and plant-microbe defense lessons.",
   "sourceNotes": [
     "Enagbonma BJ, Fadiji AE, Ayangbenro AS, Babalola OO. Communication between Plants and Rhizosphere Microbiome: Exploring the Root Microbiome for Sustainable Agriculture. Microorganisms. 2023;11(8):2003. doi:10.3390/microorganisms11082003. Open source",
     "Ahmed B, Hijri M. Potential impacts of soil microbiota manipulation on secondary metabolites production in cannabis. Journal of Cannabis Research. 2021;3:25. doi:10.1186/s42238-021-00082-0. Open source",
-    "Suwanchaikasem P, Idnurm A, Selby-Pham J, et al. Root-TRAPR: a modular plant growth device to visualize root development and monitor growth parameters, as applied to an elicitor response of Cannabis sativa. Plant Methods. 2022;18:46. doi:10.1186/s13007-022-00875-1. Open source"
+    "Suwanchaikasem P, Idnurm A, Selby-Pham J, et al. Root-TRAPR: a modular plant growth device to visualize root development and monitor growth parameters, as applied to an elicitor response of Cannabis sativa. Plant Methods. 2022;18:46. doi:10.1186/s13007-022-00875-1. Open source",
+    "Root Exudation: An In-Depth Experimental Guide. Plant, Cell & Environment. DOI: 10.1111/pce.15311. Experimental-methods review; not a cannabis-specific exudation-rate validation.",
+    "Metabolomics of plant root exudates: From sample preparation to data analysis. Frontiers in Plant Science. 2022;13:1062982. DOI: 10.3389/fpls.2022.1062982. Sampling, chromatography/mass spectrometry and interpretation methods."
   ],
   "slug": "root-exudates-and-rhizosphere-signaling",
   "route": "/learn/encyclopedia/thc-enc-046/",
