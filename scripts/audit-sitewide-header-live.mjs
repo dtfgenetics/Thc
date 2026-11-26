@@ -50,7 +50,6 @@ const CANONICAL_NAV = [
   ['/tools/', 'Tools'],
   ['/games/', 'Games'],
   ['/community/', 'Community'],
-  ['/shop/', 'Shop'],
 ];
 
 const REQUIRED = [
@@ -209,6 +208,13 @@ async function inspect({ path, depth }) {
   if (response.ok) {
     for (const check of REQUIRED) if (!check.test(body)) issues.push(`missing header marker: ${check.label}`);
     const primary = primaryNavFragment(body);
+    // The published V6 template has seven primary links while seed sales are on hold.
+    const header = body.match(/<header\b[^>]*data-dtf-shell=["\']header-v6["\'][^>]*>[\s\S]*?<\/header>/i)?.[0] || "";
+    if (!primary) issues.push("missing V6 primary navigation");
+    if ([...primary.matchAll(/<a\b/gi)].length !== CANONICAL_NAV.length) issues.push("sales-hold primary navigation must contain exactly seven links");
+    for (const [href, label] of CANONICAL_NAV) if (!hasNavLink(primary, href, label)) issues.push(`missing canonical primary navigation: ${label} ${href}`);
+    if (/<a\b[^>]*href\s*=\s*["\']\/(?:shop|cart)\/["\']/i.test(header)) issues.push("sales-hold header still exposes Shop/Cart link");
+    if (/aria-label\s*=\s*["\']Cart["\']/i.test(header)) issues.push("sales-hold header still exposes Cart control");
     for (const [href, label] of OBSOLETE_PRIMARY) {
       if (hasNavLink(primary, href, label)) issues.push(`obsolete primary navigation remains: ${label}`);
     }
@@ -256,7 +262,7 @@ const md = [
   `Discovered same-origin routes: **${report.discoveredRoutes}**`,'',
   `Skipped out-of-scope routes: **${report.skippedRoutes}**`,'',
   failures.length ? '## Failures' : '## Result','',
-  failures.length ? failures.map(x => `- \`${x.path}\` — ${x.issues.join('; ')}`).join('\n') : 'Every managed public HTML route exposes the canonical V6 eight-section header contract.'
+  failures.length ? failures.map(x => `- \`${x.path}\` — ${x.issues.join('; ')}`).join('\n') : 'Every managed public HTML route exposes the canonical V6 seven-link sales-hold header contract.'
 ].join('\n');
 await writeFile(MD_PATH, `${md}\n`);
 console.log(md);

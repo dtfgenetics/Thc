@@ -7,7 +7,7 @@ Updated: 2026-10-04
 The 420-lesson Encyclopedia is already published at the canonical text/search layer. Remaining work contains two fundamentally different classes:
 
 1. machine-completable production work; and
-2. independent review, accessibility approval, science review, and release authorization that must remain fail-closed.
+2. release-critical checks (scientific accuracy, sources, accessible visuals, content integrity, and deployment) distinct from optional general-lesson assessment drafts and Academy-only credential checks.
 
 The machine-completion queue prevents those states from being conflated.
 
@@ -38,14 +38,14 @@ A produced visual candidate is not an approved teaching asset.
 
 These remain outside the autonomous completion queue:
 
-- independent claim/evidence science review;
-- independent assessment-rationale review;
-- teaching-visual accuracy/accessibility approval;
-- publication authorization;
-- any pilot, psychometric, accreditation, evaluator-calibration, or external credential evidence.
+- optional external claim/evidence peer review (not required to publish informational lessons);
+- optional general-lesson assessment-rationale review (not a release blocker);
+- teaching-visual rights, scientific accuracy, accessibility and public-serving verification where a visual is actually published;
+- publication/deployment verification;
+- Academy-only credential, scoring, psychometric or accreditation work (tracked separately).
 
 ## Operating rule
 
-Automation should repeatedly drain `machineProductionQueue` in priority order. When a lesson has no remaining machine action, it may still appear in `reviewQueue` or `externalHumanQueue`. That state is truthful completion of machine work, not permission to fabricate approval.
+Automation should repeatedly drain `machineProductionQueue` in priority order. When a lesson has no remaining machine action, it may still appear in `reviewQueue` or `externalHumanQueue`. A pending optional peer review or general-lesson assessment must **not** block informational lesson completion or deployment. Real source, accessibility, rights, and deployment defects still block the affected release. The current queue implementation may still encode older assumptions; inspect and repair its executable logic before treating these instructions as proof of CI compliance.
 
 The protected 420-lesson core remains stable. New subject matter belongs in the controlled 421+ extension layer rather than renumbering or replacing the core.

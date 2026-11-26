@@ -24,6 +24,9 @@ test('Shop archive contains a prominent hold notice and no transaction links',()
  assert.doesNotMatch(html,/woocommerce\/product-(?:button|collection|price)/i);
  assert.doesNotMatch(html,/Add to cart|View store listing|Price, availability & checkout|Shop the release/i);
  assert.match(page,/Seed sales are temporarily on hold/);
+ assert.doesNotMatch(page, /href=["']\/(?:product|cart|checkout)\//i);
+ assert.doesNotMatch(page, /commerce stays live|three active routes|the store handles the transaction|sales on hold — sales on hold/i);
+ assert.match(page, /purchasing and checkout are unavailable/i);
 });
 
 test('legacy publisher cannot restore sale links while sales are suspended',()=>{

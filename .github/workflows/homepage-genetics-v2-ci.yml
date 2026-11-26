@@ -7,6 +7,8 @@ on:
       - 'scripts/finalize-wordpress-home-genetics-art.mjs'
       - 'scripts/fix-wordpress-home-release-visuals.mjs'
       - 'scripts/run-learning-v3-production.mjs'
+      - 'scripts/rebuild-wordpress-learning-experience-v3.mjs'
+      - 'scripts/test-learning-v3-home-sales-hold.mjs'
       - 'scripts/lib/reviewed-genetics-media.mjs'
       - 'scripts/test-reviewed-genetics-media.mjs'
       - 'scripts/verify-home-release-artwork.mjs'
@@ -197,6 +199,8 @@ jobs:
         run: |
           node scripts/test-reviewed-genetics-media.mjs
           node scripts/test-home-release-artwork.mjs
+          node scripts/test-home-sales-hold.mjs
+          node scripts/test-learning-v3-home-sales-hold.mjs
 
       - name: Regression-test premium post-V3 matchers
         shell: bash

@@ -1,0 +1,27 @@
+name: Hostinger Sales-Hold Verifier CI
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/verify-public-sales-hold-after-cache.mjs
+      - scripts/verify-public-sales-hold-after-cache.test.mjs
+      - scripts/flush-hostinger-litespeed-mcp.mjs
+      - .github/workflows/hostinger-mcp-cache-flush.yml
+      - .github/workflows/hostinger-sales-hold-verifier-ci.yml
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify helper syntax
+        run: |
+          node --check scripts/verify-public-sales-hold-after-cache.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+      - name: Verify public sales-hold response tests
+        run: node --test scripts/verify-public-sales-hold-after-cache.test.mjs

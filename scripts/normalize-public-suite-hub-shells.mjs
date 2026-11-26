@@ -74,8 +74,10 @@ function normalize(source, rel) {
   }
   const nav = header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1] || '';
   const labels = [...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map((m) => m[1].replace(/<[^>]+>/g, '').trim());
-  const expected = ['Home', 'Seeds', 'Learn', 'Courses', 'Tools', 'Games', 'Community', 'Shop'];
+  const expected = ['Home', 'Seeds', 'Learn', 'Courses', 'Tools', 'Games', 'Community'];
   if (JSON.stringify(labels) !== JSON.stringify(expected)) throw new Error(`${rel}: unexpected canonical navigation ${JSON.stringify(labels)}`);
+  if (/<a\b[^>]*href\s*=\s*["']\/(?:shop|cart)\/["']/i.test(header)) throw new Error(rel + ': forbidden sales-hold Shop/Cart header link');
+  if (/aria-label\s*=\s*["']Cart["']/i.test(header)) throw new Error(rel + ': forbidden Cart utility during sales hold');
   return html;
 }
 

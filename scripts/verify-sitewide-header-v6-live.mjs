@@ -10,7 +10,6 @@ const expected=[
   ['/tools/','Tools'],
   ['/games/','Games'],
   ['/community/','Community'],
-  ['/shop/','Shop'],
 ];
 const forbiddenLabels=new Set(['Genetics','Diagnostic']);
 const concurrency=Math.max(1,Math.min(10,Number(process.env.HEADER_AUDIT_CONCURRENCY||5)));
@@ -46,7 +45,12 @@ function inspect(html,route){
   for(const item of anchors){
     if(forbiddenLabels.has(item.label)) throw new Error(`${route}: obsolete primary label remains: ${item.label}`);
   }
-  for(const utility of ['Search DTF Genetics','Account','Cart']){
+  // Commerce is suspended. A compliant V6 header must not advertise shopping.
+  if(/<a\b[^>]*href\s*=\s*["']\/(?:shop|cart)\/["']/i.test(header))
+    throw new Error(`${route}: sales-hold header exposes Shop or Cart link`);
+  if(/aria-label\s*=\s*["']Cart["']/i.test(header))
+    throw new Error(`${route}: sales-hold header exposes Cart utility`);
+  for(const utility of ['Search DTF Genetics','Account']){
     if(!header.includes(`aria-label="${utility}"`)&&!header.includes(`aria-label='${utility}'`)) throw new Error(`${route}: missing utility control ${utility}`);
   }
   for(const id of ['dtf-sitewide-header-v6-script','dtf-content-density-v1-script','dtf-sitewide-visual-repair-v2-script']){

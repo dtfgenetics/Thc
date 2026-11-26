@@ -142,6 +142,26 @@ jobs:
           set -euo pipefail
           GENETICS_CDN_REPORT="$RUNNER_TEMP/genetics-cdn-source-report.json" node scripts/audit-genetics-cdn-sources.mjs
 
+      - name: Validate CDN identities before any WordPress mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test scripts/test/genetics-cdn-identities.test.mjs
+          GENETICS_CDN_REPORT="$RUNNER_TEMP/genetics-cdn-source-report.json" \
+          GENETICS_CDN_DRIFT_REPORT="$RUNNER_TEMP/genetics-cdn-drift-report.json" \
+          node scripts/validate-genetics-cdn-identities.mjs
+
+      - name: Preserve source identity drift evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genetics-cdn-identity-audit-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/genetics-cdn-source-report.json
+            ${{ runner.temp }}/genetics-cdn-drift-report.json
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Publish Seeds library and individual line pages
         id: library
         env:
