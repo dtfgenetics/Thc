@@ -12,6 +12,8 @@ on:
       - 'scripts/publish-wordpress-genetics-library-cdn-core.mjs'
       - 'scripts/force-original-image-accept.mjs'
       - 'scripts/audit-genetics-cdn-sources.mjs'
+      - 'scripts/validate-genetics-cdn-identities.mjs'
+      - 'scripts/test/genetics-cdn-identities.test.mjs'
       - '.github/workflows/wordpress-genetics-library-production.yml'
       - '.github/workflows/wordpress-genetics-library-push.yml'
       - '.github/workflows/genetics-library-ci-v2.yml'
@@ -38,6 +40,8 @@ jobs:
           node --check scripts/publish-wordpress-genetics-library-cdn-core.mjs
           node --check scripts/force-original-image-accept.mjs
           node --check scripts/audit-genetics-cdn-sources.mjs
+          node --check scripts/validate-genetics-cdn-identities.mjs
+          node --test scripts/test/genetics-cdn-identities.test.mjs
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           const catalog=JSON.parse(fs.readFileSync('site/wordpress/products/seed-line-catalog.json','utf8'));

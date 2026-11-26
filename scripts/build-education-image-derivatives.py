@@ -23,6 +23,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 SUPPORTED_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
 DEFAULT_WIDTHS = (640, 1280)
 DEFAULT_QUALITY = 82
+DEFAULT_WEBP_METHOD = 4  # Balanced encoding effort; method 6 is substantially slower.
 ASSET_PREFIX = "/assets/education/infographics/"
 PREVIEW_PREFIX = "/assets/education/infographics-web/"
 
@@ -53,6 +54,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--library-json", required=True, type=Path)
     parser.add_argument("--library-output", required=True, type=Path)
     parser.add_argument("--quality", type=int, default=DEFAULT_QUALITY)
+    parser.add_argument("--method", type=int, choices=range(0, 7), default=DEFAULT_WEBP_METHOD)
     parser.add_argument("--widths", nargs="+", type=int, default=list(DEFAULT_WIDTHS))
     return parser.parse_args()
 
@@ -75,7 +77,7 @@ def derivative_name(source: Path, width: int) -> str:
     return f"{source.stem}-{width}.webp"
 
 
-def build_derivatives(path: Path, output: Path, widths: list[int], quality: int) -> ImageRecord:
+def build_derivatives(path: Path, output: Path, widths: list[int], quality: int, method: int = DEFAULT_WEBP_METHOD) -> ImageRecord:
     source_size = path.stat().st_size
     try:
         with Image.open(path) as opened:
@@ -112,7 +114,7 @@ def build_derivatives(path: Path, output: Path, widths: list[int], quality: int)
             destination,
             format="WEBP",
             quality=quality,
-            method=6,
+            method=method,
             optimize=True,
         )
         derivatives.append(
@@ -135,23 +137,29 @@ def build_derivatives(path: Path, output: Path, widths: list[int], quality: int)
 
 
 def optimize_img_tag(tag: str, record: ImageRecord) -> str:
+    """Replace stale responsive candidates with the derivatives generated for this source."""
     derivatives = sorted(record.derivatives, key=lambda item: item.width)
     first = derivatives[0]
     first_url = PREVIEW_PREFIX + first.filename
     srcset = ", ".join(f"{PREVIEW_PREFIX}{item.filename} {item.width}w" for item in derivatives)
     sizes = "(max-width: 700px) 92vw, (max-width: 1100px) 46vw, 30vw"
 
-    tag = re.sub(r'\bsrc="[^"]+"', f'src="{first_url}"', tag, count=1)
-    if " srcset=" not in tag:
-        tag = tag[:-1] + f' srcset="{srcset}" sizes="{sizes}">'
-    if " decoding=" not in tag:
-        tag = tag[:-1] + ' decoding="async">'
+    def set_attr(markup: str, name: str, value: str) -> str:
+        pattern = rf'(?<![\w-]){re.escape(name)}\s*=\s*(["\x27])(.*?)\1'
+        if re.search(pattern, markup, flags=re.IGNORECASE):
+            return re.sub(pattern, lambda _: f'{name}="{value}"', markup, count=1, flags=re.IGNORECASE)
+        return markup[:-1] + f' {name}="{value}">'
+
+    tag = set_attr(tag, "src", first_url)
+    tag = set_attr(tag, "srcset", srcset)
+    tag = set_attr(tag, "sizes", sizes)
+    tag = set_attr(tag, "decoding", "async")
     return tag
 
 
 def rewrite_library(html: str, records: dict[str, ImageRecord]) -> tuple[str, int, list[str]]:
     pattern = re.compile(
-        r'<img\b[^>]*\bsrc="' + re.escape(ASSET_PREFIX) + r'([^"]+)"[^>]*>',
+        r'<img\b[^>]*\ssrc=(["\x27])' + re.escape(ASSET_PREFIX) + r'([^"\x27]+)\1[^>]*>',
         flags=re.IGNORECASE,
     )
     replaced = 0
@@ -159,7 +167,7 @@ def rewrite_library(html: str, records: dict[str, ImageRecord]) -> tuple[str, in
 
     def replace(match: re.Match[str]) -> str:
         nonlocal replaced
-        filename = match.group(1)
+        filename = match.group(2)
         record = records.get(filename)
         if record is None:
             missing.append(filename)
@@ -190,7 +198,7 @@ def main() -> int:
         if image.name in seen_names:
             raise RuntimeError(f"Duplicate canonical filename: {image.name}")
         seen_names.add(image.name)
-        records.append(build_derivatives(image, args.output, args.widths, args.quality))
+        records.append(build_derivatives(image, args.output, args.widths, args.quality, args.method))
 
     record_map = {record.source: record for record in records}
     library_html = args.library_page.read_text(encoding="utf-8")
@@ -206,6 +214,7 @@ def main() -> int:
         "previewFormat": "webp",
         "previewWidths": sorted(set(args.widths)),
         "quality": args.quality,
+        "webpMethod": args.method,
         "fullResolutionLinksPreserved": True,
         "generatedAt": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
     }

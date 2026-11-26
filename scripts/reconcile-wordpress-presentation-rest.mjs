@@ -44,10 +44,9 @@ function headerCompliant(text) {
     'href="/seeds/"',
     'href="/learn/"',
     'href="/tools/"',
-    'href="/games/"',
-    'href="/shop/"'
+    'href="/games/"'
   ]) &&
-    !hasAny(text, ['>home</a>', '>courses</a>', '>community</a>', 'email@email.com', '+123456789']);
+    !hasAny(text, ['href="/shop/"', 'href="/cart/"', 'href="/checkout/"', '>home</a>', '>courses</a>', '>community</a>', 'email@email.com', '+123456789']);
 }
 
 function footerCompliant(text) {
@@ -58,7 +57,7 @@ function footerCompliant(text) {
     lower.includes('dream the future') &&
     lower.includes('discord.gg/xjbuehfpmt') &&
     hasCurrentCopyright &&
-    !hasAny(value, ['email@email.com', '+123456789', '2025 dtf genetics']);
+    !hasAny(value, ['href="/shop/"', 'href="/cart/"', 'href="/checkout/"', 'email@email.com', '+123456789', '2025 dtf genetics']);
 }
 
 async function request(path, options = {}) {
@@ -129,7 +128,7 @@ const canonicalFooter = `<!-- wp:group {"tagName":"footer","style":{"spacing":{"
 <p><strong>DTF Genetics</strong> — Dream the Future.</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph -->
-<p><a href="/seeds/">Seeds</a> · <a href="/learn/">Learn</a> · <a href="/tools/">Tools</a> · <a href="/games/">Games</a> · <a href="/community/">Community</a> · <a href="/shop/">Shop</a></p>
+<p><a href="/seeds/">Seeds</a> · <a href="/learn/">Learn</a> · <a href="/tools/">Tools</a> · <a href="/games/">Games</a> · <a href="/community/">Community</a></p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph -->
 <p><a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join Teaching Healthy Cultivation on Discord</a></p>

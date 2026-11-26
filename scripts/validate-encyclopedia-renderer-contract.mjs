@@ -12,12 +12,12 @@ const required=[
   ['education search link','/learn/search/'],
   ['measurement section','<h2 id="measure">Measure and record</h2>'],
   ['misconception section','<h2 id="misconceptions">Common misconceptions</h2>'],
+  ['semantic misconception list','<ol class="thc-paired" aria-label="Misconceptions and scientific corrections"'],
+  ['individually grouped misconception list items','<li><p><strong>Misconception:</strong>'],
+  ['visible numbered misconception list','.thc-paired>li::marker'],
   ['evidence limits section','<h2 id="evidence-limits">Evidence limits and uncertainty</h2>'],
-  ['assessment section','<h2 id="reasoning">Check your reasoning</h2>'],
   ['approved practical-resource section','practicalResourcesHtml'],
   ['practical-resource approval gate',"status==='approved'&&x.publicRoute"],
-  ['learner answer rationales','rationaleHtml'],
-  ['rationale disclosure UI','thc-rationale'],
   ['desktop article/sidebar layout','thc-layout'],
   ['mobile breakpoint','@media(max-width:640px)'],
   ['previous lesson behavior','← Previous'],
@@ -46,6 +46,10 @@ const required=[
 for(const [label,needle] of required)if(!src.includes(needle))errors.push('renderer missing '+label);
 for(const [label,needle] of [['durable lesson visual preservation marker','data-thc-lesson-visual-id='],['durable lesson visual figure fallback','lessonVisualFigurePattern']])if(!visualHelper.includes(needle))errors.push('visual preservation helper missing '+label);
 if(src.includes('fake visual')||src.includes('placeholder teaching visual'))errors.push('renderer must not emit fake visual placeholders');
+for(const forbidden of ['<h2 id="reasoning">Check your reasoning</h2>','rationaleHtml(a)','checks.prompts','checks.scoringIntent','Answer rationale']) {
+  if(src.includes(forbidden)) errors.push('Non-certification encyclopedia publisher still includes assessment copy: '+forbidden);
+}
+if(!src.includes('workedExampleHtml(a)')) errors.push('Renderer must retain non-graded worked educational examples.');
 const visualFixture='<figure class="thc-lesson-visual" data-thc-lesson-visual-id="THC-ENC-041"><img src="https://dtfseeds.com/wp-content/uploads/example.jpg" alt="Root tip visual"></figure>';
 const freshFixture='<article>before<!-- THC-ENC-VISUAL-ANCHOR --><h2>Core science</h2></article>';
 const preserved=preserveExistingLessonVisual({slug:'thc-enc-041',existingRaw:visualFixture,content:freshFixture});

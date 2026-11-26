@@ -16,7 +16,7 @@ function syncUrl(){
   const query=input.value.trim();
   if(query)params.set('q',query);else params.delete('q');
   if(activeType!=='all')params.set('type',activeType);else params.delete('type');
-  const next=params.toString()?location.pathname+'?'+params.toString():location.pathname;
+  const next=location.pathname+(params.toString()?'?'+params.toString():'')+location.hash;
   history.replaceState(null,'',next);
 }
 
@@ -50,8 +50,11 @@ function buildFuse(){
 
 function visibleDocs(){
   const q=input.value.trim();
-  const base=q&&fuse?fuse.search(q,{limit:80}).map(row=>row.item):documents;
-  return activeType==='all'?base:base.filter(item=>normalize(item.type)===normalize(activeType));
+  // Filter ranked matches before applying the display cap, so other resource types
+  // cannot crowd out matches in the selected category.
+  const base=q&&fuse?fuse.search(q).map(row=>row.item):documents;
+  const filtered=activeType==='all'?base:base.filter(item=>normalize(item.type)===normalize(activeType));
+  return q?filtered.slice(0,80):filtered;
 }
 
 function render(){
@@ -114,7 +117,6 @@ Promise.all([
       seen.add(String(item.id));
     }
     buildFuse();
-    document.querySelectorAll('[data-static-fallback]').forEach(node=>node.hidden=true);
     const params=new URLSearchParams(location.search);
     const requestedQuery=params.get('q');
     const requestedType=params.get('type');
@@ -135,6 +137,7 @@ Promise.all([
     const requestedButton=[...filterHost.querySelectorAll('[data-search-filter]')].find(x=>normalize(x.dataset.searchFilter)===normalize(activeType));
     if(requestedButton)[...filterHost.querySelectorAll('[data-search-filter]')].forEach(x=>x.setAttribute('aria-pressed',String(x===requestedButton)));
     render();
+    document.querySelectorAll('[data-static-fallback]').forEach(node=>node.hidden=true);
   })
   .catch(error=>{
     console.error('[THC Education Search]',error);

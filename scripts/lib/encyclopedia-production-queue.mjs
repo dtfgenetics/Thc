@@ -5,8 +5,6 @@ const fields = [
   ['placeholderIssue', 'generic_placeholder', 75, true],
   ['objective', 'missing_objective', 35],
   ['approvedVisual', 'missing_approved_visual', 55],
-  ['assessmentMaterialized', 'missing_materialized_assessment', 45],
-  ['rationaleComplete', 'missing_rationale', 45],
   ['visualBriefReady', 'missing_visual_brief', 25],
 ];
 export function buildProductionQueue(audit) {
@@ -35,14 +33,11 @@ export function buildProductionQueue(audit) {
       const briefIndex = gaps.findIndex(gap => gap.code === 'missing_visual_brief');
       if (briefIndex >= 0) gaps.splice(briefIndex, 1);
     }
-    // Scientific peer review is a separate handoff AFTER content production.
-    // Content quality, citations, diagrams and assessments drive this queue.
+    // General lessons are assessed for educational substance, not certification exams or external approvals.
     const score = gaps.reduce((total, gap) => total + gap.weight, 0);
     return {lessonId:row.id, number:row.number, title:row.title, part:row.part,
       sourceFile:row.sourceFile ?? null, authorized:row.publicationAuthorized === true,
-      completionRecorded:row.complete === true, peerReviewPending:row.independentApproval !== true,
-      publicationReviewConflict:row.publicationReviewConflict === true,
-      publicationReviewPending:row.publicationReviewPending === true, priorityScore:score,
+      completionRecorded:row.complete === true, priorityScore:score,
       status:gaps.length ? 'needs_work' : 'audit_criteria_met',
       gaps:gaps.map(({code}) => code)};
   }).sort((a,b) => b.priorityScore-a.priorityScore ||
@@ -50,10 +45,9 @@ export function buildProductionQueue(audit) {
   const gapTotals = {};
   for (const row of rows) for (const code of row.gaps) gapTotals[code]=(gapTotals[code]??0)+1;
   return {schemaVersion:1, source:'data/encyclopedia-learning-quality-audit.json',
-    warning:'Production queue prioritizes content and assets. Independent peer review is a subsequent team handoff, not a prerequisite to completing drafts. Rubric coverage does not prove scientific claims or deployment.',
+    warning:'Production queue prioritizes educational content, source accuracy and assets. No separate scientific-review approval or general-lesson assessment is required. Rubric coverage alone does not prove scientific claims or deployment.',
     summary:{total:rows.length,needsWork:rows.filter(r=>r.gaps.length).length,
       auditCriteriaMet:rows.filter(r=>!r.gaps.length).length,
-      publicationReviewConflicts:rows.filter(r=>r.publicationReviewConflict).length,
-      publicationReviewPending:rows.filter(r=>r.publicationReviewPending).length,gapTotals},
+      gapTotals},
     items:rows};
 }

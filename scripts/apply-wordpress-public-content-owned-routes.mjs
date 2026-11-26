@@ -17,7 +17,7 @@ const preservationReport = process.env.OWNED_ROUTE_PRESERVATION_REPORT || join(
   backupRoot,
   'owned-route-preservation.json'
 );
-const delegatedSlugs = ['home', 'learn'];
+const delegatedSlugs = ['home', 'learn', 'gallery'];
 
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 if (!sourceDir) throw new Error('CONTENT_DIR is required');
@@ -147,7 +147,7 @@ const preservation = {
   canonicalReconciliation: null
 };
 
-// Learning Experience V3 is the automatic owner of both Home and Learn.
+// Learning Experience V3 owns Home and Learn; the approved Gallery Visual V3 publisher owns Gallery.
 // Snapshot owner identity/content for evidence, then configure the broad REST
 // reconciler to treat these slugs as structurally read-only. The snapshot is
 // not replayed into WordPress and may legitimately become stale if the owner
@@ -165,7 +165,7 @@ for (const slug of delegatedSlugs) {
     canonicalLaneMutation: null
   };
   await writeFile(join(ownedDir, `${slug}.html`), `${content}\n`, 'utf8');
-  console.log(`Snapshotted Learning-owned /${slug}/ content from WordPress page ${page.id} (${preservation.routes[slug].snapshotContentSha256}).`);
+  console.log(`Snapshotted delegated /${slug}/ content from WordPress page ${page.id} (${preservation.routes[slug].snapshotContentSha256}).`);
 }
 
 // Canonical editorial roots consume the accepted DTF visual system from one
@@ -173,7 +173,7 @@ for (const slug of delegatedSlugs) {
 // their dedicated owners and are intentionally not rewritten here.
 const visualCss = await readFile(visualCssPath, 'utf8');
 const visualStyleTag = `<style id="dtf-visual-v1">${visualCss}</style>`;
-for (const slug of ['community', 'gallery', 'about', 'contact', 'journal']) {
+for (const slug of ['community', 'about', 'contact', 'journal']) {
   const file = join(ownedDir, `${slug}.html`);
   const content = await readFile(file, 'utf8');
   if (!content.includes('class="dtf-v1"')) continue;
@@ -227,4 +227,4 @@ preservation.canonicalReconciliation = {
   delegatedResults
 };
 await writeFile(preservationReport, `${JSON.stringify(preservation, null, 2)}\n`, 'utf8');
-console.log(`Verified canonical lane performed no Home/Learn page mutation; evidence updated at ${preservationReport}.`);
+console.log(`Verified canonical lane performed no Home/Learn/Gallery page mutation; evidence updated at ${preservationReport}.`);

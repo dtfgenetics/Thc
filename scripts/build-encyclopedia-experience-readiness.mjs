@@ -13,13 +13,11 @@ const lifecycle=exists('data/encyclopedia-lifecycle-audit.json')?read('data/ency
 const quality=exists('data/encyclopedia-quality-scorecard.json')?read('data/encyclopedia-quality-scorecard.json'):null;
 
 const byVisualId=new Map((visuals.items||[]).map(x=>[x.lessonId,x]));
-const lifecycleById=new Map((lifecycle?.lessons||[]).map(x=>[x.id,x]));
 const lifecycleIssues=new Map((lifecycle?.repairQueue||[]).map(x=>[x.id,x]));
 const qualityById=new Map((quality?.lessons||[]).map(x=>[x.id,x]));
 
 const rows=(discovery.lessons||[]).map(item=>{
   const v=byVisualId.get(item.id)||{};
-  const l=lifecycleById.get(item.id)||{};
   const li=lifecycleIssues.get(item.id)||{};
   const q=qualityById.get(item.id)||{};
   const published=item.status==='published';
@@ -28,19 +26,17 @@ const rows=(discovery.lessons||[]).map(item=>{
     v.productionStatus==='raster_artwork_produced_review_pending'?'candidate':
     v.productionStatus==='brief_ready_raster_artwork_needed'?'needed':'unknown'
   );
-  const independentApproval=l.independentApproval===true;
   const visitorBaselineReady=published&&Boolean(item.route)&&Boolean(item.title)&&Boolean(item.objective);
-  const instructionalCompletionReady=visitorBaselineReady&&visualState==='curated'&&evidenceCount>0&&independentApproval&&Number(li.issues||0)===0;
+  const instructionalCompletionReady=visitorBaselineReady&&visualState==='curated'&&evidenceCount>0&&Number(li.issues||0)===0;
   const blockers=[
     ...(!published?['not_published']:[]),
     ...(visualState!=='curated'?['teaching_visual_'+visualState]:[]),
     ...(evidenceCount<1?['claim_evidence_missing']:[]),
-    ...(!independentApproval?['independent_science_review_pending']:[]),
     ...(Number(li.issues||0)>0?['lifecycle_cleanup']:[])
   ];
   const visualPriority=Number(v.visualPriorityScore||0);
   const qualityScore=Number(q.score||0);
-  const repairPriority=(blockers.length*20)+(visualState==='needed'?20:visualState==='candidate'?8:0)+(evidenceCount<1?12:0)+(independentApproval?0:12)+visualPriority+(qualityScore?Math.max(0,100-qualityScore):0);
+  const repairPriority=(blockers.length*20)+(visualState==='needed'?20:visualState==='candidate'?8:0)+(evidenceCount<1?12:0)+visualPriority+(qualityScore?Math.max(0,100-qualityScore):0);
   return {
     id:item.id,
     number:item.number,
@@ -52,7 +48,6 @@ const rows=(discovery.lessons||[]).map(item=>{
     visualFamily:v.visualFamily||null,
     visualPriorityScore:visualPriority,
     evidenceClaimCount:evidenceCount,
-    independentApproval,
     lifecycleIssueCount:Number(li.issues||0),
     qualityScore:qualityScore||null,
     visitorBaselineReady,
@@ -73,12 +68,10 @@ const summary={
   visualCandidatesPendingReview:count(x=>x.visualState==='candidate'),
   visualsNeeded:count(x=>x.visualState==='needed'),
   lessonsWithEvidence:count(x=>x.evidenceClaimCount>0),
-  independentlyApprovedLessons:count(x=>x.independentApproval),
   lifecycleCleanLessons:count(x=>x.lifecycleIssueCount===0),
   publicationPercent:rows.length?Math.round(100*published/rows.length):0,
   curatedVisualPercent:rows.length?Math.round(100*count(x=>x.visualState==='curated')/rows.length):0,
-  evidenceMappedPercent:rows.length?Math.round(100*count(x=>x.evidenceClaimCount>0)/rows.length):0,
-  independentApprovalPercent:rows.length?Math.round(100*count(x=>x.independentApproval)/rows.length):0
+  evidenceMappedPercent:rows.length?Math.round(100*count(x=>x.evidenceClaimCount>0)/rows.length):0
 };
 const priorityQueue=[...rows].filter(x=>!x.instructionalCompletionReady).sort((a,b)=>b.repairPriority-a.repairPriority||a.number-b.number).map((x,index)=>({
   rank:index+1,
@@ -96,8 +89,8 @@ const output={
   schemaVersion:1,
   artifactId:'thc-encyclopedia-experience-readiness',
   generatedBy:'scripts/build-encyclopedia-experience-readiness.mjs',
-  definition:'Visitor baseline readiness means the published lesson is routable and has core public copy. Instructional completion readiness additionally requires a curated visual, mapped evidence, independent scientific approval, and no lifecycle cleanup findings.',
-  safetyBoundary:'This report is an operational completion dashboard. It does not grant scientific, legal, accessibility, or publication approval.',
+  definition:'Visitor baseline readiness means the published lesson is routable and has core public copy. Instructional completion readiness additionally requires a curated teaching visual, mapped evidence, and no lifecycle cleanup findings. General informational lessons do not require independent scientific approval or certification assessments.',
+  safetyBoundary:'This operational report counts verified educational deliverables without adding a separate approval stage. Individual factual claims and deployment still require accuracy and functionality checks.',
   summary,
   priorityQueue,
   lessons:rows

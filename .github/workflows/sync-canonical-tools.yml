@@ -165,9 +165,15 @@ jobs:
       - name: Run deterministic tool validation
         run: TOOLS_REPO_DIR=/tmp/tools npm run verify:cultivation-reference-tools
 
+      - name: Validate canonical sync branch lease contract
+        run: node --test scripts/test/sync-canonical-tools-lease.test.mjs
+
       - name: Commit mirror update when changed
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          test -n "${GH_TOKEN:-}" || { echo '::error::GitHub CLI token unavailable for mirror PR'; exit 1; }
           set -euo pipefail
           git config user.name "dtf-tools-sync"
           git config user.email "actions@users.noreply.github.com"
@@ -199,7 +205,21 @@ jobs:
           pinned_tools_sha="$(sed -n 's/^commit=//p' site/public-route-patch/assets/release-source-revisions/tools.txt)"
           test "${pinned_tools_sha}" = "${expected_tools_sha}"
           sync_branch="work/platform/canonical-tools-sync/automation"
-          git push --force-with-lease origin "HEAD:refs/heads/${sync_branch}"
+          # Establish the exact remote branch value before any update. A fresh
+          # checkout does not have origin/<sync_branch>, so the implicit lease
+          # otherwise fails with "stale info" on every scheduled run.
+          remote_ref="refs/heads/${sync_branch}"
+          expected_remote_sha="$(git ls-remote --heads origin "${remote_ref}" | awk '{print $1}')"
+          if [ -n "${expected_remote_sha}" ] && ! [[ "${expected_remote_sha}" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Invalid remote sync branch SHA; refusing integration update."
+            exit 1
+          fi
+          # Explicit compare-and-swap: reject rather than overwrite an update
+          # that lands between remote inspection and our push.
+          if ! git push "--force-with-lease=${remote_ref}:${expected_remote_sha}" origin "HEAD:${remote_ref}"; then
+            echo "::error::Canonical Tools sync branch changed during the push; a subsequent scheduled run must recompute from main."
+            exit 1
+          fi
 
           pr_number="$(gh pr list --head "${sync_branch}" --base main --state open --json number --jq '.[0].number // empty' || true)"
           if [ -z "${pr_number}" ]; then
@@ -217,7 +237,15 @@ jobs:
             echo "Updated existing canonical Tools mirror PR #${pr_number} to ${expected_tools_sha}."
           fi
 
-          remote_tools_sha="$(git show "origin/${sync_branch}:site/public-route-patch/assets/release-source-revisions/tools.txt" | sed -n 's/^commit=//p')"
+          # Verify the actual remote commit and its pinned Tools revision, not
+          # a missing/stale origin/<sync_branch> tracking ref.
+          pushed_sha="$(git ls-remote --heads origin "${remote_ref}" | awk '{print $1}')"
+          if [ "${pushed_sha}" != "$(git rev-parse HEAD)" ]; then
+            echo "::error::Remote canonical Tools sync branch does not match the verified local commit."
+            exit 1
+          fi
+          git fetch --no-tags origin "${remote_ref}"
+          remote_tools_sha="$(git show "FETCH_HEAD:site/public-route-patch/assets/release-source-revisions/tools.txt" | sed -n 's/^commit=//p')"
           if [ "${remote_tools_sha}" != "${expected_tools_sha}" ]; then
             echo "::error::Canonical Tools mirror branch did not converge after push: expected ${expected_tools_sha}, found ${remote_tools_sha:-missing}."
             exit 1

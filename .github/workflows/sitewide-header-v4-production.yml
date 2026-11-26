@@ -83,7 +83,7 @@ jobs:
           grep -Fq 'dtf-sitewide-visual-repair-v2-script' scripts/lib/sitewide-visual-repair-v2.mjs
           grep -Fq 'SITEWIDE_VISUAL_REPAIR_STYLE_TAG' scripts/lib/sitewide-header-template-v6.mjs
           grep -Fq 'SITEWIDE_VISUAL_REPAIR_SCRIPT_TAG' scripts/lib/sitewide-header-template-v6.mjs
-          for required in '>Seeds</a>' '>Learn</a>' '>Tools</a>' '>Games</a>' '>Shop</a>'; do
+          for required in '>Seeds</a>' '>Learn</a>' '>Tools</a>' '>Games</a>' ; do
             grep -Fq "$required" scripts/lib/sitewide-header-template-v6.mjs || { echo "Missing canonical nav label: $required" >&2; exit 1; }
           done
           ! grep -Fq '>Genetics</a>' scripts/lib/sitewide-header-template-v6.mjs
@@ -191,8 +191,11 @@ jobs:
           if(!header) throw new Error(`V6 header fragment missing on ${route}`);
           const nav=header.match(/<nav\b[^>]*id=["']dtf-global-primary-nav["'][^>]*>([\s\S]*?)<\/nav>/i)?.[1]||'';
           const labels=[...nav.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map(m=>m[1].replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim());
-          const expected=['Home','Seeds','Learn','Courses','Tools','Games','Community','Shop'];
+          const expected=['Home','Seeds','Learn','Courses','Tools','Games','Community'];
           if(JSON.stringify(labels)!==JSON.stringify(expected)) throw new Error(`Unexpected V6 navigation on ${route}: ${JSON.stringify(labels)}`);
+          // The sales hold forbids Shop/Cart links even on otherwise valid V6 headers.
+          if(/<a\b[^>]*href\s*=\s*["']\/(?:shop|cart)\/["']/i.test(header)) throw new Error('Commerce navigation in V6 header on '+route);
+          if(/aria-label\s*=\s*["']Cart["']/i.test(header)) throw new Error('Cart utility in V6 header on '+route);
           if(!/canonical-five-v1/.test(header)) throw new Error(`canonical-five-v1 marker missing on ${route}`);
           if(!/dtf-sitewide-header-v6-script/.test(html)) throw new Error(`V6 script missing on ${route}`);
           if(!/dtf-sitewide-mobile-polish-v1-style/.test(html)) throw new Error(`Mobile polish V1 style missing on ${route}`);

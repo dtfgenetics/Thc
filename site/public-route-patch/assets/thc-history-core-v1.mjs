@@ -43,7 +43,10 @@ export function numericSpread(records,key){
 
 export function csvRow(values){
   return (Array.isArray(values)?values:[]).map(value=>{
-    const text=value===null||value===undefined?'':String(value);
+    let text=value===null||value===undefined?'':String(value);
+    // Spreadsheet text-cell protection, following Papa Parse escapeFormulae:
+    // https://www.papaparse.com/docs (numeric values remain numeric).
+    if(typeof value==='string' && /^(?:[\t\r\n]|\s*[=+\-@])/.test(text)) text="'"+text;
     return '"'+text.replaceAll('"','""')+'"';
   }).join(',');
 }
@@ -61,5 +64,6 @@ export function sanitizeHistory(records,{limit=500,validator=()=>true,normalize=
     const normalized=normalize(record);
     if(normalized!==null&&normalized!==undefined)clean.push(normalized);
   }
-  return clean.slice(-Math.max(0,Number(limit)||0));
+  const count=Math.max(0,Math.floor(Number(limit)||0));
+  return count===0?[]:clean.slice(-count);
 }

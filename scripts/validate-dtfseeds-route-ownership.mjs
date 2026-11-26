@@ -34,7 +34,8 @@ requireText('canonicalWorkflow', 'node scripts/apply-wordpress-public-content-ow
 rejectText('canonicalWorkflow', 'node scripts/apply-wordpress-public-content-rest.mjs', 'Canonical WordPress workflow directly invokes the broad page writer.');
 rejectText('canonicalWorkflow', 'node scripts/rebuild-wordpress-visual-site.mjs', 'Canonical WordPress workflow still invokes the legacy Home/Learn visual writer.');
 failIf(/verify_page\s+['"]\/learn\//m.test(content.canonicalWorkflow), 'Canonical WordPress workflow verifies /learn/ as if it owned the route.');
-requireText('ownershipWrapper', "const delegatedSlugs = ['home', 'learn']", 'Ownership wrapper does not declare Home and Learn as delegated routes.');
+requireText('ownershipWrapper', "const delegatedSlugs = ['home', 'learn', 'gallery']", 'Ownership wrapper does not preserve Home, Learn and Gallery under their dedicated publishers.');
+requireText('ownershipWrapper', "for (const slug of ['community', 'about', 'contact', 'journal'])", 'Canonical shared-css pass must not rewrite Gallery.');
 requireText('ownershipWrapper', "process.env.DTF_PRESERVE_PAGE_SLUGS = delegatedSlugs.join(',')", 'Ownership wrapper does not hand delegated routes to the generic read-only policy.');
 requireText('canonicalPages', 'DTF_PRESERVE_PAGE_SLUGS', 'Generic reconciler does not read delegated route preservation settings.');
 requireText('canonicalPages', "action: preserved ? 'preserve'", 'Generic reconciler does not preserve delegated routes.');

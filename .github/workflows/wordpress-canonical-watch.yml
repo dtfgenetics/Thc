@@ -11,6 +11,8 @@ on:
       - 'data/genetics/**'
       - 'site/public-route-patch/learn/infographics/**'
       - 'scripts/apply-wordpress-public-content-rest.mjs'
+      - 'scripts/lib/wordpress-canonical-page-identity.mjs'
+      - 'scripts/test-wordpress-canonical-page-identity.mjs'
       - 'scripts/apply-wordpress-public-content-owned-routes.mjs'
       - 'scripts/deploy-wordpress-infographic-library-rest.mjs'
       - 'scripts/audit-wordpress-commerce-rest.mjs'
@@ -30,6 +32,8 @@ on:
       - 'data/genetics/**'
       - 'site/public-route-patch/learn/infographics/**'
       - 'scripts/apply-wordpress-public-content-rest.mjs'
+      - 'scripts/lib/wordpress-canonical-page-identity.mjs'
+      - 'scripts/test-wordpress-canonical-page-identity.mjs'
       - 'scripts/apply-wordpress-public-content-owned-routes.mjs'
       - 'scripts/deploy-wordpress-infographic-library-rest.mjs'
       - 'scripts/audit-wordpress-commerce-rest.mjs'
@@ -60,6 +64,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --test scripts/test-wordpress-canonical-page-identity.mjs
           node --check scripts/deploy-wordpress-infographic-library-rest.mjs
           node --check scripts/audit-wordpress-commerce-rest.mjs
           node --check scripts/validate-genetics-commerce.mjs
