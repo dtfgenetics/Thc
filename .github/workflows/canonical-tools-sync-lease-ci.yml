@@ -1,0 +1,29 @@
+name: Canonical Tools sync lease regression
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/sync-canonical-tools.yml'
+      - '.github/workflows/canonical-tools-sync-lease-ci.yml'
+      - 'scripts/test/sync-canonical-tools-lease.test.mjs'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-canonical-tools.yml'
+      - '.github/workflows/canonical-tools-sync-lease-ci.yml'
+      - 'scripts/test/sync-canonical-tools-lease.test.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-sync-lease:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify compare-and-swap and stale-writer rejection
+        run: node --test scripts/test/sync-canonical-tools-lease.test.mjs

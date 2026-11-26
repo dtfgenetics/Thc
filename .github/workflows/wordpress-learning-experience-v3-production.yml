@@ -262,7 +262,14 @@ jobs:
               grep -Fq 'data-dtf-layout="home-v3"' "$home_body" && \
               grep -Fq 'Blue Mango F2 Regular DTF Genetics strain card' "$home_body" && \
               grep -Fq 'Blue Mango F2 Feminized DTF Genetics strain card' "$home_body" && \
-              grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$home_body"; then
+              grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$home_body" && \
+              grep -Fq 'Seed sales are temporarily on hold.' "$home_body" && \
+              grep -Fq 'purchasing is unavailable.' "$home_body" && \
+              grep -Fq 'href="/seeds/blue-mango/"' "$home_body" && \
+              grep -Fq 'href="/seeds/blue-bubblegum/"' "$home_body" && \
+              ! grep -Fq 'href="/product/10-regular-f2-blue-mango-seeds/"' "$home_body" && \
+              ! grep -Fq 'href="/product/10-feminized-f2-blue-mango-x/"' "$home_body" && \
+              ! grep -Fq 'href="/product/10-reg-f1-blueberry-bubblegum/"' "$home_body"; then
               ok=1
               break
             fi

@@ -73,10 +73,19 @@ if (!Array.isArray(pages) || pages.length !== 1) throw new Error(`Expected one H
 const home = pages[0];
 const original = rendered(home.content);
 if (!original) throw new Error('Home page content is empty');
-for (const card of cards) {
-  const hrefNeedle = `/product/${card.productSlug}/`;
-  const count = original.split(hrefNeedle).length - 1;
-  if (count !== 1) throw new Error(`Expected one homepage product route for ${card.productSlug}, found ${count}`);
+// Genetics release cards are informational while seed sales are suspended.
+const releaseLinks = cards.map((card) => card.canonicalName === 'Blue Bubblegum'
+  ? '/seeds/blue-bubblegum/' : '/seeds/blue-mango/');
+const releaseGridStart = original.search(/<div\s+class=["']release-grid["']/i);
+if (releaseGridStart < 0) throw new Error('Homepage release grid not found');
+const releaseSectionEnd = original.indexOf('</section>', releaseGridStart);
+if (releaseSectionEnd < 0) throw new Error('Homepage release section is incomplete');
+const releaseArticles = [...original.slice(releaseGridStart, releaseSectionEnd).matchAll(/<article\b[^>]*class=["'][^"']*\brelease\b[^"']*["'][^>]*>[\s\S]*?<\/article>/gi)];
+if (releaseArticles.length !== cards.length) throw new Error('Expected exactly three release articles');
+for (const [index, article] of releaseArticles.entries()) {
+  if (!article[0].includes(`href="${releaseLinks[index]}"`) && !article[0].includes(`href='${releaseLinks[index]}'`)) {
+    throw new Error(`Release card ${index + 1} does not link to the approved genetics page`);
+  }
 }
 await writeFile(join(backupDir, 'home-before.json'), `${JSON.stringify(home, null, 2)}\n`);
 
@@ -107,48 +116,38 @@ function releaseImage(imageUrl, card) {
   return `<img class="dtf-img dtf-release-card-image" src="${esc(imageUrl)}" alt="${esc(card.altText)}" loading="lazy" decoding="async" width="${width}" height="${height}" style="aspect-ratio:2/3;object-fit:contain;background:#f3efe5">`;
 }
 
-function replaceNearestImageBeforeRoute(content, card, imageUrl) {
-  const hrefNeedle = `/product/${card.productSlug}/`;
-  const hrefIndex = content.indexOf(hrefNeedle);
-  if (hrefIndex < 0) throw new Error(`Homepage product route missing for ${card.productSlug}`);
-
-  const imageStart = content.lastIndexOf('<img', hrefIndex);
-  if (imageStart < 0) throw new Error(`No image found before homepage product route ${card.productSlug}`);
-  const imageEnd = content.indexOf('>', imageStart);
-  if (imageEnd < 0 || imageEnd >= hrefIndex) throw new Error(`Could not isolate image tag for homepage product route ${card.productSlug}`);
-
-  const distance = hrefIndex - imageEnd;
-  if (distance > 7000) throw new Error(`Nearest image is too far from ${card.productSlug} (${distance} chars); refusing ambiguous replacement`);
-
-  const previousProduct = content.lastIndexOf('/product/', hrefIndex - 1);
-  if (previousProduct > imageStart) throw new Error(`Another product route appears between the candidate image and ${card.productSlug}; refusing ambiguous replacement`);
-
-  return {
-    content: `${content.slice(0, imageStart)}${releaseImage(imageUrl, card)}${content.slice(imageEnd + 1)}`,
-    distance
-  };
+function replaceReleaseImage(content, card, imageUrl, index) {
+  const gridStart = content.search(/<div\s+class=["']release-grid["']/i);
+  if (gridStart < 0) throw new Error('Release grid missing');
+  const sectionEnd = content.indexOf('</section>', gridStart);
+  if (sectionEnd < 0) throw new Error('Release section incomplete');
+  const articles = [...content.slice(gridStart, sectionEnd).matchAll(/<article\b[^>]*class=["'][^"']*\brelease\b[^"']*["'][^>]*>[\s\S]*?<\/article>/gi)];
+  const article = articles[index]?.[0];
+  if (!article) throw new Error(`Release article ${index + 1} missing`);
+  const img = article.match(/<img\b[^>]*>/i)?.[0];
+  if (!img) throw new Error(`Release article ${index + 1} missing artwork`);
+  const updatedArticle = article.replace(img, releaseImage(imageUrl, card));
+  // Preserve every other part of the card, especially the nontransactional link.
+  return content.replace(article, updatedArticle);
 }
 
 let next = original;
 const changes = [];
-const ordered = [...resolved].sort((a, b) => original.indexOf(`/product/${b.card.productSlug}/`) - original.indexOf(`/product/${a.card.productSlug}/`));
-for (const { card, media, imageUrl, source } of ordered) {
-  const result = replaceNearestImageBeforeRoute(next, card, imageUrl);
-  next = result.content;
+for (const [index, { card, media, imageUrl, source }] of resolved.entries()) {
+  next = replaceReleaseImage(next, card, imageUrl, index);
   changes.push({
     productSlug: card.productSlug,
     wordpressSlug: card.wordpressSlug,
     mediaId: media?.id || null,
-    imageUrl,
-    source,
+    imageUrl, source,
     expectedWidth: card.expectedWidth,
     expectedHeight: card.expectedHeight,
-    distanceToRoute: result.distance
+    geneticsRoute: releaseLinks[index]
   });
 }
 
 for (const { card, imageUrl } of resolved) {
-  if (!next.includes(`/product/${card.productSlug}/`)) throw new Error(`Product route disappeared for ${card.productSlug}`);
+  if (next.includes(`/product/${card.productSlug}/`)) throw new Error(`Suspended product link returned for ${card.productSlug}`);
   if (!next.includes(imageUrl)) throw new Error(`Resolved strain-card source is missing from updated Home content for ${card.productSlug}`);
   if (!next.includes(card.altText)) throw new Error(`Release-card alt text is missing for ${card.productSlug}`);
 }

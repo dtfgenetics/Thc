@@ -46,3 +46,48 @@ test('instructional SVG removal fails closed',()=>{
  assert.notEqual(result.status,0);
  assert.match(result.stderr,/instructional SVG count/);
 });
+
+test('lesson image removal fails closed',()=>{
+ const art='<figure><img src="/assets/education/leaf-pattern.svg" alt="Leaf pattern comparison"><figcaption>Observe leaf symptoms</figcaption></figure>';
+ const result=fixture(html(body+art),html(body));
+ assert.notEqual(result.status,0);
+ assert.match(result.stderr,/instructional image count 1 -> 0/);
+});
+
+test('replacing an illustration without removing it is allowed',()=>{
+ const oldArt='<img src="/assets/education/leaf-old.svg" alt="Observation diagram">';
+ const newArt='<img src="/assets/education/leaf-new.svg" alt="Updated observation diagram">';
+ const result=fixture(html(body+oldArt),html(body+newArt));
+ assert.equal(result.status,0,result.stderr);
+});
+
+test('commented or scripted image text does not disguise removal',()=>{
+ const art='<img src="/assets/education/observation.svg" alt="Comparison diagram">';
+ const commented=fixture(html(body+art),html(body+'<!-- '+art+' -->'));
+ assert.notEqual(commented.status,0);
+ assert.match(commented.stderr,/instructional image count 1 -> 0/);
+ const scripted=fixture(html(body+art),html(body+'<script>const sample = '+JSON.stringify(art)+';</script>'));
+ assert.notEqual(scripted.status,0);
+ assert.match(scripted.stderr,/instructional image count 1 -> 0/);
+});
+
+test('actual image still counts when a comment contains an image example',()=>{
+ const art='<img src="/assets/education/observation.svg" alt="Comparison diagram">';
+ const current=html(body+art+'<!-- '+art+' -->');
+ const incoming=html(body+art);
+ const result=fixture(current,incoming);
+ assert.equal(result.status,0,result.stderr);
+});
+
+test('malformed or insecure incoming canonical URLs fail closed',()=>{
+ for(const canonicalHref of [
+  'https:/dtfseeds.com/atlas/leaf-module/example/',
+  'http://dtfseeds.com/atlas/leaf-module/example/',
+  'https://www.dtfseeds.com/atlas/leaf-module/example/',
+ ]){
+  const incoming='<link rel="canonical" href="'+canonicalHref+'"><main>'+body+'</main>';
+  const result=fixture(html(body),incoming);
+  assert.notEqual(result.status,0,canonicalHref);
+  assert.match(result.stderr,/canonical route/);
+ }
+});

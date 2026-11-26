@@ -103,8 +103,10 @@ jobs:
         run: npm run verify:encyclopedia-changed-depth
       - name: Validate canonical encyclopedia source pin
         run: npm run verify:encyclopedia-source-pin
-      - name: Validate forward-only production pointer
-        run: node scripts/validate-encyclopedia-production-pointer.mjs
+      - name: Regression-test and validate forward-only production pointer
+        run: |
+          node scripts/test-encyclopedia-production-pointer.mjs
+          node scripts/validate-encyclopedia-production-pointer.mjs
       - name: Validate shared authoritative source bridge
         run: npm run verify:encyclopedia-shared-source-bridge
       - name: Build completion scorecard

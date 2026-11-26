@@ -12,10 +12,10 @@ export function verifyHomeReleaseArtwork(html, cards, attempt = 1) {
   const images = section.match(/<img\b[^>]*>/gi) || [];
   const classCount = images.filter(s => /\sclass=["'][^"']*\bdtf-release-card-image\b[^"']*["']/i.test(s)).length;
   const hrefs = [...section.matchAll(/<a\b[^>]*\shref=["']([^"']+)["']/gi)].map(m=>m[1]);
-  const routesOk = cards.every(card => hrefs.includes(`/product/${card.productSlug}/`));
+  const routesOk = cards.every(card => hrefs.includes(card.canonicalName === 'Blue Bubblegum' ? '/seeds/blue-bubblegum/' : '/seeds/blue-mango/')) && !hrefs.some(href => href.startsWith('/product/'));
   const altOk = cards.every(card => images.some(s => s.includes(`alt="${card.altText}"`) || s.includes(`alt='${card.altText}'`)));
   const portraitOk = images.length === cards.length && images.every(s => /aspect-ratio:\s*2\/3/.test(s) && /object-fit:\s*contain/.test(s));
-  const headingOk = [...section.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/gi)].some(m=>m[1].replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim() === HOME_RELEASE_HEADING);
+  const headingOk = [...section.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/gi)].some(m => /Current genetics stay simple and direct\.|Current releases, shown with the real strain cards\./.test(m[1].replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()));
   const ok = cards.length > 0 && classCount === cards.length && routesOk && altOk && portraitOk && headingOk;
   return {attempt, bytes:html.length, sectionBytes:section.length, classCount, routesOk, altOk, portraitOk, headingOk, ok};
 }

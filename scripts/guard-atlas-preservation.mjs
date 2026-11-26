@@ -29,12 +29,28 @@ const canonicalPath=html=>{
   try {
    const url=new URL(href[1]||href[2]||href[3], 'https://dtfseeds.com');
    if(!['dtfseeds.com','www.dtfseeds.com'].includes(url.hostname.toLowerCase()))return null;
-   if(!['https:','http:'].includes(url.protocol)||url.port||url.username||url.password)return null;
+   // Require a literal HTTPS URL, not one repaired by URL parsing.
+   const rawHref=href[1]||href[2]||href[3];
+   if(!rawHref.startsWith('https://dtfseeds.com/'))return null;
+   if(url.protocol!=='https:'||url.port||url.username||url.password)return null;
    if(found!==null)return null;
    found=url.pathname.replace(/\/+$/,'')||'/';
   }catch{return null;}
  }
  return found;
+};
+// An incoming mirror must not silently drop existing lesson illustrations.
+// Count rendered image elements rather than comparing src URLs, since approved
+// asset replacements may change paths without reducing the illustration count.
+const instructionalImageCount=html=>{
+ // Scan tokens without rewriting HTML. Image-looking text in comments and
+ // non-rendered script/style/template blocks must not count as lesson art.
+ const tokens=/<!--[\s\S]*?-->|<(script|style|template)\b[^>]*>[\s\S]*?<\/\1\s*>|<img\b[^>]*>/gi;
+ let count=0;
+ for(const token of html.matchAll(tokens)){
+  if(/^<img\b/i.test(token[0])) count++;
+ }
+ return count;
 };
 const instructionalSvgCount=html=>(html.match(/<svg\b[^>]*>/gi)||[])
  .filter(tag=>/\brole\s*=\s*(?:"img"|'img')/i.test(tag)).length;
@@ -58,6 +74,8 @@ for(const relative of pages(mirror)){
  if(oldRoute&&oldRoute!==newRoute)losses.push(relative+': canonical route '+oldRoute+' -> '+(newRoute||'missing or off-site'));
  const oldVisuals=instructionalSvgCount(old),newVisuals=instructionalSvgCount(incoming);
  if(newVisuals<oldVisuals)losses.push(relative+': instructional SVG count '+oldVisuals+' -> '+newVisuals);
+ const oldImages=instructionalImageCount(old),newImages=instructionalImageCount(incoming);
+ if(newImages<oldImages)losses.push(relative+': instructional image count '+oldImages+' -> '+newImages);
 }
 if(!inspected)throw Error('No existing Atlas lesson pages were checked');
 if(losses.length)throw Error('Atlas preservation failed:\n'+losses.join('\n'));

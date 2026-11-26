@@ -3,11 +3,15 @@ import { readFile } from 'node:fs/promises';
 const registryPath = 'site/wordpress/products/genetics.json';
 const seedsPath = 'site/wordpress/pages/seeds.html';
 const shopPath = 'site/wordpress/pages/shop.html';
+const canonicalPublisherPath = 'scripts/publish-wordpress-genetics-library-cdn-core.mjs';
+const legacyPublisherPath = 'scripts/publish-wordpress-genetics-library.mjs';
 
-const [registryText, seedsHtml, shopHtml] = await Promise.all([
+const [registryText, seedsHtml, shopHtml, canonicalPublisher, legacyPublisher] = await Promise.all([
   readFile(registryPath, 'utf8'),
   readFile(seedsPath, 'utf8'),
-  readFile(shopPath, 'utf8')
+  readFile(shopPath, 'utf8'),
+  readFile(canonicalPublisherPath, 'utf8'),
+  readFile(legacyPublisherPath, 'utf8')
 ]);
 
 const registry = JSON.parse(registryText);
@@ -20,6 +24,22 @@ const seedsHold = seedsHtml.includes(holdText);
 const shopHold = shopHtml.includes(holdText);
 if (seedsHold !== shopHold) errors.push('Seeds and Shop pages disagree on seed-sales hold status');
 const salesHold = seedsHold && shopHold;
+
+if (salesHold) {
+  // Both WordPress generators must remain nontransactional during the hold.
+  // Inspect the active CDN generator as well as the retained legacy fallback.
+  for (const [label, source] of [['canonical CDN genetics publisher', canonicalPublisher], ['legacy genetics publisher', legacyPublisher]]) {
+    if (!source.includes('Seed sales are temporarily on hold.')) {
+      errors.push(`${label}: generated content must announce the sales hold`);
+    }
+    if (!source.includes('Line status')) {
+      errors.push(`${label}: line profile must show nontransactional status`);
+    }
+    if (/button\(r\.path|currentStoreRoutes\s*=|Shop current releases|Current release projects|<h2>Availability<\/h2>/.test(source)) {
+      errors.push(`${label}: obsolete product CTAs or availability copy remain`);
+    }
+  }
+}
 
 if (registry?.schemaVersion !== 1) errors.push('genetics.json schemaVersion must be 1');
 if (!Array.isArray(registry?.products) || registry.products.length === 0) {
@@ -108,7 +128,14 @@ for (const phrase of forbiddenPublicClaims) {
 if (!seedsLower.includes('product page is the transaction source of truth')) {
   errors.push('Seeds page must state that the product page controls transaction data');
 }
-if (!shopLower.includes('product pages control current price, inventory, quantity, seed type')) {
+if (salesHold) {
+  if (!shopLower.includes('purchasing and checkout are unavailable')) {
+    errors.push('Shop page must explain that seed checkout is unavailable during sales hold');
+  }
+  for (const obsolete of ['commerce stays live', 'three active routes', 'the store handles the transaction', 'use only checkout links']) {
+    if (shopLower.includes(obsolete)) errors.push(`Shop page contains obsolete transactional claim while on hold: ${obsolete}`);
+  }
+} else if (!shopLower.includes('product pages control current price, inventory, quantity, seed type')) {
   errors.push('Shop page must keep dynamic transaction fields on product pages');
 }
 

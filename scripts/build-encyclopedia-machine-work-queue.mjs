@@ -58,9 +58,6 @@ for (const lesson of lessons) {
   if (lesson.evidence?.claimEvidenceMapped && !lesson.evidence?.claimEvidenceReviewed) {
     reviewActions.push('independent_claim_evidence_review');
   }
-  if (!lesson.assessment?.reviewed) {
-    reviewActions.push('independent_assessment_rationale_review');
-  }
   if (!lesson.visual?.approved && candidateExists) {
     reviewActions.push('teaching_visual_accuracy_accessibility_qa');
   }
@@ -77,8 +74,6 @@ for (const lesson of lessons) {
   }
 
   const gates = [];
-  if (!lesson.evidence?.claimEvidenceReviewed) gates.push('independent_science_review');
-  if (!lesson.assessment?.reviewed) gates.push('assessment_rationale_review');
   if (!lesson.visual?.approved) gates.push('teaching_visual_approval');
   if (!lesson.publication?.authorized) gates.push('publication_authorization');
 
@@ -117,7 +112,7 @@ const output = {
   schemaVersion: '1.0.0',
   artifactId: 'thc-encyclopedia-machine-work-queue',
   generatedBy: 'scripts/build-encyclopedia-machine-work-queue.mjs',
-  rule: 'Machine production work is separated from independent review and release authorization. Automation must not fabricate human, pilot, psychometric, accessibility-approval, science-review, or publication-authorization evidence.',
+  rule: 'Machine production is separate from optional scientific peer review and applicable visual/publication release controls. Informational lessons do not require assessments, independent science sign-off, or Academy credential evidence. Never fabricate approvals.',
   summary: {
     lessonCount: lessons.length,
     machineProduction: machineProductionQueue.length,

@@ -12,6 +12,7 @@ test('diagnostics return only allowlisted response headers and numeric status',a
        'content-type':'text/html',
        'server':'edge-security',
        'cf-mitigated':'challenge',
+       'x-hcdn-request-id':'cdn-403-trace-9',
        'set-cookie':'session=secret',
        'authorization':'Bearer secret',
        'location':'https://example.org/?token=secret'
@@ -23,15 +24,16 @@ test('diagnostics return only allowlisted response headers and numeric status',a
  assert.equal(data.route,'/');
  assert.equal(data.probes.length,2);
  assert.ok(data.probes.every(p=>p.status===403&&p.headers['cf-mitigated']==='challenge'));
+ assert.ok(data.probes.every(p=>p.headers['x-hcdn-request-id']==='cdn-403-trace-9'),'Hostinger request ID must survive sanitized diagnostics');
  assert.ok(data.probes.every(p=>!JSON.stringify(p).includes('secret')));
  assert.ok(seen.every(p=>p.options.redirect==='manual'));
  assert.notEqual(seen[0].options.headers['user-agent'],seen[1].options.headers['user-agent']);
 });
 
 test('header sanitizer strips control characters and rejects sensitive keys',()=>{
- const headers=new Headers({'cf-ray':'abc123','set-cookie':'private','x-request-id':'req-456'});
+ const headers=new Headers({'cf-ray':'abc123','set-cookie':'private','x-request-id':'req-456','x-hcdn-request-id':'trace-789','authorization':'bearer-secret'});
  const result=publicHeaders(headers);
- assert.deepEqual(result,{'cf-ray':'abc123','x-request-id':'req-456'});
+ assert.deepEqual(result,{'cf-ray':'abc123','x-request-id':'req-456','x-hcdn-request-id':'trace-789'});
 });
 
 test('network failures remain diagnostic and do not masquerade as HTTP 200',async()=>{

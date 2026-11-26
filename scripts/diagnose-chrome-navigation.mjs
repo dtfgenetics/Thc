@@ -22,9 +22,9 @@ export function safeNavigationEvent(event,origin='https://dtfseeds.com'){
   return {path:url.pathname,status:Number(response.status)||0,headers:publicHeaders(headers)};
 }
 
-export async function runChromeNavigationProbe(chromePath,{target=TARGET,timeoutMs=18000}={}){
+export async function runChromeNavigationProbe(chromePath,{target=TARGET,timeoutMs=18000,userAgent}={}){
   const scratch=await fs.mkdtemp(path.join(os.tmpdir(),'dtf-chrome-access-'));
-  const result={schemaVersion:1,client:'chrome-cdp',targetPath:new URL(target).pathname,documents:[],state:'unmeasured'};
+  const result={schemaVersion:1,client:userAgent?'chrome-cdp-ua-control':'chrome-cdp',targetPath:new URL(target).pathname,documents:[],state:'unmeasured'};
   let chrome,ws;
   try{
     chrome=spawn(chromePath,[
@@ -80,6 +80,7 @@ export async function runChromeNavigationProbe(chromePath,{target=TARGET,timeout
     const attached=await command('Target.attachToTarget',{targetId,flatten:true});
     sessionId=attached.sessionId;
     await command('Network.enable',{},sessionId);
+    if(userAgent)await command('Network.setUserAgentOverride',{userAgent},sessionId);
     await command('Page.enable',{},sessionId);
     await command('Page.navigate',{url:target},sessionId);
     const end=Math.min(deadline,Date.now()+8000);
@@ -100,7 +101,14 @@ export async function runChromeNavigationProbe(chromePath,{target=TARGET,timeout
 
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
   const output=process.env.WEB_QA_ARTIFACT_DIR||'.artifacts/web-qa';
-  const report=await runChromeNavigationProbe(process.env.CHROME_PATH||'/usr/bin/chromium');
+  const chromePath=process.env.CHROME_PATH||'/usr/bin/chromium';
+  const report=await runChromeNavigationProbe(chromePath);
+  // Diagnostic only: compare the same Chrome transport with a conventional UA.
+  // Never use this result to turn a failed Lighthouse run into a pass.
+  if(report.documents.some(item=>item.status===403)){
+    const ua='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+    report.userAgentControl=await runChromeNavigationProbe(chromePath,{userAgent:ua});
+  }
   await fs.mkdir(output,{recursive:true});
   await fs.writeFile(path.join(output,'lighthouse-chrome-navigation.json'),JSON.stringify(report,null,2)+'\n');
   console.log('Sanitized Chrome document navigation diagnostic:');

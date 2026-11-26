@@ -18,9 +18,9 @@ function normalizeRoute(value){
   return route;
 }
 
+const invalidDocuments=[];
 const current={};
 const samples={};
-const reportErrors=[];
 const median=values=>{
   const sorted=[...values].sort((a,b)=>a-b);
   const mid=Math.floor(sorted.length/2);
@@ -30,13 +30,27 @@ if(fs.existsSync(reportDir)){
   for(const name of fs.readdirSync(reportDir)){
     if(!name.endsWith('.report.json'))continue;
     const report=JSON.parse(fs.readFileSync(path.join(reportDir,name),'utf8'));
-    const route=normalizeRoute(report.finalUrl||report.requestedUrl||'/');
-    // Lighthouse can emit a JSON report despite a failed navigation or runtime.
-    // Never let its numeric category scores certify a failed browser run.
-    const failedRun=Boolean(report.runtimeError);
-    if(failedRun)reportErrors.push({route,type:'lighthouse-runtime-error',reportFile:name});
+    // A valid score must belong to the audited origin, not an off-site challenge,
+    // redirect or browser-error document. Treat these as missing measurements.
+    const auditedUrl=report.finalDisplayedUrl||report.finalUrl;
+    let auditedOrigin;
+    try{auditedOrigin=new URL(auditedUrl).origin;}catch{auditedOrigin=null;}
+    const documentRequests=report.audits?.['network-requests']?.details?.items;
+    const documentError=Array.isArray(documentRequests)&&documentRequests.some(item=>{
+      if(item.resourceType!=='Document'||Number(item.statusCode)<400||!Number.isFinite(Number(item.statusCode)))return false;
+      try{return new URL(item.url).href.split('#')[0]===new URL(auditedUrl).href.split('#')[0];}catch{return false;}
+    });
+    const httpError=Number(report.responseCode)>=400||documentError;
+    const navigationWarning=Array.isArray(report.runWarnings)&&report.runWarnings.some(w=>/errored.document.request|navigation.failed/i.test(String(w)));
+    if(report.runtimeError||httpError||navigationWarning||auditedOrigin!==new URL(origin).origin){
+      const reason=report.runtimeError?'runtime-error':httpError?'http-error':auditedOrigin!==new URL(origin).origin?'unexpected-origin':'navigation-warning';
+      invalidDocuments.push({file:name,type:'invalid-document',reason});
+      console.error('WEB QUALITY INVALID DOCUMENT',JSON.stringify({file:name,reason}));
+      continue;
+    }
+    const route=normalizeRoute(auditedUrl);
     const scores={};
-    for(const category of categories)scores[category]=failedRun?NaN:scoreOf(report.categories?.[category]?.score);
+    for(const category of categories)scores[category]=scoreOf(report.categories?.[category]?.score);
     (samples[route]??=[]).push(scores);
   }
 }
@@ -47,13 +61,11 @@ for(const [route,runs] of Object.entries(samples)){
     return [category,values.every(Number.isFinite)?median(values):NaN];
   }));
 }
-const findings=[...reportErrors];
-const rows=[];
-// A successful regression report requires real Lighthouse measurements.
-// This is independent of per-route baseline coverage settings.
-if (Object.keys(current).length === 0) {
-  findings.push({type:'no-lighthouse-measurements'});
+const findings=[...invalidDocuments];
+if(Object.keys(samples).length===0){
+  findings.push({type:'no-valid-lighthouse-measurements'});
 }
+const rows=[];
 for(const [route,prior] of Object.entries(baseline.routes||{})){
   const now=current[route];
   if(!now){
@@ -77,9 +89,7 @@ for(const [route,prior] of Object.entries(baseline.routes||{})){
   rows.push(row);
 }
 
-// A report containing measurements only for non-baseline URLs cannot
-// establish whether existing public pages have regressed.
-if (Object.keys(baseline.routes || {}).length > 0 && rows.length === 0 && Object.keys(current).length > 0) {
+if(Object.keys(baseline.routes||{}).length>0 && rows.length===0 && Object.keys(current).length>0){
   findings.push({type:'no-baseline-routes-measured'});
 }
 

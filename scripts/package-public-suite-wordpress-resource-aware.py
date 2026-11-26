@@ -27,10 +27,10 @@ subprocess.run(
 )
 
 # Fail closed before archive construction if a suite-owned top-level hub ever
-# drifts away from the canonical eight-section shell or the shared progressive-
+# drifts away from the seven-link sales-hold shell or the shared progressive-
 # disclosure layer. This keeps production from publishing a mixed shell or a
 # long hub page without the content-density behavior validated by V6.
-expected_labels = ['Home', 'Seeds', 'Learn', 'Courses', 'Tools', 'Games', 'Community', 'Shop']
+expected_labels = ['Home', 'Seeds', 'Learn', 'Courses', 'Tools', 'Games', 'Community']
 for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
     candidate = release_dir / relative
     if not candidate.is_file() or candidate.stat().st_size < 1:
@@ -77,6 +77,15 @@ for relative in ('tools/index.html', 'games/index.html', 'projects/index.html'):
     ]
     if labels != expected_labels:
         raise SystemExit(f'{relative} has unexpected primary navigation: {labels!r}')
+    # Fail closed if a stale commerce link survives template normalization.
+    header = re.search(
+        r'<header\b[^>]*data-dtf-shell=["\']header-v6["\'][^>]*>[\s\S]*?</header>',
+        html, re.IGNORECASE,
+    )
+    if not header or re.search(r'<a\b[^>]*href\s*=\s*["\']/(?:shop|cart)/["\']', header.group(), re.IGNORECASE):
+        raise SystemExit(f'{relative} exposes forbidden sales-hold Shop/Cart header links')
+    if re.search(r'aria-label\s*=\s*["\']Cart["\']', header.group(), re.IGNORECASE):
+        raise SystemExit(f'{relative} exposes forbidden Cart utility during sales hold')
 
 with tempfile.TemporaryDirectory(prefix='dtf-suite-package-resource-aware-') as temp:
     base = Path(temp) / 'suite-base.zip'

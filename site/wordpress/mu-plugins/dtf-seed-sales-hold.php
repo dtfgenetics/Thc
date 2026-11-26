@@ -9,6 +9,8 @@
  */
 if (!defined('ABSPATH')) { exit; }
 
+if (!function_exists('dtf_seed_sales_hold_active')) {
+
 function dtf_seed_sales_hold_active(): bool {
     // Deliberately fail closed until the site owner explicitly retires this plugin.
     return true;
@@ -44,6 +46,30 @@ add_action('woocommerce_checkout_process', static function (): void {
     }
 }, PHP_INT_MAX);
 
+// Store API product add-item requests bypass legacy WooCommerce notices.
+// Throwing stops first-time cart insertion before it can create a purchasable cart.
+add_action('woocommerce_store_api_validate_add_to_cart', static function (): void {
+    if (dtf_seed_sales_hold_active()) {
+        throw new \Exception('Seed sales are temporarily on hold. Purchasing is unavailable.');
+    }
+}, PHP_INT_MAX);
+
+// WooCommerce 11.2+ ignores false on this Store API quantity validation filter.
+// WP_Error is required to reject changes and top-ups to existing cart items.
+add_filter('woocommerce_store_api_cart_item_quantity_validation', static function ($valid) {
+    if (dtf_seed_sales_hold_active()) {
+        return new \WP_Error('dtf_sales_hold', 'Seed sales are temporarily on hold. Cart updates are unavailable.');
+    }
+    return $valid;
+}, PHP_INT_MAX, 1);
+
+// Pre-existing Store API carts must also fail validation on checkout.
+add_action('woocommerce_store_api_cart_errors', static function ($errors): void {
+    if (dtf_seed_sales_hold_active() && is_object($errors) && method_exists($errors, 'add')) {
+        $errors->add('dtf_sales_hold', 'Seed sales are temporarily on hold. Checkout is unavailable.');
+    }
+}, PHP_INT_MAX, 1);
+
 // The Store API uses a different validation path from classic checkout.
 add_action('woocommerce_store_api_checkout_update_order_from_request', static function () {
     if (dtf_seed_sales_hold_active()) {
@@ -70,3 +96,5 @@ function dtf_seed_sales_hold_notice(): void {
 }
 add_action('woocommerce_before_shop_loop', 'dtf_seed_sales_hold_notice', 5);
 add_action('woocommerce_before_single_product', 'dtf_seed_sales_hold_notice', 5);
+
+} // Stop duplicate registration if both an MU-plugin and snippet are installed.
