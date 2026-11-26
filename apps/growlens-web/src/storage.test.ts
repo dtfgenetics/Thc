@@ -41,6 +41,12 @@ describe('GrowLens storage', () => {
     }
   });
 
+  it('rejects records that normalization would silently discard', () => {
+    for (const key of ['irrigationRecords', 'feedingRecords', 'reservoirRecords', 'harvestRecords', 'observationOutcomes']) {
+      expect(() => parseBackup(JSON.stringify({ schemaVersion: 2, [key]: [{}] }))).toThrow(/cannot be restored/);
+    }
+  });
+
   it('accepts a legacy partial state with a recognized collection', () => {
     expect(parseBackup(JSON.stringify({ schemaVersion: 1, plants: [] }))).toEqual(emptyState);
   });
