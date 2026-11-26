@@ -105,6 +105,24 @@ describe('structured cultivation records', () => {
     expect(irrigationRunoffPercent({ volumeAppliedMl: 1500, runoffVolumeMl: null } as never)).toBeNull();
   });
 
+  it('does not coerce blank or nonnumeric measurements to zero', () => {
+    for (const value of [' ', false, [], {}]) {
+      const row = normalizeReservoirRecords([{ id: 'reservoir-12345678', name: 'Tank', ph: value, ecMsCm: value }])[0];
+      expect(row?.ph).toBeNull();
+      expect(row?.ecMsCm).toBeNull();
+    }
+    expect(normalizeReservoirRecords([{ id: 'reservoir-12345678', name: 'Tank', ecMsCm: '0' }])[0]?.ecMsCm).toBe(0);
+    expect(normalizeIrrigationRecords([{ id: 'irrigation-12345678', volumeAppliedMl: true }])).toEqual([]);
+  });
+
+  it('rejects nonfinite inputs and returns no misleading calculated percentage', () => {
+    const errors = validateIrrigationInput({ volumeAppliedMl: 1000, runoffVolumeMl: NaN, inputPh: NaN, inputEcMsCm: Infinity, runoffPh: null, runoffEcMsCm: null });
+    expect(errors).toHaveLength(3);
+    expect(irrigationRunoffPercent({ volumeAppliedMl: 1000, runoffVolumeMl: NaN } as never)).toBeNull();
+    expect(harvestDryLossPercent({ wetWeightG: Infinity, dryWeightG: 10 } as never)).toBeNull();
+    expect(validateIrrigationInput({ volumeAppliedMl: 10_000_001, runoffVolumeMl: null, inputPh: null, inputEcMsCm: null, runoffPh: null, runoffEcMsCm: null })).toHaveLength(1);
+  });
+
   it('reports user-facing range errors', () => {
     expect(validateIrrigationInput({
       volumeAppliedMl: 0,
