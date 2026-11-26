@@ -125,7 +125,15 @@ export function parseBackup(raw: string): GrowLensState {
       throw new Error('Invalid backup record in ' + key);
     }
   }
-  return normalizeState(candidate);
+  const normalized = normalizeState(candidate);
+  for (const key of keys) {
+    const rows = candidate[key];
+    const restored = normalized[key as Exclude<keyof GrowLensState, 'schemaVersion'>];
+    if (Array.isArray(rows) && rows.length !== restored.length) {
+      throw new Error('Backup contains records that cannot be restored: ' + key);
+    }
+  }
+  return normalized;
 }
 
 export function createId(prefix: string): string {
