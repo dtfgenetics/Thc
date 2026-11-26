@@ -11,6 +11,8 @@ on:
       - 'scripts/check-public-route-health.mjs'
       - 'scripts/lib/route-health-assets.mjs'
       - 'scripts/test/route-health-assets.test.mjs'
+      - 'scripts/lib/route-health-origin.mjs'
+      - 'scripts/test/route-health-origin.test.mjs'
       - 'scripts/audit-responsive-source.mjs'
       - 'web-qa.config.mjs'
       - 'lighthouserc.cjs'
@@ -86,6 +88,9 @@ jobs:
 
       - name: Test responsive asset discovery
         run: node --test scripts/test/route-health-assets.test.mjs
+
+      - name: Test canonical route redirect integrity
+        run: node --test scripts/test/route-health-origin.test.mjs
 
       - name: Check public route health
         run: node scripts/check-public-route-health.mjs
