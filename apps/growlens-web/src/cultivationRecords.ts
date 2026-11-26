@@ -40,14 +40,13 @@ function stringList(value: unknown, maximumItems = 50, maximumLength = 200): str
 }
 
 function nullableNumber(value: unknown, minimum: number, maximum: number): number | null {
-  if (value === null || value === undefined || value === '') return null;
+  if (typeof value !== 'number' && (typeof value !== 'string' || !value.trim())) return null;
   const parsed = Number(value);
   return Number.isFinite(parsed) && parsed >= minimum && parsed <= maximum ? parsed : null;
 }
 
 function requiredNumber(value: unknown, minimum: number, maximum: number): number | null {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed >= minimum && parsed <= maximum ? parsed : null;
+  return nullableNumber(value, minimum, maximum);
 }
 
 function isoDateTime(value: unknown, fallback = new Date().toISOString()): string {
@@ -225,24 +224,26 @@ export function normalizeObservationOutcomes(value: unknown): ObservationOutcome
 }
 
 export function irrigationRunoffPercent(record: IrrigationRecord): number | null {
-  if (record.runoffVolumeMl === null || record.volumeAppliedMl <= 0) return null;
+  if (record.runoffVolumeMl === null || !Number.isFinite(record.runoffVolumeMl) || record.runoffVolumeMl < 0 || !Number.isFinite(record.volumeAppliedMl) || record.volumeAppliedMl <= 0) return null;
   return Math.round((record.runoffVolumeMl / record.volumeAppliedMl) * 10_000) / 100;
 }
 
 export function harvestDryLossPercent(record: HarvestRecord): number | null {
-  if (record.wetWeightG === null || record.dryWeightG === null || record.wetWeightG <= 0) return null;
+  if (record.wetWeightG === null || record.dryWeightG === null || !Number.isFinite(record.wetWeightG) || !Number.isFinite(record.dryWeightG) || record.wetWeightG <= 0 || record.dryWeightG < 0) return null;
   return Math.round((1 - (record.dryWeightG / record.wetWeightG)) * 10_000) / 100;
 }
 
 export function validateIrrigationInput(record: Pick<IrrigationRecord, 'volumeAppliedMl' | 'runoffVolumeMl' | 'inputPh' | 'inputEcMsCm' | 'runoffPh' | 'runoffEcMsCm'>): string[] {
   const errors: string[] = [];
   if (!Number.isFinite(record.volumeAppliedMl) || record.volumeAppliedMl <= 0) errors.push('Volume applied must be greater than zero.');
-  if (record.runoffVolumeMl !== null && record.runoffVolumeMl < 0) errors.push('Runoff volume cannot be negative.');
+  if (record.volumeAppliedMl > 10_000_000) errors.push('Volume applied must not exceed 10,000,000 mL.');
+  if (record.runoffVolumeMl !== null && (!Number.isFinite(record.runoffVolumeMl) || record.runoffVolumeMl < 0)) errors.push('Runoff volume cannot be negative.');
+  if (record.runoffVolumeMl !== null && record.runoffVolumeMl > 10_000_000) errors.push('Runoff volume must not exceed 10,000,000 mL.');
   for (const [label, value] of [['Input pH', record.inputPh], ['Runoff pH', record.runoffPh]] as const) {
-    if (value !== null && (value < 0 || value > 14)) errors.push(`${label} must be between 0 and 14.`);
+    if (value !== null && (!Number.isFinite(value) || value < 0 || value > 14)) errors.push(`${label} must be between 0 and 14.`);
   }
   for (const [label, value] of [['Input EC', record.inputEcMsCm], ['Runoff EC', record.runoffEcMsCm]] as const) {
-    if (value !== null && (value < 0 || value > 20)) errors.push(`${label} must be between 0 and 20 mS/cm.`);
+    if (value !== null && (!Number.isFinite(value) || value < 0 || value > 20)) errors.push(`${label} must be between 0 and 20 mS/cm.`);
   }
   return errors;
 }
