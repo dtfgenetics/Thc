@@ -31,7 +31,13 @@ function render(){
 }
 function normalizeDewRecord(x){
   if(!x||typeof x!=='object'||typeof x.at!=='string'||!Number.isFinite(Date.parse(x.at)))return null;
-  const t=Number(x.t),h=Number(x.h),s=Number(x.s);
+  // Older backups may contain numeric strings. Reject missing or nonnumeric readings.
+  const readTemperatureOrHumidity=value=>{
+    if(typeof value==='number')return value;
+    if(typeof value==='string'&&value.trim()!=='')return Number(value);
+    return NaN;
+  };
+  const t=readTemperatureOrHumidity(x.t),h=readTemperatureOrHumidity(x.h),s=readTemperatureOrHumidity(x.s);
   if(!Number.isFinite(t)||t<-273.15||!Number.isFinite(s)||s<-273.15||!Number.isFinite(h)||h<1||h>100)return null;
   let d;try{d=dewPoint(t,h)}catch{return null}
   const margin=s-d;if(!Number.isFinite(d)||!Number.isFinite(margin))return null;
