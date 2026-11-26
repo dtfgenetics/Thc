@@ -4,7 +4,7 @@
 function normalizeSnapshot(x){
  if(!x||typeof x!=='object'||typeof x.at!=='string'||!Number.isFinite(Date.parse(x.at)))return null;
  const out={...x};
- for(const k of ['c','f','liters','gallons','cm','inch','sqm','sqft','grams','ounces','ms','us','cfm','m3h']){const raw=x[k];if(raw===null||raw===undefined||typeof raw==='boolean'||(typeof raw==='string'&&raw.trim()===''))return null;const n=Number(raw);if(!Number.isFinite(n))return null;out[k]=n}
+ for(const k of ['c','f','liters','gallons','cm','inch','sqm','sqft','grams','ounces','ms','us','cfm','m3h']){const raw=x[k];if(typeof raw!=='number'&&(typeof raw!=='string'||raw.trim()===''))return null;const n=Number(raw);if(!Number.isFinite(n))return null;out[k]=n}
  if(out.c<-273.15||out.f<-459.67)return null;
  for(const k of ['liters','gallons','cm','inch','sqm','sqft','grams','ounces','ms','us','cfm','m3h'])if(out[k]<0)return null;
  // Store one canonical measurement per pair; never trust independently supplied derived values.
