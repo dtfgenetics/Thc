@@ -105,8 +105,35 @@ export function serializeBackup(state: GrowLensState): string {
 
 export function parseBackup(raw: string): GrowLensState {
   const parsed: unknown = JSON.parse(raw);
-  if (isRecord(parsed) && 'state' in parsed) return normalizeState(parsed.state);
-  return normalizeState(parsed);
+  const wrapped = isRecord(parsed) && 'state' in parsed;
+  if (wrapped && parsed.app !== undefined && parsed.app !== 'THC GrowLens') {
+    throw new Error('Backup belongs to a different application');
+  }
+  const candidate = wrapped ? parsed.state : parsed;
+  if (!isRecord(candidate)) throw new Error('Invalid backup state');
+  if (candidate.schemaVersion !== undefined && candidate.schemaVersion !== 1 && candidate.schemaVersion !== 2) {
+    throw new Error('Unsupported backup schema');
+  }
+  const keys = Object.keys(emptyState).filter(key => key !== 'schemaVersion');
+  if (!keys.some(key => Array.isArray(candidate[key])) ||
+      keys.some(key => key in candidate && !Array.isArray(candidate[key]))) {
+    throw new Error('Invalid backup collections');
+  }
+  for (const key of keys) {
+    const rows = candidate[key];
+    if (Array.isArray(rows) && rows.some(row => !isRecord(row))) {
+      throw new Error('Invalid backup record in ' + key);
+    }
+  }
+  const normalized = normalizeState(candidate);
+  for (const key of keys) {
+    const rows = candidate[key];
+    const restored = normalized[key as Exclude<keyof GrowLensState, 'schemaVersion'>];
+    if (Array.isArray(rows) && rows.length !== restored.length) {
+      throw new Error('Backup contains records that cannot be restored: ' + key);
+    }
+  }
+  return normalized;
 }
 
 export function createId(prefix: string): string {
