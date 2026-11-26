@@ -24,11 +24,16 @@
   "coreScience": [
     "A light map preserves location. Use a fixed coordinate system, consistent cell size, and a crop-relevant measurement plane. Include edges, corners, fixture seams, and known obstructions; a grid that samples only expected good areas is biased.",
     "Mean PPFD alone can conceal a crop with damaging hotspots and unproductive lows. Report the raw grid plus minimum, maximum, median, mean, standard deviation or coefficient of variation, and a clearly defined uniformity ratio. Percentiles can be more stable than a single extreme when measurement density is high, but extremes still require investigation.",
-    "Comparisons require identical geometry and operating conditions. Mapping an empty room may commission the installation, while mapping a mature canopy evaluates a different optical system because leaves absorb, reflect, and redistribute photons. Version each map with fixture layout and canopy state."
+    "Comparisons require identical geometry and operating conditions. Mapping an empty room may commission the installation, while mapping a mature canopy evaluates a different optical system because leaves absorb, reflect, and redistribute photons. Version each map with fixture layout and canopy state.",
+    "Spatial sampling. A repeatable grid covers corners, edges, fixture seams and central points at a declared measurement plane. Canopy height, obstructions, fixture position, wall reflectance and spectral/angular sensor response change readings; sample design must match the question.",
+    "Descriptive statistics. Compute the arithmetic mean from all declared valid points. Report minimum, maximum and median alongside coefficient of variation (CV = sample standard deviation / mean × 100%) and a named uniformity ratio such as minimum / mean. These summaries describe the sampled grid, not unsampled leaves.",
+    "Temporal variability. Compare maps only under consistent warm-up, dimming, photoperiod, sunlight, curtain and canopy conditions. If light varies with time, repeated snapshots or time-integrated dose may be needed; a single PPFD map does not equal a DLI map."
   ],
   "cultivationRelevance": [
     "Distribution often controls consistency more than the headline average. It affects morphology, transpiration, maturation, quality grading, irrigation demand, and risk of localized high-light stress.",
-    "Maps support fixture spacing, dimming zones, crop placement, maintenance, and acceptance testing after changes."
+    "Maps support fixture spacing, dimming zones, crop placement, maintenance, and acceptance testing after changes.",
+    "Keep raw readings and units (µmol m⁻² s⁻¹ for PPFD), sensor model, wavelength band (PAR or ePAR), measurement height and fixture operating conditions.",
+    "Use the grid to locate regions requiring remeasurement or fixture adjustment, then remap at matching conditions. Evaluate crop response separately; map uniformity is not itself a yield prediction."
   ],
   "measureAndRecord": [
     {
@@ -50,6 +55,10 @@
     {
       "field": "Actions",
       "requirement": "Hotspot or low-zone investigation, adjustment, remap date, and crop-response verification."
+    },
+    {
+      "field": "Repeatable field measurements",
+      "requirement": "Mark a coordinate origin and sampling interval; include edges, corners and known shading. Log excluded positions rather than silently dropping low readings. Keep raw readings and units (µmol m⁻² s⁻¹ for PPFD), sensor model, wavelength band (PAR or ePAR), measurement height and fixture operating conditions."
     }
   ],
   "misconceptions": [
@@ -58,7 +67,10 @@
     "A heat map proves unsampled values: Interpolation can create visual certainty that the measurement grid does not support."
   ],
   "evidenceLimits": [
-    "Uniformity acceptance criteria depend on crop architecture, economics, fixture system, measurement density, and the consequence of local extremes. No single threshold is universal."
+    "Uniformity acceptance criteria depend on crop architecture, economics, fixture system, measurement density, and the consequence of local extremes. No single threshold is universal.",
+    "The illustrative numbers in the accompanying diagram are invented arithmetic examples, not field measurements or crop targets.",
+    "A minimum-to-mean ratio changes with sampling density, placement and outliers; do not compare maps without the same definition and protocol.",
+    "Interpolated heat maps may conceal local variation and should never be presented as direct measurements between sampled coordinates."
   ],
   "crossLinks": "THC-ENC-105, THC-ENC-107-108, THC-ENC-111, THC-ENC-119-120, and THC-GROW-060.",
   "sourceNotes": [
@@ -76,5 +88,77 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "overview": "Canopy light mapping measures how photon flux density varies across crop space. A mean alone can hide edge deficits and fixture hotspots. Keep the raw coordinate grid and explicitly define the wavelength band, sensor geometry, statistics and measurement conditions before comparing maps.",
+  "relatedLessons": [
+    "THC-ENC-101",
+    "THC-ENC-102",
+    "THC-ENC-103",
+    "THC-ENC-104",
+    "THC-ENC-105",
+    "THC-ENC-107",
+    "THC-ENC-108",
+    "THC-ENC-111",
+    "THC-ENC-119"
+  ],
+  "references": [
+    {
+      "title": "LED Lighting for Cannabis Cultivation and Controlled Environment Agriculture: Best Practices Guide",
+      "authors": "Resource Innovation Institute",
+      "year": 2021,
+      "type": "industry technical guidance"
+    },
+    {
+      "title": "Cannabis Yield, Potency, and Leaf Photosynthesis Respond Differently to Increasing Light Levels in an Indoor Environment",
+      "authors": "Rodriguez-Morrison V, Llewellyn D, Zheng Y",
+      "year": 2021,
+      "journal": "Frontiers in Plant Science",
+      "volume": "12",
+      "article": "646020",
+      "doi": "10.3389/fpls.2021.646020",
+      "url": "https://doi.org/10.3389/fpls.2021.646020"
+    }
+  ],
+  "workedExample": {
+    "context": "Illustrative 3 × 3 PPFD map in µmol m⁻² s⁻¹, not actual crop data or recommended targets.",
+    "grid": [
+      [
+        400,
+        500,
+        400
+      ],
+      [
+        500,
+        600,
+        500
+      ],
+      [
+        400,
+        500,
+        400
+      ]
+    ],
+    "calculations": {
+      "count": 9,
+      "sum": 4200,
+      "mean": 466.6666666667,
+      "min": 400,
+      "max": 600,
+      "uniformityMinOverMean": 0.8571428571
+    },
+    "interpretation": "The minimum-to-mean ratio is 400 / (4200 / 9) ≈ 0.857. This example demonstrates a calculation only; it does not establish acceptable uniformity."
+  },
+  "visuals": [
+    {
+      "type": "diagram",
+      "src": "/assets/education/encyclopedia/thc-enc-106/light-uniformity-grid.svg",
+      "sourcePath": "site/public-route-patch/assets/education/encyclopedia/thc-enc-106/light-uniformity-grid.svg",
+      "alt": "Illustrative three-by-three canopy PPFD grid with values 400, 500 and 600 micromoles per square meter per second, and calculation of minimum-to-mean uniformity as 0.857. Not measured data.",
+      "caption": "Worked example of coordinate light mapping and a defined uniformity ratio; numbers are illustrative, not measured crop data or setpoints.",
+      "width": 1200,
+      "height": 720,
+      "license": "CC BY 4.0",
+      "author": "THC Educational Content Production"
+    }
+  ]
 }
