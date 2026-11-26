@@ -24,11 +24,17 @@
   "coreScience": [
     "Plants intercept photons, not lumens. Lumens weight radiation according to human visual sensitivity, while photosynthetic photon measurements count photons within a declared waveband. Irradiance in watts per square metre describes radiant energy, not photon number; the same radiant energy contains more red photons than blue photons because longer-wavelength photons carry less energy individually.",
     "PAR is a measurement convention, not a substance emitted by a lamp. A conventional quantum sensor integrates photons from 400 to 700 nm and reports PPFD. Research showing that far-red photons can contribute to photosynthesis when combined with shorter wavelengths led to the proposed 400-750 nm ePAR range. PAR-PPFD and ePAR-ePPFD values are therefore not interchangeable.",
-    "A spectral photon distribution is the most complete description because it shows photon delivery by wavelength. A single integrated number cannot reveal blue fraction, green fraction, red peaks, far-red content, ultraviolet output, or sensor mismatch. Every record must pair the numerical value with the band, sensor model, calibration basis, location, and operating state."
+    "A spectral photon distribution is the most complete description because it shows photon delivery by wavelength. A single integrated number cannot reveal blue fraction, green fraction, red peaks, far-red content, ultraviolet output, or sensor mismatch. Every record must pair the numerical value with the band, sensor model, calibration basis, location, and operating state.",
+    "Photon count versus energy. The energy of one photon is E = hc/λ, so at equal radiant power longer-wavelength light contains more photons. PPFD integrates photon flux over the stated band, rather than weighting wavelengths for human vision.",
+    "PAR and ePAR. Conventional PPFD integrates 400–700 nm; ePPFD integrates 400–750 nm and includes 700–750 nm far-red. Far-red can contribute to photosynthesis in combination with shorter wavelengths; the extra band also influences phytochrome signaling and morphology.",
+    "Instrument response. Sensor spectral response, cosine response, calibration spectrum, geometry and channel settings can bias readings. A 400–700 nm meter cannot recover 700–750 nm photons from its integrated PPFD reading."
   ],
   "cultivationRelevance": [
     "Fixture comparisons fail when one map uses 400-700 nm and another uses 400-750 nm. Labeling the band prevents an apparent intensity gain from being mistaken for a real change in conventional PPFD.",
-    "Spectrum decisions should connect photon distribution to canopy response, morphology, photoreceptor signaling, safety, energy, and measured crop outcomes rather than to color names alone."
+    "Spectrum decisions should connect photon distribution to canopy response, morphology, photoreceptor signaling, safety, energy, and measured crop outcomes rather than to color names alone.",
+    "Write the wavelength interval beside every photon flux value and map; never compare ePPFD against PPFD without accounting for the extra band.",
+    "Measure the same canopy grid at a recorded fixture height, dimmer setting, warm-up state and sensor orientation; keep instrument calibration details.",
+    "Use a spectroradiometer or suitable measured spectral data when a question depends on wavelength composition rather than integrated photon count."
   ],
   "measureAndRecord": [
     {
@@ -50,6 +56,10 @@
     {
       "field": "Reported value",
       "requirement": "PPFD or ePPFD in micromoles per square metre per second, with timestamp and uncertainty notes."
+    },
+    {
+      "field": "Measurement procedure",
+      "requirement": "Write the wavelength interval beside every photon flux value and map; never compare ePPFD against PPFD without accounting for the extra band. Measure the same canopy grid at a recorded fixture height, dimmer setting, warm-up state and sensor orientation; keep instrument calibration details."
     }
   ],
   "misconceptions": [
@@ -58,7 +68,10 @@
     "ePAR replaces every PAR record: The bands answer different questions and must remain labeled for comparability with research, specifications, and historical data."
   ],
   "evidenceLimits": [
-    "The 400-750 nm ePAR proposal is supported by plant research but conventional 400-700 nm PPFD remains deeply embedded in instruments, standards, research, and crop records. Cannabis-specific ePAR response data are still limited."
+    "The 400-750 nm ePAR proposal is supported by plant research but conventional 400-700 nm PPFD remains deeply embedded in instruments, standards, research, and crop records. Cannabis-specific ePAR response data are still limited.",
+    "A band-integrated count is not a universal photosynthetic efficiency or crop-yield prediction. Spectrum, plant acclimation and environment affect outcomes.",
+    "The diagram shows wavelength boundaries, not an actual lamp spectrum, relative photon quantities or an experimentally derived plant response curve.",
+    "Some instruments label ePAR differently; verify the manufacturer’s stated bandpass and calibration rather than relying on the label alone."
   ],
   "crossLinks": "THC-ENC-063, THC-ENC-102-104, THC-ENC-112-116, and THC-GROW-060.",
   "sourceNotes": [
@@ -77,5 +90,57 @@
     "externalReview": "pending_not_recorded",
     "websiteAction": "publish_with_review_notice",
     "releaseTimeReview": "completed_2026-10-04_repository_quality_evidence_structure_accessibility_and_release_boundary_checked"
-  }
+  },
+  "overview": "Photon measurements count photons in a specified wavelength interval. Conventional PAR uses 400–700 nm and ePAR uses 400–750 nm; the same light source can produce different integrated values depending on the band. Neither is equivalent to lux or radiant watts.",
+  "relatedLessons": [
+    "THC-ENC-063",
+    "THC-ENC-099",
+    "THC-ENC-102",
+    "THC-ENC-103",
+    "THC-ENC-104",
+    "THC-ENC-112",
+    "THC-ENC-113",
+    "THC-ENC-114",
+    "THC-ENC-115",
+    "THC-ENC-116"
+  ],
+  "references": [
+    {
+      "title": "Far-red photons have equivalent efficiency to traditional photosynthetic photons: implications for redefining photosynthetically active radiation",
+      "authors": "Zhen S, Bugbee B",
+      "year": 2020,
+      "journal": "Plant, Cell & Environment",
+      "doi": "10.1111/pce.13730",
+      "url": "https://doi.org/10.1111/pce.13730"
+    },
+    {
+      "title": "Cannabis Yield, Potency, and Leaf Photosynthesis Respond Differently to Increasing Light Levels in an Indoor Environment",
+      "authors": "Rodriguez-Morrison V, Llewellyn D, Zheng Y",
+      "year": 2021,
+      "journal": "Frontiers in Plant Science",
+      "volume": "12",
+      "article": "646020",
+      "doi": "10.3389/fpls.2021.646020",
+      "url": "https://doi.org/10.3389/fpls.2021.646020"
+    },
+    {
+      "title": "International System of Units (SI) Brochure",
+      "authors": "BIPM",
+      "year": 2019,
+      "url": "https://www.bipm.org/en/publications/si-brochure"
+    }
+  ],
+  "visuals": [
+    {
+      "type": "diagram",
+      "src": "/assets/education/encyclopedia/thc-enc-101/par-epar-wavelength-bands.svg",
+      "sourcePath": "site/public-route-patch/assets/education/encyclopedia/thc-enc-101/par-epar-wavelength-bands.svg",
+      "alt": "Wavelength axis from 350 to 800 nanometres. Conventional PAR spans 400 to 700 nanometres; extended ePAR spans 400 to 750 nanometres, adding the 700 to 750 nanometre far-red interval.",
+      "caption": "PAR (400–700 nm) and ePAR (400–750 nm) are distinct photon-counting intervals. Boundaries are measurement conventions; this is not a measured lamp spectrum.",
+      "width": 1200,
+      "height": 720,
+      "license": "CC BY 4.0",
+      "author": "THC Educational Content Production"
+    }
+  ]
 }
